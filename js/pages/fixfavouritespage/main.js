@@ -159,4 +159,6 @@ async function RunMain(){
     }
 }
 
-RunMain()
+if (IsFeatureEnabled("FixFavouritesPage")){
+    RunMain()
+}

@@ -1,4 +1,6 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+const EnabledFeatures = {ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true}
+let AreEnabledFeaturesFetched = false
 
 async function WaitForClass(ClassName){
     let Element = null
@@ -69,4 +71,30 @@ function ClearAllChildren(Element){
     while (Element.firstChild) {
         Element.removeChild(Element.lastChild)
     }
+}
+
+function FetchAllFeaturesEnabled(){
+    if (!AreEnabledFeaturesFetched){
+        const NewSettings = window.localStorage.getItem("robloxQOL-settings")
+
+        if (NewSettings){
+            for (const [key, value] of Object.entries(JSON.parse(NewSettings))){
+                EnabledFeatures[key] = value
+            }
+        }
+
+        AreEnabledFeaturesFetched = true
+    }
+}
+
+function IsFeatureEnabled(Feature){
+    FetchAllFeaturesEnabled()
+    return EnabledFeatures[Feature]
+}
+
+function SetFeatureEnabled(Feature, Enabled){
+    FetchAllFeaturesEnabled()
+
+    EnabledFeatures[Feature] = Enabled
+    window.localStorage.setItem("robloxQOL-settings", JSON.stringify(EnabledFeatures))
 }

@@ -19,12 +19,22 @@
         }
     ],
     "content_scripts": [
+        {
+            "matches": [
+                "*://*.roblox.com/*"
+            ],
+            "js": [
+                "js/pages/document.js",
+                "js/pages/settings/settingsdropdown.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        },
     {
         "matches": [
             "*://*.roblox.com/my/avatar*"
         ],
         "js": [
-            "js/pages/document.js",
             "js/pages/extraoutfits/main.js",
             "js/pages/extraoutfits/createelements.js",
             "js/pages/extraoutfits/handleconversion.js",
@@ -38,7 +48,6 @@
             "*://*.roblox.com/users/*/inventory*"
         ],
         "js": [
-            "js/pages/document.js",
             "js/pages/activeprivateservers/createelements.js",
             "js/pages/activeprivateservers/getactiveprivateservers.js",
             "js/pages/activeprivateservers/getelements.js",
@@ -52,7 +61,6 @@
             "*://*.roblox.com/discover#/sortName/v2/Favorites"
         ],
         "js": [
-            "js/pages/document.js",
             "js/pages/fixfavouritespage/createelement.js",
             "js/pages/fixfavouritespage/main.js"
         ],
@@ -64,7 +72,6 @@
             "*://*.roblox.com/my/account*"
         ],
         "js": [
-            "js/pages/document.js",
             "js/pages/settings/createelements.js",
             "js/pages/settings/main.js"
         ],

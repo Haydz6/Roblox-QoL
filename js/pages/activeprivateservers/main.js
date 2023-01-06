@@ -4,7 +4,7 @@ let CurrentPage = 1
 
 async function CreateCardsFromServers(Servers){
     const ServerListElement = await WaitForClass("hlist item-cards item-cards-embed ng-scope")
-    
+
     ClearAllChildren(ServerListElement)
 
     for (let i = 0; i < Servers.length; i++){
@@ -76,4 +76,6 @@ async function RunMain(){
     CheckActivePrivateServersOpened()
 }
 
-RunMain()
+if (IsFeatureEnabled("ActivePrivateServers")){
+    RunMain()
+}

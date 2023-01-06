@@ -504,4 +504,7 @@ async function RunMain(){
   console.log("extra outfits ready")
 }
 
-RunMain()
+
+if (IsFeatureEnabled("ExtraOutfits")){
+  RunMain()
+}
