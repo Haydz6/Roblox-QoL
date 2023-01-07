@@ -1,12 +1,20 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const EnabledFeatures = {ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true}
+const EnabledFeatures = {ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true}
 let AreEnabledFeaturesFetched = false
+
+function FindFirstClass(ClassName){
+  return document.getElementsByClassName(ClassName)[0]
+}
+
+function FindFirstId(Id){
+  return document.getElementById(Id)
+}
 
 async function WaitForClass(ClassName){
     let Element = null
   
     while (true) {
-      Element = document.getElementsByClassName(ClassName)[0]
+      Element = FindFirstClass(ClassName)
       if (Element != undefined) {
         break
       }
@@ -21,7 +29,7 @@ async function WaitForId(Id){
     let Element = null
   
     while (true) {
-      Element = document.getElementById(Id)
+      Element = FindFirstId(Id)
       if (Element != undefined) {
         break
       }

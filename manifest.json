@@ -11,7 +11,7 @@
     },
     "web_accessible_resources": [
         {
-            "resources": ["img/*", "html/*"],
+            "resources": ["img/*", "html/*", "sounds/*"],
             "matches": [
                 "https://www.roblox.com/*",
                 "https://web.roblox.com/*"
@@ -25,7 +25,8 @@
             ],
             "js": [
                 "js/pages/document.js",
-                "js/pages/settings/settingsdropdown.js"
+                "js/pages/settings/settingsdropdown.js",
+                "js/pages/newmessageping.js"
             ],
             "run_at": "document_start",
             "all_frames": true

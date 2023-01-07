@@ -1,12 +1,31 @@
 let PreviousCursor = ""
 let CSRFToken = ""
 let ReachedEnd = false
+let IsFetching = false
 let AmountLoaded = 0
 const ActivePrivateServers = []
 
 //GameIcon, Name, OwnerName, OwnerId, Price, PlaceId
 
+function CreateDummyData(){
+    return {
+        Name: "a place",
+        OwnerName: "Haydz6",
+        OwnerId: 51787703,
+        Price: Math.random() * 100,
+        Thumbnail: "https://tr.rbxcdn.com/407c5baab2168cbdaa0a1ef82aac096f/48/48/AvatarHeadshot/Png",
+        PlaceId: 8416011646,
+        Id: Math.random() * 10000000
+    }
+}
+
 async function RequestActivePrivateServers(){
+    IsFetching = true
+
+    for (let i = 0; i < 200; i++){
+        ActivePrivateServers.push(CreateDummyData())
+    }
+
     const [Success, Result] = await RequestFunc(`https://www.roblox.com/users/inventory/list-json?assetTypeId=9&cursor=&itemsPerPage=100&pageNumber=${PreviousCursor}&placeTab=MyPrivateServers&userId=${UserId}`, "GET", undefined, undefined, true)
 
     if (!Success) return false
@@ -134,18 +153,32 @@ async function RequestActivePrivateServers(){
     AmountLoaded -= FinalServerIncrement
     LoadingParagraph.innerText = `Found ${ActivePrivateServers.length} active out of ${AmountLoaded} private servers!`
 
+    IsFetching = false
+
     return true
 }
 
 async function GetActivePrivateServers(Page){ //Max per page is 30
+    if (!IsActivePrivateServersOpened){
+        return
+    }
+
     const ParagraphContainer = await WaitForClass("tab-content rbx-tab-content")
     ParagraphContainer.insertBefore(LoadingParagraph, ParagraphContainer.firstChild)
     LoadingParagraph.style = ""
     LoadingParagraph.innerText = `Loading`
+
+    while (IsFetching){
+        await sleep(100)
+    }
     
-    while (!ReachedEnd && ActivePrivateServers.length < Page * 30){
+    while (!ReachedEnd && ActivePrivateServers.length < Page * 30 && IsActivePrivateServersOpened){
         await RequestActivePrivateServers()
         await sleep(100)
+    }
+
+    if (!IsActivePrivateServersOpened){
+        return []
     }
 
     LoadingParagraph.style = "display:none;"

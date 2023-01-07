@@ -11,6 +11,10 @@ const Settings = {
         ActivePrivateServers: {
             Title: "Active Private Servers",
             Description: "Allows you to see which private servers are billing you."
+        },
+        NewMessagePing: {
+            Title: "New Message Ping",
+            Description: "Creates a ping sound whenever you receive a new chat message."
         }
     }
 }

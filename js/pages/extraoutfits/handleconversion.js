@@ -169,7 +169,7 @@ const NewOutfitElementObserver = new MutationObserver(function(mutationList, obs
         }
       }
     })
-  })
+})
 
 async function StartConversion(){
     let ScrollCostumesList = CostumesList.getElementsByTagName("div")[1].getElementsByTagName("div")[0].getElementsByTagName("ul")[0]

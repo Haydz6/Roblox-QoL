@@ -141,6 +141,8 @@ async function GetPage(){
 }
 
 async function RunMain(){
+    //TODO: Intercept request from roblox and stop it.
+
     while (!document.head) await sleep(100)
 
     UserId = document.head.querySelector("[name~=user-data][data-userid]").getAttribute("data-userid")

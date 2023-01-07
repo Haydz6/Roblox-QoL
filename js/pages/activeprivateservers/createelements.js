@@ -25,6 +25,7 @@ function CreatePrivateServerCard(GameIcon, Name, OwnerName, OwnerId, Price, Plac
     const Card = document.createElement("li")
     Card.setAttribute("ng-repeat", "item in $ctrl.assets")
     Card.setAttribute("ng-class", "{'place-item': $ctrl.currentData.category.categoryType === $ctrl.assetsConstants.types.place}")
+    Card.setAttribute("custom", "true")
     Card.className = "list-item item-card ng-scope"
 
     const ItemContainer = document.createElement("div")
