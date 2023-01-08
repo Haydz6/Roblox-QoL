@@ -4,7 +4,7 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "icons": {
         "128": "img/icons/icon128x128.png",
         "48": "img/icons/icon48x48.png"
@@ -14,45 +14,71 @@
         "*://haydz6.com/*"
     ],
     "web_accessible_resources": [
-        "img/*"
+        "img/*", "html/*", "sounds/*"
     ],
     "content_scripts": [
-    {
-        "matches": [
-            "*://*.roblox.com/my/avatar*"
-        ],
-        "js": [
-            "js/pages/extraoutfits/main.js",
-            "js/pages/extraoutfits/createelements.js",
-            "js/pages/extraoutfits/handleconversion.js",
-            "js/pages/extraoutfits/createnormaloutfitelement.js"
-        ],
-        "run_at": "document_start",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/users/*/inventory*"
-        ],
-        "js": [
-            "js/pages/activeprivateservers/createelements.js",
-            "js/pages/activeprivateservers/getactiveprivateservers.js",
-            "js/pages/activeprivateservers/getelements.js",
-            "js/pages/activeprivateservers/main.js"
-        ],
-        "run_at": "document_start",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/discover#/sortName/v2/Favorites"
-        ],
-        "js": [
-            "js/pages/fixfavouritespage/createelement.js",
-            "js/pages/fixfavouritespage/main.js"
-        ],
-        "run_at": "document_start",
-        "all_frames": true
-    }
+        {
+            "matches": [
+                "*://*.roblox.com/*"
+            ],
+            "js": [
+                "js/pages/document.js",
+                "js/pages/settings/settingsdropdown.js",
+                "js/pages/newmessageping.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/my/avatar*"
+            ],
+            "js": [
+                "js/pages/extraoutfits/main.js",
+                "js/pages/extraoutfits/createelements.js",
+                "js/pages/extraoutfits/handleconversion.js",
+                "js/pages/extraoutfits/createnormaloutfitelement.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/users/*/inventory*"
+            ],
+            "js": [
+                "js/pages/activeprivateservers/createelements.js",
+                "js/pages/activeprivateservers/getactiveprivateservers.js",
+                "js/pages/activeprivateservers/getelements.js",
+                "js/pages/activeprivateservers/main.js",
+    
+                "js/pages/purchasedgamesinventoryfix/getpurchasedgames.js",
+                "js/pages/purchasedgamesinventoryfix/main.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/discover*"
+            ],
+            "js": [
+                "js/pages/fixfavouritespage/createelement.js",
+                "js/pages/fixfavouritespage/main.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/my/account*"
+            ],
+            "js": [
+                "js/pages/settings/createelements.js",
+                "js/pages/settings/main.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        }
 ]
 }

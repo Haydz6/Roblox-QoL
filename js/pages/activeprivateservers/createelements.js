@@ -1,4 +1,4 @@
-function CreateActivePrivateServersButton(){
+function CreateActivePrivateServersButton(Text, href){
     const List = document.createElement("li")
     List.setAttribute("ng-repeat", "subcategory in category.items")
     List.setAttribute("ui-sref", "subcategory({categoryName: $ctrl.makeUrlFriendly(category.name), subcategoryName: $ctrl.makeUrlFriendly(subcategory.name)})")
@@ -7,13 +7,13 @@ function CreateActivePrivateServersButton(){
     List.className = "menu-secondary-option ng-scope"
 
     const ButtonRedirect = document.createElement("a")
-    ButtonRedirect.href = "#!/private-servers/active-private-servers"
+    ButtonRedirect.href = href || "#!/private-servers/active-private-servers"
     ButtonRedirect.style = "position:absolute; width:100%; height:100%;"
 
     const ButtonSpan = document.createElement("span")
     ButtonSpan.className = "font-caption-header menu-text ng-binding"
     ButtonSpan.setAttribute("ng-bind", "subcategory.displayName")
-    ButtonSpan.innerText = "Active Private Servers"
+    ButtonSpan.innerText = Text || "Active Private Servers"
 
     List.appendChild(ButtonRedirect)
     List.appendChild(ButtonSpan)

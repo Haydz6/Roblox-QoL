@@ -15,6 +15,10 @@ const Settings = {
         NewMessagePing: {
             Title: "New Message Ping",
             Description: "Creates a ping sound whenever you receive a new chat message."
+        },
+        PurchasedGamesFix: {
+            Title: "Purchased Games Fix",
+            Description: "Fixes the purchased games option in your inventory."
         }
     }
 }

@@ -140,8 +140,24 @@ async function GetPage(){
     IsLoading = false
 }
 
+async function BlockRobloxRequest(){
+  chrome.declarativeNetRequest.updateSessionRules({addRules: [
+    {
+      id: 1,
+      priority: 1,
+      action: {type: "block"},
+      condition: {
+        urlFilter: "https://apis.roblox.com/discovery-api/omni-recommendation",
+        resourceTypes: ["xmlhttprequest", "main_frame"]
+      }
+    }
+  ]})
+}
+
 async function RunMain(){
-    //TODO: Intercept request from roblox and stop it.
+    //TODO: Intercept request from roblox and stop it
+    console.log("Intercepted")
+    BlockRobloxRequest()
 
     while (!document.head) await sleep(100)
 

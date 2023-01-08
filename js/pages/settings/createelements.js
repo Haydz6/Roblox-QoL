@@ -69,7 +69,7 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled){
     DescriptionDiv.className = "text-description ng-binding ng-scope"
 
     const DescriptionTextElement = document.createElement("text")
-    DescriptionTextElement.innerHTML = Description
+    DescriptionTextElement.innerText = Description
 
     DescriptionDiv.appendChild(DescriptionTextElement)
 

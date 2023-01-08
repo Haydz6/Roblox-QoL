@@ -1,12 +1,11 @@
-let IsActivePrivateServersOpened = false
-let LoadingParagraph = CreateLoadingParagraph()
-let CurrentPage = 1
+let IsPurchasedGamesOpened = false
+let CurrentPurchasedGamesPage = 1
 
-let OpenConnections = []
-let ServerCards = []
+let OpenPurchasedGamesConnections = []
 
 function HideDefaultCard(Element, Hide){
-    if (!Element.getAttribute("custom") && Element.className == "list-item item-card ng-scope"){
+
+    if (!Element.getAttribute("custom") && Element.className == "list-item item-card ng-scope place-item"){
         Element.style = Hide && "display:none;" || ""
     }
 }
@@ -26,34 +25,34 @@ function ClearServerCards(){
     ServerCards = []
 }
 
-async function CreateCardsFromServers(Servers, ServerListElement){
+async function CreateCardsFromPurchasedGames(Servers, ServerListElement){
     //ClearAllChildren(ServerListElement)
     HideRobloxDefaultCards(ServerListElement, true)
     ClearServerCards()
 
     for (let i = 0; i < Servers.length; i++){
         const Server = Servers[i]
-        const Card = CreatePrivateServerCard(Server.Thumbnail, Server.Name, Server.OwnerName, Server.OwnerId, Server.Price, Server.PlaceId)
+        const Card = CreatePrivateServerCard(Server.Image, Server.Name, Server.OwnerName, Server.OwnerId, Server.Price, Server.PlaceId)
 
-        ServerCards.push(Card)
         ServerListElement.appendChild(Card)
+        ServerCards.push(Card)
     }
 
     ServerListElement.parentElement.className = "current-items"
 }
 
 function AddConnection(Callback, Type, Element){
-    OpenConnections.push({Callback: Callback, Type: Type, Element: Element})
+    OpenPurchasedGamesConnections.push({Callback: Callback, Type: Type, Element: Element})
     return Callback
 }
 
-async function ActivePrivateServersOpened(){
-    CurrentPage = 1
+async function PurchasedGamesOpened(){
+    CurrentPurchasedGamesPage = 1
     console.log("opened")
 
     WaitForClass("breadcrumb-container").then(Container => {
         const LabelContainer = Container.getElementsByTagName("li")[2]
-        LabelContainer.getElementsByTagName("span")[0].innerText = "Active Private Servers"
+        LabelContainer.getElementsByTagName("span")[0].innerText = "Purchased"
     })
 
     const ServerListElement = await WaitForClass("hlist item-cards item-cards-embed ng-scope")
@@ -73,33 +72,35 @@ async function ActivePrivateServersOpened(){
     const PageLabel = (await WaitForClass("pager")).getElementsByTagName("li")[1].getElementsByTagName("span")[0]
 
     async function FetchPage(){
-        if (!IsActivePrivateServersOpened){
+        console.log("fetching next page")
+
+        if (!IsPurchasedGamesOpened){
             return
         }
 
         SetButtonStatus(NextPageButton, false)
         SetButtonStatus(PreviousPageButton, false)
-        PageLabel.innerText = `Page ${CurrentPage}`
+        PageLabel.innerText = `Page ${CurrentPurchasedGamesPage}`
 
-        const Servers = await GetActivePrivateServers(CurrentPage)
+        const PurchasedGames = await GetPurchasedGames(CurrentPurchasedGamesPage)
 
-        if (!IsActivePrivateServersOpened){
+        if (!IsPurchasedGamesOpened){
             return
         }
 
-        CreateCardsFromServers(Servers, ServerListElement)
+        CreateCardsFromPurchasedGames(PurchasedGames, ServerListElement)
 
-        SetButtonStatus(NextPageButton, Servers.length >= 30)
-        SetButtonStatus(PreviousPageButton, CurrentPage > 1)
+        SetButtonStatus(NextPageButton, PurchasedGames.length >= 30)
+        SetButtonStatus(PreviousPageButton, CurrentPurchasedGamesPage > 1)
     }
 
     PreviousPageButton.addEventListener("click", AddConnection(function(){
-        CurrentPage--
+        CurrentPurchasedGamesPage--
         FetchPage()
     }, "click", PreviousPageButton))
 
     NextPageButton.addEventListener("click", AddConnection(function(){
-        CurrentPage++
+        CurrentPurchasedGamesPage++
         FetchPage()
     }, "click", NextPageButton))
 
@@ -108,49 +109,35 @@ async function ActivePrivateServersOpened(){
     FetchPage()
 }
 
-function CheckActivePrivateServersOpened(){
+function CheckPurchasedGamesOpened(){
     const TagLocation = window.location.href.split("#")[1] || ""
-    const IsURLOpen = TagLocation === "!/private-servers/active-private-servers"
+    const IsURLOpen = TagLocation === "!/places/purchased-games"
 
-    if (IsURLOpen && !IsActivePrivateServersOpened){
-        IsActivePrivateServersOpened = true
-        ActivePrivateServersOpened()
-    } else if (!IsURLOpen && IsActivePrivateServersOpened) {
+    if (IsURLOpen && !IsPurchasedGamesOpened){
+        IsPurchasedGamesOpened = true
+        PurchasedGamesOpened()
+    } else if (!IsURLOpen && IsPurchasedGamesOpened) {
         DefaultCardElementObserver.disconnect()
 
-        for (let i = 0; i < OpenConnections.length; i++){
-            const Connection = OpenConnections[i]
+        for (let i = 0; i < OpenPurchasedGamesConnections.length; i++){
+            const Connection = OpenPurchasedGamesConnections[i]
 
             Connection.Element.removeEventListener(Connection.Type, Connection.Callback)
         }
         ClearServerCards()
 
-        OpenConnections = []
+        OpenPurchasedGamesConnections = []
 
         LoadingParagraph.style = "display:none;"
 
         const ServerListElement = FindFirstClass("hlist item-cards item-cards-embed ng-scope")
         if (ServerListElement) HideRobloxDefaultCards(ServerListElement, false)//ClearAllChildren(ServerListElement)
 
-        IsActivePrivateServersOpened = false
+        IsPurchasedGamesOpened = false
     }
 }
 
-window.addEventListener('popstate', CheckActivePrivateServersOpened)
-
-const DefaultCardElementObserver = new MutationObserver(function(mutationList, observer){
-    mutationList.forEach(function(mutation) {
-      if (mutation.type === "childList") {
-        const NewNodes = mutation.addedNodes
-
-        for (let i = 0; i < NewNodes.length; i++){
-            if (NewNodes[i].nodeType === Node.ELEMENT_NODE){
-                HideDefaultCard(NewNodes[i], true)
-            }
-        }
-      }
-    })
-})
+window.addEventListener('popstate', CheckPurchasedGamesOpened)
 
 async function RunMain(){
     console.log("RUNNING ACTIVE")
@@ -167,22 +154,36 @@ async function RunMain(){
     let CategoriesList = await WaitForClass("menu-vertical submenus")
     console.log("got categories")
 
-    let PrivateServersButton
+    let PlacesButton
 
-    while (!PrivateServersButton){
+    while (!PlacesButton){
         await sleep(100)
-        PrivateServersButton = await GetButtonCategoryFromHref(CategoriesList, "private-servers")
+        PlacesButton = await GetButtonCategoryFromHref(CategoriesList, "places")
+        console.log("waiting for place button")
     }
 
-    console.log("got private server button")
+    const Parent = PlacesButton.getElementsByTagName("div")[0].getElementsByTagName("ul")[0]
+    const children = Parent.children
 
-    const [List, ActiveButton] = CreateActivePrivateServersButton()
+    let PurchasedPlacesButton
 
-    PrivateServersButton.getElementsByTagName("div")[0].getElementsByTagName("ul")[0].appendChild(List)
+    for (let i = 0; i < children.length; i++){
+        if (children[i].getAttribute("href") === "#!/places/purchased"){
+            PurchasedPlacesButton = children[i]
+            break
+        }
+    }
 
-    CheckActivePrivateServersOpened()
+    if (!PurchasedPlacesButton) return
+
+    PurchasedPlacesButton.remove()
+
+    const [NewPurchasedPlacesButton] = CreateActivePrivateServersButton("Purchased", "#!/places/purchased-games")
+    Parent.insertBefore(NewPurchasedPlacesButton, Parent.nextSibiling)
+
+    CheckPurchasedGamesOpened()
 }
 
-if (IsFeatureEnabled("ActivePrivateServers")){
+if (IsFeatureEnabled("PurchasedGamesFix")){
     RunMain()
 }

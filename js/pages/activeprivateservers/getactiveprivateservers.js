@@ -22,9 +22,9 @@ function CreateDummyData(){
 async function RequestActivePrivateServers(){
     IsFetching = true
 
-    for (let i = 0; i < 200; i++){
-        ActivePrivateServers.push(CreateDummyData())
-    }
+    // for (let i = 0; i < 200; i++){
+    //     ActivePrivateServers.push(CreateDummyData())
+    // }
 
     const [Success, Result] = await RequestFunc(`https://www.roblox.com/users/inventory/list-json?assetTypeId=9&cursor=&itemsPerPage=100&pageNumber=${PreviousCursor}&placeTab=MyPrivateServers&userId=${UserId}`, "GET", undefined, undefined, true)
 
@@ -153,8 +153,6 @@ async function RequestActivePrivateServers(){
     AmountLoaded -= FinalServerIncrement
     LoadingParagraph.innerText = `Found ${ActivePrivateServers.length} active out of ${AmountLoaded} private servers!`
 
-    IsFetching = false
-
     return true
 }
 
@@ -176,6 +174,8 @@ async function GetActivePrivateServers(Page){ //Max per page is 30
         await RequestActivePrivateServers()
         await sleep(100)
     }
+
+    IsFetching = false
 
     if (!IsActivePrivateServersOpened){
         return []

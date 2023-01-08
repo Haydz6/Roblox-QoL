@@ -1,5 +1,5 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const EnabledFeatures = {ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true}
+const EnabledFeatures = {ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true}
 let AreEnabledFeaturesFetched = false
 
 function FindFirstClass(ClassName){
