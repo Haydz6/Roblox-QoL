@@ -1,5 +1,4 @@
 let PreviousCursor = ""
-let CSRFToken = ""
 let ReachedEnd = false
 let IsFetching = false
 let AmountLoaded = 0

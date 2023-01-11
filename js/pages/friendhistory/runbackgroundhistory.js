@@ -97,7 +97,19 @@ function CanUpdateHistory(){
     return true
 }
 
-function CreateNotification(Friend){
+function CreateNotification(Friends, NewFriends, LostFriends){
+    const Friend = Friends[0]
+    let Message = `${Friend.Name} ${Friend.Type === "Lost" && "un" || ""}friended you!`
+
+    if (Friends.length > 1){
+        if (NewFriends > 0){
+            Message = `${Message}\n${NewFriends} other friend(s) also friended you!`
+        }
+        if (LostFriends > 0){
+            Message = `${Message}\n${NewFriends} other friend(s) also unfriended you!`
+        }
+    }
+
     chrome.runtime.sendMessage({type: "notification", notification: {
         type: "basic",
         iconUrl: Friend.Image,
@@ -125,20 +137,24 @@ async function UpdateHistory(){
     if (!UpdateSuccess || !IsFeatureEnabled("FriendNotifications")) return
 
     const AllFriends = []
+    let LostFriends = 0
+    let NewFriends = 0
 
     for (let i = 0; i < UpdateResult.LostFriends.length; i++){
+        LostFriends++
         AllFriends.push({Id: UpdateResult.LostFriends[i], Type: "Lost"})
     }
 
     for (let i = 0; i < UpdateResult.NewFriends.length; i++){
+        NewFriends++
         AllFriends.push({Id: UpdateResult.NewFriends[i], Type: "New"})
     }
 
+    if (AllFriends.length === 0) return
+
     await Promise.all([AddNamesToHistory(AllFriends), AddImagesToHistory(AllFriends)])
 
-    for (let i = 0; i < AllFriends.length; i++){
-        CreateNotification(AllFriends[i])
-    }
+    CreateNotification(AllFriends, NewFriends, LostFriends)
 }
 
 async function Main(){
