@@ -4,7 +4,7 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "icons": {
         "128": "img/icons/icon128x128.png",
         "48": "img/icons/icon48x48.png"
@@ -24,9 +24,11 @@
             "*://*.roblox.com/*"
         ],
         "js": [
+            "js/authentication/main.js",
             "js/pages/document.js",
             "js/pages/settings/settingsdropdown.js",
-            "js/pages/newmessageping.js"
+            "js/pages/newmessageping.js",
+            "js/pages/friendhistory/runbackgroundhistory.js"
         ],
         "run_at": "document_start",
         "all_frames": true
@@ -40,6 +42,19 @@
             "js/pages/extraoutfits/createelements.js",
             "js/pages/extraoutfits/handleconversion.js",
             "js/pages/extraoutfits/createnormaloutfitelement.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+    },
+    {
+        "matches": [
+            "*://*.roblox.com/users/friends*"
+        ],
+        "js": [
+            "js/modules/getNavigatorLanguage.js",
+            "js/pages/friendhistory/createelements.js",
+            "js/pages/friendhistory/loadpages.js",
+            "js/pages/friendhistory/main.js"
         ],
         "run_at": "document_start",
         "all_frames": true

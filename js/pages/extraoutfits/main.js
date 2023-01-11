@@ -1,13 +1,5 @@
-//let ROBLOSecurity = ""
-let UserId = 0
-let CSRFToken = ""
-let CachedAuthKey = ""
-let FetchingAuthKey = false
-
 let FetchedAllExtraOutfits = false
 let IsFetchingAllExtraOutfits = false
-
-const WebserverURL = "https://haydz6.com/api/v4/outfits/"//"http://localhost:8192/api/v4/outfits/"
 
 let CostumesList
 let PreviousExtraOutfitButton
@@ -16,110 +8,12 @@ let CurrentExtraOutfitsInfo = {}
 let IsCustomesOpen = false
 let CustomesOpenInt = 0
 
-async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude){
-  if (!Headers){
-    Headers = {}
-  }
-
-  if (URL.search("roblox.com") > -1) {
-    Headers["x-csrf-token"] = CSRFToken
-  } else if (URL.search(WebserverURL) > -1){
-    if (URL.search("authenticate") == -1){
-      Headers.Authentication = await GetAuthKey()
-    }
-  }
-
-  try {
-    let Response = await fetch(URL, {method: Method, headers: Headers, body: Body, credentials: CredientalsInclude && "include" || "omit"})
-    const ResBody = await (Response).json()
-
-    let NewCSRFToken = Response.headers.get("x-csrf-token")
-
-    if (NewCSRFToken){
-      CSRFToken = NewCSRFToken
-    }
-
-    if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
-      if (ResBody?.Result == "Invalid authentication!"){
-        CachedAuthKey = ""
-        window.localStorage.removeItem("ExtraOutfitsRobloxAuthKey")
-        console.log("auth key invalid, getting a new one")
-      }
-
-      console.log("sending with csrf token")
-      return await RequestFunc(URL, Method, Headers, Body, CredientalsInclude)
-    }
-
-    return [Response.ok, ResBody, Response]
-  } catch (err) {
-    console.log(err)
-    return [false, {Success: false, Result: "???"}]
-  }
-}
-
-//AUTHENTICATION
-function GetCookieValueFromName(Cookies, CookieName){
-  const parts = Cookies.split(`; ${CookieName}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-async function SetFavouriteGame(UniverseId, Favourited){
-  return RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "POST", undefined, JSON.stringify({isFavorited: Favourited}), true)
-}
-
-async function GetAuthKey(){
-  while (FetchingAuthKey){
-    await sleep(100)
-  }
-
-  if (CachedAuthKey != ""){
-    return CachedAuthKey
-  }
-
-  StoredKey = window.localStorage.getItem("ExtraOutfitsRobloxAuthKey")
-
-  if (StoredKey){
-    CachedAuthKey = StoredKey
-    return CachedAuthKey
-  }
-
-  const [GetFavoriteSuccess, FavoriteResult] = await RequestFunc(WebserverURL+"authenticate/start", "POST", undefined, JSON.stringify({UserId: parseInt(UserId)}))
-
-  if (!GetFavoriteSuccess){
-    CreateAlert(FavoriteResult.Result, false)
-    return CachedAuthKey
-  }
-
-  UniverseId = FavoriteResult.UniverseId
-
-  const [FavouriteSuccess] = await SetFavouriteGame(UniverseId, true)
-
-  if (!FavouriteSuccess){
-    CreateAlert("Failed to verify with database!", false)
-    return CachedAuthKey
-  }
-
-  const [ServerSuccess, ServerResult] = await RequestFunc(WebserverURL+"authenticate", "POST", undefined, JSON.stringify({UserId: parseInt(UserId)}))
-
-  if (ServerSuccess){
-    CachedAuthKey = ServerResult.Key
-    window.localStorage.setItem("ExtraOutfitsRobloxAuthKey", CachedAuthKey)
-  }
-
-  new Promise(async function(){
-    while (true){
-      const [FavSuccess] = await SetFavouriteGame(UniverseId, false)
-
-      if (FavSuccess) break
-      await sleep(1000)
-    }
-  })
-
-  FetchingAuthKey = false
-
-  return CachedAuthKey
-}
-//
+// function FixOutfitGaps(){
+//   const children = ItemCardsList.children
+//   for (let i = 0; i < children.length; i++){
+//     ItemCardsList.appendChild(children[i])
+//   }
+// }
 
 function IsCustomesListOpen(){
   return CostumesList.className == "tab-pane ng-scope active" && document.getElementsByClassName("btn-secondary-xs btn-float-right ng-binding ng-scope")[0] && document.querySelectorAll('[ng-click="createOutfitClicked()"]').length > 0
@@ -159,7 +53,7 @@ async function SaveCurrentOutfit(Name){
 
   const [SuccessImage, ImageUrl] = await GetAvatarImage()
 
-  return await RequestFunc(WebserverURL+"save", "POST", {"Content-Type": "application/json"}, JSON.stringify({Name: Name, Outfit: CurrentOutfit, Image: SuccessImage && ImageUrl || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"}))
+  return await RequestFunc(WebServerEndpoints.Outfits+"save", "POST", {"Content-Type": "application/json"}, JSON.stringify({Name: Name, Outfit: CurrentOutfit, Image: SuccessImage && ImageUrl || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"}))
 }
 
 function GetOutfitIdAndImageFromOutfitCard(OutfitCard){
@@ -172,7 +66,7 @@ function GetOutfitIdAndImageFromOutfitCard(OutfitCard){
 }
 
 async function GetExtraOutfits(){
-  const [Success, Outfits] = await RequestFunc(WebserverURL, "GET")
+  const [Success, Outfits] = await RequestFunc(WebServerEndpoints.Outfits, "GET")
 
   if (!Success) {
     CreateAlert(Outfits.Result, false)
@@ -183,7 +77,7 @@ async function GetExtraOutfits(){
 }
 
 async function GetExtraOutfit(Id){
-  const [Success, OutfitInfo] = await RequestFunc(WebserverURL+"wear/"+Id, "GET")
+  const [Success, OutfitInfo] = await RequestFunc(WebServerEndpoints.Outfits+"wear/"+Id, "GET")
 
   return [Success, OutfitInfo]
 }
@@ -257,7 +151,7 @@ function CreateExtraOutfitButton(ExtraOutfit){
       if (IsInputValid(Input, Name)) {
         ModalWindow.remove()
         Backdrop.remove()
-        const [Success, Result] = await RequestFunc(WebserverURL+"rename", "PATCH", undefined, JSON.stringify({Id: ExtraOutfit.Id, Name: Name}))
+        const [Success, Result] = await RequestFunc(WebServerEndpoints.Outfits+"rename", "PATCH", undefined, JSON.stringify({Id: ExtraOutfit.Id, Name: Name}))
 
         if (Success){
           ItemCardNameLinkTitle.innerText = Name
@@ -290,7 +184,7 @@ function CreateExtraOutfitButton(ExtraOutfit){
       ModalWindow.remove()
       Backdrop.remove()
 
-      const [Success, Result] = await RequestFunc(WebserverURL+"delete/"+ExtraOutfit.Id, "DELETE")
+      const [Success, Result] = await RequestFunc(WebServerEndpoints.Outfits+"delete/"+ExtraOutfit.Id, "DELETE")
 
       if (Success){
         OutfitElement.remove()
@@ -333,7 +227,7 @@ function CreateExtraOutfitButton(ExtraOutfit){
   
       const [SuccessImage, ImageUrl] = await GetAvatarImage()
   
-      const [SaveSuccess, SaveResult] = await RequestFunc(WebserverURL+"update", "PUT", {"Content-Type": "application/json"}, JSON.stringify({Id: ExtraOutfit.Id, Name: ExtraOutfit.Name, Outfit: CurrentOutfit, Image: SuccessImage && ImageUrl || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"}))
+      const [SaveSuccess, SaveResult] = await RequestFunc(WebServerEndpoints.Outfits+"update", "PUT", {"Content-Type": "application/json"}, JSON.stringify({Id: ExtraOutfit.Id, Name: ExtraOutfit.Name, Outfit: CurrentOutfit, Image: SuccessImage && ImageUrl || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"}))
     
       if (SaveSuccess){
         Thumbnail2DImage.setAttribute("ng-src", SuccessImage && ImageUrl || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png")
@@ -452,6 +346,9 @@ async function CustomesOpened(){
 
     CreateExtraOutfitButton(ExtraOutfit)
   }
+
+  // await sleep(2000)
+  // FixOutfitGaps()
 }
 
 const CustomesObserver = new MutationObserver(function(mutationList, observer){
@@ -478,14 +375,6 @@ const CustomesObserver = new MutationObserver(function(mutationList, observer){
   })
 })
 
-// function GetRobloCookie(){
-//   chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-//     if (request.type === "roblosecurity"){
-//       ROBLOSecurity = request.value
-//     }
-//   })
-// }
-
 async function RunMain(){
   CostumesList = await WaitForId("costumes")
 
@@ -498,7 +387,6 @@ async function RunMain(){
     await sleep(100)
   }
 
-  UserId = document.head.querySelector("[name~=user-data][data-userid]").getAttribute("data-userid")
   StartConversion()
 
   console.log("extra outfits ready")

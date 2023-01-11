@@ -8,6 +8,10 @@ const Settings = {
             Title: "Favourites Page Fix",
             Description: "Fixes the favourites page only showing the first 30 games."
         },
+        PurchasedGamesFix: {
+            Title: "Purchased Games Fix",
+            Description: "Fixes the purchased games option in your inventory."
+        },
         ActivePrivateServers: {
             Title: "Active Private Servers",
             Description: "Allows you to see which private servers are billing you."
@@ -16,9 +20,13 @@ const Settings = {
             Title: "New Message Ping",
             Description: "Creates a ping sound whenever you receive a new chat message."
         },
-        PurchasedGamesFix: {
-            Title: "Purchased Games Fix",
-            Description: "Fixes the purchased games option in your inventory."
+        FriendHistory: {
+            Title: "Friend History",
+            Description: "Allows you to see a history of what friends you have had."
+        },
+        FriendNotifications: {
+            Title: "Friend Notifications",
+            Description: "Notifies you when you make or lose a friend."
         }
     }
 }
@@ -37,6 +45,31 @@ function CreateFeaturesSection(OptionsList){
         const Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, IsFeatureEnabled(feature))
         OptionsList.appendChild(Section)
     }
+}
+
+function CreateSignoutOption(OptionsList){
+    const [Section, Button] = CreateSectionButtonSetting("Sign out of all other sessions (Roblox QoL Service)", "Sign out")
+
+    Button.addEventListener("click", async function(){
+        const NewKey = await InvalidateAuthKey()
+
+        const [Modal, Backdrop, [OkButton], CloseButton] = CreateSuccessDialog(NewKey === "" && "Failed" || "Success", NewKey === "" && "Failed to sign out of all other sessions!" || "You have been signed out of all other sessions.", ["OK"])
+
+        OkButton.addEventListener("click", function(){
+            Modal.remove()
+            Backdrop.remove()
+        })
+
+        CloseButton.addEventListener("click", function(){
+            Modal.remove()
+            Backdrop.remove()
+        })
+
+        document.body.insertBefore(Modal, document.body.firstChild)
+        document.body.insertBefore(Backdrop, document.body.firstChild)
+    })
+
+    OptionsList.appendChild(Section)
 }
 
 async function HideOriginalSettingButtonActive(){
@@ -76,6 +109,7 @@ async function Run(){
     ClearAllChildren(OptionsList)
 
     CreateFeaturesSection(OptionsList)
+    CreateSignoutOption(OptionsList)
 }
 
 Run()

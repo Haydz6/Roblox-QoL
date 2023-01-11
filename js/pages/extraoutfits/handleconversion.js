@@ -10,7 +10,7 @@ async function ConvertOutfitToExtra(OutfitId, Image){
   
     const ExtraOutfit = {scales: Outfit.scale, bodyColors: Outfit.bodyColors, playerAvatarType: Outfit.playerAvatarType, assets: Outfit.assets, emotes: [], defaultShirtApplied: false, defaultPantsApplied: false}
     
-    const [ExtraSuccess, NewExtraOutfit] = await RequestFunc(WebserverURL+"save", "POST", {"Content-Type": "application/json"}, JSON.stringify({Name: Outfit.name, Outfit: ExtraOutfit, Image: Image || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"}))
+    const [ExtraSuccess, NewExtraOutfit] = await RequestFunc(WebServerEndpoints.Outfits+"save", "POST", {"Content-Type": "application/json"}, JSON.stringify({Name: Outfit.name, Outfit: ExtraOutfit, Image: Image || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"}))
     let DeleteSuccess = false
 
     if (ExtraSuccess){
@@ -32,7 +32,7 @@ async function ConvertNoIdOutfitToExtra(Element){
     //const Outfit = NoIdElementToOutfitInfo[Element]
     const ExtraOutfit = {scales: Outfit.scale, bodyColors: Outfit.bodyColors, playerAvatarType: Outfit.playerAvatarType, assets: Outfit.assets, emotes: [], defaultShirtApplied: false, defaultPantsApplied: false}
     
-    const [ExtraSuccess, NewExtraOutfit] = await RequestFunc(WebserverURL+"save", "POST", {"Content-Type": "application/json"}, JSON.stringify({Name: Outfit.name, Outfit: ExtraOutfit, Image: Image || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"}))
+    const [ExtraSuccess, NewExtraOutfit] = await RequestFunc(WebSerWebServerEndpoints.OutfitsverURL+"save", "POST", {"Content-Type": "application/json"}, JSON.stringify({Name: Outfit.name, Outfit: ExtraOutfit, Image: Image || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"}))
     let DeleteSuccess = false
 
     if (ExtraSuccess){
@@ -67,7 +67,7 @@ async function ConvertExtraToOutfit(ExtraId){
         return [false, CreateOutfitResult, false]
     }
 
-    const [DeleteSuccess, DeleteResult] = await RequestFunc(WebserverURL+"delete/"+ExtraId, "DELETE")
+    const [DeleteSuccess, DeleteResult] = await RequestFunc(WebServerEndpoints.Outfits+"delete/"+ExtraId, "DELETE")
     
     if (!DeleteSuccess){
         CreateAlert(DeleteResult.Result, false)

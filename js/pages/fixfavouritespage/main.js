@@ -1,14 +1,8 @@
-let UserId
-
 let ReachedEnd = false
 let IsLoading = false
 let CurrentPage = 0
 
 let List
-
-async function RequestFunc(URL, Method){
-    return await (await fetch(URL, {method: Method})).json()
-}
   
 function Convert110pxTo150pxImageURL(URL){
     return URL.replace("110/110", "150/150")
@@ -24,8 +18,8 @@ async function GetUniversesLikes(Universes){
       }
       UniverseIds = `${UniverseIds}${Universes[i]}`
     }
-  
-    const Data = (await RequestFunc(URL+UniverseIds, "GET"))?.data
+    
+    const [Success, Data] = await RequestFunc(URL+UniverseIds, "GET", undefined, undefined, true)
   
     if (!Data) return
   
@@ -61,8 +55,8 @@ async function GetUniversesInfo(Universes){
       }
       UniverseIds = `${UniverseIds}${Universes[i]}`
     }
-  
-    const Data = (await RequestFunc(URL+UniverseIds, "GET"))?.data
+    
+    const [Success, Data] = await RequestFunc(URL+UniverseIds, "GET", undefined, undefined, true)
   
     if (!Data) return
   
@@ -131,7 +125,7 @@ async function GetPage(){
     IsLoading = true
     CurrentPage += 1
   
-    const Data = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=100&pageNumber=${CurrentPage}&userId=${UserId}`)
+    const [Success, Data] = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=100&pageNumber=${CurrentPage}&userId=${UserId}`, "GET", undefined, undefined, true)
   
     if (await ParsePage(Data)) {
       ReachedEnd = true
@@ -140,41 +134,45 @@ async function GetPage(){
     IsLoading = false
 }
 
-async function BlockRobloxRequest(){
-  chrome.declarativeNetRequest.updateSessionRules({addRules: [
-    {
-      id: 1,
-      priority: 1,
-      action: {type: "block"},
-      condition: {
-        urlFilter: "https://apis.roblox.com/discovery-api/omni-recommendation",
-        resourceTypes: ["xmlhttprequest", "main_frame"]
-      }
-    }
-  ]})
+// async function BlockRobloxRequest(){
+//   chrome.declarativeNetRequest.updateSessionRules({addRules: [
+//     {
+//       id: 1,
+//       priority: 1,
+//       action: {type: "block"},
+//       condition: {
+//         urlFilter: "https://apis.roblox.com/discovery-api/omni-recommendation",
+//         resourceTypes: ["xmlhttprequest", "main_frame"]
+//       }
+//     }
+//   ]})
+// }
+
+function IsFavouritesPage(){
+  return window.location.href.split("#")[1] === "/sortName/v2/Favorites"
 }
 
 async function RunMain(){
-    //TODO: Intercept request from roblox and stop it
-    console.log("Intercepted")
-    BlockRobloxRequest()
+  if (!IsFavouritesPage()) return
 
-    while (!document.head) await sleep(100)
+  //TODO: Intercept request from roblox and stop it
+  // console.log("Intercepted")
+  // BlockRobloxRequest()
 
-    UserId = document.head.querySelector("[name~=user-data][data-userid]").getAttribute("data-userid")
+  while (!document.head) await sleep(100)
 
-    List = await WaitForClass("game-grid")
+  List = await WaitForClass("game-grid")
 
-    await WaitForClass("grid-item-container game-card-container")
+  await WaitForClass("grid-item-container game-card-container")
   
-    List.replaceChildren()
-    GetPage()
+  List.replaceChildren()
+  GetPage()
   
-    window.onscroll = function(){
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-        GetPage()
-        }
-    }
+  window.onscroll = function(){
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+      GetPage()
+      }
+  }
 }
 
 if (IsFeatureEnabled("FixFavouritesPage")){

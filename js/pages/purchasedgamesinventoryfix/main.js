@@ -146,10 +146,10 @@ async function RunMain(){
         await sleep(100)
     }
 
-    const URLSplit = window.location.href.split("users/")
-    const URLSplit2 = URLSplit[1].split("/")
+    // const URLSplit = window.location.href.split("users/")
+    // const URLSplit2 = URLSplit[1].split("/")
 
-    UserId = parseInt(URLSplit2[0])
+    // PageUserId = parseInt(URLSplit2[0])
 
     let CategoriesList = await WaitForClass("menu-vertical submenus")
     console.log("got categories")
