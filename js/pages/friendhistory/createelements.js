@@ -90,6 +90,9 @@ function CreateFriend(UserId, Name, DisplayName, Thumbnail, Type, FriendedTimest
     AvatarStatus.className = "avatar-status"
 
     const AvatarIcon = document.createElement("img")
+    AvatarIcon.src = chrome.runtime.getURL(`img/friendhistory/${Type}.png`)
+    AvatarIcon.style = "height:20px;"
+
     AvatarStatus.appendChild(AvatarIcon)
 
     AvatarCardFullbody.appendChild(AvatarStatus)

@@ -2,6 +2,8 @@ let CurrentPage = 1
 let CurrentHistoryElements = []
 let HistoryHeaderTab
 
+let OriginalFriendsCount
+
 function ModifyHeaderTab(Tab){
     if (Tab.className === "rbx-tab"){
         Tab.style = "min-width: 20%;"
@@ -74,8 +76,12 @@ async function AddNamesToHistory(AllHistory){
 
         if (History.Name) continue
 
+        if (!IdToHistory[History.Id]){
+            IdToHistory[History.Id] = []
+        }
+
         IdsToFetch.push(History.Id)
-        IdToHistory[History.Id] = History
+        IdToHistory[History.Id].push(History)
     }
 
     if (IdsToFetch.length === 0) return
@@ -83,9 +89,13 @@ async function AddNamesToHistory(AllHistory){
     const [Success, Result] = await RequestFunc("https://users.roblox.com/v1/users", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: IdsToFetch, excludeBannedUsers: false}))
 
     if (!Success){
-        for (const [Id, History] of Object.entries(IdToHistory)) {
-            History.Name = "???"
-            History.DisplayName = "???"
+        for (const [Id, TheHistory] of Object.entries(IdToHistory)) {
+            for (let i = 0; i < TheHistory.length; i++){
+                const History = TheHistory[i]
+
+                History.Name = "???"
+                History.DisplayName = "???"
+            }
         }
         return
     }
@@ -94,18 +104,26 @@ async function AddNamesToHistory(AllHistory){
 
     for (let i = 0; i < Data.length; i++){
         const Info = Data[i]
-        const History = IdToHistory[Info.id]
+        const TheHistory = IdToHistory[Info.id]
 
-        History.Name = Info.name
-        History.DisplayName = Info.displayName
-        History.Verified = Info.hasVerifiedBadge
+        for (let i = 0; i < TheHistory.length; i++){
+            const History = TheHistory[i]
+
+            History.Name = Info.name
+            History.DisplayName = Info.displayName
+            History.Verified = Info.hasVerifiedBadge
+        }
 
         delete IdToHistory[Info.id]
     }
 
-    for (const [Id, History] of Object.entries(IdToHistory)) {
-        History.DisplayName = "Terminated"
-        History.Name = Id
+    for (const [Id, TheHistory] of Object.entries(IdToHistory)) {
+        for (let i = 0; i < TheHistory.length; i++){
+            const History = TheHistory[i]
+
+            History.DisplayName = "Terminated"
+            History.Name = Id
+        }
     }
 }
 
@@ -118,7 +136,11 @@ async function AddImagesToHistory(AllHistory){
 
         if (History.Image) continue
 
-        IdToHistory[History.Id] = History
+        if (!IdToHistory[History.Id]){
+            IdToHistory[History.Id] = []
+        }
+
+        IdToHistory[History.Id].push(History)
 
         Requests.push({
             requestId: History.Id,
@@ -135,8 +157,10 @@ async function AddImagesToHistory(AllHistory){
     const [Success, Result] = await RequestFunc("https://thumbnails.roblox.com/v1/batch", "POST", {"Content-Type": "application/json"}, JSON.stringify(Requests), true)
 
     if (!Success){
-        for (const [Id, History] of Object.entries(IdToHistory)) {
-            History.Image = "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png"
+        for (const [Id, TheHistory] of Object.entries(IdToHistory)) {
+            for (let i = 0; i < TheHistory.length; i++){
+                TheHistory[i].Image = "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png"
+            }
         }
         return
     }
@@ -145,10 +169,14 @@ async function AddImagesToHistory(AllHistory){
 
     for (let i = 0; i < Data.length; i++){
         const Info = Data[i]
-        const History = IdToHistory[Info.targetId]
+        const TheHistory = IdToHistory[Info.targetId]
 
-        if (Info.state === "Completed") History.Image = Info.imageUrl
-        else History.Image = "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png"
+        for (let i = 0; i < TheHistory.length; i++){
+            const History = TheHistory[i]
+
+            if (Info.state === "Completed") History.Image = Info.imageUrl
+            else History.Image = "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png"
+        }
     }
 }
 
@@ -156,16 +184,9 @@ async function HandleHistoryPage(){
     console.log("handling")
 
     const FriendsList = await WaitForClass("hlist avatar-cards")
-    let FriendsAmountLabel = (await WaitForClass("friends-subtitle")).childNodes[2]
-    let FriendsLabel = (await WaitForClass("friends-subtitle")).childNodes[0]
-
     const BackButton = await WaitForClass("btn-generic-left-sm")
     const NextButton = await WaitForClass("btn-generic-right-sm")
     const PageLabel = await WaitForId("rbx-current-page")
-
-    console.log("got pages")
-
-    FriendsLabel.innerText = "All Friends"
 
     function SetButtonStatus(Button, Enabled){
         const NewAttribute = Enabled && "enabled" || "disabled"
@@ -195,7 +216,15 @@ async function HandleHistoryPage(){
         SetButtonStatus(NextButton, NextExists)
         PageLabel.innerText = CurrentPage
 
-        FriendsAmountLabel.innerText = `(${Length})`
+        WaitForClass("friends-subtitle").then(function(AllLabels){
+            let FriendsAmountLabel = AllLabels.childNodes[2]
+            let FriendsLabel = AllLabels.childNodes[0]
+
+            if (!OriginalFriendsCount) OriginalFriendsCount = FriendsAmountLabel.data
+
+            FriendsLabel.data = "All Friends"
+            FriendsAmountLabel.data = `(${Length})`
+        })
     }
 
     NextButton.addEventListener("click", function(){
@@ -241,6 +270,14 @@ function CheckIfHistoryTabOpened(){
             for (let i = 0; i < children.length; i++){
                 children[i].style = ""
             }
+        })
+
+        WaitForClass("friends-subtitle").then(function(AllLabels){
+            let FriendsAmountLabel = AllLabels.childNodes[2]
+            let FriendsLabel = AllLabels.childNodes[0]
+
+            FriendsLabel.data = "Friends"
+            if (OriginalFriendsCount) FriendsAmountLabel.data = OriginalFriendsCount
         })
 
         return

@@ -5,7 +5,7 @@ let AreEnabledFeaturesFetched = false
 let UserId
 let CSRFToken = ""
 
-const WebServerURL = "http://localhost:8192/"//"https://qol.haydz6.com/"
+const WebServerURL = "https://qol.haydz6.com/"
 const WebServerEndpoints = {Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/"}
 
 function FindFirstClass(ClassName){

@@ -11,20 +11,27 @@
     },
     "permissions": [
         "*://*.roblox.com/*",
-        "*://haydz6.com/*"
+        "*://*.haydz6.com/*",
+        "notifications"
     ],
     "web_accessible_resources": [
         "img/*", "html/*", "sounds/*"
     ],
+    "background": {
+        "scripts": ["js/background.js"],
+        "persistent": true
+    },
     "content_scripts": [
         {
             "matches": [
                 "*://*.roblox.com/*"
             ],
             "js": [
+                "js/authentication/main.js",
                 "js/pages/document.js",
                 "js/pages/settings/settingsdropdown.js",
-                "js/pages/newmessageping.js"
+                "js/pages/newmessageping.js",
+                "js/pages/friendhistory/runbackgroundhistory.js"
             ],
             "run_at": "document_start",
             "all_frames": true
@@ -38,6 +45,19 @@
                 "js/pages/extraoutfits/createelements.js",
                 "js/pages/extraoutfits/handleconversion.js",
                 "js/pages/extraoutfits/createnormaloutfitelement.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/users/friends*"
+            ],
+            "js": [
+                "js/modules/getNavigatorLanguage.js",
+                "js/pages/friendhistory/createelements.js",
+                "js/pages/friendhistory/loadpages.js",
+                "js/pages/friendhistory/main.js"
             ],
             "run_at": "document_start",
             "all_frames": true
@@ -79,6 +99,5 @@
             ],
             "run_at": "document_start",
             "all_frames": true
-        }
-]
+        }]
 }

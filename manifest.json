@@ -9,6 +9,9 @@
         "128": "img/icons/icon128x128.png",
         "48": "img/icons/icon48x48.png"
     },
+    "permissions": [
+        "notifications"
+    ],
     "web_accessible_resources": [
         {
             "resources": ["img/*", "html/*", "sounds/*"],
@@ -18,6 +21,9 @@
             ]
         }
     ],
+    "background": {
+        "service_worker": "js/background.js"
+    },
     "content_scripts": [
     {
         "matches": [
@@ -96,6 +102,5 @@
         ],
         "run_at": "document_start",
         "all_frames": true
-    }
-]
+    }]
 }
