@@ -4,7 +4,7 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.2.0",
+    "version": "2.2.2",
     "icons": {
         "128": "img/icons/icon128x128.png",
         "48": "img/icons/icon48x48.png"
@@ -88,6 +88,17 @@
         "js": [
             "js/pages/fixfavouritespage/createelement.js",
             "js/pages/fixfavouritespage/main.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+    },
+    {
+        "matches": [
+            "*://*.roblox.com/games/*"
+        ],
+        "js": [
+            "js/pages/liveexperience/api.js",
+            "js/pages/liveexperience/main.js"
         ],
         "run_at": "document_start",
         "all_frames": true

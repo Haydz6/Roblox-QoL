@@ -4,6 +4,8 @@ let HistoryHeaderTab
 
 let OriginalFriendsCount
 
+let OpenConnections = []
+
 function ModifyHeaderTab(Tab){
     if (Tab.className === "rbx-tab"){
         Tab.style = "min-width: 20%;"
@@ -39,6 +41,11 @@ const TabWidthMutationObserver = new MutationObserver(function(Mutations){
         }
     })
 })
+
+function AddConnection(Callback, Type, Element){
+    OpenConnections.push({Callback: Callback, Type: Type, Element: Element})
+    return Callback
+}
 
 async function HandleTabModification(){
     const NavTabs = await WaitForClass("nav nav-tabs")
@@ -183,10 +190,11 @@ async function AddImagesToHistory(AllHistory){
 async function HandleHistoryPage(){
     console.log("handling")
 
-    const FriendsList = await WaitForClass("hlist avatar-cards")
+    await sleep(100)
     const BackButton = await WaitForClass("btn-generic-left-sm")
     const NextButton = await WaitForClass("btn-generic-right-sm")
     const PageLabel = await WaitForId("rbx-current-page")
+    const FriendsList = await WaitForClass("hlist avatar-cards")
 
     function SetButtonStatus(Button, Enabled){
         const NewAttribute = Enabled && "enabled" || "disabled"
@@ -227,15 +235,15 @@ async function HandleHistoryPage(){
         })
     }
 
-    NextButton.addEventListener("click", function(){
+    NextButton.addEventListener("click", AddConnection(function(){
         CurrentPage ++
         Fetch()
-    })
+    }, "click", NextButton))
 
-    BackButton.addEventListener("click", function(){
+    BackButton.addEventListener("click", AddConnection(function(){
         CurrentPage --
         Fetch()
-    })
+    }, "click", BackButton))
 
     Fetch()
 
@@ -260,10 +268,19 @@ function CheckIfHistoryTabOpened(){
     HistoryHeaderTab.className = `rbx-tab-heading${Open && " active" || ""}`
 
     if (!Open){
+        FriendsListMutationObserver.disconnect()
+
         for (let i = 0; i < CurrentHistoryElements.length; i++){
             CurrentHistoryElements[i].remove()
         }
         CurrentHistoryElements = []
+
+        for (let i = 0; i < OpenConnections.length; i++){
+            const Connection = OpenConnections[i]
+
+            Connection.Element.removeEventListener(Connection.Type, Connection.Callback)
+        }
+        OpenConnections = []
 
         WaitForClass("hlist avatar-cards").then(function(FriendsList){
             const children = FriendsList.children

@@ -27,6 +27,10 @@ const Settings = {
         FriendNotifications: {
             Title: "Friend Notifications",
             Description: "Notifies you when you make or lose a friend."
+        },
+        LiveExperienceStats: {
+            Title: "Live Experience Statistics",
+            Description: "Updates an experiences stats while you are looking at the page."
         }
     }
 }

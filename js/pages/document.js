@@ -1,5 +1,5 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const EnabledFeatures = {ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true}
+const EnabledFeatures = {ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true}
 let AreEnabledFeaturesFetched = false
 
 let UserId
@@ -83,6 +83,18 @@ async function GetUserId(){
   return UserId
 }
 
+async function GetUniverseIdFromGamePage(){
+  const GameDetails = await WaitForId("game-detail-meta-data")
+  let UniverseId
+
+  while (!UniverseId){
+    await sleep(100)
+    UniverseId = GameDetails.getAttribute("data-universe-id")
+  }
+
+  return UniverseId
+}
+
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude){
   if (!Headers){
     Headers = {}
@@ -129,6 +141,8 @@ function ClearAllChildren(Element){
         Element.removeChild(Element.lastChild)
     }
 }
+
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
 function FetchAllFeaturesEnabled(){
     if (!AreEnabledFeaturesFetched){
