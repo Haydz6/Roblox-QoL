@@ -3,7 +3,7 @@ let LoadingParagraph = CreateLoadingParagraph()
 let CurrentPage = 1
 
 let OpenConnections = []
-let ServerCards = []
+let PrivateServerCards = []
 
 function HideDefaultCard(Element, Hide){
     if (!Element.getAttribute("custom") && Element.className == "list-item item-card ng-scope"){
@@ -14,28 +14,31 @@ function HideDefaultCard(Element, Hide){
 function HideRobloxDefaultCards(ServerListElement, Hide){
     const children = ServerListElement.children
 
+    console.log(ServerListElement)
+    console.log(children)
+
     for (let i = 0; i < children.length; i++){
        HideDefaultCard(children[i], Hide)
     }
 }
 
-function ClearServerCards(){
-    for (let i = 0; i < ServerCards.length; i++){
-        ServerCards[i].remove()
+function ClearPrivateServerCards(){
+    for (let i = 0; i < PrivateServerCards.length; i++){
+        PrivateServerCards[i].remove()
     }
-    ServerCards = []
+    PrivateServerCards = []
 }
 
 async function CreateCardsFromServers(Servers, ServerListElement){
     //ClearAllChildren(ServerListElement)
     HideRobloxDefaultCards(ServerListElement, true)
-    ClearServerCards()
+    ClearPrivateServerCards()
 
     for (let i = 0; i < Servers.length; i++){
         const Server = Servers[i]
         const Card = CreatePrivateServerCard(Server.Thumbnail, Server.Name, Server.OwnerName, Server.OwnerId, Server.Price, Server.PlaceId)
 
-        ServerCards.push(Card)
+        PrivateServerCards.push(Card)
         ServerListElement.appendChild(Card)
     }
 
@@ -52,13 +55,14 @@ async function ActivePrivateServersOpened(){
     console.log("opened")
 
     WaitForClass("breadcrumb-container").then(Container => {
-        const LabelContainer = Container.getElementsByTagName("li")[2]
-        LabelContainer.getElementsByTagName("span")[0].innerText = "Active Private Servers"
+        Container.getElementsByTagName("li")[2].getElementsByTagName("span")[0].innerText = "Active Private Servers"
+        Container.getElementsByTagName("li")[0].getElementsByTagName("span")[0].innerText = "Private Servers"
     })
 
+    await sleep(100)
     const ServerListElement = await WaitForClass("hlist item-cards item-cards-embed ng-scope")
     //ClearAllChildren(ServerListElement)
-    ClearServerCards()
+    ClearPrivateServerCards()
     HideRobloxDefaultCards(ServerListElement, true)
 
     function SetButtonStatus(Button, Enabled){
@@ -109,8 +113,9 @@ async function ActivePrivateServersOpened(){
 }
 
 function CheckActivePrivateServersOpened(){
-    const TagLocation = window.location.href.split("#")[1] || ""
-    const IsURLOpen = TagLocation === "!/private-servers/active-private-servers"
+    // const TagLocation = window.location.href.split("#")[1] || ""
+    // const IsURLOpen = TagLocation === "!/private-servers/active-private-servers"
+    const IsURLOpen = window.location.href.search("tab=active-private-servers") > -1
 
     if (IsURLOpen && !IsActivePrivateServersOpened){
         IsActivePrivateServersOpened = true
@@ -123,7 +128,7 @@ function CheckActivePrivateServersOpened(){
 
             Connection.Element.removeEventListener(Connection.Type, Connection.Callback)
         }
-        ClearServerCards()
+        ClearPrivateServerCards()
 
         OpenConnections = []
 
@@ -144,7 +149,7 @@ const DefaultCardElementObserver = new MutationObserver(function(mutationList, o
         const NewNodes = mutation.addedNodes
 
         for (let i = 0; i < NewNodes.length; i++){
-            if (NewNodes[i].nodeType === Node.ELEMENT_NODE){
+            if (NewNodes[i].nodeType == Node.ELEMENT_NODE){
                 HideDefaultCard(NewNodes[i], true)
             }
         }

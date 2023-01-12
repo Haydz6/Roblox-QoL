@@ -2,15 +2,15 @@ let IsPurchasedGamesOpened = false
 let CurrentPurchasedGamesPage = 1
 
 let OpenPurchasedGamesConnections = []
+let PurchasedGamesCards = []
 
-function HideDefaultCard(Element, Hide){
-
+function HideDefaultCard2(Element, Hide){
     if (!Element.getAttribute("custom") && Element.className == "list-item item-card ng-scope place-item"){
         Element.style = Hide && "display:none;" || ""
     }
 }
 
-function HideRobloxDefaultCards(ServerListElement, Hide){
+function HideRobloxDefaultCards2(ServerListElement, Hide){
     const children = ServerListElement.children
 
     for (let i = 0; i < children.length; i++){
@@ -18,24 +18,24 @@ function HideRobloxDefaultCards(ServerListElement, Hide){
     }
 }
 
-function ClearServerCards(){
-    for (let i = 0; i < ServerCards.length; i++){
-        ServerCards[i].remove()
+function ClearPurchasedGamesCards(){
+    for (let i = 0; i < PurchasedGamesCards.length; i++){
+        PurchasedGamesCards[i].remove()
     }
-    ServerCards = []
+    PurchasedGamesCards = []
 }
 
 async function CreateCardsFromPurchasedGames(Servers, ServerListElement){
     //ClearAllChildren(ServerListElement)
-    HideRobloxDefaultCards(ServerListElement, true)
-    ClearServerCards()
+    HideRobloxDefaultCards2(ServerListElement, true)
+    ClearPurchasedGamesCards()
 
     for (let i = 0; i < Servers.length; i++){
         const Server = Servers[i]
         const Card = CreatePrivateServerCard(Server.Image, Server.Name, Server.OwnerName, Server.OwnerId, Server.Price, Server.PlaceId)
 
         ServerListElement.appendChild(Card)
-        ServerCards.push(Card)
+        PurchasedGamesCards.push(Card)
     }
 
     ServerListElement.parentElement.className = "current-items"
@@ -57,8 +57,8 @@ async function PurchasedGamesOpened(){
 
     const ServerListElement = await WaitForClass("hlist item-cards item-cards-embed ng-scope")
     //ClearAllChildren(ServerListElement)
-    ClearServerCards()
-    HideRobloxDefaultCards(ServerListElement, true)
+    ClearPurchasedGamesCards()
+    HideRobloxDefaultCards2(ServerListElement, true)
 
     function SetButtonStatus(Button, Enabled){
         const NewAttribute = Enabled && "enabled" || "disabled"
@@ -104,40 +104,55 @@ async function PurchasedGamesOpened(){
         FetchPage()
     }, "click", NextPageButton))
 
-    DefaultCardElementObserver.observe(ServerListElement, {childList: true})
+    DefaultPurchasedGamesCardElementObserver.observe(ServerListElement, {childList: true})
 
     FetchPage()
 }
 
 function CheckPurchasedGamesOpened(){
-    const TagLocation = window.location.href.split("#")[1] || ""
-    const IsURLOpen = TagLocation === "!/places/purchased-games"
+    // const TagLocation = window.location.href.split("#")[1] || ""
+    // const IsURLOpen = TagLocation === "!/places/purchased-games"
+    const IsURLOpen = window.location.href.search("tab=purchased-games") > -1
 
     if (IsURLOpen && !IsPurchasedGamesOpened){
         IsPurchasedGamesOpened = true
         PurchasedGamesOpened()
     } else if (!IsURLOpen && IsPurchasedGamesOpened) {
-        DefaultCardElementObserver.disconnect()
+        DefaultPurchasedGamesCardElementObserver.disconnect()
 
         for (let i = 0; i < OpenPurchasedGamesConnections.length; i++){
             const Connection = OpenPurchasedGamesConnections[i]
 
             Connection.Element.removeEventListener(Connection.Type, Connection.Callback)
         }
-        ClearServerCards()
+        ClearPurchasedGamesCards()
 
         OpenPurchasedGamesConnections = []
 
         LoadingParagraph.style = "display:none;"
 
         const ServerListElement = FindFirstClass("hlist item-cards item-cards-embed ng-scope")
-        if (ServerListElement) HideRobloxDefaultCards(ServerListElement, false)//ClearAllChildren(ServerListElement)
+        if (ServerListElement) HideRobloxDefaultCards2(ServerListElement, false)//ClearAllChildren(ServerListElement)
 
         IsPurchasedGamesOpened = false
     }
 }
 
 window.addEventListener('popstate', CheckPurchasedGamesOpened)
+
+const DefaultPurchasedGamesCardElementObserver = new MutationObserver(function(mutationList, observer){
+    mutationList.forEach(function(mutation) {
+      if (mutation.type === "childList") {
+        const NewNodes = mutation.addedNodes
+
+        for (let i = 0; i < NewNodes.length; i++){
+            if (NewNodes[i].nodeType == Node.ELEMENT_NODE){
+                HideDefaultCard2(NewNodes[i], true)
+            }
+        }
+      }
+    })
+})
 
 async function RunMain(){
     console.log("RUNNING ACTIVE")
@@ -178,7 +193,7 @@ async function RunMain(){
 
     PurchasedPlacesButton.remove()
 
-    const [NewPurchasedPlacesButton] = CreateActivePrivateServersButton("Purchased", "#!/places/purchased-games")
+    const [NewPurchasedPlacesButton] = CreateActivePrivateServersButton("Purchased", "#!/places?tab=purchased-games")
     Parent.insertBefore(NewPurchasedPlacesButton, Parent.nextSibiling)
 
     CheckPurchasedGamesOpened()
