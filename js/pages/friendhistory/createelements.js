@@ -24,31 +24,6 @@ function CreateHeaderTab(Text, Id, href, Active){
     return [Header, Button]
 }
 
-function TimestampToDate(Timestamp){
-    const DateStamp = new Date(Timestamp * 1000)
-
-    const CurrentLanguage = getNavigatorLanguages()[0]
-
-    return `${DateStamp.toLocaleTimeString(CurrentLanguage, {hour: "2-digit", minute: "2-digit"})} ${DateStamp.toLocaleDateString(CurrentLanguage)}`
-}
-
-function SecondsToLength(Seconds){
-    const d = Math.floor(Seconds / (3600*24))
-    const h = Math.floor(Seconds % (3600*24) / 3600)
-    const m = Math.floor(Seconds % 3600 / 60)
-    const s = Math.floor(Seconds % 60)
-
-    if (d > 0){
-        return `${d} day${d > 1 && "s" || ""}`
-    } else if (h > 0){
-        return `${h} hour${h > 1 && "s" || ""}`
-    } else if (m > 0){
-        return `${m} minute${m > 1 && "s" || ""} ${s} second${s > 1 && "s" || ""}`
-    }
-
-    return `${s} second${s > 1 && "s" || ""}`
-}
-
 function CreateFriend(UserId, Name, DisplayName, Thumbnail, Type, FriendedTimestamp, UnfriendedTimestamp, IsVerified){
     const Friend = document.createElement("li")
     Friend.setAttribute("id", UserId)

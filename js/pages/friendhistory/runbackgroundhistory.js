@@ -114,7 +114,7 @@ function CreateNotification(Friends, NewFriends, LostFriends){
         type: "basic",
         iconUrl: Friend.Image,
         title: "Roblox",
-        message: `${Friend.Name} ${Friend.Type === "Lost" && "un" || ""}friended you!`,
+        message: Message,
     }})
 }
 

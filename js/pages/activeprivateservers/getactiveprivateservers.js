@@ -6,17 +6,17 @@ const ActivePrivateServers = []
 
 //GameIcon, Name, OwnerName, OwnerId, Price, PlaceId
 
-function CreateDummyData(){
-    return {
-        Name: "a place",
-        OwnerName: "Haydz6",
-        OwnerId: 51787703,
-        Price: Math.random() * 100,
-        Thumbnail: "https://tr.rbxcdn.com/407c5baab2168cbdaa0a1ef82aac096f/48/48/AvatarHeadshot/Png",
-        PlaceId: 8416011646,
-        Id: Math.random() * 10000000
-    }
-}
+// function CreateDummyData(){
+//     return {
+//         Name: "a place",
+//         OwnerName: "Haydz6",
+//         OwnerId: 51787703,
+//         Price: Math.random() * 100,
+//         Thumbnail: "https://tr.rbxcdn.com/407c5baab2168cbdaa0a1ef82aac096f/48/48/AvatarHeadshot/Png",
+//         PlaceId: 8416011646,
+//         Id: Math.random() * 10000000
+//     }
+// }
 
 async function RequestActivePrivateServers(){
     IsFetching = true

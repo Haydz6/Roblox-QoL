@@ -4,17 +4,18 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.3.0",
+    "version": "2.4.0",
     "icons": {
         "128": "img/icons/icon128x128.png",
         "48": "img/icons/icon48x48.png"
     },
     "permissions": [
-        "notifications"
+        "notifications",
+        "geolocation"
     ],
     "web_accessible_resources": [
         {
-            "resources": ["img/*", "html/*", "sounds/*"],
+            "resources": ["img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js"],
             "matches": [
                 "https://www.roblox.com/*",
                 "https://web.roblox.com/*"
@@ -30,6 +31,7 @@
             "*://*.roblox.com/*"
         ],
         "js": [
+            "js/modules/getNavigatorLanguage.js",
             "js/authentication/main.js",
             "js/pages/document.js",
             "js/pages/settings/settingsdropdown.js",
@@ -57,7 +59,6 @@
             "*://*.roblox.com/users/friends*"
         ],
         "js": [
-            "js/modules/getNavigatorLanguage.js",
             "js/pages/friendhistory/createelements.js",
             "js/pages/friendhistory/loadpages.js",
             "js/pages/friendhistory/main.js"
@@ -96,9 +97,18 @@
         "matches": [
             "*://*.roblox.com/games/*"
         ],
+        "css:": [
+            "css/filters.css"
+        ],
         "js": [
             "js/pages/liveexperience/api.js",
-            "js/pages/liveexperience/main.js"
+            "js/pages/liveexperience/main.js",
+            "js/pages/serverfilters/createelements.js",
+            "js/pages/serverfilters/showservers.js",
+            "js/pages/serverfilters/filterservers.js",
+            "js/pages/serverfilters/addserverregion.js",
+            "js/pages/serverfilters/filters.js",
+            "js/pages/serverfilters/main.js"
         ],
         "run_at": "document_start",
         "all_frames": true

@@ -1,0 +1,87 @@
+.filter-link-icon:after {
+    background-image: url(../img/filters/filter.png)!important;
+    background-size: 100%!important;
+}
+
+.clear-filter-link-icon:after {
+    background-image: url(../img/filters/clearfilter.png)!important;
+    background-size: 100%!important;
+}
+
+.rbx-filter {
+    margin-left: 590px;
+    padding-right: 12px;
+}
+
+.filter-list {
+    width: 150px;
+    height: 222px;
+    position: absolute;
+    z-index: 5;
+    background-color: rgb(25,25,25);
+    top: 506px;
+    border-radius: 12px;
+    padding: 5px;
+}
+
+.filter-button {
+    height: 22px !important;
+    text-align: center !important;
+    margin-bottom: 5px;
+}
+
+.filter-globe {
+    width: 575px;
+    height: 450px;
+    position: absolute;
+    z-index: 5;
+    background-color: rgb(25,25,25);
+    bottom: -300px;
+    left: -580px;
+    border-radius: 12px;
+    padding: 0px;
+}
+
+.filter-globe-serverinfo {
+    width: 150px;
+    height: 55px;
+    position:absolute;
+    z-index: 5;
+    background-color: #191919;
+    bottom: 440px;
+    border-radius: 12px;
+}
+
+.filter-globe-serverinfo .hidden {
+    display: none;
+}
+
+.filter-globe-serverinfo .visible {
+    display: block;
+}
+
+.filter-list .max-players-list {
+    left: -153px;
+    top: 0px;
+    height: 100px;
+    padding: 8px;
+}
+
+.filter-list .max-players-list h3 {
+    font-weight: 500;
+    font-size: 16px;
+    text-align: center
+}
+
+.filter-list .max-players-list input {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 5px;
+    margin-top: 3px;
+}
+
+.filter-list .max-players-list a {
+    margin-left: 30%;
+    width: 40%;
+    min-width: 40%;
+}

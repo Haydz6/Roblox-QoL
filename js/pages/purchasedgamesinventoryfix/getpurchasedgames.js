@@ -106,7 +106,7 @@ async function GetGameInfosFromAssetIds(AllAssets){
 async function RequestPurchasedGames(){
     await FetchFromCache()
 
-    const [Success, Result] = await RequestFunc(`https://economy.roblox.com/v2/users/51787703/transactions?cursor=${NextCursor}&limit=100&transactionType=Purchase`, "GET", undefined, undefined, true)
+    const [Success, Result] = await RequestFunc(`https://economy.roblox.com/v2/users/${UserId}/transactions?cursor=${NextCursor}&limit=100&transactionType=Purchase`, "GET", undefined, undefined, true)
 
     if (!Success){
         return
@@ -172,17 +172,6 @@ async function RequestPurchasedGames(){
     }
 
     await GetImagesForGames(NewGames)
-}
-
-function SplitArrayIntoChunks(Array, chunkSize){
-    const Chunks = []
-
-    for (let i = 0; i < Array.length; i += chunkSize) {
-        const chunk = Array.slice(i, i + chunkSize)
-        Chunks.push(chunk)
-    }
-
-    return Chunks
 }
 
 async function GetImagesForGames(Games){

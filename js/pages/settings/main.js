@@ -31,6 +31,14 @@ const Settings = {
         LiveExperienceStats: {
             Title: "Live Experience Statistics",
             Description: "Updates an experiences stats while you are looking at the page."
+        },
+        ServerRegions: {
+            Title: "Server Regions",
+            Description: "Shows where a server is located."
+        },
+        ServerFilters: {
+            Title: "Server Filters",
+            Description: "Allows you to filter servers by region, size and age."
         }
     }
 }
@@ -76,6 +84,13 @@ function CreateSignoutOption(OptionsList){
     OptionsList.appendChild(Section)
 }
 
+function CreateSecuritySection(OptionsList){
+    const Title = CreateSectionTitle("Security")
+    OptionsList.appendChild(Title)
+
+    CreateSignoutOption(OptionsList)
+}
+
 async function HideOriginalSettingButtonActive(){
     const ActiveButton = await WaitForClass("menu-option ng-scope active")
     ActiveButton.className = "menu-option ng-scope"
@@ -113,7 +128,7 @@ async function Run(){
     ClearAllChildren(OptionsList)
 
     CreateFeaturesSection(OptionsList)
-    CreateSignoutOption(OptionsList)
+    CreateSecuritySection(OptionsList)
 }
 
 Run()
