@@ -1,12 +1,12 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const EnabledFeatures = {ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true}
+const EnabledFeatures = {ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
 let AreEnabledFeaturesFetched = false
 
 let UserId
 let CSRFToken = ""
 
 const WebServerURL = "https://qol.haydz6.com/"
-const WebServerEndpoints = {Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/"}
+const WebServerEndpoints = {Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/"}
 
 function FindFirstClass(ClassName){
   return document.getElementsByClassName(ClassName)[0]
@@ -92,7 +92,19 @@ async function GetUniverseIdFromGamePage(){
     UniverseId = GameDetails.getAttribute("data-universe-id")
   }
 
-  return UniverseId
+  return parseInt(UniverseId)
+}
+
+async function GetPlaceIdFromGamePage(){
+  const GameDetails = await WaitForId("game-detail-page")
+  let PlaceId
+
+  while (!PlaceId){
+    await sleep(100)
+    PlaceId = GameDetails.getAttribute("data-place-id")
+  }
+
+  return parseInt(PlaceId)
 }
 
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude){
@@ -143,6 +155,45 @@ function ClearAllChildren(Element){
 }
 
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
+
+function SecondsToLength(Seconds){
+  const d = Math.floor(Seconds / (3600*24))
+  const h = Math.floor(Seconds % (3600*24) / 3600)
+  const m = Math.floor(Seconds % 3600 / 60)
+  const s = Math.floor(Seconds % 60)
+
+  if (d > 0){
+      return `${d} day${d > 1 && "s" || ""}`
+  } else if (h > 0){
+      return `${h} hour${h > 1 && "s" || ""}`
+  } else if (m > 0){
+      return `${m} minute${m > 1 && "s" || ""} ${s} second${s > 1 && "s" || ""}`
+  }
+
+  return `${s} second${s > 1 && "s" || ""}`
+}
+
+function SplitArrayIntoChunks(Array, chunkSize){
+  const Chunks = []
+
+  for (let i = 0; i < Array.length; i += chunkSize) {
+      const chunk = Array.slice(i, i + chunkSize)
+      Chunks.push(chunk)
+  }
+
+  return Chunks
+}
+
+function TimestampToDate(Timestamp, NumberFirst){
+  const DateStamp = new Date(Timestamp * 1000)
+
+  const CurrentLanguage = getNavigatorLanguages()[0]
+
+  NumberDate = DateStamp.toLocaleTimeString(CurrentLanguage, {hour: "2-digit", minute: "2-digit"})
+  DayDate = DateStamp.toLocaleDateString(CurrentLanguage)
+
+  return `${NumberFirst && NumberDate || DayDate} ${NumberFirst && DayDate || NumberDate}`
+}
 
 function FetchAllFeaturesEnabled(){
     if (!AreEnabledFeaturesFetched){
