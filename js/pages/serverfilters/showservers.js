@@ -1,9 +1,11 @@
 let LoadMoreServersButton
+let DefaultLoadMoreServersButton
 let ClearFiltersButton
 let HiddenRefreshButton
 let RefreshButtonConn
 
 let FilterInt = 0
+let FirstEightServerElements = []
 
 async function GetImageUrlsFromServer(Servers){
     const Batch = []
@@ -87,7 +89,14 @@ async function ReplaceLoadMoreServersButton(){
     const OldLoadMoreButton = FindFirstClass("rbx-running-games-load-more btn-control-md btn-full-width")
     const Parent = (await WaitForClass("rbx-running-games-footer"))
     
-    if (OldLoadMoreButton) OldLoadMoreButton.remove()
+    if (OldLoadMoreButton){
+        if (!DefaultLoadMoreServersButton){
+            DefaultLoadMoreServersButton = OldLoadMoreButton
+            OldLoadMoreButton.style = "display:none;"
+        } else {
+            OldLoadMoreButton.remove()
+        }
+    }
 
     const Button = document.createElement("button")
     Button.type = "button"
@@ -117,9 +126,11 @@ function EnableFilterMode(){
             }
         }
 
-        ClearFiltersButton = CreateClearFiltersButton()
-        ClearFiltersButton.addEventListener("click", DisableFilter)
-        Options.appendChild(ClearFiltersButton)
+        if (!ClearFiltersButton){
+            ClearFiltersButton = CreateClearFiltersButton()
+            ClearFiltersButton.addEventListener("click", DisableFilter)
+            Options.appendChild(ClearFiltersButton)
+        }
     })
 
     WaitForClass("server-list-options").then(function(Options){
@@ -127,6 +138,13 @@ function EnableFilterMode(){
     })
 
     WaitForId("rbx-game-server-item-container").then(function(Servers){
+        const children = Servers.children
+
+        for (let i = 0; i < children.length; i++){
+            FirstEightServerElements.push(children[i])
+            children[i].parentElement = null
+        }
+
         ClearAllChildren(Servers)
     })
 }
@@ -157,7 +175,7 @@ async function EnableAvailableSpaces(){
         FilterInt ++
         const CacheFilterInt = FilterInt
 
-        const [Success, Result] = await GetRobloxServers(Cursor, false, true)
+        const [Success, Result] = await GetRobloxServers(Cursor, false, true, 10)
 
         if (CacheFilterInt != FilterInt) return
 
@@ -169,12 +187,17 @@ async function EnableAvailableSpaces(){
         Cursor = Result.nextPageCursor
         AtEnd = Cursor == null
         
-        await CreateServersFromRobloxServers(Result.data)
+        const Elements = await CreateServersFromRobloxServers(Result.data)
 
-        if (CacheFilterInt != FilterInt) return
+        if (CacheFilterInt != FilterInt){
+            for (let i = 0; i < Elements.length; i++){
+                Elements[i].remove()
+            }
+            return
+        }
 
         if (AtEnd){
-            (await WaitForClass("rbx-running-games-load-more btn-control-md btn-full-width")).remove()
+            if (LoadMoreServersButton) LoadMoreServersButton.remove()
         } else {
             SetButtonLoadingState(true)
         }
@@ -190,6 +213,8 @@ async function EnableMaxPlayerCount(PlayerCount){
     let Cursor = ""
     let AtEnd = false
     let ServersFetched = 0
+
+    const DuplicateJobIds = {}
 
     EnableFilterMode()
 
@@ -222,17 +247,25 @@ async function EnableMaxPlayerCount(PlayerCount){
             const Server = Data[i]
 
             if (Server.playing <= PlayerCount){
+                if (DuplicateJobIds[Server.id]) continue
+                DuplicateJobIds[Server.id] = true
+
                 Servers.push(Server)
                 ServersFetched ++
             }
         }
         
-        await CreateServersFromRobloxServers(Servers)
+        const Elements = await CreateServersFromRobloxServers(Servers)
 
-        if (CacheFilterInt != FilterInt) return
+        if (CacheFilterInt != FilterInt){
+            for (let i = 0; i < Elements.length; i++){
+                Elements[i].remove()
+            }
+            return
+        }
 
         if (AtEnd){
-            (await WaitForClass("rbx-running-games-load-more btn-control-md btn-full-width")).remove()
+            if (LoadMoreServersButton) LoadMoreServersButton.remove()
         } else {
             SetButtonLoadingState(true)
         }
@@ -254,6 +287,7 @@ async function EnableServerAge(Oldest){
     await ReplaceLoadMoreServersButton()
 
     const AllServers = []
+    const DuplicateJobIds = {}
 
     function SortServerElements(){
         AllServers.sort(function(a, b){
@@ -295,6 +329,9 @@ async function EnableServerAge(Oldest){
         const Data = Result.data
 
         for (let i = 0; i < Data.length; i++){
+            if (DuplicateJobIds[Data[i].id]) continue
+            DuplicateJobIds[Data[i].id] = true
+
             JobIds.push(Data[i].id)
             JobIdToServer[Data[i].id] = Data[i]
         }
@@ -326,17 +363,22 @@ async function EnableServerAge(Oldest){
         
         const Elements = await CreateServersFromRobloxServers(RegionServers)
 
-        if (CacheFilterInt != FilterInt) return
+        if (CacheFilterInt != FilterInt){
+            for (let i = 0; i < Elements.length; i++){
+                Elements[i].remove()
+            }
+            return
+        }
 
         for (let i = 0; i < Elements.length; i++){
             const Element = Elements[i]
-            JobIdToServer[Element.getAttribute("data-gameid")].element = Element
+            JobIdToServer[Element.getAttribute("jobid")].element = Element
         }
 
         SortServerElements()
 
         if (AtEnd){
-            (await WaitForClass("rbx-running-games-load-more btn-control-md btn-full-width")).remove()
+            if (LoadMoreServersButton) LoadMoreServersButton.remove()
         } else {
             SetButtonLoadingState(true)
         }
@@ -384,12 +426,17 @@ async function EnableRandomServers(){
             return (Math.random() * 2)-1
         })
         
-        await CreateServersFromRobloxServers(Servers)
+        const Elements = await CreateServersFromRobloxServers(Servers)
 
-        if (CacheFilterInt != FilterInt) return
+        if (CacheFilterInt != FilterInt){
+            for (let i = 0; i < Elements.length; i++){
+                Elements[i].remove()
+            }
+            return
+        }
 
         if (AtEnd){
-            (await WaitForClass("rbx-running-games-load-more btn-control-md btn-full-width")).remove()
+            if (LoadMoreServersButton) LoadMoreServersButton.remove()
         } else {
             SetButtonLoadingState(true)
         }
@@ -432,12 +479,17 @@ async function EnableSmallestServer(){
         Cursor = Result.nextPageCursor
         AtEnd = Cursor == null
         
-        await CreateServersFromRobloxServers(Result.data)
+        const Elements = await CreateServersFromRobloxServers(Result.data)
 
-        if (CacheFilterInt != FilterInt) return
+        if (CacheFilterInt != FilterInt){
+            for (let i = 0; i < Elements.length; i++){
+                Elements[i].remove()
+            }
+            return
+        }
 
         if (AtEnd){
-            (await WaitForClass("rbx-running-games-load-more btn-control-md btn-full-width")).remove()
+            if (LoadMoreServersButton) LoadMoreServersButton.remove()
         } else {
             SetButtonLoadingState(true)
         }
@@ -569,17 +621,22 @@ async function EnableBestConnection(){
         
         const Elements = await CreateServersFromRobloxServers(RegionServers)
 
-        if (CacheFilterInt != FilterInt) return
+        if (CacheFilterInt != FilterInt){
+            for (let i = 0; i < Elements.length; i++){
+                Elements[i].remove()
+            }
+            return
+        }
 
         for (let i = 0; i < Elements.length; i++){
             const Element = Elements[i]
-            JobIdToServer[Element.getAttribute("data-gameid")].element = Element
+            JobIdToServer[Element.getAttribute("jobid")].element = Element
         }
 
         SortServerElements()
 
         if (AtEnd){
-            (await WaitForClass("rbx-running-games-load-more btn-control-md btn-full-width")).remove()
+            if (LoadMoreServersButton) LoadMoreServersButton.remove()
         } else {
             SetButtonLoadingState(true)
         }
@@ -596,12 +653,11 @@ async function EnableRegionFilter(Region){
     let Cursor = ""
     let AtEnd = false
     let ServersFetched = 0
+    const DuplicateJobIds = {}
 
     EnableFilterMode()
 
-    console.log("button wait.")
     await ReplaceLoadMoreServersButton()
-    console.log("button gone.")
 
     async function Fetch(){
         if (AtEnd) return
@@ -628,6 +684,9 @@ async function EnableRegionFilter(Region){
         const Data = Result.data
 
         for (let i = 0; i < Data.length; i++){
+            if (DuplicateJobIds[Data[i].id]) continue
+            DuplicateJobIds[Data[i].id] = true
+
             JobIds.push(Data[i].id)
             JobIdToServer[Data[i].id] = Data[i]
         }
@@ -657,12 +716,17 @@ async function EnableRegionFilter(Region){
             ServersFetched++
         }
         
-        await CreateServersFromRobloxServers(RegionServers)
+        const Elements = await CreateServersFromRobloxServers(RegionServers)
 
-        if (CacheFilterInt != FilterInt) return
+        if (CacheFilterInt != FilterInt){
+            for (let i = 0; i < Elements.length; i++){
+                Elements[i].remove()
+            }
+            return
+        }
 
         if (AtEnd){
-            (await WaitForClass("rbx-running-games-load-more btn-control-md btn-full-width")).remove()
+            if (LoadMoreServersButton) LoadMoreServersButton.remove()
         } else {
             SetButtonLoadingState(true)
         }
@@ -683,56 +747,83 @@ async function DisableFilter(){
     })
     WaitForId("rbx-game-server-item-container").then(function(Servers){
         ClearAllChildren(Servers)
+
+        if (HiddenRefreshButton){
+            for (let i = 0; i < FirstEightServerElements.length; i++){
+                Servers.appendChild(FirstEightServerElements[i])
+            }
+            FirstEightServerElements = []
+    
+            HiddenRefreshButton.style = "margin-left: 16px;"
+        }
     })
 
-    if (ClearFiltersButton) ClearFiltersButton.remove()
-    if (HiddenRefreshButton) HiddenRefreshButton.style = ""
-
-    if (RefreshButtonConn) HiddenRefreshButton.removeEventListener("click", RefreshButtonConn)
-
-    let Cursor = ""
-    let AtEnd = false
-
-    async function Fetch(){
-        if (AtEnd) return
-
-        SetButtonLoadingState(false)
-
-        FilterInt ++
-        const CacheFilterInt = FilterInt
-
-        const [Success, Result] = await GetRobloxServers(Cursor, false, false, 10)
-
-        if (CacheFilterInt != FilterInt) return
-
-        SetButtonLoadingState(true)
-
-        if (!Success) return
-
-        Cursor = Result.nextPageCursor
-        AtEnd = Cursor == null
-
-        if (AtEnd){
-            (await WaitForClass("rbx-running-games-load-more btn-control-md btn-full-width")).remove()
-        }
-
-        await CreateServersFromRobloxServers(Result.data)
+    if (ClearFiltersButton){
+        ClearFiltersButton.remove()
+        ClearFiltersButton = null
     }
 
-    async function Refresh(){
-        Cursor = ""
+    if (DefaultLoadMoreServersButton){
+        DefaultLoadMoreServersButton.style = ""
+    }
+    if (LoadMoreServersButton) LoadMoreServersButton.remove()
 
-        const Servers = await WaitForId("rbx-game-server-item-container")
-        ClearAllChildren(Servers)
-
-        Fetch()
+    if (HiddenRefreshButton){
+        HiddenRefreshButton.click()
     }
 
-    HiddenRefreshButton.addEventListener("click", Refresh)
-    RefreshButtonConn = Refresh
+    // if (RefreshButtonConn) HiddenRefreshButton.removeEventListener("click", RefreshButtonConn)
 
-    const LoadMoreServersButton = await ReplaceLoadMoreServersButton()
-    LoadMoreServersButton.addEventListener("click", Fetch)
+    // let Cursor = ""
+    // let AtEnd = false
 
-    Fetch()
+    // async function Fetch(){
+    //     if (AtEnd) return
+
+    //     SetButtonLoadingState(false)
+
+    //     FilterInt ++
+    //     const CacheFilterInt = FilterInt
+
+    //     const [Success, Result] = await GetRobloxServers(Cursor, false, false, 10)
+
+    //     if (CacheFilterInt != FilterInt) return
+
+    //     SetButtonLoadingState(true)
+
+    //     if (!Success) return
+
+    //     Cursor = Result.nextPageCursor
+    //     AtEnd = Cursor == null
+
+    //     if (AtEnd){
+    //         if (LoadMoreServersButton) LoadMoreServersButton.remove()
+    //     }
+
+    //     const Elements = await CreateServersFromRobloxServers(Result.data)
+
+    //     if (CacheFilterInt != FilterInt){
+    //         for (let i = 0; i < Elements.length; i++){
+    //             Elements[i].remove()
+    //         }
+    //         return
+    //     }
+    // }
+
+    // async function Refresh(){
+    //     Cursor = ""
+
+    //     const Servers = await WaitForId("rbx-game-server-item-container")
+    //     ClearAllChildren(Servers)
+
+    //     Fetch()
+    // }
+
+    // HiddenRefreshButton.addEventListener("click", Refresh)
+    // RefreshButtonConn = Refresh
+
+    // const LoadMoreServersButton = await ReplaceLoadMoreServersButton()
+    // LoadMoreServersButton.addEventListener("click", Fetch)
+
+    // Fetch()
 }

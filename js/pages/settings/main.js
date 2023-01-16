@@ -4,14 +4,6 @@ const Settings = {
             Title: "Extra Outfits",
             Description: "Allows you to have more than 50 outfits."
         },
-        FixFavouritesPage: {
-            Title: "Favourites Page Fix",
-            Description: "Fixes the favourites page only showing the first 30 games."
-        },
-        PurchasedGamesFix: {
-            Title: "Purchased Games Fix",
-            Description: "Fixes the purchased games option in your inventory."
-        },
         ActivePrivateServers: {
             Title: "Active Private Servers",
             Description: "Allows you to see which private servers are billing you."
@@ -20,14 +12,8 @@ const Settings = {
             Title: "New Message Ping",
             Description: "Creates a ping sound whenever you receive a new chat message."
         },
-        FriendHistory: {
-            Title: "Friend History",
-            Description: "Allows you to see a history of what friends you have had."
-        },
-        FriendNotifications: {
-            Title: "Friend Notifications",
-            Description: "Notifies you when you make or lose a friend."
-        },
+    },
+    Games: {
         LiveExperienceStats: {
             Title: "Live Experience Statistics",
             Description: "Updates an experiences stats while you are looking at the page."
@@ -39,7 +25,31 @@ const Settings = {
         ServerFilters: {
             Title: "Server Filters",
             Description: "Allows you to filter servers by region, size and age."
+        },
+        AwardedBadgeDates: {
+            Title: "Badge Awarded Dates",
+            Description: "Shows you when the date you achieved a badge."
         }
+    },
+    Friends: {
+        FriendHistory: {
+            Title: "Friend History",
+            Description: "Allows you to see a history of what friends you have had."
+        },
+        FriendNotifications: {
+            Title: "Friend Notifications",
+            Description: "Notifies you when you make or lose a friend."
+        },
+    },
+    Fixes: {
+        FixFavouritesPage: {
+            Title: "Favourites Page Fix",
+            Description: "Fixes the favourites page only showing the first 30 games."
+        },
+        PurchasedGamesFix: {
+            Title: "Purchased Games Fix",
+            Description: "Fixes the purchased games option in your inventory."
+        },
     }
 }
 
@@ -49,13 +59,15 @@ function IsQOLSettingsOpened(){
     return urlParams.get("tab") === "robloxqol"
 }
 
-function CreateFeaturesSection(OptionsList){
-    const Title = CreateSectionTitle("Features")
-    OptionsList.appendChild(Title)
+function CreateSettingsSection(OptionsList){
+    for (const [title, settings] of Object.entries(Settings)){
+        const Title = CreateSectionTitle(title)
+        OptionsList.appendChild(Title)
 
-    for (const [feature, info] of Object.entries(Settings.Features)){
-        const Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, IsFeatureEnabled(feature))
-        OptionsList.appendChild(Section)
+        for (const [feature, info] of Object.entries(settings)){
+            const Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, IsFeatureEnabled(feature))
+            OptionsList.appendChild(Section)
+        }
     }
 }
 
@@ -127,7 +139,7 @@ async function Run(){
     const OptionsList = SettingsContainer.getElementsByClassName("ng-scope")[0].getElementsByClassName("ng-scope")[0]
     ClearAllChildren(OptionsList)
 
-    CreateFeaturesSection(OptionsList)
+    CreateSettingsSection(OptionsList)
     CreateSecuritySection(OptionsList)
 }
 

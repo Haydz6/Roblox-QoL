@@ -4,18 +4,17 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.4.0",
+    "version": "2.4.1",
     "icons": {
         "128": "img/icons/icon128x128.png",
         "48": "img/icons/icon48x48.png"
     },
     "permissions": [
-        "notifications",
-        "geolocation"
+        "notifications"
     ],
     "web_accessible_resources": [
         {
-            "resources": ["img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js"],
+            "resources": ["img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js", "js/pages/serverfilters/getserverprops.js"],
             "matches": [
                 "https://www.roblox.com/*",
                 "https://web.roblox.com/*"
@@ -51,7 +50,7 @@
             "js/pages/extraoutfits/handleconversion.js",
             "js/pages/extraoutfits/createnormaloutfitelement.js"
         ],
-        "run_at": "document_start",
+        "run_at": "document_idle",
         "all_frames": true
     },
     {
@@ -63,7 +62,7 @@
             "js/pages/friendhistory/loadpages.js",
             "js/pages/friendhistory/main.js"
         ],
-        "run_at": "document_start",
+        "run_at": "document_idle",
         "all_frames": true
     },
     {
@@ -79,7 +78,7 @@
             "js/pages/purchasedgamesinventoryfix/getpurchasedgames.js",
             "js/pages/purchasedgamesinventoryfix/main.js"
         ],
-        "run_at": "document_start",
+        "run_at": "document_idle",
         "all_frames": true
     },
     {
@@ -90,7 +89,7 @@
             "js/pages/fixfavouritespage/createelement.js",
             "js/pages/fixfavouritespage/main.js"
         ],
-        "run_at": "document_start",
+        "run_at": "document_idle",
         "all_frames": true
     },
     {
@@ -103,6 +102,7 @@
         "js": [
             "js/pages/liveexperience/api.js",
             "js/pages/liveexperience/main.js",
+            "js/pages/badges/achieved.js",
             "js/pages/serverfilters/createelements.js",
             "js/pages/serverfilters/showservers.js",
             "js/pages/serverfilters/filterservers.js",
@@ -110,7 +110,7 @@
             "js/pages/serverfilters/filters.js",
             "js/pages/serverfilters/main.js"
         ],
-        "run_at": "document_start",
+        "run_at": "document_idle",
         "all_frames": true
     },
     {
@@ -121,7 +121,7 @@
             "js/pages/settings/createelements.js",
             "js/pages/settings/main.js"
         ],
-        "run_at": "document_start",
+        "run_at": "document_idle",
         "all_frames": true
     }]
 }

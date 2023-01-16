@@ -1,3 +1,14 @@
+let HasInjectedServerPropsRetriever = false
+
+function InjectServerPropsRetriever(){
+    if (HasInjectedServerPropsRetriever) return
+    HasInjectedServerPropsRetriever = true
+
+    const Script = document.createElement("script")
+    Script.src = chrome.runtime.getURL("js/pages/serverfilters/getserverprops.js")
+    document.head.appendChild(Script)
+}
+
 function OnNewServerElement(Element){
     if (Element.className.search("rbx-game-server-item") > -1 || Element.className.search("rbx-friends-game-server-item") > -1){
         AddServerRegion(Element)
@@ -34,9 +45,11 @@ async function Main(){
 }
 
 if (IsFeatureEnabled("ServerRegions")){
+    InjectServerPropsRetriever()
     Main()
 }
 
 if (IsFeatureEnabled("ServerFilters")){
+    InjectServerPropsRetriever()
     RunFiltersMain()
 }

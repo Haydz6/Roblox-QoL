@@ -26,9 +26,12 @@ function CreateServerInfo(Element, Server){
 
     Element.setAttribute("has-region-set", true)
 
-    const RegionLabel = document.createElement("div")
-    RegionLabel.className = "text-info rbx-game-status rbx-game-server-status text-overflow"
-    RegionLabel.style = "font-size: 12px; margin-bottom: 0px; margin-top: 10px;"
+    const RegionContainer = document.createElement("div")
+    RegionContainer.className = "text-info rbx-game-status rbx-game-server-status text-overflow"
+    RegionContainer.style = "font-size: 12px; margin-bottom: 0px; margin-top: 10px; overflow: visible; position: relative;"
+    
+    const RegionLabel = document.createElement("p")
+    RegionLabel.style = "font-size: 12px; overflow: hidden; text-overflow: ellipsis;"
     RegionLabel.innerText = Server.Region
 
     const InfoList = Element.getElementsByTagName("div")[0].getElementsByTagName("div")[1]
@@ -50,7 +53,7 @@ function CreateServerInfo(Element, Server){
                 continue
             }
 
-            InfoList.insertBefore(RegionLabel, Span)
+            InfoList.insertBefore(RegionContainer, Span)
             break
         }
     })
@@ -58,7 +61,7 @@ function CreateServerInfo(Element, Server){
     const HoverElement = document.createElement("li")
 
     function SetVisibility(Visible){
-        HoverElement.style = `width: 150px; height: 150px; position:absolute; z-index: 5; background-color: #191919; bottom: 82px; display: block; border-radius: 12px;${!Visible && " display:none;" || ""}`
+        HoverElement.style = `width: 150px; height: 150px; position:absolute; z-index: 5; background-color: #191919; bottom: 24px; display: block; border-radius: 12px;${!Visible && " display:none;" || ""}`
     }
 
     CreateHeaderAndValueForHover(HoverElement, "Server Region", Server.Region)
@@ -94,7 +97,10 @@ function CreateServerInfo(Element, Server){
         UpdateVisiblity()
     })
 
-    Element.appendChild(HoverElement)
+    RegionContainer.appendChild(RegionLabel)
+    RegionContainer.appendChild(HoverElement)
+
+    //Element.appendChild(RegionContainer)
 }
 
 function CreateFilterPlayerCountBox(){
@@ -122,6 +128,7 @@ function CreateFilterPlayerCountBox(){
 function CreateClearFiltersButton(){
     const FilterButton = document.createElement("a")
     FilterButton.className = "btn-more rbx-refresh refresh-link-icon clear-filter-link-icon btn-control-xs btn-min-width"
+    FilterButton.style = "margin-left: 16px;"
 
     const Label = document.createElement("text")
     Label.innerText = "Clear"
@@ -162,8 +169,8 @@ function CreateFilterButton(Text){
 function CreateServerBox(Server, PlaceId){
     const ServerItem = document.createElement("li")
     ServerItem.className = "rbx-game-server-item col-md-3 col-sm-4 col-xs-6"
-    ServerItem.setAttribute("data-gameid", Server.id)
-    ServerItem.setAttribute("data-placeid", PlaceId)
+    ServerItem.setAttribute("placeid", PlaceId)
+    ServerItem.setAttribute("jobid", Server.id)
     ServerItem.setAttribute("full-list", true)
 
     const CardItem = document.createElement("div")
@@ -257,7 +264,7 @@ function CreateServerBox(Server, PlaceId){
 
     const PlayerCountItem = document.createElement("div")
     PlayerCountItem.className = "text-info rbx-game-status rbx-game-server-status text-overflow"
-    PlayerCountItem.textContent = `${Server.playing} of ${Server.maxPlayers} people max`
+    PlayerCountItem.textContent = `${Server.playing || 0} of ${Server.maxPlayers} people max`
     ServerDetailsItem.appendChild(PlayerCountItem)
 
     const PlayerCountBar = document.createElement("div")
@@ -265,7 +272,7 @@ function CreateServerBox(Server, PlaceId){
 
     const InnerPlayerCountBar = document.createElement("div")
     InnerPlayerCountBar.className = "gauge-inner-bar border"
-    InnerPlayerCountBar.style.width = `${(Server.playing / Server.maxPlayers)*100}%`
+    InnerPlayerCountBar.style.width = `${((Server.playing || 0) / Server.maxPlayers)*100}%`
     PlayerCountBar.appendChild(InnerPlayerCountBar)
 
     ServerDetailsItem.appendChild(PlayerCountBar)
@@ -273,7 +280,7 @@ function CreateServerBox(Server, PlaceId){
     if (FriendsInServerContainer) ServerDetailsItem.appendChild(FriendsInServerContainer)
 
     const JoinButtonContainer = document.createElement("span")
-    JoinButtonContainer.setAttribute("data-placeid", PlaceId)
+    JoinButtonContainer.setAttribute("placeid", PlaceId)
 
     const JoinButton = document.createElement("button")
     JoinButton.type = "button"

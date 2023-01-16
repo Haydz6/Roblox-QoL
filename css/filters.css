@@ -9,7 +9,9 @@
 }
 
 .rbx-filter {
-    margin-left: 590px;
+    position: relative;
+    /* margin-left: 590px; */
+    margin-left: auto;
     padding-right: 12px;
 }
 
@@ -19,7 +21,7 @@
     position: absolute;
     z-index: 5;
     background-color: rgb(25,25,25);
-    top: 506px;
+    top: 24px;
     border-radius: 12px;
     padding: 5px;
 }

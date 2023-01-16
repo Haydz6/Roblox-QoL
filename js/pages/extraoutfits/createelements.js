@@ -210,7 +210,7 @@ function CreateOutfitElement(OutfitName, OutfitImageURL, OutfitId, HideCloudIcon
     let IsExtraIcon
     if (!HideCloudIcon){
         IsExtraIcon = document.createElement("img")
-        IsExtraIcon.src = chrome.runtime.getURL("/img/extraoutfits/cloudicon.png")
+        IsExtraIcon.src = chrome.runtime.getURL("img/extraoutfits/cloudicon.png")
         IsExtraIcon.style = "position:absolute;right:4px;bottom:4px; height:20px; width: 20px;"
     }
 

@@ -18,16 +18,16 @@ async function AddServerRegion(NewElement){
     for (let i = 0; i < PendingServerRegions.length; i++){
         const Element = PendingServerRegions[i]
 
-        while (!Element.getAttribute("data-gameid")) await sleep(100)
+        while (!Element.getAttribute("jobid")) await sleep(100)
 
-        const JobId = Element.getAttribute("data-gameid")
+        const JobId = Element.getAttribute("jobid")
 
         if (!PendingServers[JobId]) PendingServers[JobId] = []
 
         PendingServers[JobId].push(Element)
         JobIds.push(JobId)
 
-        PlaceId = parseInt(Element.getAttribute("data-placeid"))
+        PlaceId = parseInt(Element.getAttribute("placeid"))
     }
 
     PendingServerRegions = []

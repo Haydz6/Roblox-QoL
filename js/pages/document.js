@@ -1,11 +1,11 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const EnabledFeatures = {ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
+const EnabledFeatures = {AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
 let AreEnabledFeaturesFetched = false
 
 let UserId
 let CSRFToken = ""
 
-const WebServerURL = "https://qol.haydz6.com/"
+const WebServerURL = "https://qol.haydz6.com/"//"http://localhost:8192/"
 const WebServerEndpoints = {Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/"}
 
 function FindFirstClass(ClassName){
@@ -185,7 +185,7 @@ function SplitArrayIntoChunks(Array, chunkSize){
 }
 
 function TimestampToDate(Timestamp, NumberFirst){
-  const DateStamp = new Date(Timestamp * 1000)
+  const DateStamp = new Date(typeof(Timestamp) == "number" && Timestamp * 1000 || Timestamp)
 
   const CurrentLanguage = getNavigatorLanguages()[0]
 
@@ -193,6 +193,31 @@ function TimestampToDate(Timestamp, NumberFirst){
   DayDate = DateStamp.toLocaleDateString(CurrentLanguage)
 
   return `${NumberFirst && NumberDate || DayDate} ${NumberFirst && DayDate || NumberDate}`
+}
+
+function AbbreviateNumber(number, decPlaces){
+  decPlaces = Math.pow(10, decPlaces || 0)
+
+  var abbrev = ['k', 'm', 'b', 't']
+
+  for (var i = abbrev.length - 1; i >= 0; i--) {
+    var size = Math.pow(10, (i + 1) * 3)
+
+    if (size <= number) {
+      number = Math.round((number * decPlaces) / size) / decPlaces
+
+      if (number == 1000 && i < abbrev.length - 1) {
+        number = 1
+        i++
+      }
+
+      number += abbrev[i].toUpperCase()+"+"
+
+      break
+    }
+  }
+
+  return number
 }
 
 function FetchAllFeaturesEnabled(){
