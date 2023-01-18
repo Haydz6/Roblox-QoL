@@ -26,6 +26,10 @@ const Settings = {
             Title: "Server Filters",
             Description: "Allows you to filter servers by region, size and age."
         },
+        QuickInvite: {
+            Title: "Quick Invite",
+            Description: "A link you can share with your friends to join a server."
+        },
         AwardedBadgeDates: {
             Title: "Badge Awarded Dates",
             Description: "Shows you when the date you achieved a badge."

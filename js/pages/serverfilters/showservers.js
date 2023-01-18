@@ -38,31 +38,38 @@ async function GetImageUrlsFromServer(Servers){
     }
 
     const Chunks = SplitArrayIntoChunks(Batch, 100)
+    const AllPromises = []
 
     for (let i = 0; i < Chunks.length; i++){
-        const [Success, Result] = await RequestFunc("https://thumbnails.roblox.com/v1/batch", "POST", undefined, JSON.stringify(Chunks[i]), true)
+        AllPromises.push(new Promise(async(resolve) => {
+            const [Success, Result] = await RequestFunc("https://thumbnails.roblox.com/v1/batch", "POST", undefined, JSON.stringify(Chunks[i]), true)
 
-        if (!Success){
-            continue
-        }
+            if (!Success){
+                resolve()
+                return
+            }
 
-        const Data = Result.data
+            const Data = Result.data
 
-        for (let i = 0; i < Data.length; i++){
-            const Item = Data[i]
+            for (let i = 0; i < Data.length; i++){
+                const Item = Data[i]
 
-            //if (Item.state !== "Completed") continue
+                //if (Item.state !== "Completed") continue
 
-            const requestId = Item.requestId.split("/")
-            const JobId = requestId[0]
-            const Token = requestId[1]
+                const requestId = Item.requestId.split("/")
+                const JobId = requestId[0]
+                const Token = requestId[1]
 
-            const Server = JobIdToServer[JobId]
+                const Server = JobIdToServer[JobId]
 
-            if (!Server.ImageUrls) Server.ImageUrls = []
-            Server.ImageUrls.push({imageUrl: Item.imageUrl, token: Token})
-        }
+                if (!Server.ImageUrls) Server.ImageUrls = []
+                Server.ImageUrls.push({imageUrl: Item.imageUrl, token: Token})
+            }
+            resolve()
+        }))
     }
+
+    await Promise.all(AllPromises)
 }
 
 async function CreateServersFromRobloxServers(Servers){
@@ -611,7 +618,7 @@ async function EnableBestConnection(){
             Server.Region = RegionInfo.Region
             Server.Version = RegionInfo.Version
             Server.Coordinates = Coordinates
-            Server.Distance = DistanceBetweenCoordinates(Coordinates.Lat, Coordinates.Lng, Lat, Lng)
+            Server.Distance = Coordinates && DistanceBetweenCoordinates(Coordinates.Lat, Coordinates.Lng, Lat, Lng) || 999999999999
 
             RegionServers.push(Server)
             AllServers.push(Server)
@@ -742,6 +749,8 @@ async function DisableFilter(){
     // WaitForClass("btn-more rbx-refresh refresh-link-icon btn-control-xs btn-min-width").then(function(RefreshButton){
     //     RefreshButton.style = ""
     // })
+    FilterInt ++
+
     WaitForClass("server-list-options").then(function(Options){
         Options.style = ""
     })

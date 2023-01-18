@@ -66,7 +66,7 @@ function CreateServerInfo(Element, Server){
 
     CreateHeaderAndValueForHover(HoverElement, "Server Region", Server.Region)
     CreateHeaderAndValueForHover(HoverElement, "Uptime", SecondsToLength((Date.now()/1000)-Server.CreatedTimestamp))
-    CreateHeaderAndValueForHover(HoverElement, "Version Date", TimestampToDate(Server.Version, false))
+    CreateHeaderAndValueForHover(HoverElement, "Version Date", Server.Version === 0 && "Unknown" || TimestampToDate(Server.Version, false))
 
     SetVisibility(false)
 
@@ -171,6 +171,10 @@ function CreateServerBox(Server, PlaceId){
     ServerItem.className = "rbx-game-server-item col-md-3 col-sm-4 col-xs-6"
     ServerItem.setAttribute("placeid", PlaceId)
     ServerItem.setAttribute("jobid", Server.id)
+
+    ServerItem.setAttribute("data-placeid", PlaceId) //ROPRO INVITE SUPPORT
+    ServerItem.setAttribute("data-gameid", Server.id) //ROPRO INVITE SUPPORT
+
     ServerItem.setAttribute("full-list", true)
 
     const CardItem = document.createElement("div")
@@ -202,7 +206,7 @@ function CreateServerBox(Server, PlaceId){
                 const Player = Players[i]
                 TokenToUserId[Player.playerToken] = Player.id
 
-                if (i > 0){
+                if (i > 0 && i < 2){
                     const CommaElement = document.createElement("text")
                     CommaElement.innerText = ", "
                     FriendsInServerContainer.appendChild(CommaElement)

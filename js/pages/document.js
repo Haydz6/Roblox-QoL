@@ -1,11 +1,12 @@
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-const EnabledFeatures = {AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
+const sleep = ms => new Promise(r => setTimeout(r, ms))
+const EnabledFeatures = {QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
 let AreEnabledFeaturesFetched = false
 
 let UserId
 let CSRFToken = ""
 
-const WebServerURL = "https://qol.haydz6.com/"//"http://localhost:8192/"
+const Debugging = false
+const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
 const WebServerEndpoints = {Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/"}
 
 function FindFirstClass(ClassName){

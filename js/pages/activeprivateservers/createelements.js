@@ -7,7 +7,7 @@ function CreateActivePrivateServersButton(Text, href){
     List.className = "menu-secondary-option ng-scope"
 
     const ButtonRedirect = document.createElement("a")
-    ButtonRedirect.href = href || "#!/private-servers/my-private-servers    ?tab=active-private-servers"
+    ButtonRedirect.href = href || "#!/private-servers/my-private-servers?tab=active-private-servers"
     ButtonRedirect.style = "position:absolute; width:100%; height:100%;"
 
     const ButtonSpan = document.createElement("span")

@@ -4,7 +4,8 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.4.1",
+    "version": "2.4.2",
+    "homepage_url": "https://www.roblox.com/my/account?tab=robloxqol#!/info",
     "icons": {
         "128": "img/icons/icon128x128.png",
         "48": "img/icons/icon48x48.png"
@@ -14,7 +15,7 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": ["img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js", "js/pages/serverfilters/getserverprops.js"],
+            "resources": ["img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js", "js/pages/serverfilters/getserverprops.js", "js/pages/quickserverinvite/checkforinvite.js"],
             "matches": [
                 "https://www.roblox.com/*",
                 "https://web.roblox.com/*"
@@ -103,6 +104,8 @@
             "js/pages/liveexperience/api.js",
             "js/pages/liveexperience/main.js",
             "js/pages/badges/achieved.js",
+            "js/pages/quickserverinvite/createelements.js",
+            "js/pages/quickserverinvite/main.js",
             "js/pages/serverfilters/createelements.js",
             "js/pages/serverfilters/showservers.js",
             "js/pages/serverfilters/filterservers.js",
@@ -115,11 +118,34 @@
     },
     {
         "matches": [
+            "*://*.roblox.com/games/*"
+        ],
+        "css:": [
+            "css/filters.css"
+        ],
+        "js": [
+            "js/pages/quickserverinvite/injectcheckforinvite.js"
+        ],
+        "run_at": "document_start",
+        "all_frames": true
+    },
+    {
+        "matches": [
             "*://*.roblox.com/my/account*"
         ],
         "js": [
             "js/pages/settings/createelements.js",
             "js/pages/settings/main.js"
+        ],
+        "run_at": "document_idle",
+        "all_frames": true
+    },
+    {
+        "matches": [
+            "*://qol.haydz6.com/i/*"
+        ],
+        "js": [
+            "js/pages/quickserverinvite/setinstalledidentifier.js"
         ],
         "run_at": "document_idle",
         "all_frames": true

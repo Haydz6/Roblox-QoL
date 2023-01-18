@@ -87,3 +87,21 @@
     width: 40%;
     min-width: 40%;
 }
+
+.quick-invite-clipboard {
+    width: 70%;
+    height: 30%;
+    font-weight: 400;
+    font-size: unset;
+    color: rgb(255, 255, 255);
+    position: absolute;
+    text-align: center !important;
+    top: -30px;
+    left: 50%;
+    background-color: rgb(25,25,25);
+    font-size: 14px;
+    border-radius: 12px;
+    padding-top: 1px !important;
+    padding: 2px;
+    transform: translate(-50%);
+}
