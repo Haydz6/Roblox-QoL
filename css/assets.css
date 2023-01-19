@@ -1,0 +1,17 @@
+.asset-list {
+    right: 0px!important;
+    top: 0px!important;
+    position: absolute;
+    display: flex;
+}
+
+.asset-button {
+    position: relative!important;
+    list-style: none!important;
+    display: block!important;
+    width: 28px!important;
+    height: 28px!important;
+    margin-left: 5px!important;
+    margin-right: 5px!important;
+    padding: 0px!important;
+}

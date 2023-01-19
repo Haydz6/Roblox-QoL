@@ -188,6 +188,8 @@ async function RunMain(){
     CheckActivePrivateServersOpened()
 }
 
-if (IsFeatureEnabled("ActivePrivateServers")){
-    RunMain()
-}
+IsFeatureEnabled("ActivePrivateServers").then(function(Enabled){
+    if (Enabled){
+        RunMain()
+    }
+})

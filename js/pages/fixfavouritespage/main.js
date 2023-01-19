@@ -175,6 +175,8 @@ async function RunMain(){
   }
 }
 
-if (IsFeatureEnabled("FixFavouritesPage")){
-    RunMain()
-}
+IsFeatureEnabled("FixFavouritesPage").then(function(Enabled){
+  if (Enabled){
+      RunMain()
+  }
+})

@@ -101,6 +101,8 @@ async function HookToBadgeList(){
     }
 }
 
-if (IsFeatureEnabled("AwardedBadgeDates")){
-    HookToBadgeList()
-}
+IsFeatureEnabled("AwardedBadgeDates").then(function(Enabled){
+    if (Enabled){
+        HookToBadgeList()
+    }
+})

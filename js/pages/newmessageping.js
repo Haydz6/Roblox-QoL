@@ -57,6 +57,8 @@ async function Run(){
     }
 }
 
-if (IsFeatureEnabled("NewMessagePing")){
-    Run()
-}
+IsFeatureEnabled("NewMessagePing").then(function(Enabled){
+    if (Enabled){
+        Run()
+    }
+})

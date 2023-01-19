@@ -12,6 +12,10 @@ const Settings = {
             Title: "New Message Ping",
             Description: "Creates a ping sound whenever you receive a new chat message."
         },
+        ExploreAsset: {
+            Title: "Asset Download/View",
+            Description: "Allows you to download or view an asset. Also allows you to go to the image of a decal."
+        }
     },
     Games: {
         LiveExperienceStats: {
@@ -63,13 +67,13 @@ function IsQOLSettingsOpened(){
     return urlParams.get("tab") === "robloxqol"
 }
 
-function CreateSettingsSection(OptionsList){
+async function CreateSettingsSection(OptionsList){
     for (const [title, settings] of Object.entries(Settings)){
         const Title = CreateSectionTitle(title)
         OptionsList.appendChild(Title)
 
         for (const [feature, info] of Object.entries(settings)){
-            const Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, IsFeatureEnabled(feature))
+            const Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, await IsFeatureEnabled(feature))
             OptionsList.appendChild(Section)
         }
     }
@@ -77,8 +81,12 @@ function CreateSettingsSection(OptionsList){
 
 function CreateSignoutOption(OptionsList){
     const [Section, Button] = CreateSectionButtonSetting("Sign out of all other sessions (Roblox QoL Service)", "Sign out")
+    let Debounce = false
 
     Button.addEventListener("click", async function(){
+        if (Debounce) return
+        Debounce = true
+
         const NewKey = await InvalidateAuthKey()
 
         const [Modal, Backdrop, [OkButton], CloseButton] = CreateSuccessDialog(NewKey === "" && "Failed" || "Success", NewKey === "" && "Failed to sign out of all other sessions!" || "You have been signed out of all other sessions.", ["OK"])
@@ -95,6 +103,8 @@ function CreateSignoutOption(OptionsList){
 
         document.body.insertBefore(Modal, document.body.firstChild)
         document.body.insertBefore(Backdrop, document.body.firstChild)
+
+        Debounce = false
     })
 
     OptionsList.appendChild(Section)
@@ -143,7 +153,7 @@ async function Run(){
     const OptionsList = SettingsContainer.getElementsByClassName("ng-scope")[0].getElementsByClassName("ng-scope")[0]
     ClearAllChildren(OptionsList)
 
-    CreateSettingsSection(OptionsList)
+    await CreateSettingsSection(OptionsList)
     CreateSecuritySection(OptionsList)
 }
 

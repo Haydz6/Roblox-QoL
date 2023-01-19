@@ -175,8 +175,6 @@ function CreateServerBox(Server, PlaceId){
     ServerItem.setAttribute("data-placeid", PlaceId) //ROPRO INVITE SUPPORT
     ServerItem.setAttribute("data-gameid", Server.id) //ROPRO INVITE SUPPORT
 
-    ServerItem.setAttribute("full-list", true)
-
     const CardItem = document.createElement("div")
     CardItem.className = "card-item"
     //CardItem.style.border = "1px solid #17e84b"
@@ -192,38 +190,58 @@ function CreateServerBox(Server, PlaceId){
         const TokenToUserId = {}
 
         const Players = Server.players
+        let UserInServer = false
 
-        if (Players.length > 0) {
+        for (let i = 0; i < Players.length; i++){
+            if (Players[i].id == UserId){
+                UserInServer = true
+                break
+            }
+        }
+
+        const Deduct = UserInServer && 1 || 0
+
+        if (Players.length > Deduct) {
+
             FriendsInServerContainer = document.createElement("div")
             FriendsInServerContainer.className = "text friends-in-server-label"
 
             const FriendsInServerLabel = document.createElement("text")
 
-            FriendsInServerLabel.innerText = `Friend${Players.length > 1 && "s" || ""} in this server: `
+            FriendsInServerLabel.innerText = `Friend${Players.length > 1 + Deduct && "s" || ""} in this server: `
             FriendsInServerContainer.appendChild(FriendsInServerLabel)
+
+            let TrueIteration = 0
 
             for (let i = 0; i < Players.length; i++){
                 const Player = Players[i]
                 TokenToUserId[Player.playerToken] = Player.id
 
-                if (i > 0 && i < 2){
+                if (Player.id == UserId){
+                    TrueIteration++
+                    continue
+                }
+
+                if (TrueIteration > 0 && TrueIteration < 2){
                     const CommaElement = document.createElement("text")
                     CommaElement.innerText = ", "
                     FriendsInServerContainer.appendChild(CommaElement)
                 }
 
-                if (i < 2){
+                if (TrueIteration < 2){
                     const FriendNameElement = document.createElement("a")
                     FriendNameElement.className = "text-name"
                     FriendNameElement.href = `https://www.roblox.com/users/${Player.id}/profile`
                     FriendNameElement.innerText = Player.displayName
 
                     FriendsInServerContainer.appendChild(FriendNameElement)
-                } else if (i === 2) {
+                } else if (TrueIteration === 2) {
                     const EndElement = document.createElement("text")
-                    EndElement.innerText = `, and ${Players.length - 2} other${Players.length - 2 > 1 && "s" || ""}`
+                    EndElement.innerText = `, and ${Players.length - 2 - Deduct} other${Players.length - 2 > 1 + Deduct && "s" || ""}`
                     FriendsInServerContainer.appendChild(EndElement)
                 }
+
+                TrueIteration++
             }
         }
 

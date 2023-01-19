@@ -199,6 +199,8 @@ async function RunMain(){
     CheckPurchasedGamesOpened()
 }
 
-if (IsFeatureEnabled("PurchasedGamesFix")){
-    RunMain()
-}
+IsFeatureEnabled("PurchasedGamesFix").then(function(Enabled){
+    if (Enabled){
+        RunMain()
+    }
+})

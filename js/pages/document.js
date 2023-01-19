@@ -1,5 +1,6 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms))
-const EnabledFeatures = {QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
+
+const EnabledFeatures = {}
 let AreEnabledFeaturesFetched = false
 
 let UserId
@@ -108,7 +109,7 @@ async function GetPlaceIdFromGamePage(){
   return parseInt(PlaceId)
 }
 
-async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude){
+async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){
   if (!Headers){
     Headers = {}
   }
@@ -123,7 +124,11 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude){
 
   try {
     let Response = await fetch(URL, {method: Method, headers: Headers, body: Body, credentials: CredientalsInclude && "include" || "omit"})
-    const ResBody = await (Response).json()
+    let ResBody
+
+    if (!BypassResJSON){
+      ResBody = await (Response).json()
+    }
 
     let NewCSRFToken = Response.headers.get("x-csrf-token")
 
@@ -221,12 +226,13 @@ function AbbreviateNumber(number, decPlaces){
   return number
 }
 
-function FetchAllFeaturesEnabled(){
+async function FetchAllFeaturesEnabled(){
     if (!AreEnabledFeaturesFetched){
-        const NewSettings = window.localStorage.getItem("robloxQOL-settings")
+        //const NewSettings = window.localStorage.getItem("robloxQOL-settings")
+        const NewSettings = await chrome.runtime.sendMessage({type: "getsettings"})
 
         if (NewSettings){
-            for (const [key, value] of Object.entries(JSON.parse(NewSettings))){
+            for (const [key, value] of Object.entries(NewSettings)){
                 EnabledFeatures[key] = value
             }
         }
@@ -235,16 +241,17 @@ function FetchAllFeaturesEnabled(){
     }
 }
 
-function IsFeatureEnabled(Feature){
+async function IsFeatureEnabled(Feature){
     FetchAllFeaturesEnabled()
     return EnabledFeatures[Feature]
 }
 
-function SetFeatureEnabled(Feature, Enabled){
-    FetchAllFeaturesEnabled()
+async function SetFeatureEnabled(Feature, Enabled){
+    await FetchAllFeaturesEnabled()
 
     EnabledFeatures[Feature] = Enabled
-    window.localStorage.setItem("robloxQOL-settings", JSON.stringify(EnabledFeatures))
+    //window.localStorage.setItem("robloxQOL-settings", JSON.stringify(EnabledFeatures))
+    chrome.runtime.sendMessage({type: "changesetting", feature: Feature, enabled: Enabled})
 }
 
 GetUserId()

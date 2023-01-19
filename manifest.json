@@ -11,11 +11,24 @@
         "48": "img/icons/icon48x48.png"
     },
     "permissions": [
-        "notifications"
+        "storage",
+        "notifications",
+        "cookies"
+    ],
+    "host_permissions": [
+        "*://*.roblox.com/"
     ],
     "web_accessible_resources": [
         {
-            "resources": ["img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js", "js/pages/serverfilters/getserverprops.js", "js/pages/quickserverinvite/checkforinvite.js"],
+            "resources": [
+            "img/*",
+            "html/*",
+            "sounds/*",
+            "css/*",
+            "js/modules/globe.js",
+            "js/pages/serverfilters/getserverprops.js",
+            "js/pages/quickserverinvite/checkforinvite.js"
+        ],
             "matches": [
                 "https://www.roblox.com/*",
                 "https://web.roblox.com/*"
@@ -35,8 +48,7 @@
             "js/authentication/main.js",
             "js/pages/document.js",
             "js/pages/settings/settingsdropdown.js",
-            "js/pages/newmessageping.js",
-            "js/pages/friendhistory/runbackgroundhistory.js"
+            "js/pages/newmessageping.js"
         ],
         "run_at": "document_start",
         "all_frames": true
@@ -46,10 +58,10 @@
             "*://*.roblox.com/my/avatar*"
         ],
         "js": [
-            "js/pages/extraoutfits/main.js",
             "js/pages/extraoutfits/createelements.js",
             "js/pages/extraoutfits/handleconversion.js",
-            "js/pages/extraoutfits/createnormaloutfitelement.js"
+            "js/pages/extraoutfits/createnormaloutfitelement.js",
+            "js/pages/extraoutfits/main.js"
         ],
         "run_at": "document_idle",
         "all_frames": true
@@ -136,6 +148,20 @@
         "js": [
             "js/pages/settings/createelements.js",
             "js/pages/settings/main.js"
+        ],
+        "run_at": "document_idle",
+        "all_frames": true
+    },
+    {
+        "matches": [
+            "*://*.roblox.com/library/*"
+        ],
+        "js": [
+            "js/pages/assets/createelements.js",
+            "js/pages/assets/main.js"
+        ],
+        "css": [
+            "css/assets.css"
         ],
         "run_at": "document_idle",
         "all_frames": true

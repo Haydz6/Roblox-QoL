@@ -150,8 +150,11 @@ function HandleList(Id){
 async function QuickInviteMain(){
 	HandleList("rbx-game-server-item-container")
 	HandleList("rbx-friends-game-server-item-container")
+    HandleList("rbx-recent-game-server-item-container")
 }
 
-if (IsFeatureEnabled("QuickInvite")){
-    QuickInviteMain()
-}
+IsFeatureEnabled("QuickInvite").then(function(Enabled){
+    if (Enabled){
+        QuickInviteMain()
+    }
+})

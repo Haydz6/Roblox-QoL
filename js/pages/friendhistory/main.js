@@ -310,6 +310,6 @@ async function Main(){
     CheckIfHistoryTabOpened()
 }
 
-if (IsFeatureEnabled("FriendHistory")){
+if (await IsFeatureEnabled("FriendHistory")){
     Main()
 }

@@ -1,3 +1,5 @@
+let FullPurchasedCache = {}
+
 const PurchasedGames = []
 const PurchasedGameIds = []
 const CachedGamesIds = []
@@ -27,7 +29,14 @@ async function FetchFromCache(){
         return
     }
 
-    const CachedInfo = JSON.parse(CachedGamesStr)
+    const AllCache = JSON.parse(CachedGamesStr)
+
+    if (AllCache.Games){
+        window.localStorage.removeItem("robloxqol-purchasedgames")
+        return
+    }
+
+    const CachedInfo = AllCache[UserId]
     const CachedGames = CachedInfo.Games
     LastCachedTranscation = CachedInfo.LastTranscation
 
@@ -38,14 +47,17 @@ async function FetchFromCache(){
         CachedGamesIds.push(CachedGames[i])
         CachedGamesId[CachedGames[i]] = true
     }
+
+    FullPurchasedCache = AllCache
 }
 
 function SaveCache(){
     if (!FetchedFromCache){
         return
     }
+    FullPurchasedCache[UserId] = {Games: PurchasedGameIds, LastTranscation: LastCachedTranscation}
 
-    window.localStorage.setItem("robloxqol-purchasedgames", JSON.stringify({Games: PurchasedGameIds, LastTranscation: LastCachedTranscation}))
+    window.localStorage.setItem("robloxqol-purchasedgames", JSON.stringify(FullPurchasedCache))
 }
 
 function UpdatePurchasedGamesParagraph(){

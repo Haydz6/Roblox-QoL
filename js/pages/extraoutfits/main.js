@@ -305,6 +305,8 @@ async function CustomesOpened(){
       CreateOutfitButton.setAttribute(Status, Status)
       CreateOutfitButton.removeAttribute(OppositeStatus)
     })
+
+    Input.focus()
   })
 
   // CreateButton("Convert All Outfits").addEventListener("click", async function(){
@@ -392,7 +394,8 @@ async function RunMain(){
   console.log("extra outfits ready")
 }
 
-
-if (IsFeatureEnabled("ExtraOutfits")){
-  RunMain()
-}
+IsFeatureEnabled("ExtraOutfits").then(function(Enabled){
+  if (Enabled){
+      RunMain()
+  }
+})

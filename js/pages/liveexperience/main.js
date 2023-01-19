@@ -150,7 +150,9 @@ async function RunLiveLikes(){
     })
 }
 
-if (IsFeatureEnabled("LiveExperienceStats")){
-    RunLiveStats()
-    RunLiveLikes()
-}
+IsFeatureEnabled("LiveExperienceStats").then(function(Enabled){
+    if (Enabled){
+        RunLiveStats()
+        RunLiveLikes()
+    }
+})

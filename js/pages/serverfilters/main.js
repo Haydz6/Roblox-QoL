@@ -44,12 +44,16 @@ async function Main(){
     HandleList("rbx-friends-game-server-item-container")
 }
 
-if (IsFeatureEnabled("ServerRegions")){
-    InjectServerPropsRetriever()
-    Main()
-}
+IsFeatureEnabled("ServerRegions").then(function(Enabled){
+    if (Enabled){
+        InjectServerPropsRetriever()
+        Main()
+    }
+})
 
-if (IsFeatureEnabled("ServerFilters")){
-    InjectServerPropsRetriever()
-    RunFiltersMain()
-}
+IsFeatureEnabled("ServerFilters").then(function(Enabled){
+    if (Enabled){
+        InjectServerPropsRetriever()
+        RunFiltersMain()
+    }
+})

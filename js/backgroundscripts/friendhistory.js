@@ -85,21 +85,25 @@ async function AddImagesToHistory(AllHistory){
     }
 }
 
-function CanUpdateHistory(){
-    const LastTime = window.localStorage.getItem("robloxqol-lasthistoryupdate")
+async function CanUpdateHistory(){
+    const LastTime = await LocalStorage.get("lastfriendhistoryupdate")
     const CurrentTime = Math.floor(Date.now()/1000)
 
     if (LastTime && CurrentTime-parseInt(LastTime) < 60){
         return false
     }
 
-    window.localStorage.setItem("robloxqol-lasthistoryupdate", CurrentTime)
+    LocalStorage.set("lastfriendhistoryupdate", CurrentTime)
     return true
 }
 
 function CreateNotification(Friends, NewFriends, LostFriends){
     const Friend = Friends[0]
+    
     let Message = `${Friend.Name} ${Friend.Type === "Lost" && "un" || ""}friended you!`
+
+    if (Friend.Type === "Lost") LostFriends--
+    else NewFriends--
 
     if (Friends.length > 1){
         if (NewFriends > 0){
@@ -110,18 +114,18 @@ function CreateNotification(Friends, NewFriends, LostFriends){
         }
     }
 
-    chrome.runtime.sendMessage({type: "notification", notification: {
+    chrome.notifications.create("", {
         type: "basic",
         iconUrl: Friend.Image,
         title: "Roblox",
         message: Message,
-    }})
+    })
 }
 
 async function UpdateHistory(){
-    if (!CanUpdateHistory()) return
+    if (!await CanUpdateHistory()) return
 
-    const [Success, Result] = await RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/friends`, "GET", undefined, undefined, true)
+    const [Success, Result] = await RequestFunc(`https://friends.roblox.com/v1/users/${await GetCurrentUserId()}/friends`, "GET", undefined, undefined, true)
 
     if (!Success) return
 
@@ -134,7 +138,7 @@ async function UpdateHistory(){
 
     const [UpdateSuccess, UpdateResult] = await RequestFunc(WebServerEndpoints.History+"update", "POST", undefined, JSON.stringify(Friends))
 
-    if (!UpdateSuccess || !IsFeatureEnabled("FriendNotifications")) return
+    if (!UpdateSuccess || !await IsFeatureEnabled("FriendNotifications")) return
 
     const AllFriends = []
     let LostFriends = 0
@@ -158,8 +162,6 @@ async function UpdateHistory(){
 }
 
 async function Main(){
-    while (!UserId) await sleep(100)
-
     UpdateHistory()
     setInterval(UpdateHistory, 60*1000)
 }

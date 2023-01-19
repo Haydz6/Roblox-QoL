@@ -299,6 +299,9 @@ async function HandleFilterClick(Container, FilterButton){
     CreateMaxPlayersFilter()
 
     Container.appendChild(FilterList)
+    WaitForId("roproServerFiltersButton").then(function(Button){
+        Button.style.display = "none" //Turning off ropro filter settings keeps the button for some odd reason?
+    })
 }
 
 async function RunFiltersMain(){
