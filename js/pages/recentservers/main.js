@@ -1,31 +1,91 @@
+async function GetHeadshotsFromUserIds(UserIds){
+    const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserIds.join(",")}&size=60x60&format=Png&isCircular=true`, "GET", undefined, undefined, true)
+
+    if (!Success) return [false]
+
+    const UserIdToHeadshot = {}
+    const Data = Result.data
+
+    for (let i = 0; i < Data.length; i++){
+        const Info = Data[i]
+        UserIdToHeadshot[Info.targetId] = Info.imageUrl
+    }
+
+    return [true, UserIdToHeadshot]
+}
+
 async function Main(){
     const [Container, List, NoServers] = CreateRecentServersList()
 
     const FriendsList = await WaitForId("rbx-friends-running-games")
     FriendsList.parentElement.insertBefore(Container, FriendsList)
 
-    const RecentServers = await GetRecentServers()
+    const CurrentPlaceId = await GetPlaceIdFromGamePage()
+    const RecentServers = await GetRecentServers(CurrentPlaceId)
 
-    if (RecentServers.length === 0){
+    const UserIdToImageElements = {}
+    const UserIds = []
+    const Promises = []
+
+    const ServerBoxSort = []
+    let AnyServersExist = false
+
+    for (const [JobId, Server] of Object.entries(RecentServers)){
+        Promises.push(new Promise(async(resolve) => {
+            const [Success, Alive] = await IsRobloxServerAlive(CurrentPlaceId, Server.Id)
+
+            if (Success && !Alive){
+                chrome.runtime.sendMessage({type: "recentserverexpired", placeId: CurrentPlaceId, jobId: Server.Id})
+                resolve()
+                return
+            }
+
+            AnyServersExist = true
+
+            const [ServerBox, Image] = CreateRecentServerBox(CurrentPlaceId, Server.Id, Server.UserId, Server.LastPlayed)
+            ServerBoxSort.push({Element: ServerBox, LastPlayed: Server.LastPlayed})
+
+            if (!UserIdToImageElements[Server.UserId]){
+                UserIdToImageElements[Server.UserId] = []
+            }
+
+            UserIdToImageElements[Server.UserId].push(Image)
+            
+            if (!UserIds.includes(Server.UserId)){
+                UserIds.push(Server.UserId)
+            }
+
+            resolve()
+        }))
+    }
+
+    await Promise.all(Promises)
+
+    if (!AnyServersExist){
         List.style = "display: none;"
         NoServers.style = ""
         return
     }
 
-    const CurrentPlaceId = await GetPlaceIdFromGamePage()
-    const Servers = GetRecentServers(CurrentPlaceId)
+    ServerBoxSort.sort(function(a, b){
+        return b.LastPlayed - a.LastPlayed
+    })
 
-    for (let i = 0; i < Servers.length; i++){
-        new Promise(async() => {
-            const [Success, Alive] = await IsRobloxServerAlive(PlaceId, Server.Id)
+    for (let i = 0; i < ServerBoxSort.length; i++){
+        List.appendChild(ServerBoxSort[i].Element)
+    }
 
-            if (Success && !Alive) return
+    if (UserIds.length === 0) return
 
-            const Server = Servers[i]
-            const [ServerBox, Image] = CreateRecentServerBox(CurrentPlaceId, Server.Id, Server.UserId, Server.LastPlayed)
+    const [Success, UserIdToHeadshot] = await GetHeadshotsFromUserIds(UserIds)
 
-            List.appendChild(ServerBox)
-        })
+    for (let i = 0; i < UserIds.length; i++){
+        const UserId = UserIds[i]
+        const ImageElements = UserIdToImageElements[UserId]
+
+        for (let o = 0; o < ImageElements.length; o++){
+            ImageElements[o].src = Success && UserIdToHeadshot[UserId] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png"
+        }
     }
 }
 

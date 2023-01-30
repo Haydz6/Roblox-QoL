@@ -22,12 +22,12 @@ function CreateInfoDiv(){
 }
 
 function CreateServerInfo(Element, Server){
-    if (Element.getAttribute("has-region-set")) return
+    // if (Element.getAttribute("has-region")) return
 
-    Element.setAttribute("has-region-set", true)
+    Element.setAttribute("has-region", true)
 
     const RegionContainer = document.createElement("div")
-    RegionContainer.className = "text-info rbx-game-status rbx-game-server-status text-overflow"
+    RegionContainer.className = "text-info rbx-game-status rbx-game-server-status text-overflow server-info"
     RegionContainer.style = "font-size: 12px; margin-bottom: 0px; margin-top: 10px; overflow: visible; position: relative;"
     
     const RegionLabel = document.createElement("p")
@@ -101,6 +101,7 @@ function CreateServerInfo(Element, Server){
     RegionContainer.appendChild(HoverElement)
 
     //Element.appendChild(RegionContainer)
+    return RegionContainer
 }
 
 function CreateFilterPlayerCountBox(){
@@ -171,6 +172,7 @@ function CreateServerBox(Server, PlaceId){
     ServerItem.className = "rbx-game-server-item col-md-3 col-sm-4 col-xs-6"
     ServerItem.setAttribute("placeid", PlaceId)
     ServerItem.setAttribute("jobid", Server.id)
+    ServerItem.setAttribute("qol-checked", true)
 
     ServerItem.setAttribute("data-placeid", PlaceId) //ROPRO INVITE SUPPORT
     ServerItem.setAttribute("data-gameid", Server.id) //ROPRO INVITE SUPPORT

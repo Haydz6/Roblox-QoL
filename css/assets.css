@@ -15,3 +15,22 @@
     margin-right: 5px!important;
     padding: 0px!important;
 }
+
+.rolimons-category-icon {
+    width: 24px!important;
+    margin-left: 15px!important;
+}
+
+.icon-tooltiptext {
+    margin-top: -5.5px;
+    margin-left: 3px;
+    pointer-events: none;
+    width: 130px;
+    position: absolute;
+    background-color: black;
+    border-radius: 8px;
+    z-index: 10;
+    padding-right: 8px;
+    padding-left: 8px;
+    width: auto;
+}

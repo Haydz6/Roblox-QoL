@@ -4,7 +4,7 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.4.2",
+    "version": "2.5.2",
     "homepage_url": "https://www.roblox.com/my/account?tab=robloxqol#!/info",
     "icons": {
         "128": "img/icons/icon128x128.png",
@@ -13,13 +13,17 @@
     "permissions": [
         "*://*.roblox.com/*",
         "*://*.haydz6.com/*",
-        "notifications"
+        "*://*.rbxcdn.com/",
+        "storage",
+        "notifications",
+        "cookies",
+        "webRequest"
     ],
     "web_accessible_resources": [
-        "img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js", "js/pages/serverfilters/getserverprops.js", "js/pages/quickserverinvite/checkforinvite.js"
+        "img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js", "js/pages/serverfilters/getserverprops.js", "js/pages/quickserverinvite/checkforinvite.js", "js/pages/trades/injecttrade.js"
     ],
     "background": {
-        "scripts": ["js/background.js"],
+        "scripts": ["js/background.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js"],
         "persistent": true
     },
     "content_scripts": [
@@ -32,8 +36,7 @@
                 "js/authentication/main.js",
                 "js/pages/document.js",
                 "js/pages/settings/settingsdropdown.js",
-                "js/pages/newmessageping.js",
-                "js/pages/friendhistory/runbackgroundhistory.js"
+                "js/pages/newmessageping.js"
             ],
             "run_at": "document_start",
             "all_frames": true
@@ -102,7 +105,19 @@
                 "js/pages/serverfilters/filterservers.js",
                 "js/pages/serverfilters/addserverregion.js",
                 "js/pages/serverfilters/filters.js",
-                "js/pages/serverfilters/main.js"
+                "js/pages/serverfilters/main.js",
+
+                "js/pages/quickserverinvite/injectcheckforinvite.js",
+                "js/pages/quickserverinvite/createelements.js",
+                "js/pages/quickserverinvite/setinstalledidentifier.js",
+                "js/pages/quickserverinvite/main.js",
+
+                "js/pages/badges/achieved.js",
+
+                "js/pages/recentservers/createelements.js",
+                "js/pages/recentservers/isserveralive.js",
+                "js/pages/recentservers/recentservers.js",
+                "js/pages/recentservers/main.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -114,6 +129,47 @@
             "js": [
                 "js/pages/settings/createelements.js",
                 "js/pages/settings/main.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/users/*/profile"
+            ],
+            "js": [
+                "js/pages/friendhistory/createelements.js",
+                "js/pages/mutuals/createelements.js",
+                "js/pages/mutuals/api.js",
+                "js/pages/mutuals/profilepage.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/users/*/friends*"
+            ],
+            "js": [
+                "js/pages/friendhistory/createelements.js",
+                "js/pages/mutuals/createelements.js",
+                "js/pages/mutuals/api.js",
+                "js/pages/mutuals/friendspage.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/trades"
+            ],
+            "css": [
+                "css/trades.css"
+            ],
+            "js": [
+                "js/pages/trades/createelements.js",
+                "js/pages/trades/buttonhandlers.js",
+                "js/pages/trades/main.js"
             ],
             "run_at": "document_idle",
             "all_frames": true

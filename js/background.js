@@ -2,9 +2,11 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
-const WebServerEndpoints = {Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/"}
+const WebServerEndpoints = {Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 
-const EnabledFeatures = {ExploreAsset: true, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
+const ManifestVersion = chrome.runtime.getManifest()["manifest_version"]
+
+const EnabledFeatures = {TradeNotifier: true, QuickDecline: true, QuickCancel: true, ProfileThemes: false, HideFooter: false, HideRobloxAds: false, MoveHomeFavouritesToThirdRow: true, HideDesktopAppBanner: true, RapOnProfile: true, ValueOnProfile: true, ValueDemandOnItem: true, ValuesOnOverview: true, RecentServers: true, TradeFilters: true, Mutuals: false, ExploreAsset: true, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
 let AreEnabledFeaturesFetched = false
 
 let ROBLOSECURITY
@@ -14,6 +16,12 @@ let CSRFToken = ""
 
 let CachedAuthKey = ""
 let FetchingAuthKey = false
+
+const OnMessageBind = {}
+
+function BindToOnMessage(Type, Async, Callback){
+    OnMessageBind[Type] = {Callback: Callback, Async: Async}
+}
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     if (sender.id !== chrome.runtime.id){
@@ -46,6 +54,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         })
         //sendResponse(EnabledFeatures)
         return true
+    }
+    
+    const MessageBind = OnMessageBind[request.type]
+    if (MessageBind){
+        if (MessageBind.Async){
+            MessageBind.Callback(request).then(function(Result){
+                sendResponse(Result)
+            })
+
+            return true
+        }
+
+        sendResponse(MessageBind.Callback(request))
     }
 })
 
@@ -157,10 +178,8 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
             if (ResBody?.Result == "Invalid authentication!"){
                 CachedAuthKey = ""
                 await LocalStorage.remove("AuthKey")
-                console.log("auth key invalid, getting a new one")
             }
   
-            console.log("sending with csrf token")
             return await RequestFunc(URL, Method, Headers, Body, CredientalsInclude)
         }
   
@@ -173,9 +192,12 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
 
 const LocalStorage = {set: function(key, value){
     return chrome.storage.local.set({[key]: value})
-}, get: async function(key){
-    const Result = await chrome.storage.local.get(key)
-    return Result[key]
+}, get: function(key){
+    return new Promise((resolve) => {
+        chrome.storage.local.get(key, function(Result){
+            resolve(Result[key])
+        })
+    })
 }, remove: async function(key){
     return chrome.storage.local.remove(key)
 }}
@@ -186,6 +208,7 @@ chrome.cookies.onChanged.addListener(function(Change){
         UserId = null
 
         if (!Change.removed){
+            console.log("userid update")
             GetCurrentUserId()
         }
     }
@@ -217,8 +240,21 @@ async function SetFeatureEnabled(Feature, Enabled){
     LocalStorage.set("settings", JSON.stringify(EnabledFeatures))
 }
 
-try {
-    importScripts(chrome.runtime.getURL("js/backgroundscripts/friendhistory.js"))
-} catch (err) {
-    console.error(err.message)
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+if (ManifestVersion > 2){
+    const Scripts = ["js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js"]
+    const FullScriptURLs = []
+
+    for (let i = 0; i < Scripts.length; i++){
+        FullScriptURLs.push(chrome.runtime.getURL(Scripts[i]))
+    }
+
+    try {
+        importScripts(...FullScriptURLs)
+    } catch (err) {
+        console.error(err.message)
+    }
 }

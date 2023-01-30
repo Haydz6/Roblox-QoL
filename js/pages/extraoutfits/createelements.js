@@ -41,6 +41,14 @@ function CreateOutfitModalWindow(Title, Description, InputPlaceholder, LeftButto
     let Form = document.createElement("form")
     Form.setAttribute("name", "nameForm")
     Form.className = "ng-pristine ng-invalid ng-invalid-required ng-valid-pattern"
+
+    let CreateButton = document.createElement("button")
+    CreateButton.setAttribute("ng-disabled", "nameForm.$invalid || nameForm.outfitName.$pristine")
+    CreateButton.setAttribute("disabled", "disabled")
+    CreateButton.id = "submit"
+    CreateButton.type = "button"
+    CreateButton.className = "btn-secondary-md btn-min-width ng-binding"
+    CreateButton.innerText = LeftButtonText
   
     let FormBody
     let FormGroupInput
@@ -68,6 +76,14 @@ function CreateOutfitModalWindow(Title, Description, InputPlaceholder, LeftButto
             FormGroupInput.setAttribute("placeholder", InputPlaceholder)
             FormGroupInput.setAttribute("autocomplete", "off")
 
+            FormGroupInput.addEventListener("keypress", function(e){
+                if (e.code === "Enter"){
+                    e.preventDefault()
+                    CreateButton.click()
+                    return
+                }
+            })
+
             let InvisibleFormGroupInput = document.createElement("p")
             InvisibleFormGroupInput.setAttribute("ng-class", "{'invisible': !nameForm.outfitName.$invalid || nameForm.outfitName.$pristine }")
             InvisibleFormGroupInput.className = "form-control-label ng-binding invisible"
@@ -82,14 +98,6 @@ function CreateOutfitModalWindow(Title, Description, InputPlaceholder, LeftButto
   
     let ModalFooter = document.createElement("div")
     ModalFooter.className = "modal-footer"
-  
-    let CreateButton = document.createElement("button")
-    CreateButton.setAttribute("ng-disabled", "nameForm.$invalid || nameForm.outfitName.$pristine")
-    CreateButton.setAttribute("disabled", "disabled")
-    CreateButton.id = "submit"
-    CreateButton.type = "button"
-    CreateButton.className = "btn-secondary-md btn-min-width ng-binding"
-    CreateButton.innerText = LeftButtonText
   
     let CancelButton = document.createElement("button")
     //CancelButton.setAttribute("ng-click", "close()")

@@ -64,11 +64,13 @@ function CreateFriend(UserId, Name, DisplayName, Thumbnail, Type, FriendedTimest
     const AvatarStatus = document.createElement("div")
     AvatarStatus.className = "avatar-status"
 
-    const AvatarIcon = document.createElement("img")
-    AvatarIcon.src = chrome.runtime.getURL(`img/friendhistory/${Type}.png`)
-    AvatarIcon.style = "height:20px;"
+    if (Type){
+        const AvatarIcon = document.createElement("img")
+        AvatarIcon.src = chrome.runtime.getURL(`img/friendhistory/${Type}.png`)
+        AvatarIcon.style = "height:20px;"
 
-    AvatarStatus.appendChild(AvatarIcon)
+        AvatarStatus.appendChild(AvatarIcon)
+    }
 
     AvatarCardFullbody.appendChild(AvatarStatus)
 
@@ -97,14 +99,18 @@ function CreateFriend(UserId, Name, DisplayName, Thumbnail, Type, FriendedTimest
     NameLabel.className = "avatar-card-label"
     NameLabel.innerText = `@${Name}`
 
-    const Date = document.createElement("div")
-    Date.className = "avatar-card-label"
-    Date.innerText = `${(Type === "New" && "Since" || "At")} ${TimestampToDate(Type === "New" && FriendedTimestamp || UnfriendedTimestamp)}`
+    let Date
+
+    if (Type){
+        Date = document.createElement("div")
+        Date.className = "avatar-card-label"
+        Date.innerText = `${(Type === "New" && "Since" || "At")} ${TimestampToDate(Type === "New" && FriendedTimestamp || UnfriendedTimestamp)}`
+    }
 
     CaptionSpan.appendChild(NameLabel)
-    CaptionSpan.appendChild(Date)
+    if (Date) CaptionSpan.appendChild(Date)
 
-    if (Type === "Lost"){
+    if (Type && Type === "Lost"){
         const Length = document.createElement("div")
         Length.className = "avatar-card-label"
         Length.innerText = `Friended for ${SecondsToLength(UnfriendedTimestamp-FriendedTimestamp)}`

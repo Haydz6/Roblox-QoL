@@ -10,7 +10,9 @@ async function GetAssetType(Id){
 
 function GetAssetIdFromURL(){
     const URL = window.location.href
-    const URLWithID = URL.split("library/")[1]
+    let URLWithID = URL.split("library/")[1]
+
+    if (!URLWithID) URLWithID = URL.split("catalog/")[1]
 
     return parseInt(URLWithID.split("/")[0])
 }

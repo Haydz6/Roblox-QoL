@@ -27,10 +27,6 @@ function GetAlphaTween(b, e, i){
     return b + ((i/1) * (e-b))
 }
 
-function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
 function TweenLabel(Label, Start, End, Length, ModifierFunction){
     return TweenNumber(Start, End, Length, function(i){
         Label.innerText = ModifierFunction && ModifierFunction(i) || i

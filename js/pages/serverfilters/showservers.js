@@ -100,8 +100,10 @@ async function ReplaceLoadMoreServersButton(){
         if (!DefaultLoadMoreServersButton){
             DefaultLoadMoreServersButton = OldLoadMoreButton
             OldLoadMoreButton.style = "display:none;"
-        } else {
+        } else if (DefaultLoadMoreServersButton !== OldLoadMoreButton) {
             OldLoadMoreButton.remove()
+        } else {
+            OldLoadMoreButton.style = "display:none;"
         }
     }
 

@@ -4,7 +4,7 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.4.2",
+    "version": "2.5.2",
     "homepage_url": "https://www.roblox.com/my/account?tab=robloxqol#!/info",
     "icons": {
         "128": "img/icons/icon128x128.png",
@@ -13,10 +13,12 @@
     "permissions": [
         "storage",
         "notifications",
-        "cookies"
+        "cookies",
+        "declarativeNetRequest"
     ],
     "host_permissions": [
-        "*://*.roblox.com/"
+        "*://*.roblox.com/",
+        "*://*.rbxcdn.com/"
     ],
     "web_accessible_resources": [
         {
@@ -27,7 +29,8 @@
             "css/*",
             "js/modules/globe.js",
             "js/pages/serverfilters/getserverprops.js",
-            "js/pages/quickserverinvite/checkforinvite.js"
+            "js/pages/quickserverinvite/checkforinvite.js",
+            "js/pages/trades/injecttrade.js"
         ],
             "matches": [
                 "https://www.roblox.com/*",
@@ -35,145 +38,212 @@
             ]
         }
     ],
+    "declarative_net_request": {
+        "rule_resources": [{
+          "id": "ruleset_1",
+          "enabled": true,
+          "path": "rules.json"
+        }]
+    },
     "background": {
         "service_worker": "js/background.js"
     },
     "content_scripts": [
-    {
-        "matches": [
-            "*://*.roblox.com/*"
-        ],
-        "js": [
-            "js/modules/getNavigatorLanguage.js",
-            "js/authentication/main.js",
-            "js/pages/document.js",
-            "js/pages/settings/settingsdropdown.js",
-            "js/pages/newmessageping.js"
-        ],
-        "run_at": "document_start",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/my/avatar*"
-        ],
-        "js": [
-            "js/pages/extraoutfits/createelements.js",
-            "js/pages/extraoutfits/handleconversion.js",
-            "js/pages/extraoutfits/createnormaloutfitelement.js",
-            "js/pages/extraoutfits/main.js"
-        ],
-        "run_at": "document_idle",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/users/friends*"
-        ],
-        "js": [
-            "js/pages/friendhistory/createelements.js",
-            "js/pages/friendhistory/loadpages.js",
-            "js/pages/friendhistory/main.js"
-        ],
-        "run_at": "document_idle",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/users/*/inventory*"
-        ],
-        "js": [
-            "js/pages/activeprivateservers/createelements.js",
-            "js/pages/activeprivateservers/getactiveprivateservers.js",
-            "js/pages/activeprivateservers/getelements.js",
-            "js/pages/activeprivateservers/main.js",
+        {
+            "matches": [
+                "*://*.roblox.com/*"
+            ],
+            "js": [
+                "js/modules/getNavigatorLanguage.js",
+                "js/authentication/main.js",
+                "js/pages/document.js",
+                "js/pages/settings/settingsdropdown.js",
+                "js/pages/newmessageping.js",
+                "js/pages/generalfixes/hidedesktopbanner.js",
+                "js/pages/generalfixes/hiderobloxads.js",
+                "js/pages/generalfixes/disablefooter.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/my/avatar*"
+            ],
+            "js": [
+                "js/pages/extraoutfits/createelements.js",
+                "js/pages/extraoutfits/handleconversion.js",
+                "js/pages/extraoutfits/createnormaloutfitelement.js",
+                "js/pages/extraoutfits/main.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/users/friends*"
+            ],
+            "js": [
+                "js/pages/friendhistory/createelements.js",
+                "js/pages/friendhistory/loadpages.js",
+                "js/pages/friendhistory/main.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/users/*/inventory*"
+            ],
+            "js": [
+                "js/pages/activeprivateservers/createelements.js",
+                "js/pages/activeprivateservers/getactiveprivateservers.js",
+                "js/pages/activeprivateservers/getelements.js",
+                "js/pages/activeprivateservers/main.js",
+    
+                "js/pages/purchasedgamesinventoryfix/getpurchasedgames.js",
+                "js/pages/purchasedgamesinventoryfix/main.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/discover*"
+            ],
+            "js": [
+                "js/pages/fixfavouritespage/createelement.js",
+                "js/pages/fixfavouritespage/main.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/games/*"
+            ],
+            "js": [
+                "js/pages/liveexperience/api.js",
+                "js/pages/liveexperience/main.js",
+                "js/pages/serverfilters/createelements.js",
+                "js/pages/serverfilters/showservers.js",
+                "js/pages/serverfilters/filterservers.js",
+                "js/pages/serverfilters/addserverregion.js",
+                "js/pages/serverfilters/filters.js",
+                "js/pages/serverfilters/main.js",
 
-            "js/pages/purchasedgamesinventoryfix/getpurchasedgames.js",
-            "js/pages/purchasedgamesinventoryfix/main.js"
-        ],
-        "run_at": "document_idle",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/discover*"
-        ],
-        "js": [
-            "js/pages/fixfavouritespage/createelement.js",
-            "js/pages/fixfavouritespage/main.js"
-        ],
-        "run_at": "document_idle",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/games/*"
-        ],
-        "css:": [
-            "css/filters.css"
-        ],
-        "js": [
-            "js/pages/liveexperience/api.js",
-            "js/pages/liveexperience/main.js",
-            "js/pages/badges/achieved.js",
-            "js/pages/quickserverinvite/createelements.js",
-            "js/pages/quickserverinvite/main.js",
-            "js/pages/serverfilters/createelements.js",
-            "js/pages/serverfilters/showservers.js",
-            "js/pages/serverfilters/filterservers.js",
-            "js/pages/serverfilters/addserverregion.js",
-            "js/pages/serverfilters/filters.js",
-            "js/pages/serverfilters/main.js"
-        ],
-        "run_at": "document_idle",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/games/*"
-        ],
-        "css:": [
-            "css/filters.css"
-        ],
-        "js": [
-            "js/pages/quickserverinvite/injectcheckforinvite.js"
-        ],
-        "run_at": "document_start",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/my/account*"
-        ],
-        "js": [
-            "js/pages/settings/createelements.js",
-            "js/pages/settings/main.js"
-        ],
-        "run_at": "document_idle",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://*.roblox.com/library/*"
-        ],
-        "js": [
-            "js/pages/assets/createelements.js",
-            "js/pages/assets/main.js"
-        ],
-        "css": [
-            "css/assets.css"
-        ],
-        "run_at": "document_idle",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://qol.haydz6.com/i/*"
-        ],
-        "js": [
-            "js/pages/quickserverinvite/setinstalledidentifier.js"
-        ],
-        "run_at": "document_idle",
-        "all_frames": true
-    }]
+                "js/pages/quickserverinvite/injectcheckforinvite.js",
+                "js/pages/quickserverinvite/createelements.js",
+                "js/pages/quickserverinvite/setinstalledidentifier.js",
+                "js/pages/quickserverinvite/main.js",
+
+                "js/pages/badges/achieved.js",
+
+                "js/pages/recentservers/createelements.js",
+                "js/pages/recentservers/isserveralive.js",
+                "js/pages/recentservers/recentservers.js",
+                "js/pages/recentservers/main.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/my/account*"
+            ],
+            "js": [
+                "js/pages/settings/createelements.js",
+                "js/pages/settings/main.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/users/*/profile*"
+            ],
+            "css": [
+                "css/theme.css"
+            ],
+            "js": [
+                "js/pages/friendhistory/createelements.js",
+                "js/pages/mutuals/createelements.js",
+                "js/pages/mutuals/api.js",
+                "js/pages/mutuals/profilepage.js",
+
+                "js/pages/rolimonsprofile/createelements.js",
+                "js/pages/trades/rolimons.js",
+                "js/pages/trades/getuserinventory.js",
+                "js/pages/rolimonsprofile/rolimons.js",
+
+                "js/pages/themes/createelements.js",
+                "js/pages/themes/profile.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/users/*/friends*"
+            ],
+            "js": [
+                "js/pages/friendhistory/createelements.js",
+                "js/pages/mutuals/createelements.js",
+                "js/pages/mutuals/api.js",
+                "js/pages/mutuals/friendspage.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/trades*",
+                "*://*.roblox.com/users/*/trade"
+            ],
+            "css": [
+                "css/trades.css",
+                "css/assets.css"
+            ],
+            "js": [
+                "js/pages/trades/createelements.js",
+                "js/pages/assets/createelements.js",
+                "js/pages/trades/buttonhandlers.js",
+                "js/pages/trades/getuserinventory.js",
+                "js/pages/trades/rolimons.js",
+                "js/pages/trades/addvaluestotradeoverview.js",
+                "js/pages/trades/main.js",
+                "js/pages/trades/addinfototrade.js",
+                "js/pages/trades/createtrade.js",
+                "js/pages/trades/openontrade.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/catalog/*"
+            ],
+            "css": [
+                "css/assets.css",
+                "css/trades.css"
+            ],
+            "js": [
+                "js/pages/assets/createelements.js",
+                "js/pages/assets/main.js",
+                "js/pages/trades/rolimons.js",
+                "js/pages/assets/addrolimons.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/home"
+            ],
+            "js": [
+                "js/pages/generalfixes/movehomefavouritestothirdrow.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        }]
 }

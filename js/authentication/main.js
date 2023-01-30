@@ -12,7 +12,6 @@ async function GetAuthKey(){
   
     FetchingAuthKey = true
     CachedAuthKey = await chrome.runtime.sendMessage({type: "authentication"})
-    console.log(CachedAuthKey)
     FetchingAuthKey = false
   
     return CachedAuthKey

@@ -1,0 +1,33 @@
+.theme-list {
+    display: inline-flex;
+    width: 100%;
+}
+
+.theme-list > .scroller {
+    height: 200px;
+    z-index: 2;
+    position: relative;
+}
+
+.theme-list > .list-container {
+    overflow: hidden;
+    width: 95%;
+    margin: 0px 10px;
+}
+
+.theme-list > .list-container > .list {
+    display: inline-flex;
+    position: relative;
+}
+
+.theme-list > .list-container > .list > .preview {
+    width: 150px;
+    height: 200px;
+    margin: 0px 10px;
+}
+
+.theme-list > .list-container > .list > .preview > img {
+    height: 100%;
+    width: 100%;
+    border-radius: 8px;
+}

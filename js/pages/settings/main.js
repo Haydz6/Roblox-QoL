@@ -15,7 +15,27 @@ const Settings = {
         ExploreAsset: {
             Title: "Asset Download/View",
             Description: "Allows you to download or view an asset. Also allows you to go to the image of a decal."
+        },
+        HideDesktopAppBanner: {
+            Title: "Hide Desktop App Banner",
+            Description: "Hides the roblox desktop app banner from appearing."
+        },
+        MoveHomeFavouritesToThirdRow: {
+            Title: "Move Favorites Row Up",
+            Description: "Move the favorites category on the games page above the recommended rows."
+        },
+        HideRobloxAds: {
+            Title: "Hide Roblox Ads",
+            Description: "Hides roblox advertisements from appearing."
+        },
+        HideFooter: {
+            Title: "Hide Footer",
+            Description: "Hides the footer at the bottom of the page."
         }
+        // Mutuals: {
+        //     Title: "Mutuals",
+        //     Description: "Allows you to see mutuals friends!"
+        // }
     },
     Games: {
         LiveExperienceStats: {
@@ -37,6 +57,44 @@ const Settings = {
         AwardedBadgeDates: {
             Title: "Badge Awarded Dates",
             Description: "Shows you when the date you achieved a badge."
+        },
+        RecentServers: {
+            Title: "Show Recent Servers",
+            Description: "Shows recent servers you have joined for a game."
+        }
+    },
+    Trades: {
+        TradeNotifier: {
+            Title: "Trade Notifier",
+            Description: "Sends you a notification when you receive, send, decline or cancel a trade."
+        },
+        TradeFilters: {
+            Title: "Trade Filters",
+            Description: "Allows you to cancel all, old, loss and other trades."
+        },
+        ValuesOnOverview: {
+            Title: "Trade Value Overview",
+            Description: "Allows you to see trade values on the overview list."
+        },
+        ValueDemandOnItem: {
+            Title: "Demand/Value on Item",
+            Description: "Shows a limited item's demand and value."
+        },
+        RapOnProfile: {
+            Title: "Rap on Profile",
+            Description: "Shows a user's rap on their profile."
+        },
+        ValueOnProfile: {
+            Title: "Value on Profile",
+            Description: "Shows a user's rolimons value on their profile."
+        },
+        QuickDecline: {
+            Title: "Quick Decline",
+            Description: "Adds a button to the trades list to quick decline."
+        },
+        QuickCancel: {
+            Title: "Quick Cancel",
+            Description: "Adds a button to the trades list to quick cancel."
         }
     },
     Friends: {

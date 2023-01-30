@@ -30,6 +30,7 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled){
     Slider.setAttribute("role", "switch")
 
     Slider.addEventListener("click", function(){
+        console.log("CLICK")
         Enabled = !Enabled
         Slider.className = `btn-toggle receiver-destination-type-toggle ${Enabled && "on" || "off"}`
         SetFeatureEnabled(Option, Enabled)
@@ -53,7 +54,7 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled){
     Section.appendChild(Slider)
 
     const TitleLabel = document.createElement("label")
-    TitleLabel.setAttribute("for", `${Option}-toggle`)
+    //TitleLabel.setAttribute("for", `${Option}-toggle`)
     TitleLabel.className = "btn-toggle-label ng-binding"
     TitleLabel.innerText = Title
 

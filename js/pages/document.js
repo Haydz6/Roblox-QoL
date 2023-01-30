@@ -8,7 +8,7 @@ let CSRFToken = ""
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
-const WebServerEndpoints = {Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/"}
+const WebServerEndpoints = {Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 
 function FindFirstClass(ClassName){
   return document.getElementsByClassName(ClassName)[0]
@@ -162,7 +162,7 @@ function ClearAllChildren(Element){
 
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
-function SecondsToLength(Seconds){
+function SecondsToLength(Seconds, OnlyOne){
   const d = Math.floor(Seconds / (3600*24))
   const h = Math.floor(Seconds % (3600*24) / 3600)
   const m = Math.floor(Seconds % 3600 / 60)
@@ -172,8 +172,10 @@ function SecondsToLength(Seconds){
       return `${d} day${d > 1 && "s" || ""}`
   } else if (h > 0){
       return `${h} hour${h > 1 && "s" || ""}`
-  } else if (m > 0){
+  } else if (m > 0 && !OnlyOne){
       return `${m} minute${m > 1 && "s" || ""} ${s} second${s > 1 && "s" || ""}`
+  } else if (m > 0 && OnlyOne){
+    return `${m} minute${m > 1 && "s" || ""}`
   }
 
   return `${s} second${s > 1 && "s" || ""}`
@@ -199,6 +201,10 @@ function TimestampToDate(Timestamp, NumberFirst){
   DayDate = DateStamp.toLocaleDateString(CurrentLanguage)
 
   return `${NumberFirst && NumberDate || DayDate} ${NumberFirst && DayDate || NumberDate}`
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function AbbreviateNumber(number, decPlaces){
@@ -230,7 +236,7 @@ async function FetchAllFeaturesEnabled(){
     if (!AreEnabledFeaturesFetched){
         //const NewSettings = window.localStorage.getItem("robloxQOL-settings")
         const NewSettings = await chrome.runtime.sendMessage({type: "getsettings"})
-
+        
         if (NewSettings){
             for (const [key, value] of Object.entries(NewSettings)){
                 EnabledFeatures[key] = value
@@ -242,7 +248,7 @@ async function FetchAllFeaturesEnabled(){
 }
 
 async function IsFeatureEnabled(Feature){
-    FetchAllFeaturesEnabled()
+    await FetchAllFeaturesEnabled()
     return EnabledFeatures[Feature]
 }
 

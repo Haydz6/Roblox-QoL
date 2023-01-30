@@ -205,6 +205,10 @@ async function HandleHistoryPage(){
     }
 
     async function Fetch(){
+        console.log(CurrentPage)
+
+        await sleep(50)
+
         SetButtonStatus(BackButton, false)
         SetButtonStatus(NextButton, false)
 
@@ -219,6 +223,8 @@ async function HandleHistoryPage(){
         for (let i = 0; i < History.length; i++){
             CreateFromFriendHistory(History[i], FriendsList)
         }
+
+        await sleep(50)
 
         SetButtonStatus(BackButton, CurrentPage > 1)
         SetButtonStatus(NextButton, NextExists)
@@ -310,6 +316,8 @@ async function Main(){
     CheckIfHistoryTabOpened()
 }
 
-if (await IsFeatureEnabled("FriendHistory")){
-    Main()
-}
+IsFeatureEnabled("FriendHistory").then(function(Enabled){
+    if (Enabled){
+        Main()
+    }
+})

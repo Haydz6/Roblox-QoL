@@ -1,0 +1,161 @@
+.dropdown-trades-options {
+    position: absolute!important;
+    left: 205px!important;
+}
+
+.slider > .trade-option {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.confirm-modal-dropdown-button {
+    background-color: transparent;
+    border-color: transparent;
+    color: hsla(0,0%,100%,.7);
+    margin-left: 36%;
+}
+
+.confirm-modal-dropdown {
+    top: 160px!important;
+    position: absolute!important;
+    width: 40%!important;
+    left: 29%!important;
+}
+
+.trade-value-overview {
+    background-color: #909090;
+    bottom: 0px;
+    right: 0px;
+    position: absolute;
+    height: 45px;
+    width: auto;
+    border-top-left-radius: 6px;
+}
+
+.trade-value-overview > .stripe {
+    height: 100%;
+    width: 7px;
+    position: absolute; /*#4f7b58 or #ab31308*/
+    border-top-left-radius: 4px;
+}
+
+.trade-value-overview > .divider {
+    position: absolute;
+    height: 1px;
+    width: 80%;
+    top: 45%;
+    right: 5%;
+    background-color: #3e3d3d;
+}
+
+.trade-value-overview > .price {
+    color: #141414;
+    font-size: 14px;
+    margin-left: 10px;
+    margin-right: 4px;
+}
+
+.icon-rolimons-20x20 {
+    background-image: url(chrome-extension://__MSG_@@extension_id__/img/trades/rolimons-16x16.png)!important;
+    background-size: 80%;
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    vertical-align: middle;
+
+    margin-bottom: 2px;
+    margin-right: 4px;
+}
+
+.icon-offer-20x20 {
+    background-image: url(chrome-extension://__MSG_@@extension_id__/img/trades/offer.png)!important;
+    background-size: 80%;
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    vertical-align: middle;
+
+    margin-bottom: 2px;
+    margin-right: 4px;
+}
+
+.link-icon {
+    width: 16px;
+    margin-left: 4px;
+    display: inline-block!important;
+}
+
+.gain-summaries {
+    width: auto;
+    height: 25px;
+    right: 30%;
+    top: -12px;
+    position: absolute;
+    border-radius: 8px;
+    padding: 0px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.gain-summaries > .gain-summary {
+    width: auto;
+    height: 25px;
+    right: 30%;
+    top: -12px;
+    border-radius: 8px;
+    padding: 0px 8px;
+    display: flex;
+    flex-direction: row;
+    margin: 4px 0px;
+}
+
+.gain-summary > .box {
+    width: auto;
+    height: 25px;
+    background-color: rgb(79, 123, 88);
+    border-radius: 8px;
+    padding: 0px 8px;
+    display: flex;
+    align-items: center;
+    margin: 0px 4px;
+}
+
+.gain-summary > .box > .icon-robux-16x16 {
+    margin-right: 4px;
+}
+
+.gain-summary > .box > .icon-rolimons-20x20 {
+    margin-right: 4px;
+    background-image: url(chrome-extension://lpifnjhfnnmedhljaihkjalhnfhbdeio/img/trades/rolimons-16x16-white.png)!important;
+}
+
+.gain-summary > .box > p {
+    color: white;
+    text-align: center;
+}
+
+.trade-request-item  {
+    min-height: 70px!important;
+    height: auto!important;
+}
+
+.item-value {
+    display: inline-block!important;
+}
+
+.item-value .custom {
+    display: inline-block!important;
+    margin-left: 5px!important;
+}
+
+.item-value .custom > .icon-rolimons-20x20 {
+    margin: 0px 2px;
+}

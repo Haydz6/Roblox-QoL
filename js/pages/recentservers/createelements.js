@@ -49,7 +49,7 @@ function CreateRecentServerBox(PlaceId, JobId, ServerUserId, LastPlayed){
     ServerItem.setAttribute("jobid", JobId)
 
     ServerItem.setAttribute("data-placeid", PlaceId) //ROPRO INVITE SUPPORT
-    ServerItem.setAttribute("data-gameid", Server.id) //ROPRO INVITE SUPPORT
+    ServerItem.setAttribute("data-gameid", JobId) //ROPRO INVITE SUPPORT
 
     const CardItem = document.createElement("div")
     CardItem.className = "card-item"
@@ -79,7 +79,8 @@ function CreateRecentServerBox(PlaceId, JobId, ServerUserId, LastPlayed){
 
     const PlayerCountItem = document.createElement("div")
     PlayerCountItem.className = "text-info rbx-game-status rbx-game-server-status text-overflow"
-    PlayerCountItem.textContent = `Last played ${SecondsToLength((Date.now()/1000)-LastPlayed)}`
+    PlayerCountItem.textContent = `Last played ${SecondsToLength((Date.now()/1000)-LastPlayed, true)} ago`
+    PlayerCountItem.style = "height: auto!important; overflow: visible!important; white-space: break-spaces!important;"
     ServerDetailsItem.appendChild(PlayerCountItem)
 
     const JoinButtonContainer = document.createElement("span")
@@ -97,11 +98,12 @@ function CreateRecentServerBox(PlaceId, JobId, ServerUserId, LastPlayed){
 
     ServerItem.appendChild(CardItem)
 
-    if (Server.Region){
-        CreateServerInfo(ServerItem, Server)
-    }
+    // if (Server.Region){
+    //     CreateServerInfo(ServerItem, Server)
+    // }
+    AddServerRegion(ServerItem)
 
-    JoinButton.setAttribute("onclick", `Roblox.GameLauncher.joinGameInstance(parseInt("${PlaceId}",10), "${Server.id}")`)
+    JoinButton.setAttribute("onclick", `Roblox.GameLauncher.joinGameInstance(parseInt("${PlaceId}",10), "${JobId}")`)
 
     return [ServerItem, Image]
 }
