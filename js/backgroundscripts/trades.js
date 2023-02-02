@@ -80,7 +80,7 @@ async function IsTradeScanned(Type, TradeId){
         AlreadyScannedTrades[Type] = true
         const ScannedTradesUnparsed = await LocalStorage.get("ScannedTrades_"+Type)
 
-        if (!ScannedTradesUnparsed || 1 == "1"){
+        if (!ScannedTradesUnparsed){
             AlreadyScannedTrades[Type] = {}
         } else {
             AlreadyScannedTrades[Type] = JSON.parse(ScannedTradesUnparsed)
