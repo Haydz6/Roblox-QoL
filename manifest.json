@@ -18,7 +18,8 @@
     ],
     "host_permissions": [
         "*://*.roblox.com/",
-        "*://*.rbxcdn.com/"
+        "*://*.rbxcdn.com/",
+        "*://*.ropro.io/"
     ],
     "web_accessible_resources": [
         {
@@ -111,9 +112,17 @@
             "matches": [
                 "*://*.roblox.com/discover*"
             ],
+            "css": [
+                "css/playtime.css"
+            ],
             "js": [
                 "js/pages/fixfavouritespage/createelement.js",
-                "js/pages/fixfavouritespage/main.js"
+                "js/pages/fixfavouritespage/createSortDiscover.js",
+                "js/pages/fixfavouritespage/main.js",
+
+                "js/pages/playtime/createcards.js",
+                "js/pages/playtime/createelements.js",
+                "js/pages/playtime/allgames.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -142,7 +151,10 @@
                 "js/pages/recentservers/createelements.js",
                 "js/pages/recentservers/isserveralive.js",
                 "js/pages/recentservers/recentservers.js",
-                "js/pages/recentservers/main.js"
+                "js/pages/recentservers/main.js",
+
+                "js/pages/playtime/createelements.js",
+                "js/pages/playtime/game.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -240,8 +252,26 @@
             "matches": [
                 "*://*.roblox.com/home"
             ],
+            "css": [
+                "css/playtime.css"
+            ],
             "js": [
-                "js/pages/generalfixes/movehomefavouritestothirdrow.js"
+                "js/pages/generalfixes/movehomefavouritestothirdrow.js",
+                "js/pages/fixfavouritespage/replacehomelink.js",
+
+                "js/pages/playtime/createelements.js",
+                "js/pages/playtime/createcards.js",
+                "js/pages/playtime/home.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://qol.haydz6.com/i/*"
+            ],
+            "js": [
+                "js/pages/quickserverinvite/setinstalledidentifier.js"
             ],
             "run_at": "document_idle",
             "all_frames": true

@@ -50,8 +50,6 @@ function CreateItemContainer(Title, URL, ImageURL, ID){
   GameCardLink.appendChild(GameCardInfo)
 
   Thumbnail.appendChild(ThumbnailImage)
-  
-  List.appendChild(div)
 
   async function UpdateLikes(LikeRatio){
     VotePercentageLabel.innerText = LikeRatio && LikeRatio+"%" || "--"
@@ -61,5 +59,5 @@ function CreateItemContainer(Title, URL, ImageURL, ID){
     PlayingCountsLabel.innerText = PlayerCount >= 1000 && `${Math.floor(PlayerCount/100)/10}K` || PlayerCount || PlayerCount == 0 && "0" || "--"
   }
 
-  return [UpdateLikes, UpdatePlayerCount]
+  return [div, UpdateLikes, UpdatePlayerCount]
 }

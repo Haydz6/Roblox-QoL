@@ -8,7 +8,7 @@ let CSRFToken = ""
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
-const WebServerEndpoints = {Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 
 function FindFirstClass(ClassName){
   return document.getElementsByClassName(ClassName)[0]
@@ -162,15 +162,33 @@ function ClearAllChildren(Element){
 
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
-function SecondsToLength(Seconds, OnlyOne){
-  const d = Math.floor(Seconds / (3600*24))
-  const h = Math.floor(Seconds % (3600*24) / 3600)
+function SecondsToLengthShort(Seconds){
+  const h = Math.floor(Seconds / 3600)
   const m = Math.floor(Seconds % 3600 / 60)
   const s = Math.floor(Seconds % 60)
 
-  if (d > 0){
+  if (h > 0){
+    if (h < 100){
+      return `${h} hr${h == 1 && "" || "s"} ${m} min${m == 1 && "" || "s"}`
+    }
+    return `${h} hr${h == 1 && "" || "s"}`
+  } else if (m > 0){
+    return `${m} min${m == 1 && "" || "s"}`
+  }
+
+  return `${s} second${s == 1 && "" || "s"}`
+}
+
+function SecondsToLength(Seconds, OnlyOne, HideDays){
+  const d = Math.floor(Seconds / (3600*24))
+  let h = Math.floor(Seconds % (3600*24) / 3600)
+  const m = Math.floor(Seconds % 3600 / 60)
+  const s = Math.floor(Seconds % 60)
+
+  if (d > 0 && !HideDays){
       return `${d} day${d > 1 && "s" || ""}`
   } else if (h > 0){
+      if (HideDays) h = Math.floor(Seconds / 3600)
       return `${h} hour${h > 1 && "s" || ""}`
   } else if (m > 0 && !OnlyOne){
       return `${m} minute${m > 1 && "s" || ""} ${s} second${s > 1 && "s" || ""}`
@@ -178,7 +196,7 @@ function SecondsToLength(Seconds, OnlyOne){
     return `${m} minute${m > 1 && "s" || ""}`
   }
 
-  return `${s} second${s > 1 && "s" || ""}`
+  return `${s} second${s == 1 && "" || "s"}`
 }
 
 function SplitArrayIntoChunks(Array, chunkSize){
@@ -207,7 +225,7 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function AbbreviateNumber(number, decPlaces){
+function AbbreviateNumber(number, decPlaces, noPlus){
   decPlaces = Math.pow(10, decPlaces || 0)
 
   var abbrev = ['k', 'm', 'b', 't']
@@ -223,7 +241,7 @@ function AbbreviateNumber(number, decPlaces){
         i++
       }
 
-      number += abbrev[i].toUpperCase()+"+"
+      number += abbrev[i].toUpperCase()+(!noPlus && "+" || "")
 
       break
     }

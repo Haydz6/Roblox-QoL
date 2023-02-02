@@ -42,7 +42,7 @@ function CreateCategoryIcon(Name, URL){
 
     const ImgElement = document.createElement("img")
     ImgElement.className = "rolimons-category-icon"
-    ImgElement.style = "margin-left: 0px!important; height: 24px;"
+    ImgElement.style = "margin-left: 0px!important; height: 100%;"
     ImgElement.src = URL
 
     const Tooltip = document.createElement("span")

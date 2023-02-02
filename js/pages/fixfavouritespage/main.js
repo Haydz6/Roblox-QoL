@@ -96,8 +96,9 @@ async function ParsePage(Page){
       const Item = Items[i]
       const Place = Item.Item
   
-      const [LikesCallback, PlayerCountCallback] = CreateItemContainer(Place.Name, Place.AbsoluteUrl, Convert110pxTo150pxImageURL(Item.Thumbnail.Url), Place.AssetId.toString())
-  
+      const [Card, LikesCallback, PlayerCountCallback] = CreateItemContainer(Place.Name, Place.AbsoluteUrl, Convert110pxTo150pxImageURL(Item.Thumbnail.Url), Place.AssetId.toString())
+      List.appendChild(Card)
+
       LikesCallbackLookup[Place.UniverseId] = LikesCallback
       PlayerCountCallbackLookup[Place.UniverseId] = PlayerCountCallback
     }
@@ -149,28 +150,25 @@ async function GetPage(){
 // }
 
 function IsFavouritesPage(){
-  return window.location.href.split("#")[1] === "/sortName/v2/Favorites"
+  return window.location.href.split("#")[1] === "/sortName?sort=Favorites"
 }
 
 async function RunMain(){
   if (!IsFavouritesPage()) return
 
-  //TODO: Intercept request from roblox and stop it
-  // console.log("Intercepted")
-  // BlockRobloxRequest()
-
   while (!document.head) await sleep(100)
 
-  List = await WaitForClass("game-grid")
+  const GameCarousel = await WaitForId("games-carousel-page")
 
-  await WaitForClass("grid-item-container game-card-container")
-  
-  List.replaceChildren()
+  const [SortContainer, GameGrid] = CreateSortDiscover("Favorites")
+  List = GameGrid
+  GameCarousel.appendChild(SortContainer)
+
   GetPage()
   
   window.onscroll = function(){
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-      GetPage()
+       GetPage()
       }
   }
 }

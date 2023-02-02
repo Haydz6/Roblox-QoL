@@ -1,5 +1,5 @@
 async function LookForTrade(){
-    const Params = (new URL(document.location)).searchParams
+    const Params = (new URL(window.location)).searchParams
     const TradeId = Params.get("tradeid")
 
     if (!TradeId) return

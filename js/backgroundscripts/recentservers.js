@@ -19,9 +19,13 @@ let LastRecentServerSuccess = Date.now()
 let LastPlaceId = 0
 let LastJobId = ""
 
+let UpdateInt = 3
+
 async function UpdateRecentServer(){
     const [Success, Presence] = await GetCurrentGame()
     await GetAllRecentServers()
+
+    UpdateInt++
 
     if (!Success){
         if (LastPlaceId === 0) return
@@ -40,6 +44,11 @@ async function UpdateRecentServer(){
         LastPlaceId = 0
         LastJobId = ""
         return
+    }
+
+    if (UpdateInt >= 3){
+        UpdateInt = 0
+        RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: Presence.userPresenceType === 2, UniverseId: Presence.universeId || 0}))
     }
 
     LastRecentServerSuccess = Date.now()

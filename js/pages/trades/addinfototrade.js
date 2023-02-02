@@ -166,17 +166,17 @@ async function OffersAdded(BothOffers){
 
             if (Details?.Rare){
                 const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg"))
-                CategoryIcon.style = "height: 16px; margin: 0px 2px;"
+                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
                 ValueElement.CategoryCardLabel.appendChild(CategoryIcon)
             }
             if (Details?.Projected){
-                const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/projected.svg"))
-                CategoryIcon.style = "height: 16px; margin: 0px 2px;"
+                const CategoryIcon = CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg"))
+                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
                 ValueElement.CategoryCardLabel.appendChild(CategoryIcon)
             }
             if (Details?.Hyped){
-                const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/hyped.svg"))
-                CategoryIcon.style = "height: 16px; margin: 0px 2px;"
+                const CategoryIcon = CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg"))
+                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
                 ValueElement.CategoryCardLabel.appendChild(CategoryIcon)
             }
         }

@@ -95,6 +95,44 @@ const Settings = {
         QuickCancel: {
             Title: "Quick Cancel",
             Description: "Adds a button to the trades list to quick cancel."
+        },
+        AutodeclineTradeValue: {
+            Title: "Auto-decline Inbound Value Loss",
+            Description: "Declines any trade that you receive which have a value loss more than specified",
+        },
+        AutodeclineTradeValueThreshold: {
+            Title: "Auto-decline Inbound Value Loss Threshold",
+            Description: "",
+            Type: "InputBox",
+            Placeholder: "%",
+            Middleman: function(Feature, PreviousValue, Value){
+                const Numbers = Value.replace(/^\D+/g, "")
+                if (Numbers === ""){
+                    return PreviousValue+"%"
+                }
+                const New = clamp(parseInt(Numbers), 0, 100)
+                SetFeatureEnabled(Feature, New)
+                return New+"%"
+            }
+        },
+        AutodeclineOutboundTradeValue: {
+            Title: "Auto-decline Outbound Value Loss",
+            Description: "Declines any trade that you send which have a value loss more than specified",
+        },
+        AutodeclineOutboundTradeValueThreshold: {
+            Title: "Auto-decline Outbound Value Loss Threshold",
+            Description: "",
+            Type: "InputBox",
+            Placeholder: "%",
+            Middleman: function(Feature, PreviousValue, Value){
+                const Numbers = Value.replace(/^\D+/g, "")
+                if (Numbers === ""){
+                    return PreviousValue+"%"
+                }
+                const New = clamp(parseInt(Numbers), 0, 100)
+                SetFeatureEnabled(Feature, New)
+                return New+"%"
+            }
         }
     },
     Friends: {
@@ -131,7 +169,12 @@ async function CreateSettingsSection(OptionsList){
         OptionsList.appendChild(Title)
 
         for (const [feature, info] of Object.entries(settings)){
-            const Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, await IsFeatureEnabled(feature))
+            let Section
+            const FeatureEnabled = await IsFeatureEnabled(feature)
+
+            if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, info.Middleman)
+            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled)
+
             OptionsList.appendChild(Section)
         }
     }

@@ -134,7 +134,7 @@
 
 .gain-summary > .box > .icon-rolimons-20x20 {
     margin-right: 4px;
-    background-image: url(chrome-extension://lpifnjhfnnmedhljaihkjalhnfhbdeio/img/trades/rolimons-16x16-white.png)!important;
+    background-image: url(chrome-extension://__MSG_@@extension_id__/img/trades/rolimons-16x16-white.png)!important;
 }
 
 .gain-summary > .box > p {

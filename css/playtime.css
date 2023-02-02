@@ -1,0 +1,9 @@
+.icon-playtime {
+    background-image: url(chrome-extension://__MSG_@@extension_id__/img/playtime.png)!important;
+    background-position: revert!important;
+    background-size: 100%!important;
+}
+
+.game-card-thumb-container::before {
+    z-index: 5;
+}

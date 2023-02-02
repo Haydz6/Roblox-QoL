@@ -15,7 +15,7 @@ async function AddLinkToName(){
 
 async function NewAsset(Asset){
     if (Asset.nodeType !== Node.ELEMENT_NODE || Asset.tagName.toLowerCase() !== "li") return
-    Asset.style = "margin-bottom: 0px!important;"
+    Asset.style = "margin-bottom: 0px!important; height: 250px!important;"
 
     const ItemCardContainer = Asset.children[0].children[0]
 
@@ -32,6 +32,22 @@ async function NewAsset(Asset){
 
     QueueForItemDetails(AssetId).then(function([Success, Details]){
         CurrencyLabel.innerText = Success && numberWithCommas(Details.Value) || "???"
+
+        if (Details?.Rare){
+            const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg"))
+            CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+            CategoryCardLabel.appendChild(CategoryIcon)
+        }
+        if (Details?.Projected){
+            const CategoryIcon = CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg"))
+            CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+            CategoryCardLabel.appendChild(CategoryIcon)
+        }
+        if (Details?.Hyped){
+            const CategoryIcon = CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg"))
+            CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+            ValueElement.CategoryCardLabel.appendChild(CategoryIcon)
+        }
     })
 }
 
@@ -50,6 +66,26 @@ function NewOfferAsset(Asset, AddToValue, AddDemand){
         if (Success && Asset.parentElement.parentElement){
             AddToValue(Details.Value)
             AddDemand(Details.Demand)
+
+            let CategoryCardLabel = CreateCategoriesCardLabel()
+            Asset.appendChild(CategoryCardLabel)
+            CategoryCardLabel.style = "display: inline-flex !important; margin-left: 10px;"
+
+            if (Details?.Rare){
+                const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg"))
+                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+                CategoryCardLabel.appendChild(CategoryIcon)
+            }
+            if (Details?.Projected){
+                const CategoryIcon = CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg"))
+                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+                CategoryCardLabel.appendChild(CategoryIcon)
+            }
+            if (Details?.Hyped){
+                const CategoryIcon = CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg"))
+                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+                CategoryCardLabel.appendChild(CategoryIcon)
+            }
         }
     })
 }

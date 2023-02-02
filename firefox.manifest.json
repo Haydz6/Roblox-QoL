@@ -23,7 +23,7 @@
         "img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js", "js/pages/serverfilters/getserverprops.js", "js/pages/quickserverinvite/checkforinvite.js", "js/pages/trades/injecttrade.js"
     ],
     "background": {
-        "scripts": ["js/background.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js"],
+        "scripts": ["js/background.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js"],
         "persistent": true
     },
     "content_scripts": [

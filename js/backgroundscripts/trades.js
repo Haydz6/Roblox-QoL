@@ -80,7 +80,7 @@ async function IsTradeScanned(Type, TradeId){
         AlreadyScannedTrades[Type] = true
         const ScannedTradesUnparsed = await LocalStorage.get("ScannedTrades_"+Type)
 
-        if (!ScannedTradesUnparsed){
+        if (!ScannedTradesUnparsed || 1 == "1"){
             AlreadyScannedTrades[Type] = {}
         } else {
             AlreadyScannedTrades[Type] = JSON.parse(ScannedTradesUnparsed)
@@ -170,7 +170,25 @@ async function NotifyNewTrades(Trades, Type){
         const Offers = {Ours: AllOffers[0], Other: AllOffers[1]}
         await AddValueToOffers(AllOffers)
 
-        console.log(Offers, await IsFeatureEnabled("TradeNotifier"))
+        if (Type === "Inbound" && await IsFeatureEnabled("AutodeclineTradeValue")){
+            const Threshold = await IsFeatureEnabled("AutodeclineTradeValueThreshold")
+            const Percentage = (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100
+
+            console.log(-Threshold, Percentage)
+            console.log(-Threshold <= Percentage, -Threshold >= Percentage, "^^^")
+            if (-Threshold >= Percentage){
+                DeclineTrade(Trade.id)
+            }
+        }
+        if (Type === "Outbound" && await IsFeatureEnabled("AutodeclineOutboundTradeValue")){
+            const Threshold = await IsFeatureEnabled("AutodeclineOutboundTradeValueThreshold")
+            const Percentage = (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100
+
+            console.log(-Threshold, Percentage)
+            if (-Threshold >= Percentage){
+                DeclineTrade(Trade.id)
+            }
+        }
 
         if (await IsFeatureEnabled("TradeNotifier") && !await IsFeatureEnabled(`Hide${Type}Notifications`)){
             let ContextMessage = "Unknown"
@@ -179,9 +197,9 @@ async function NotifyNewTrades(Trades, Type){
                 const Net = Offers.Other.Value - Offers.Ours.Value
 
                 if (Net > 0){
-                    ContextMessage = `Gain: +${Net}`
+                    ContextMessage = `Gain: +${numberWithCommas(Net)}`
                 } else if (Net < 0){
-                    ContextMessage = `Loss: ${Net}`
+                    ContextMessage = `Loss: ${numberWithCommas(Net)}`
                 } else {
                     ContextMessage = "Tie"
                 }

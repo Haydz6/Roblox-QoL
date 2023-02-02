@@ -20,9 +20,38 @@ function CreateSettingNavigationButton(Text, href){
     return [ListButton, Button, Span]
 }
 
-function CreateSectionSettingsToggable(Option, Title, Description, Enabled){
+function CreateSectionSettingsTemplate(Option, Title, Description){
     const Section = document.createElement("div")
     Section.className = "section-content notifications-section"
+
+    const TitleLabel = document.createElement("label")
+    //TitleLabel.setAttribute("for", `${Option}-toggle`)
+    TitleLabel.className = "btn-toggle-label ng-binding"
+    TitleLabel.innerText = Title
+
+    Section.appendChild(TitleLabel)
+
+    if (Description !== ""){
+        const Divider = document.createElement("div")
+        Divider.className = "rbx-divider"
+
+        const DescriptionDiv = document.createElement("div")
+        Description.id = `${Option}-description`
+        DescriptionDiv.className = "text-description ng-binding ng-scope"
+
+        const DescriptionTextElement = document.createElement("text")
+        DescriptionTextElement.innerText = Description
+
+        DescriptionDiv.appendChild(DescriptionTextElement)
+
+        Section.append(Divider, DescriptionDiv)
+    }
+
+    return Section
+}
+
+function CreateSectionSettingsToggable(Option, Title, Description, Enabled){
+    const Section = CreateSectionSettingsTemplate(Option, Title, Description)
 
     const Slider = document.createElement("button")
     Slider.id = `${Option}-toggle`
@@ -30,7 +59,6 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled){
     Slider.setAttribute("role", "switch")
 
     Slider.addEventListener("click", function(){
-        console.log("CLICK")
         Enabled = !Enabled
         Slider.className = `btn-toggle receiver-destination-type-toggle ${Enabled && "on" || "off"}`
         SetFeatureEnabled(Option, Enabled)
@@ -51,30 +79,36 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled){
     Slider.appendChild(ToggleOn)
     Slider.appendChild(ToggleOff)
 
-    Section.appendChild(Slider)
+    Section.insertBefore(Slider, Section.firstChild)
 
-    const TitleLabel = document.createElement("label")
-    //TitleLabel.setAttribute("for", `${Option}-toggle`)
-    TitleLabel.className = "btn-toggle-label ng-binding"
-    TitleLabel.innerText = Title
+    return Section
+}
 
-    Section.appendChild(TitleLabel)
+function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, Value, Middleman){
+    const Section = CreateSectionSettingsTemplate(Option, Title, Description)
 
-    const Divider = document.createElement("div")
-    Divider.className = "rbx-divider"
+    const Input = document.createElement("input")
+    Input.className = "form-control input-field new-input-field"
+    Input.placeholder = Placeholder
+    Input.maxLength = 4
+    Input.autocomplete = false
+    Input.autocapitalize = false
+    Input.spellcheck = false
+    Input.placeholder = Placeholder
+    Input.style = "width: 80px; float: right; height: 33px;"
+    Input.value = Value
 
-    Section.appendChild(Divider)
+    async function FocusLost(){
+        const Result = Middleman(Option, await IsFeatureEnabled(Option), Input.value)
+        if (Result){
+            Input.value = Result
+        }
+    }
 
-    const DescriptionDiv = document.createElement("div")
-    Description.id = `${Option}-description`
-    DescriptionDiv.className = "text-description ng-binding ng-scope"
+    Input.addEventListener("focusout", FocusLost)
+    FocusLost()
 
-    const DescriptionTextElement = document.createElement("text")
-    DescriptionTextElement.innerText = Description
-
-    DescriptionDiv.appendChild(DescriptionTextElement)
-
-    Section.appendChild(DescriptionDiv)
+    Section.insertBefore(Input, Section.firstChild)
 
     return Section
 }
