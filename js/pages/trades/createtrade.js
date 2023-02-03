@@ -51,10 +51,13 @@ async function NewAsset(Asset){
     })
 }
 
-function NewOfferAsset(Asset, AddToValue, AddDemand){
+function NewOfferAsset(Asset, AddToValue, AddToRap, AddDemand){
     if (Asset.nodeType !== Node.ELEMENT_NODE || Asset.tagName.toLowerCase() !== "div" || Asset.children.length === 0) return
 
-    const AssetId = parseInt(Asset.getElementsByTagName("thumbnail-2d")[0].getElementsByTagName("span")[0].getAttribute("thumbnail-target-id"))
+    const Thumbnail2D = Asset.getElementsByTagName("thumbnail-2d")[0]
+    if (!Thumbnail2D) return
+
+    const AssetId = parseInt(Thumbnail2D.getElementsByTagName("span")[0].getAttribute("thumbnail-target-id"))
     const [ValueDiv, CurrencyLabel] = CreateValueCardLabel("item-value custom ng-scope")
 
     Asset.appendChild(ValueDiv)
@@ -63,8 +66,19 @@ function NewOfferAsset(Asset, AddToValue, AddDemand){
     QueueForItemDetails(AssetId).then(function([Success, Details]){
         CurrencyLabel.innerText = Success && numberWithCommas(Details.Value) || "???"
 
+        const RapElement = Asset.getElementsByClassName("item-value ng-scope")[0]
+        let Rap = false
+
+        if (RapElement){
+            const RapLabel = RapElement.getElementsByClassName("text-robux ng-binding")[0]
+            if (RapLabel) Rap = parseInt(RapLabel.innerText.replaceAll(",", ""))
+        }
+
+        console.log(Success, Rap)
+
         if (Success && Asset.parentElement.parentElement){
             AddToValue(Details.Value)
+            AddToRap(Rap)
             AddDemand(Details.Demand)
 
             let CategoryCardLabel = CreateCategoriesCardLabel()
@@ -86,11 +100,15 @@ function NewOfferAsset(Asset, AddToValue, AddDemand){
                 CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
                 CategoryCardLabel.appendChild(CategoryIcon)
             }
+        } else if (!Success) {
+            AddToValue(false)
+            AddToDemand(false)
+            AddToRap(false)
         }
     })
 }
 
-function NewOfferSummary(Summary, AddToValue, AddDemand){
+function NewOfferSummary(Summary, AddToValue, AddToRap, AddDemand){
     if (Summary.nodeType !== Node.ELEMENT_NODE || Summary.tagName.toLowerCase() !== "div") return
 
     new MutationObserver(function(Mutations){
@@ -99,7 +117,7 @@ function NewOfferSummary(Summary, AddToValue, AddDemand){
 
             const addedNodes = Mutation.addedNodes
             for (let i = 0; i < addedNodes.length; i++){
-                NewOfferAsset(addedNodes[i], AddToValue, AddDemand)
+                NewOfferAsset(addedNodes[i], AddToValue, AddToRap, AddDemand)
             }
         })
     }).observe(Summary, {childList: true})
@@ -107,7 +125,7 @@ function NewOfferSummary(Summary, AddToValue, AddDemand){
     const children = Summary.children
 
     for (let i = 0; i < children.length; i++){
-        NewOfferAsset(children[i], AddToValue, AddDemand)
+        NewOfferAsset(children[i], AddToValue, AddToRap, AddDemand)
     }
 }
 
@@ -168,22 +186,77 @@ async function ListenToSummaryOffers(Offers, Update){
     let TotalDonated = 0
     let Demands = []
 
+    async function CheckForRobuxLine(RobuxLine){
+        if (RobuxLine.nodeType !== Node.ELEMENT_NODE || RobuxLine.className.search("robux-line") === -1 || RobuxLine.getElementsByClassName("text-secondary").length === 0) return
+
+        let RobuxLineValue
+
+        while (!RobuxLineValue){
+            await sleep(20)
+            RobuxLineValue = RobuxLine.getElementsByClassName("robux-line-value")[0]
+        }
+
+        function Update(){
+            SetDonated(parseInt(RobuxLineValue.innerText.replaceAll(",", "")))
+        }
+
+        new MutationObserver(function(Mutations){
+            Mutations.forEach(function(Mutation){
+                if (Mutation.type !== "characterData") return
+                Update()
+            })
+        }).observe(RobuxLineValue, {characterData: true, subtree: true})
+
+        Update()
+    }
+
+    function SetDonated(Donated){
+        TotalDonated = Donated
+        Update(Offers, TotalRap, TotalValue, TotalDonated)
+    }
+
     function AddToValue(Value){
         if (!Value){
+            if (Value === false){
+                TotalValue = -1
+            }
+
             ValueValue.innerText = "..."
             return
         }
 
         TotalValue += Value
         ValueValue.innerText = numberWithCommas(TotalValue)
-        Update(TotalRap, TotalValue, TotalDonated)
+        Update(Offers, TotalRap, TotalValue, TotalDonated)
+    }
+
+    function AddToRap(Rap){
+        if (!Rap){
+            if (Rap === false){
+                TotalRap = -1
+            }
+
+            return
+        }
+
+        TotalRap += Rap
+        Update(Offers, TotalRap, TotalValue, TotalDonated)
     }
 
     function AddDemand(Demand){
         if (!Demand){
+            if (Demand === false){
+                Demands = [-2]
+            }
+
             DemandValue.innerText = ".../5.0"
             return
         }
+        if (Demands.includes(-2)){
+            DemandValue.innerText = "???/5.0"
+            return
+        }
+
         Demands.push(Demand)
 
         let Average = Math.floor(((Demands.reduce((partialSum, a) => partialSum + a, 0)/Demands.length)+1)*10)/10
@@ -198,13 +271,15 @@ async function ListenToSummaryOffers(Offers, Update){
 
             if (Mutation.removedNodes){
                 AddToValue(-TotalValue)
+                AddToRap(-TotalRap)
                 Demands = []
                 AddDemand()
             }
 
             const addedNodes = Mutation.addedNodes
             for (let i = 0; i < addedNodes.length; i++){
-                NewOfferSummary(addedNodes[i], AddToValue, AddDemand)
+                NewOfferSummary(addedNodes[i], AddToValue, AddToRap, AddDemand)
+                CheckForRobuxLine(addedNodes[i])
             }
         })
     }).observe(Offers, {childList: true})
@@ -212,7 +287,8 @@ async function ListenToSummaryOffers(Offers, Update){
     const children = Offers.children
 
     for (let i = 0; i < children.length; i++){
-        NewOfferSummary(children[i], AddToValue, AddDemand)
+        NewOfferSummary(children[i], AddToValue, AddToRap, AddDemand)
+        CheckForRobuxLine(children[i])
     }
 }
 
@@ -221,16 +297,53 @@ async function ListenForNewSummaryOffer(){
 
     const Divider = document.createElement("div")
     Divider.className = "rbx-divider"
-    Divider.style = "margin: 24px 0px; overflow: unset; position: relative;"
+    Divider.style = "margin: 54px 0px; overflow: unset; position: relative;"
 
     const TotalValue = {Ours: 0, Other: 0}
-    const GainList = CreateGainList()
-    const ValueNet = TotalValue.Other - TotalValue.Ours
-    const [ValueList, UpdateValue] = CreateGain(0, "0", "+0%", "icon icon-rolimons-20x20", true)
-    GainList.appendChild(ValueList)
+    const TotalRap = {Ours: 0, Other: 0}
+    const TotalDonated = {Ours: 0, Other: 0}
 
-    function Update(){
-        UpdateValue(ValueNet, numberWithCommas(ValueNet), `${ValueNet >= 0 && "+" || "-"}${Math.abs(Math.floor((TotalValue.Other - TotalValue.Ours)/TotalValue.Ours * 100))}%`)
+    const GainList = CreateGainList()
+    const [ValueList, UpdateValue] = CreateGain(0, "0", "+0%", "icon icon-rolimons-20x20", true)
+    const [RapList, UpdateRap] = CreateGain(0, "0", "+0%", "icon icon-robux-16x16", true)
+    const [DonatedList, UpdateDonated] = CreateGain(0, "0", undefined, "icon icon-offer-20x20", true)
+    GainList.append(ValueList, RapList, DonatedList)
+    Divider.appendChild(GainList)
+
+    DonatedList.style.display = "none"
+
+    function CalcuatePercentage(First, Second){
+        const Percentage = Math.floor((First - Second)/Second * 100)
+        return isNaN(Percentage) && 0 || Percentage
+    }
+
+    function IsTypeValid(Type){
+        return TotalValue[Type] > -1 && TotalRap[Type] > -1 && TotalDonated[Type] > -1
+    }
+
+    function Update(Offer, NewRap, NewValue, NewDonated){
+        const Type = Offer == Offers.children[0] && "Ours" || "Other"
+        TotalValue[Type] = NewValue
+        TotalRap[Type] = NewRap
+        TotalDonated[Type] = NewDonated
+
+        const ValueNet = TotalValue.Other - TotalValue.Ours
+        const RapNet = TotalRap.Other - TotalRap.Ours
+        const DonatedNet = TotalDonated.Other - TotalDonated.Ours
+
+        let IsValid = IsTypeValid("Ours") && IsTypeValid("Other")
+
+        if (IsValid){
+            UpdateValue(ValueNet, numberWithCommas(ValueNet), `${ValueNet >= 0 && "+" || "-"}${Math.abs(CalcuatePercentage(TotalValue.Other, TotalValue.Ours))}%`)
+            UpdateRap(RapNet, numberWithCommas(RapNet), `${RapNet >= 0 && "+" || "-"}${Math.abs(CalcuatePercentage(TotalRap.Other, TotalRap.Ours))}%`)
+            UpdateDonated(DonatedNet, numberWithCommas(DonatedNet), `${DonatedNet >= 0 && "+" || "-"}`)
+            if (TotalDonated.Other === 0 && TotalDonated.Ours === 0) DonatedList.style.display = "none"
+            else DonatedList.style.display = ""
+        } else {
+            UpdateValue(0, "???", "0%")
+            UpdateRap(0, "???", "0%")
+            UpdateDonated(0, "???")
+        }
     }
 
     new MutationObserver(function(Mutations){
@@ -240,6 +353,10 @@ async function ListenForNewSummaryOffer(){
             const addedNodes = Mutation.addedNodes
             for (let i = 0; i < addedNodes.length; i++){
                 ListenToSummaryOffers(addedNodes[i], Update)
+
+                // if (Offers.children.length >= 2){
+                //     Offers.insertBefore(Divider, Offers.children[1])
+                // }
             }
         })
     }).observe(Offers, {childList: true})
@@ -248,6 +365,10 @@ async function ListenForNewSummaryOffer(){
 
     for (let i = 0; i < children.length; i++){
         ListenToSummaryOffers(children[i], Update)
+    }
+    
+    if (children.length >= 2){
+        Offers.insertBefore(Divider, children[1])
     }
 }
 

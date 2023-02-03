@@ -250,7 +250,8 @@
         },
         {
             "matches": [
-                "*://*.roblox.com/home"
+                "*://*.roblox.com/home",
+                "*://*.roblox.com/home?*"
             ],
             "css": [
                 "css/playtime.css"

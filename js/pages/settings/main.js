@@ -50,6 +50,10 @@ const Settings = {
             Title: "Server Filters",
             Description: "Allows you to filter servers by region, size and age."
         },
+        Playtime: {
+            Title: "Playtime",
+            Description: "Tracks and shows how long you have played a game."
+        },
         QuickInvite: {
             Title: "Quick Invite",
             Description: "A link you can share with your friends to join a server."

@@ -4,8 +4,9 @@ async function Main(){
     const [ContainerHeader, SeeAllButton] = CreateContainerHeader("Playtime", "https://roblox.com/discover#/sortName?sort=Playtime")
     const GameCarousel = CreateGameCarousel()
 
-    const [ContinueTitle, ContinueRow] = await SearchForRow(GamesList, "/sortName/v2/Friend%20Activity")
-    GamesList.insertBefore(GameCarousel, ContinueTitle)
+    const [ContinueTitle, ContinueRow] = await SearchForRow(GamesList, "/sortName/v2/Continue")
+    
+    GamesList.insertBefore(GameCarousel, ContinueRow.nextSibling)
     GamesList.insertBefore(ContainerHeader, GameCarousel)
 
     const [DropdownList, List, DropdownButton, CloseList] = CreateDropdownList("All Time")

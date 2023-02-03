@@ -170,6 +170,7 @@ async function NotifyNewTrades(Trades, Type){
         const Offers = {Ours: AllOffers[0], Other: AllOffers[1]}
         await AddValueToOffers(AllOffers)
 
+        console.log(Type === "Inbound", await IsFeatureEnabled("AutodeclineTradeValue"))
         if (Type === "Inbound" && await IsFeatureEnabled("AutodeclineTradeValue")){
             const Threshold = await IsFeatureEnabled("AutodeclineTradeValueThreshold")
             const Percentage = (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100

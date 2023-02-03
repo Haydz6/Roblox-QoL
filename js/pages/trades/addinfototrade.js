@@ -204,10 +204,10 @@ async function OffersAdded(BothOffers){
             GainList.appendChild(ValueList)
         }
 
-        const OurOffered = parseInt(RolimonsLabel.Ours.Line.children[0].children[1].getElementsByClassName("text-label robux-line-value ng-binding")[0].innerText.replace(",", ""))
-        const OtherOffered = parseInt(RolimonsLabel.Other.Line.children[0].children[1].getElementsByClassName("text-label robux-line-value ng-binding")[0].innerText.replace(",", ""))
-        const OurRap = parseInt(RolimonsLabel.Ours.Line.children[1].children[1].getElementsByClassName("text-robux-lg robux-line-value ng-binding")[0].innerText.replace(",", "")) - OurOffered
-        const OtherRap = parseInt(RolimonsLabel.Other.Line.children[1].children[1].getElementsByClassName("text-robux-lg robux-line-value ng-binding")[0].innerText.replace(",", "")) - OtherOffered
+        const OurOffered = parseInt(RolimonsLabel.Ours.Line.children[0].children[1].getElementsByClassName("text-label robux-line-value ng-binding")[0].innerText.replaceAll(",", ""))
+        const OtherOffered = parseInt(RolimonsLabel.Other.Line.children[0].children[1].getElementsByClassName("text-label robux-line-value ng-binding")[0].innerText.replaceAll(",", ""))
+        const OurRap = parseInt(RolimonsLabel.Ours.Line.children[1].children[1].getElementsByClassName("text-robux-lg robux-line-value ng-binding")[0].innerText.replaceAll(",", "")) - OurOffered
+        const OtherRap = parseInt(RolimonsLabel.Other.Line.children[1].children[1].getElementsByClassName("text-robux-lg robux-line-value ng-binding")[0].innerText.replaceAll(",", "")) - OtherOffered
 
         const RapNet = OtherRap - OurRap
         //const RapList = CreateGain(RapNet, `${RapNet < 0 && "-" || ""}${RapNet}${(OurOffered > 0 || OtherOffered > 0) && `${OfferedNet >= 0 && " +" || " -"} ${Math.abs(OfferedNet)}` || ""}`, `${RapNet >= 0 && "+" || "-"}${Math.abs(Math.floor((OtherRap - OurRap)/OurRap * 100))}%`, "icon icon-robux-16x16")

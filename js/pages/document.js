@@ -138,8 +138,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
 
     if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
       if (ResBody?.Result == "Invalid authentication!"){
-        CachedAuthKey = ""
-        window.localStorage.removeItem("robloxqol-AuthKey")
+        InvalidateAuthKey()
         console.log("auth key invalid, getting a new one")
       }
 
