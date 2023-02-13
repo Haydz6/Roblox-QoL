@@ -144,10 +144,13 @@ async function UpdateHistory(){
     let LostFriends = 0
     let NewFriends = 0
 
+    if (!UpdateResult.LostFriends || !UpdateResult.NewFriends) return //First time setup
+
     for (let i = 0; i < UpdateResult.LostFriends.length; i++){
         LostFriends++
         AllFriends.push({Id: UpdateResult.LostFriends[i], Type: "Lost"})
     }
+
 
     for (let i = 0; i < UpdateResult.NewFriends.length; i++){
         NewFriends++
@@ -161,9 +164,5 @@ async function UpdateHistory(){
     CreateNotification(AllFriends, NewFriends, LostFriends)
 }
 
-async function Main(){
-    UpdateHistory()
-    setInterval(UpdateHistory, 60*1000)
-}
-
-Main()
+UpdateHistory()
+setInterval(UpdateHistory, 60*1000)

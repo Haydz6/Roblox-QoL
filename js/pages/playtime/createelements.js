@@ -150,28 +150,28 @@ function CreateLoadMoreButton(){
     return Button
 }
 
-function CreateGamePlaytime(){
+function CreateGamePlaytime(Type, Name, Icon){
     const Container = document.createElement("div")
     Container.className = "game-creator"
-    Container.style = "height: 17px;"
+    Container.style = "height: 17px; margin: 6px 0px;"
 
     const Image = document.createElement("img")
     Image.style = "background-image:none; margin:-6px; margin-top:0px; margin-bottom:0.5px; transform:scale(0.4); border:none; margin-left:-8px; margin-right:-5px; margin-top:-0.6px; height: 33px; width: 33px;"
-    Image.src = "chrome-extension://adbacgifemdbhdkfppmeilbgppmhaobf/images/timer_dark.svg"
+    Image.src = Icon || chrome.runtime.getURL("/img/playtime.png")
     Image.className = "info-label icon-pastname"
 
-    const Name = document.createElement("span")
-    Name.className = "text-label"
-    Name.style = "font-size: 14px; font-weight: 500;"
-    Name.innerText = "Played"
+    const NameLabel = document.createElement("span")
+    NameLabel.className = "text-label"
+    NameLabel.style = "font-size: 14px; font-weight: 500;"
+    NameLabel.innerText = Name || "Played"
 
     const Value = document.createElement("a")
     Value.className = "text-name text-overflow"
     Value.style = "font-size: 14px; font-weight: 500;"
     Value.innerText = "..."
-    Value.href = "https://roblox.com/discover#/sortName?sort=Playtime"
+    Value.href = `https://roblox.com/discover#/sortName?sort=Playtime&type=${Type}`
 
-    Container.append(Image, Name, Value)
+    Container.append(Image, NameLabel, Value)
 
     return [Container, Value]
 }

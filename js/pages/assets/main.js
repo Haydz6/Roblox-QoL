@@ -17,7 +17,9 @@ function GetAssetIdFromURL(){
     return parseInt(URLWithID.split("/")[0])
 }
 
-async function Main(){
+IsFeatureEnabled("ExploreAsset").then(async function(Enabled){
+    if (!Enabled) return
+
     const AssetId = GetAssetIdFromURL()
 
     const ButtonsList = await WaitForId("item-context-menu")
@@ -57,11 +59,5 @@ async function Main(){
                 LastButton = ImageButton
             }
         }
-    }
-}
-
-IsFeatureEnabled("ExploreAsset").then(function(Enabled){
-    if (Enabled){
-        Main()
     }
 })

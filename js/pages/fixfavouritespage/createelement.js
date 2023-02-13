@@ -51,11 +51,11 @@ function CreateItemContainer(Title, URL, ImageURL, ID){
 
   Thumbnail.appendChild(ThumbnailImage)
 
-  async function UpdateLikes(LikeRatio){
+  function UpdateLikes(LikeRatio){
     VotePercentageLabel.innerText = LikeRatio && LikeRatio+"%" || "--"
   }
 
-  async function UpdatePlayerCount(PlayerCount){
+  function UpdatePlayerCount(PlayerCount){
     PlayingCountsLabel.innerText = PlayerCount >= 1000 && `${Math.floor(PlayerCount/100)/10}K` || PlayerCount || PlayerCount == 0 && "0" || "--"
   }
 

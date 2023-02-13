@@ -7,7 +7,9 @@ const DemandIntToString = {
     4: "Amazing"
 }
 
-async function Main(){
+IsFeatureEnabled("ValueDemandOnItem").then(async function(Enabled){
+    if (!Enabled) return
+
     const ItemDetails = await WaitForId("item-details")
     const PriceContainer = ItemDetails.getElementsByClassName("clearfix item-field-container")[0]
 
@@ -45,8 +47,4 @@ async function Main(){
     if (Details.Hyped){
         NameLabel.appendChild(CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg")))
     }
-}
-
-IsFeatureEnabled("ValueDemandOnItem").then(function(Enabled){
-    if (Enabled) Main()
 })

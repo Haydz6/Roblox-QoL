@@ -32,7 +32,7 @@ async function CreateCardsFromPurchasedGames(Servers, ServerListElement){
 
     for (let i = 0; i < Servers.length; i++){
         const Server = Servers[i]
-        const Card = CreatePrivateServerCard(Server.Image, Server.Name, Server.OwnerName, Server.OwnerId, Server.Price, Server.PlaceId)
+        const Card = CreatePrivateServerCard(Server.Image, Server.Name, Server.OwnerName, Server.OwnerId, Server.OwnerType, Server.Price, Server.PlaceId)
 
         ServerListElement.appendChild(Card)
         PurchasedGamesCards.push(Card)
@@ -48,7 +48,6 @@ function AddConnection(Callback, Type, Element){
 
 async function PurchasedGamesOpened(){
     CurrentPurchasedGamesPage = 1
-    console.log("opened")
 
     WaitForClass("breadcrumb-container").then(Container => {
         const LabelContainer = Container.getElementsByTagName("li")[2]
@@ -72,8 +71,6 @@ async function PurchasedGamesOpened(){
     const PageLabel = (await WaitForClass("pager")).getElementsByTagName("li")[1].getElementsByTagName("span")[0]
 
     async function FetchPage(){
-        console.log("fetching next page")
-
         if (!IsPurchasedGamesOpened){
             return
         }
@@ -154,27 +151,16 @@ const DefaultPurchasedGamesCardElementObserver = new MutationObserver(function(m
     })
 })
 
-async function RunMain(){
-    console.log("RUNNING ACTIVE")
-
-    while (!document.head){
-        await sleep(100)
-    }
-
-    // const URLSplit = window.location.href.split("users/")
-    // const URLSplit2 = URLSplit[1].split("/")
-
-    // PageUserId = parseInt(URLSplit2[0])
+IsFeatureEnabled("PurchasedGamesFix").then(async function(Enabled){
+    if (!Enabled) return
 
     let CategoriesList = await WaitForClass("menu-vertical submenus")
-    console.log("got categories")
 
     let PlacesButton
 
     while (!PlacesButton){
         await sleep(100)
         PlacesButton = await GetButtonCategoryFromHref(CategoriesList, "places")
-        console.log("waiting for place button")
     }
 
     const Parent = PlacesButton.getElementsByTagName("div")[0].getElementsByTagName("ul")[0]
@@ -197,10 +183,4 @@ async function RunMain(){
     Parent.insertBefore(NewPurchasedPlacesButton, Parent.nextSibiling)
 
     CheckPurchasedGamesOpened()
-}
-
-IsFeatureEnabled("PurchasedGamesFix").then(function(Enabled){
-    if (Enabled){
-        RunMain()
-    }
 })

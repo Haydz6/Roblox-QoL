@@ -159,3 +159,17 @@
 .item-value .custom > .icon-rolimons-20x20 {
     margin: 0px 2px;
 }
+
+@supports (-moz-appearance:none) {
+    .gain-summary > .box > .icon-rolimons-20x20 {
+        background-image: url(/img/trades/rolimons-16x16-white.png)!important;
+    }
+
+    .icon-offer-20x20 {
+        background-image: url(/img/trades/offer.png)!important;
+    }
+
+    .icon-rolimons-20x20 {
+        background-image: url(/img/trades/rolimons-16x16.png)!important;
+    }
+}

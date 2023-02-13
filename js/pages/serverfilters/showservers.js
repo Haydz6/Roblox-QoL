@@ -83,7 +83,7 @@ async function CreateServersFromRobloxServers(Servers){
     const Elements = []
 
     for (let i = 0; i < Servers.length; i++){
-        const Element = CreateServerBox(Servers[i], PlaceId)
+        const Element = await CreateServerBox(Servers[i], PlaceId)
         Elements.push(Element)
 
         ServerList.appendChild(Element)

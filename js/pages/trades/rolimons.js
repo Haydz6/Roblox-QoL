@@ -72,3 +72,48 @@ async function QueueForItemDetails(AssetId){
         }
     })
 }
+
+async function AddValueToOffers(Offers){
+    const AssetIds = []
+
+    for (let i = 0; i < Offers.length; i++){
+        const Offer = Offers[i]
+        const Assets = Offer.userAssets
+
+        if (!Assets){
+            Offer.Valid = false
+            continue
+        }
+        Offer.Valid = true
+
+        for (let o = 0; o < Assets.length; o++){
+            AssetIds.push(Assets[o].assetId)
+        }
+    }
+
+    if (AssetIds.length === 0) return
+
+    const [Success, Result] = await GetItemDetails(AssetIds)
+    if (!Success) return
+
+    for (let i = 0; i < Offers.length; i++){
+        const Offer = Offers[i]
+        const Assets = Offer.userAssets
+
+        let TotalValue = 0
+
+        for (let o = 0; o < Assets.length; o++){
+            const Asset = Assets[o]
+            const Details = Result[Asset.assetId]
+
+            if (Details){
+                Asset.Value = Details.Value
+                TotalValue += Details.Value
+            } else {
+                Offer.Valid = false
+            }
+        }
+
+        Offer.Value = TotalValue
+    }
+}

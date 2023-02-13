@@ -21,7 +21,7 @@ function CreateActivePrivateServersButton(Text, href){
     return [List, ButtonSpan]
 }
 
-function CreatePrivateServerCard(GameIcon, Name, OwnerName, OwnerId, Price, PlaceId){
+function CreatePrivateServerCard(GameIcon, Name, OwnerName, OwnerId, OwnerType, Price, PlaceId){
     const Card = document.createElement("li")
     Card.setAttribute("ng-repeat", "item in $ctrl.assets")
     Card.setAttribute("ng-class", "{'place-item': $ctrl.currentData.category.categoryType === $ctrl.assetsConstants.types.place}")
@@ -32,7 +32,7 @@ function CreatePrivateServerCard(GameIcon, Name, OwnerName, OwnerId, Price, Plac
     ItemContainer.className = "item-card-container"
 
     const CardItemLink = document.createElement("a")
-    const href = `https://www.roblox.com/games/${PlaceId}/${Name}#!/game-instances`
+    const href = `https://www.roblox.com/games/${PlaceId}/-#!/game-instances`
     CardItemLink.setAttribute("ng-href", href)
     CardItemLink.href = href
     CardItemLink.className = "item-card-link"
@@ -93,11 +93,12 @@ function CreatePrivateServerCard(GameIcon, Name, OwnerName, OwnerId, Price, Plac
 
     const CreatorNameButton = document.createElement("a")
     CreatorNameButton.className = "creator-name text-overflow text-link ng-binding"
-    CreatorNameButton.setAttribute("ng-href", `https://www.roblox.com/users/${OwnerId}/profile/`)
+    CreatorNameButton.setAttribute("ng-href", `https://roblox.com/users/${OwnerId}/profile/`)
     CreatorNameButton.setAttribute("ng-show", "$ctrl.currentData.isPrivateServerCategoryType")
     CreatorNameButton.setAttribute("ng-bind", "item.PrivateServer.nameForDisplay")
-    CreatorNameButton.href = `https://www.roblox.com/users/${OwnerId}/profile/`
-    CreatorNameButton.innerText = ` @${OwnerName}`
+    CreatorNameButton.href = OwnerType === "User" && `https://roblox.com/users/${OwnerId}/profile/` || `https://roblox.com/groups/${OwnerId}`
+    CreatorNameButton.innerText = ` ${OwnerType === "User" && "@" || ""}${OwnerName}`
+    console.log(OwnerType)
 
     CreatorNameDiv.appendChild(CreatorNameBySpan)
     CreatorNameDiv.appendChild(CreatorNameFakeButton)

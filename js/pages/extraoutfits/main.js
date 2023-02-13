@@ -377,25 +377,13 @@ const CustomesObserver = new MutationObserver(function(mutationList, observer){
   })
 })
 
-async function RunMain(){
+IsFeatureEnabled("ExtraOutfits").then(async function(Enabled){
+  if (!Enabled) return
+
   CostumesList = await WaitForId("costumes")
 
   CustomesObserver.observe(CostumesList, {attributes: true})
   CustomesObserver.observe(CostumesList.getElementsByTagName("div")[0], {childList: true})
 
-  //GetRobloCookie()
-
-  while (!document.head){
-    await sleep(100)
-  }
-
   StartConversion()
-
-  console.log("extra outfits ready")
-}
-
-IsFeatureEnabled("ExtraOutfits").then(function(Enabled){
-  if (Enabled){
-      RunMain()
-  }
 })

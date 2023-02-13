@@ -4,6 +4,12 @@
     background-size: 100%!important;
 }
 
+@supports (-moz-appearance:none) {
+    .icon-playtime {
+        background-image: url(/img/playtime.png)!important;
+    }
+}
+
 .game-card-thumb-container::before {
     z-index: 5;
 }

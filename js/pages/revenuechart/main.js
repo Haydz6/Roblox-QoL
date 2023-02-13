@@ -26,7 +26,3 @@ async function RemoveCharts(){
 function CanCreateChart(){
 
 }
-
-async function Main(){
-    
-}

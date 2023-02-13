@@ -130,7 +130,7 @@ async function NewOutfitElementAdded(OutfitElement){
                 if (Success){
                     CreateAlert("Converted outfit to roblox", true)
 
-                    const [OutfitSuccess, AllOutfits] = await RequestFunc("https://avatar.roblox.com/v1/users/"+UserId+"/outfits?page=1&itemsPerPage=1&isEditable=true")
+                    const [OutfitSuccess, AllOutfits] = await RequestFunc(`https://avatar.roblox.com/v1/users/${await GetUserId()}/outfits?page=1&itemsPerPage=1&isEditable=true`)
 
                     if (OutfitSuccess){
                         CreateNormalOutfitElement(OutfitName, AllOutfits.data[0].id)

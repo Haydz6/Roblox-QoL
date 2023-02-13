@@ -167,7 +167,7 @@ function CreateFilterButton(Text){
     return Button
 }
 
-function CreateServerBox(Server, PlaceId){
+async function CreateServerBox(Server, PlaceId){
     const ServerItem = document.createElement("li")
     ServerItem.className = "rbx-game-server-item col-md-3 col-sm-4 col-xs-6"
     ServerItem.setAttribute("placeid", PlaceId)
@@ -195,7 +195,7 @@ function CreateServerBox(Server, PlaceId){
         let UserInServer = false
 
         for (let i = 0; i < Players.length; i++){
-            if (Players[i].id == UserId){
+            if (Players[i].id == await GetUserId()){
                 UserInServer = true
                 break
             }
@@ -219,7 +219,7 @@ function CreateServerBox(Server, PlaceId){
                 const Player = Players[i]
                 TokenToUserId[Player.playerToken] = Player.id
 
-                if (Player.id == UserId){
+                if (Player.id == await GetUserId()){
                     TrueIteration++
                     continue
                 }

@@ -4,7 +4,7 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.5.2",
+    "version": "2.6.2",
     "homepage_url": "https://www.roblox.com/my/account?tab=robloxqol#!/info",
     "icons": {
         "128": "img/icons/icon128x128.png",
@@ -14,16 +14,24 @@
         "*://*.roblox.com/*",
         "*://*.haydz6.com/*",
         "*://*.rbxcdn.com/",
+        "*://*.ropro.io/",
         "storage",
         "notifications",
         "cookies",
         "webRequest"
     ],
     "web_accessible_resources": [
-        "img/*", "html/*", "sounds/*", "css/*", "js/modules/globe.js", "js/pages/serverfilters/getserverprops.js", "js/pages/quickserverinvite/checkforinvite.js", "js/pages/trades/injecttrade.js"
+        "img/*",
+        "html/*",
+        "sounds/*",
+        "css/*",
+        "js/modules/globe.js",
+        "js/pages/serverfilters/getserverprops.js",
+        "js/pages/quickserverinvite/checkforinvite.js",
+        "js/pages/trades/injecttrade.js"
     ],
     "background": {
-        "scripts": ["js/background.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js"],
+        "scripts": ["js/background.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"],
         "persistent": true
     },
     "content_scripts": [
@@ -36,7 +44,10 @@
                 "js/authentication/main.js",
                 "js/pages/document.js",
                 "js/pages/settings/settingsdropdown.js",
-                "js/pages/newmessageping.js"
+                "js/pages/newmessageping.js",
+                "js/pages/generalfixes/hidedesktopbanner.js",
+                "js/pages/generalfixes/hiderobloxads.js",
+                "js/pages/generalfixes/disablefooter.js"
             ],
             "run_at": "document_start",
             "all_frames": true
@@ -46,10 +57,10 @@
                 "*://*.roblox.com/my/avatar*"
             ],
             "js": [
-                "js/pages/extraoutfits/main.js",
                 "js/pages/extraoutfits/createelements.js",
                 "js/pages/extraoutfits/handleconversion.js",
-                "js/pages/extraoutfits/createnormaloutfitelement.js"
+                "js/pages/extraoutfits/createnormaloutfitelement.js",
+                "js/pages/extraoutfits/main.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -86,9 +97,17 @@
             "matches": [
                 "*://*.roblox.com/discover*"
             ],
+            "css": [
+                "css/playtime.css"
+            ],
             "js": [
                 "js/pages/fixfavouritespage/createelement.js",
-                "js/pages/fixfavouritespage/main.js"
+                "js/pages/fixfavouritespage/createSortDiscover.js",
+                "js/pages/fixfavouritespage/main.js",
+
+                "js/pages/playtime/createcards.js",
+                "js/pages/playtime/createelements.js",
+                "js/pages/playtime/allgames.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -117,7 +136,10 @@
                 "js/pages/recentservers/createelements.js",
                 "js/pages/recentservers/isserveralive.js",
                 "js/pages/recentservers/recentservers.js",
-                "js/pages/recentservers/main.js"
+                "js/pages/recentservers/main.js",
+
+                "js/pages/playtime/createelements.js",
+                "js/pages/playtime/game.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -135,13 +157,24 @@
         },
         {
             "matches": [
-                "*://*.roblox.com/users/*/profile"
+                "*://*.roblox.com/users/*/profile*"
+            ],
+            "css": [
+                "css/theme.css"
             ],
             "js": [
                 "js/pages/friendhistory/createelements.js",
                 "js/pages/mutuals/createelements.js",
                 "js/pages/mutuals/api.js",
-                "js/pages/mutuals/profilepage.js"
+                "js/pages/mutuals/profilepage.js",
+
+                "js/pages/rolimonsprofile/createelements.js",
+                "js/pages/trades/rolimons.js",
+                "js/pages/trades/getuserinventory.js",
+                "js/pages/rolimonsprofile/rolimons.js",
+
+                "js/pages/themes/createelements.js",
+                "js/pages/themes/profile.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -161,15 +194,93 @@
         },
         {
             "matches": [
-                "*://*.roblox.com/trades"
+                "*://*.roblox.com/trades*",
+                "*://*.roblox.com/users/*/trade"
             ],
             "css": [
+                "css/trades.css",
+                "css/assets.css"
+            ],
+            "js": [
+                "js/pages/trades/tradeapi.js",
+                "js/pages/trades/createelements.js",
+                "js/pages/assets/createelements.js",
+                "js/pages/trades/buttonhandlers.js",
+                "js/pages/trades/getuserinventory.js",
+                "js/pages/trades/rolimons.js",
+                "js/pages/trades/addvaluestotradeoverview.js",
+                "js/pages/trades/main.js",
+                "js/pages/trades/addinfototrade.js",
+                "js/pages/trades/createtrade.js",
+                "js/pages/trades/openontrade.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/catalog/*"
+            ],
+            "css": [
+                "css/assets.css",
                 "css/trades.css"
             ],
             "js": [
-                "js/pages/trades/createelements.js",
-                "js/pages/trades/buttonhandlers.js",
-                "js/pages/trades/main.js"
+                "js/pages/assets/createelements.js",
+                "js/pages/assets/main.js",
+                "js/pages/trades/rolimons.js",
+                "js/pages/assets/addrolimons.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/home",
+                "*://*.roblox.com/home?*"
+            ],
+            "css": [
+                "css/playtime.css"
+            ],
+            "js": [
+                "js/pages/generalfixes/movehomefavouritestothirdrow.js",
+                "js/pages/fixfavouritespage/replacehomelink.js",
+
+                "js/pages/playtime/createelements.js",
+                "js/pages/playtime/createcards.js",
+                "js/pages/playtime/home.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://qol.haydz6.com/i/*"
+            ],
+            "js": [
+                "js/pages/quickserverinvite/setinstalledidentifier.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://create.roblox.com/creations/experiences/*/places/*/version-history"
+            ],
+            "js": [
+                "js/pages/generalfixes/versionhistory/download.js",
+                "js/pages/generalfixes/versionhistory/newcreate.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/places/*/update*"
+            ],
+            "js": [
+                "js/pages/generalfixes/versionhistory/download.js",
+                "js/pages/generalfixes/versionhistory/olddevelop.js"
             ],
             "run_at": "document_idle",
             "all_frames": true

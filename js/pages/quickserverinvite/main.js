@@ -135,7 +135,7 @@ function NewServerAddedMutationInvite(Mutations){
     })
 }
 
-function HandleList(Id){
+function HandleInviteList(Id){
 	WaitForId(Id).then(function(ServerList){
 		new MutationObserver(NewServerAddedMutationInvite).observe(ServerList, {childList: true})
 
@@ -147,14 +147,10 @@ function HandleList(Id){
 	})
 }
 
-async function QuickInviteMain(){
-	HandleList("rbx-game-server-item-container")
-	HandleList("rbx-friends-game-server-item-container")
-    HandleList("rbx-recent-game-server-item-container")
-}
-
 IsFeatureEnabled("QuickInvite").then(function(Enabled){
-    if (Enabled){
-        QuickInviteMain()
-    }
+    if (!Enabled) return
+
+    HandleInviteList("rbx-game-server-item-container")
+	HandleInviteList("rbx-friends-game-server-item-container")
+    HandleInviteList("rbx-recent-game-server-item-container")
 })

@@ -1,16 +1,20 @@
 function GetUserIdFromTradeWithURL(){
-    return parseInt(window.location.href.split("users/")[1].split("/")[0])
+    return parseInt(window.location.href.split("users/")[1]?.split("/")[0])
 }
 
 async function AddLinkToName(){
     const TradeHeader = await WaitForClass("trades-header-nowrap")
-
     let Titles = TradeHeader.getElementsByClassName("paired-name")[0]
-    while (Titles.children < 3) await sleep(20)
 
-    const LinkIcon = CreateLinkIcon(`https://www.rolimons.com/player/${GetUserIdFromTradeWithURL()}`)
-    LinkIcon.style = "width: 30px;"
-    Titles.children[2].appendChild(LinkIcon)
+    ChildAdded(Titles, true, function(Element, Disconnect){
+        if (Titles.children.length >= 3){
+            const LinkIcon = CreateLinkIcon(`https://www.rolimons.com/player/${GetUserIdFromTradeWithURL()}`)
+            LinkIcon.style = "width: 30px;"
+            Titles.children[2].appendChild(LinkIcon)
+
+            Disconnect()
+        }
+    })
 }
 
 async function NewAsset(Asset){
@@ -314,7 +318,11 @@ async function ListenForNewSummaryOffer(){
 
     function CalcuatePercentage(First, Second){
         const Percentage = Math.floor((First - Second)/Second * 100)
-        return isNaN(Percentage) && 0 || Percentage
+        
+        if (isNaN(Percentage)){
+            return 0
+        }
+        return Percentage
     }
 
     function IsTypeValid(Type){
@@ -346,6 +354,8 @@ async function ListenForNewSummaryOffer(){
         }
     }
 
+    let Inserted = false
+
     new MutationObserver(function(Mutations){
         Mutations.forEach(function(Mutation){
             if (Mutation.type !== "childList") return
@@ -354,9 +364,10 @@ async function ListenForNewSummaryOffer(){
             for (let i = 0; i < addedNodes.length; i++){
                 ListenToSummaryOffers(addedNodes[i], Update)
 
-                // if (Offers.children.length >= 2){
-                //     Offers.insertBefore(Divider, Offers.children[1])
-                // }
+                if (Offers.children.length >= 2 && !Inserted){
+                    Inserted = true
+                    Offers.insertBefore(Divider, Offers.children[1])
+                }
             }
         })
     }).observe(Offers, {childList: true})
@@ -368,14 +379,11 @@ async function ListenForNewSummaryOffer(){
     }
     
     if (children.length >= 2){
+        Inserted = true
         Offers.insertBefore(Divider, children[1])
     }
 }
 
-async function Main(){
-    ListenToOffers()
-    ListenForNewSummaryOffer()
-    AddLinkToName()
-}
-
-Main()
+ListenToOffers()
+ListenForNewSummaryOffer()
+AddLinkToName()

@@ -36,12 +36,9 @@ async function FetchFromCache(){
         return
     }
 
-    const CachedInfo = AllCache[UserId]
+    const CachedInfo = AllCache[await GetUserId()]
     const CachedGames = CachedInfo.Games
     LastCachedTranscation = CachedInfo.LastTranscation
-
-    console.log(CachedGames)
-    console.log(LastCachedTranscation)
 
     for (let i = 0; i < CachedGames.length; i++){
         CachedGamesIds.push(CachedGames[i])
@@ -51,17 +48,62 @@ async function FetchFromCache(){
     FullPurchasedCache = AllCache
 }
 
-function SaveCache(){
+async function SaveCache(){
     if (!FetchedFromCache){
         return
     }
-    FullPurchasedCache[UserId] = {Games: PurchasedGameIds, LastTranscation: LastCachedTranscation}
+    FullPurchasedCache[await GetUserId()] = {Games: PurchasedGameIds, LastTranscation: LastCachedTranscation}
 
     window.localStorage.setItem("robloxqol-purchasedgames", JSON.stringify(FullPurchasedCache))
 }
 
 function UpdatePurchasedGamesParagraph(){
     LoadingParagraph.innerText = `Found ${PurchasedGamesLoaded} purchased games out of ${TotalTranscationsLoaded} transcations!${!LastCachedTranscation && "\n(The first time loading will take a bit)" || ""}`
+}
+
+async function GetBuilderTypeFromAssetIds(NewGames){
+    const AllAssets = []
+    const UniverseIdToNewGame = {}
+
+    for (let i = 0; i < NewGames.length; i++){
+        const Game = NewGames[i]
+        UniverseIdToNewGame[Game.UniverseId] = Game
+        AllAssets.push(Game.UniverseId)
+    }
+
+    const Chunks = SplitArrayIntoChunks(AllAssets, 35)
+
+    for (let i = 0; i < Chunks.length; i++){
+        const Chunk = Chunks[i]
+        let GamesString = ""
+
+        for (let i = 0; i < Chunk.length; i++){
+            if (GamesString != ""){
+                GamesString = GamesString + "&"
+            }
+
+            GamesString = GamesString + "universeIds="+Chunk[i]
+        }
+
+        while (true){
+            const [GamesSuccess, GamesResult] = await RequestFunc("https://games.roblox.com/v1/games?"+GamesString, "GET", undefined, undefined, true)
+
+            if (!GamesSuccess){
+                await sleep(1000)
+                continue
+            }
+
+            const Data = GamesResult.data
+            for (let i = 0; i < Data.length; i++){
+                const Game = Data[i]
+                UniverseIdToNewGame[Game.id].OwnerType = Game.creator.type
+            }
+
+            break
+        }
+
+        UpdatePurchasedGamesParagraph()
+    }
 }
 
 async function GetGameInfosFromAssetIds(AllAssets){
@@ -93,6 +135,7 @@ async function GetGameInfosFromAssetIds(AllAssets){
                 const Game = GamesResult[i]
                 const GameInfo = {
                     PlaceId: Game.placeId,
+                    UniverseId: Game.universeId,
                     Name: Game.name,
                     OwnerName: Game.builder,
                     OwnerId: Game.builderId,
@@ -112,13 +155,15 @@ async function GetGameInfosFromAssetIds(AllAssets){
         UpdatePurchasedGamesParagraph()
     }
 
+    await GetBuilderTypeFromAssetIds(NewGames)
+
     return NewGames
 }
 
 async function RequestPurchasedGames(){
     await FetchFromCache()
 
-    const [Success, Result] = await RequestFunc(`https://economy.roblox.com/v2/users/${UserId}/transactions?cursor=${NextCursor}&limit=100&transactionType=Purchase`, "GET", undefined, undefined, true)
+    const [Success, Result] = await RequestFunc(`https://economy.roblox.com/v2/users/${await GetUserId()}/transactions?cursor=${NextCursor}&limit=100&transactionType=Purchase`, "GET", undefined, undefined, true)
 
     if (!Success){
         return
@@ -167,9 +212,6 @@ async function RequestPurchasedGames(){
 
     if (HitIdCache){
         ReachedPurchasedGamesEnd = true
-
-        console.log("hit id cache")
-        console.log(CachedGamesIds)
 
         const NewGames2 = await GetGameInfosFromAssetIds(CachedGamesIds)
 

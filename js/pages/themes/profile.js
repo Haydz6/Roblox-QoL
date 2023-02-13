@@ -10,7 +10,9 @@ function SetupImages(){
     return ImageList
 }
 
-async function Main(){
+IsFeatureEnabled("ProfileThemes").then(async function(Enabled){
+    if (!Enabled) return
+
     const ProfileHeader = await WaitForClass("section profile-header")
     const Sections = ProfileHeader.parentElement
 
@@ -18,8 +20,4 @@ async function Main(){
     Sections.insertBefore(ThemeSection, ProfileHeader.nextSibling)
 
     ThemeContent.appendChild(SetupImages())
-}
-
-IsFeatureEnabled("ProfileThemes").then(function(Enabled){
-    if (Enabled) Main()
 })

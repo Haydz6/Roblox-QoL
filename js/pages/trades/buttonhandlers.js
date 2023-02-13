@@ -1,3 +1,15 @@
+async function DeclineTradeWithDOMCheck(TradeId){
+    const [Success] = await DeclineTrade(TradeId)
+
+    if (Success){
+        const TradeRow = document.querySelectorAll(`div[tradeid="${TradeId}"][class^="trade-row"]`)[0]
+
+        if (TradeRow) TradeRow.remove()
+    }
+
+    return [Success]
+}
+
 async function DeclineAllInbounds(){
     const Button = CreateTradeDropdownOption("Decline Inbounds")
     TradesDropdown.appendChild(Button)
@@ -32,52 +44,30 @@ async function DeclineAllInbounds(){
 
             Description.innerText = "Getting inbound trades"
 
-            let Cursor = ""
-
             let Fails = 0
             let Successes = 0
             let InboundsCancelled = 0
 
-            while (true){
-                if (Cursor === null) break
-
-                const [Success, Result, Response] = await RequestFunc(`https://trades.roblox.com/v1/trades/Inbound?limit=100?cursor=${Cursor}`, "GET", undefined, undefined, true)
-
-                if (Response.status === 429){
-                    await sleep(1000*2)
-                    continue
-                }
-
+            await GetAllTrades("Inbound", 100, true, async function(Success, Result, FetchNext, Cancel){
                 if (!Success){
                     Fails ++
-                    break
-                } else {
-                    Successes ++
+                    Cancel()
+                    return
                 }
 
-                Cursor = Result.nextPageCursor
                 const Data = Result.data
+                for (let i = 0; i < Data.length; i++){
+                    const [TradeSuccess] = await DeclineTradeWithDOMCheck(Data[i].id)
 
-                while (Data.length > 0){
-                    const [TradeSuccess] = await RequestFunc(`https://trades.roblox.com/v1/trades/${Data[0].id}/decline`, "POST", undefined, undefined, true)
-
-                    if (Response.status === 429){
-                        await sleep(1000*2)
-                        continue
-                    }
-
-                    if (!TradeSuccess){
-                        Fails ++
-                    } else {
+                    if (!TradeSuccess) Fails ++
+                    else {
                         Successes ++
                         InboundsCancelled ++
                         Description.innerText = `Declined ${InboundsCancelled} inbound trades.`
                     }
-
-                    Data.splice(0, 1)
-                    continue
                 }
-            }
+                FetchNext()
+            })
 
             if (Fails > 0){
                 if (Successes > 0){
@@ -132,52 +122,30 @@ async function CancelAllOutbounds(){
 
             Description.innerText = "Getting outbound trades"
 
-            let Cursor = ""
-
             let Fails = 0
             let Successes = 0
             let InboundsCancelled = 0
 
-            while (true){
-                if (Cursor === null) break
-
-                const [Success, Result, Response] = await RequestFunc(`https://trades.roblox.com/v1/trades/Outbound?limit=100?cursor=${Cursor}`, "GET", undefined, undefined, true)
-
-                if (Response.status === 429){
-                    await sleep(1000*2)
-                    continue
-                }
-
+            await GetAllTrades("Outbound", 100, true, async function(Success, Result, FetchNext, Cancel){
                 if (!Success){
                     Fails ++
-                    break
-                } else {
-                    Successes ++
+                    Cancel()
+                    return
                 }
 
-                Cursor = Result.nextPageCursor
                 const Data = Result.data
+                for (let i = 0; i < Data.length; i++){
+                    const [TradeSuccess] = await DeclineTradeWithDOMCheck(Data[i].id)
 
-                while (Data.length > 0){
-                    const [TradeSuccess] = await RequestFunc(`https://trades.roblox.com/v1/trades/${Data[0].id}/decline`, "POST", undefined, undefined, true)
-
-                    if (Response.status === 429){
-                        await sleep(1000*2)
-                        continue
-                    }
-
-                    if (!TradeSuccess){
-                        Fails ++
-                    } else {
+                    if (!TradeSuccess) Fails ++
+                    else {
                         Successes ++
                         InboundsCancelled ++
-                        Description.innerText = `Cancelled ${InboundsCancelled} outbound trades.`
+                        Description.innerText = `Declined ${InboundsCancelled} inbound trades.`
                     }
-
-                    Data.splice(0, 1)
-                    continue
                 }
-            }
+                FetchNext()
+            })
 
             if (Fails > 0){
                 if (Successes > 0){
@@ -286,64 +254,43 @@ async function DeclineAgedTrades(){
 
             Description.innerText = `Getting ${TradeType.toLowerCase()} trades`
 
-            let Cursor = ""
-
             let Fails = 0
             let Successes = 0
             let InboundsCancelled = 0
 
-            const ExpiryTimestamp = Date.now()+(Slider.value * 3.6e+6)
+            const ExpiryTimestamp = Date.now()-(Slider.value * 3.6e+6)
 
             Slider.remove()
             Button.remove()
             Dropdown.remove()
 
-            while (true){
-                if (Cursor === null) break
-
-                const [Success, Result, Response] = await RequestFunc(`https://trades.roblox.com/v1/trades/${TradeType}?limit=100?cursor=${Cursor}`, "GET", undefined, undefined, true)
-
-                if (Response.status === 429){
-                    await sleep(1000*2)
-                    continue
-                }
-
+            await GetAllTrades(TradeType, 100, true, async function(Success, Result, FetchNext, Cancel){
                 if (!Success){
                     Fails ++
-                    break
-                } else {
-                    Successes ++
+                    Cancel()
+                    return
                 }
 
-                Cursor = Result.nextPageCursor
                 const Data = Result.data
-
-                while (Data.length > 0){
-                    const Trade = Data[0]
-                    if (Data.parse(Trade.created) >= ExpiryTimestamp){
-                        Data.splice(0, 1)
+                for (let i = 0; i < Data.length; i++){
+                    const Trade = Data[i]
+                    
+                    if (ExpiryTimestamp - Date.parse(Trade.created) < 0){
                         continue
                     }
 
-                    const [TradeSuccess] = await RequestFunc(`https://trades.roblox.com/v1/trades/${Trade.id}/decline`, "POST", undefined, undefined, true)
+                    const [TradeSuccess] = await DeclineTradeWithDOMCheck(Trade.id)
 
-                    if (Response.status === 429){
-                        await sleep(1000*2)
-                        continue
-                    }
-
-                    if (!TradeSuccess){
-                        Fails ++
-                    } else {
+                    if (!TradeSuccess) Fails ++
+                    else {
                         Successes ++
                         InboundsCancelled ++
                         Description.innerText = `${TradeType === "Inbound" && "Declined" || "Cancelled"} ${InboundsCancelled} ${TradeType.toLowerCase()} trades.`
                     }
-
-                    Data.splice(0, 1)
-                    continue
                 }
-            }
+
+                FetchNext()
+            })
 
             if (Fails > 0){
                 if (Successes > 0){
@@ -453,8 +400,6 @@ async function DeclineLoss(){
 
             Description.innerText = `Getting ${TradeType.toLowerCase()} trades`
 
-            let Cursor = ""
-
             let Fails = 0
             let Successes = 0
             let InboundsCancelled = 0
@@ -463,104 +408,46 @@ async function DeclineLoss(){
             Button.remove()
             Dropdown.remove()
 
-            while (true){
-                if (Cursor === null) break
-
-                const [Success, Result, Response] = await RequestFunc(`https://trades.roblox.com/v1/trades/${TradeType}?limit=100?cursor=${Cursor}`, "GET", undefined, undefined, true)
-
-                if (Response.status === 429){
-                    await sleep(1000*2)
-                    continue
-                }
-
+            await GetAllTrades(TradeType, 100, true, async function(Success, Result, FetchNext, Cancel){
                 if (!Success){
                     Fails ++
-                    break
-                } else {
-                    Successes ++
+                    Cancel()
+                    return
                 }
 
-                Cursor = Result.nextPageCursor
                 const Data = Result.data
 
-                while (Data.length > 0){
-                    const [InfoSuccess, Info] = await RequestFunc(`https://trades.roblox.com/v1/trades/${Data[0].id}`, "GET", undefined, undefined, true)
-
-                    if (Response.status === 429){
-                        await sleep(1000*2)
-                        continue
-                    }
+                for (let i = 0; i < Data.length; i++){
+                    const Trade = Data[i]
+                    const [InfoSuccess, Info] = await GetTradeInfo(Trade.id, true)
 
                     if (!InfoSuccess){
                         Fails ++
-                        Data.splice(0, 1)
                         continue
                     }
 
-                    const Values = {Ours: 0, Other: 0}
-                    let ValueSuccess = true
+                    const AllOffers = Success && Info.offers || []
 
-                    const Offers = Info.offers
+                    const Offers = {Ours: AllOffers[0], Other: AllOffers[1]}
+                    await AddValueToOffers(AllOffers)
 
-                    for (let i = 0; i < Offers.length; i++){
-                        const Offer = Offers[i]
-                        const ValueTarget = Offer.user.id == UserId && "Ours" || "Other"
-
-                        const Assets = Offer.userAssets
-                        const AssetIds = []
-
-                        for (o = 0; o < Assets.length; o++){
-                            AssetIds.push(Assets[o].assetId)
-                            // const [Success, Info] = GetItemDetails(Assets[i].assetId)
-
-                            // if (!Success){
-                            //     ValueSuccess = false
-                            //     break
-                            // }
-
-                            // Values[ValueTarget] += Info.Value
-                        }
-
-                        const [Success, _, Value] = await GetItemDetails(AssetIds, true)
-
-                        if (!Success){
-                            ValueSuccess = false
-                            break
-                        }
-
-                        Values[ValueTarget] = Value
-                    }
-
-                    if (!ValueSuccess){
-                        Fails ++
-                        Data.splice(0, 1)
+                    console.log(-Slider.value * 5, (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100)
+                    if (-Slider.value * 5 < (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100){
                         continue
                     }
 
-                    if (((Values.Ours - Values.Other)/Values.Ours)*100 < Slider.value * 20){
-                        Data.splice(0, 1)
-                        continue
-                    }
+                    const [TradeSuccess] = await DeclineTradeWithDOMCheck(Trade.id)
 
-                    const [TradeSuccess] = await RequestFunc(`https://trades.roblox.com/v1/trades/${Data[0].id}/decline`, "POST", undefined, undefined, true)
-
-                    if (Response.status === 429){
-                        await sleep(1000*2)
-                        continue
-                    }
-
-                    if (!TradeSuccess){
-                        Fails ++
-                    } else {
+                    if (!TradeSuccess) Fails ++
+                    else {
                         Successes ++
                         InboundsCancelled ++
                         Description.innerText = `${TradeType === "Inbound" && "Declined" || "Cancelled"} ${InboundsCancelled} ${TradeType.toLowerCase()} trades.`
                     }
-
-                    Data.splice(0, 1)
-                    continue
                 }
-            }
+
+                FetchNext()
+            })
 
             if (Fails > 0){
                 if (Successes > 0){
@@ -617,43 +504,24 @@ async function DeclineInboundProjections(){
 
             Description.innerText = "Getting inbound trades"
 
-            let Cursor = ""
-
             let Fails = 0
             let Successes = 0
             let InboundsCancelled = 0
 
-            while (true){
-                if (Cursor === null) break
-
-                const [Success, Result, Response] = await RequestFunc(`https://trades.roblox.com/v1/trades/Inbound?limit=100?cursor=${Cursor}`, "GET", undefined, undefined, true)
-
-                if (Response.status === 429){
-                    await sleep(1000*2)
-                    continue
-                }
-
+            await GetAllTrades("Inbound", 100, true, async function(Success, Result, FetchNext, Cancel){
                 if (!Success){
                     Fails ++
-                    break
-                } else {
-                    Successes ++
+                    Cancel()
+                    return
                 }
 
-                Cursor = Result.nextPageCursor
                 const Data = Result.data
-
-                while (Data.length > 0){
-                    const [InfoSuccess, Info] = await RequestFunc(`https://trades.roblox.com/v1/trades/${Data[0].id}`, "GET", undefined, undefined, true)
-
-                    if (Response.status === 429){
-                        await sleep(1000*2)
-                        continue
-                    }
+                for (let i = 0; i < Data.length; i++){
+                    const Trade = Data[i]
+                    const [InfoSuccess, Info] = await GetTradeInfo(Trade.id, true)
 
                     if (!InfoSuccess){
                         Fails ++
-                        Data.splice(0, 1)
                         continue
                     }
 
@@ -664,25 +532,14 @@ async function DeclineInboundProjections(){
 
                     for (let i = 0; i < Offers.length; i++){
                         const Offer = Offers[i]
-
-                        if (Offer.user.id == UserId) continue
+                        
+                        if (Offer.user.id == await GetUserId()) continue
 
                         const Assets = Offer.userAssets
                         const AssetIds = []
 
                         for (o = 0; o < Assets.length; o++){
                             AssetIds.push(Assets[o].assetId)
-                            // const [Success, Info] = GetItemDetails(Assets[i].assetId)
-
-                            // if (!Success){
-                            //     ValueSuccess = false
-                            //     break
-                            // }
-
-                            // if (Info.Projected){
-                            //     ProjectedFound = true
-                            //     break
-                            // }
                         }
 
                         const [Success, Details] = await GetItemDetails(AssetIds)
@@ -702,21 +559,14 @@ async function DeclineInboundProjections(){
 
                     if (!ValueSuccess){
                         Fails ++
-                        Data.splice(0, 1)
                         continue
                     }
 
                     if (!ProjectedFound){
-                        Data.splice(0, 1)
                         continue
                     }
 
-                    const [TradeSuccess] = await RequestFunc(`https://trades.roblox.com/v1/trades/${Data[0].id}/decline`, "POST", undefined, undefined, true)
-
-                    if (Response.status === 429){
-                        await sleep(1000*2)
-                        continue
-                    }
+                    const [TradeSuccess] = await DeclineTradeWithDOMCheck(Trade.id)
 
                     if (!TradeSuccess){
                         Fails ++
@@ -725,11 +575,9 @@ async function DeclineInboundProjections(){
                         InboundsCancelled ++
                         Description.innerText = `Declined ${InboundsCancelled} inbound trades.`
                     }
-
-                    Data.splice(0, 1)
-                    continue
                 }
-            }
+                FetchNext()
+            })
 
             if (Fails > 0){
                 if (Successes > 0){
@@ -784,43 +632,24 @@ async function DeclineInvalidTrades(){
 
             Description.innerText = "Getting inbound trades"
 
-            let Cursor = ""
-
             let Fails = 0
             let Successes = 0
             let InboundsCancelled = 0
 
-            while (true){
-                if (Cursor === null) break
-
-                const [Success, Result, Response] = await RequestFunc(`https://trades.roblox.com/v1/trades/Inbound?limit=100?cursor=${Cursor}`, "GET", undefined, undefined, true)
-
-                if (Response.status === 429){
-                    await sleep(1000*2)
-                    continue
-                }
-
+            await GetAllTrades("Inbound", 100, true, async function(Success, Result, FetchNext, Cancel){
                 if (!Success){
                     Fails ++
-                    break
-                } else {
-                    Successes ++
+                    Cancel()
+                    return
                 }
 
-                Cursor = Result.nextPageCursor
                 const Data = Result.data
-
-                while (Data.length > 0){
-                    const [InfoSuccess, Info] = await RequestFunc(`https://trades.roblox.com/v1/trades/${Data[0].id}`, "POST", undefined, undefined, true)
-
-                    if (Response.status === 429){
-                        await sleep(1000*2)
-                        continue
-                    }
+                for (let i = 0; i < Data.length; i++){
+                    const Trade = Data[i]
+                    const [InfoSuccess, Info] = await GetTradeInfo(Trade.id, true)
 
                     if (!InfoSuccess){
                         Fails ++
-                        Data.splice(0, 1)
                         continue
                     }
                     
@@ -833,7 +662,7 @@ async function DeclineInvalidTrades(){
                     for (let i = 0; i < Offers.length; i++){
                         const Offer = Offers[i]
 
-                        const Type = Offer.user.id == UserId && "Ours" || "Other"
+                        const Type = Offer.user.id == await GetUserId() && "Ours" || "Other"
                         const Assets = Offer.userAssets
 
                         if (Type === "Other") OtherUserId = Offer.user.id
@@ -845,15 +674,13 @@ async function DeclineInvalidTrades(){
 
                     if (!OtherUserId){
                         Fails ++
-                        Data.splice(0, 1)
                         continue
                     }
 
-                    const [OurInventorySuccess, OurPublic, OurInventory] = await GetUserLimitedInventory(UserId)
+                    const [OurInventorySuccess, OurPublic, OurInventory] = await GetUserLimitedInventory(await GetUserId())
 
                     if (!OurInventorySuccess || !Public){
                         Fails ++
-                        Data.splice(0, 1)
                         continue
                     }
 
@@ -861,7 +688,6 @@ async function DeclineInvalidTrades(){
 
                     if (!OtherInventorySuccess || !OtherPublic){
                         Fails ++
-                        Data.splice(0, 1)
                         continue
                     }
 
@@ -893,16 +719,10 @@ async function DeclineInvalidTrades(){
                     }
 
                     if (IsValid){
-                        Data.splice(0, 1)
                         continue
                     }
 
-                    const [TradeSuccess] = await RequestFunc(`https://trades.roblox.com/v1/trades/${Data[0].id}/decline`)
-
-                    if (Response.status === 429){
-                        await sleep(1000*2)
-                        continue
-                    }
+                    const [TradeSuccess] = await DeclineTradeWithDOMCheck(Trade.id)
 
                     if (!TradeSuccess){
                         Fails ++
@@ -912,10 +732,11 @@ async function DeclineInvalidTrades(){
                         Description.innerText = `Declined ${InboundsCancelled} inbound trades.`
                     }
 
-                    Data.splice(0, 1)
                     continue
                 }
-            }
+
+                FetchNext()
+            })
 
             if (Fails > 0){
                 if (Successes > 0){

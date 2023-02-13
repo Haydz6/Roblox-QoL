@@ -64,6 +64,25 @@ async function WaitForId(Id){
     return Element
 }
 
+async function WaitForClassPath(Element, ...Paths){
+  let LastElement = Element
+
+  for (let i = 0; i < Paths.length; i++){
+    while (true){
+      const NewElement = LastElement.getElementsByClassName(Paths[i])[0]
+      
+      if (NewElement){
+        LastElement = NewElement
+        break
+      }
+
+      await sleep(50)
+    }
+  }
+
+  return LastElement
+}
+
 async function GetUserId(){
   if (UserId){
     return UserId
@@ -138,7 +157,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
 
     if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
       if (ResBody?.Result == "Invalid authentication!"){
-        InvalidateAuthKey()
+        await InvalidateAuthKey()
         console.log("auth key invalid, getting a new one")
       }
 
@@ -180,15 +199,16 @@ function SecondsToLengthShort(Seconds){
 
 function SecondsToLength(Seconds, OnlyOne, HideDays){
   const d = Math.floor(Seconds / (3600*24))
-  let h = Math.floor(Seconds % (3600*24) / 3600)
+  const h = Math.floor(Seconds % (3600*24) / 3600)
   const m = Math.floor(Seconds % 3600 / 60)
   const s = Math.floor(Seconds % 60)
 
+  const trueh = Math.floor(Seconds / 3600)
+
   if (d > 0 && !HideDays){
       return `${d} day${d > 1 && "s" || ""}`
-  } else if (h > 0){
-      if (HideDays) h = Math.floor(Seconds / 3600)
-      return `${h} hour${h > 1 && "s" || ""}`
+  } else if (HideDays && trueh > 0 || h > 0){
+      return `${HideDays && trueh || h} hour${(HideDays && trueh > 1 || h > 1) && "s" || ""}`
   } else if (m > 0 && !OnlyOne){
       return `${m} minute${m > 1 && "s" || ""} ${s} second${s > 1 && "s" || ""}`
   } else if (m > 0 && OnlyOne){
@@ -247,6 +267,26 @@ function AbbreviateNumber(number, decPlaces, noPlus){
   }
 
   return number
+}
+
+function ChildAdded(Node, SendInitial, Callback){
+  if (SendInitial){
+    const children = Node.children
+    for (let i = 0; i < children.length; i++){
+      Callback(children[i])
+    }
+  }
+
+  return new MutationObserver(function(Mutations, Observer){
+    Mutations.forEach(function(Mutation) {
+      if (Mutation.type !== "childList") return
+
+      const addedNodes = Mutation.addedNodes
+      for (let i = 0; i < addedNodes.length; i++){
+        Callback(addedNodes[i], Observer.disconnect)
+      }
+    })
+  }).observe(Node, {childList: true})
 }
 
 async function FetchAllFeaturesEnabled(){

@@ -1,13 +1,18 @@
 function IsPlaytimePage(){
-    return window.location.href.split("#")[1] === "/sortName?sort=Playtime"
+    return window.location.href.split("#")[1].includes("/sortName?sort=Playtime")
+}
+
+function GetPlaytimeType(){
+    return window.location.href.split("type=")[1].split("&")[0]
 }
 
 IsFeatureEnabled("Playtime").then(async function(Enabled){
     if (!Enabled || !IsPlaytimePage()) return
 
+    const Type = GetPlaytimeType()
     const GameCarousel = await WaitForId("games-carousel-page")
 
-    const [SortContainer, GameGrid, Title] = CreateSortDiscover("Playtime")
+    const [SortContainer, GameGrid, Title] = CreateSortDiscover(Type == "Edit" && "Studio Sessions" || "Playtime")
     GameCarousel.appendChild(SortContainer)
 
     const [DropdownList, List, DropdownButton, CloseList] = CreateDropdownList("All Time")
@@ -60,7 +65,7 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
         const Spinner = CreateSpinner()
         GameGrid.appendChild(Spinner)
 
-        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}`, "GET")
+        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}`, "GET")
         if (FetchInt[0] !== CacheFetchInt) return
 
         function Fail(Text){

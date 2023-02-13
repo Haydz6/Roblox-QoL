@@ -1,5 +1,6 @@
 const AlreadyScannedTrades = {}
 const TradeNotifications = {}
+let FirstTradeScans = {Inbound: false, Outbound: false, Completed: false, Inactive: false}
 
 function GenerateNotificationId(Notifications, Length){
     let Id = ""
@@ -41,29 +42,6 @@ async function GetHeadshotBlobFromUserId(UserId){
     return DataURL
 }
 
-
-async function DeclineTrade(TradeId){
-    const [Success, Result, Response] = await RequestFunc(`https://trades.roblox.com/v1/trades/${TradeId}/decline`, "POST", undefined, undefined, true)
-
-    if (Response.status === 429){
-        await sleep(10*1000)
-        return await DeclineTrade(TradeId)
-    }
-
-    return [Success, Result]
-}
-
-async function GetTradeInfo(TradeId){
-    const [Success, Result, Response] = await RequestFunc(`https://trades.roblox.com/v1/trades/${TradeId}`, "GET", undefined, undefined, true)
-
-    if (Response.status === 429){
-        await sleep(10*1000)
-        return await GetTradeInfo(TradeId)
-    }
-
-    return [Success, Result]
-}
-
 async function ClearOldScannedTrades(){
 
 }
@@ -82,6 +60,7 @@ async function IsTradeScanned(Type, TradeId){
 
         if (!ScannedTradesUnparsed){
             AlreadyScannedTrades[Type] = {}
+            FirstTradeScans[Type] = true
         } else {
             AlreadyScannedTrades[Type] = JSON.parse(ScannedTradesUnparsed)
         }
@@ -90,52 +69,14 @@ async function IsTradeScanned(Type, TradeId){
     return AlreadyScannedTrades[Type][TradeId]
 }
 
-async function AddValueToOffers(Offers){
-    const AssetIds = []
-
-    for (let i = 0; i < Offers.length; i++){
-        const Offer = Offers[i]
-        const Assets = Offer.userAssets
-
-        if (!Assets){
-            Offer.Valid = false
-            continue
-        }
-        Offer.Valid = true
-
-        for (let o = 0; o < Assets.length; o++){
-            AssetIds.push(Assets[o].assetId)
-        }
-    }
-
-    if (AssetIds.length === 0) return
-
-    const [Success, Result] = await GetItemDetails(AssetIds)
-    if (!Success) return
-
-    for (let i = 0; i < Offers.length; i++){
-        const Offer = Offers[i]
-        const Assets = Offer.userAssets
-
-        let TotalValue = 0
-
-        for (let o = 0; o < Assets.length; o++){
-            const Asset = Assets[o]
-            const Details = Result[Asset.assetId]
-
-            if (Details){
-                Asset.Value = Details.Value
-                TotalValue += Details.Value
-            } else {
-                Offer.Valid = false
-            }
-        }
-
-        Offer.Value = TotalValue
-    }
-}
-
 async function NotifyNewTrades(Trades, Type){
+    await IsTradeScanned(Type, -1)
+
+    if (FirstTradeScans[Type]){
+        FirstTradeScans[Type] = false
+        return
+    }
+
     for (let i = 0; i < Trades.length; i++){
         const Trade = Trades[i]
         let Buttons = []
@@ -170,13 +111,10 @@ async function NotifyNewTrades(Trades, Type){
         const Offers = {Ours: AllOffers[0], Other: AllOffers[1]}
         await AddValueToOffers(AllOffers)
 
-        console.log(Type === "Inbound", await IsFeatureEnabled("AutodeclineTradeValue"))
         if (Type === "Inbound" && await IsFeatureEnabled("AutodeclineTradeValue")){
             const Threshold = await IsFeatureEnabled("AutodeclineTradeValueThreshold")
             const Percentage = (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100
 
-            console.log(-Threshold, Percentage)
-            console.log(-Threshold <= Percentage, -Threshold >= Percentage, "^^^")
             if (-Threshold >= Percentage){
                 DeclineTrade(Trade.id)
             }
@@ -185,7 +123,6 @@ async function NotifyNewTrades(Trades, Type){
             const Threshold = await IsFeatureEnabled("AutodeclineOutboundTradeValueThreshold")
             const Percentage = (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100
 
-            console.log(-Threshold, Percentage)
             if (-Threshold >= Percentage){
                 DeclineTrade(Trade.id)
             }

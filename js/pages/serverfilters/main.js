@@ -44,7 +44,7 @@ function NewServerAddedMutation(Mutations){
     })
 }
 
-function HandleList(Id){
+function HandleRegionList(Id){
     WaitForId(Id).then(function(List){
         const Observer = new MutationObserver(NewServerAddedMutation)
         Observer.observe(List, {childList: true})
@@ -56,21 +56,18 @@ function HandleList(Id){
     })
 }
 
-async function Main(){
-    HandleList("rbx-game-server-item-container")
-    HandleList("rbx-friends-game-server-item-container")
-}
-
 IsFeatureEnabled("ServerRegions").then(function(Enabled){
-    if (Enabled){
-        InjectServerPropsRetriever()
-        Main()
-    }
+    if (!Enabled) return
+
+    InjectServerPropsRetriever()
+    
+    HandleRegionList("rbx-game-server-item-container")
+    HandleRegionList("rbx-friends-game-server-item-container")
 })
 
 IsFeatureEnabled("ServerFilters").then(function(Enabled){
-    if (Enabled){
-        InjectServerPropsRetriever()
-        RunFiltersMain()
-    }
+    if (!Enabled) return
+
+    InjectServerPropsRetriever()
+    RunFiltersMain()
 })

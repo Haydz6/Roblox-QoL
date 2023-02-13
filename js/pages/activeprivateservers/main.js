@@ -36,7 +36,7 @@ async function CreateCardsFromServers(Servers, ServerListElement){
 
     for (let i = 0; i < Servers.length; i++){
         const Server = Servers[i]
-        const Card = CreatePrivateServerCard(Server.Thumbnail, Server.Name, Server.OwnerName, Server.OwnerId, Server.Price, Server.PlaceId)
+        const Card = CreatePrivateServerCard(Server.Thumbnail, Server.Name, Server.OwnerName, Server.OwnerId, Server.OwnerType, Server.Price, Server.PlaceId)
 
         PrivateServerCards.push(Card)
         ServerListElement.appendChild(Card)
@@ -156,21 +156,10 @@ const DefaultCardElementObserver = new MutationObserver(function(mutationList, o
       }
     })
 })
-
-async function RunMain(){
-    console.log("RUNNING ACTIVE")
-
-    while (!document.head){
-        await sleep(100)
-    }
-
-    // const URLSplit = window.location.href.split("users/")
-    // const URLSplit2 = URLSplit[1].split("/")
-
-    //UserId = parseInt(URLSplit2[0])
+IsFeatureEnabled("ActivePrivateServers").then(async function(Enabled){
+    if (!Enabled) return
 
     let CategoriesList = await WaitForClass("menu-vertical submenus")
-    console.log("got categories")
 
     let PrivateServersButton
 
@@ -179,17 +168,9 @@ async function RunMain(){
         PrivateServersButton = await GetButtonCategoryFromHref(CategoriesList, "private-servers")
     }
 
-    console.log("got private server button")
-
     const [List, ActiveButton] = CreateActivePrivateServersButton()
 
     PrivateServersButton.getElementsByTagName("div")[0].getElementsByTagName("ul")[0].appendChild(List)
 
     CheckActivePrivateServersOpened()
-}
-
-IsFeatureEnabled("ActivePrivateServers").then(function(Enabled){
-    if (Enabled){
-        RunMain()
-    }
 })

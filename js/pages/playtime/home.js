@@ -1,7 +1,6 @@
-async function Main(){
-    const GamesList = await WaitForClass("game-home-page-container")
-
-    const [ContainerHeader, SeeAllButton] = CreateContainerHeader("Playtime", "https://roblox.com/discover#/sortName?sort=Playtime")
+async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
+    const [ContainerHeader, SeeAllButton] = CreateContainerHeader(Name, `https://roblox.com/discover#/sortName?sort=Playtime&type=${Type}`)
+    if (!ShowIfEmpty) ContainerHeader.style = "display: none;"
     const GameCarousel = CreateGameCarousel()
 
     const [ContinueTitle, ContinueRow] = await SearchForRow(GamesList, "/sortName/v2/Continue")
@@ -23,7 +22,14 @@ async function Main(){
         const Spinner = CreateSpinner()
         GameCarousel.appendChild(Spinner)
 
-        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}`, "GET")
+        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}`, "GET")
+        if (Params === "time=all" && !ShowIfEmpty && Games.length === 0){
+            ContainerHeader.remove()
+            return
+        } else {
+            ContainerHeader.style = ""
+        }
+
         if (FetchInt[0] !== CacheFetchInt) return
 
         function Fail(Text){
@@ -66,6 +72,10 @@ async function Main(){
     FetchGames("time=all")
 }
 
-IsFeatureEnabled("Playtime").then(function(Enabled){
-    if (Enabled) Main()
+IsFeatureEnabled("Playtime").then(async function(Enabled){
+    if (!Enabled) return
+
+    const GamesList = await WaitForClass("game-home-page-container")
+    CreateHomeRow(GamesList, "Studio Sessions", "Edit", false)
+    CreateHomeRow(GamesList, "Playtime", "Play", true)
 })

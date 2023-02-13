@@ -1,4 +1,6 @@
-async function Main(){
+IsFeatureEnabled("Mutuals").then(async function(Enabled){
+    if (!Enabled) return
+
     const HeadersList = await WaitForClass("details-info")
 
     const [List, Count] = CreateMututalHeader(TargetId)
@@ -17,10 +19,4 @@ async function Main(){
 
     Count.title = Mutuals.length
     Count.innerText = Mutuals.length
-}
-
-IsFeatureEnabled("Mutuals").then(function(Enabled){
-    if (Enabled){
-        Main()
-    }
 })

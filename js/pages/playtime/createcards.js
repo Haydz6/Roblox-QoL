@@ -1,4 +1,9 @@
 async function CreateGameCardsFromPlaytime(Games, CardsContainer, CacheFetchInt, FetchInt, Fail, Spinner){
+    if (Games.length === 0){
+        Spinner.remove()
+        return
+    }
+
     const UniverseIds = []
     const UniverseIdToPlaytime = {}
 

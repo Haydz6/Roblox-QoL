@@ -1,4 +1,4 @@
-async function Main(){
+async function RunRolimonsProfile(){
     const TopHeader = await WaitForClass("details-info")
     const DisplayRap = await IsFeatureEnabled("RapOnProfile")
     const DisplayValue = await IsFeatureEnabled("ValueOnProfile")
@@ -55,4 +55,4 @@ async function Main(){
     }
 }
 
-Main()
+RunRolimonsProfile()

@@ -38,6 +38,26 @@ async function WaitForClass(ClassName){
     return Element
 }
 
+async function WaitForClassPath(Element, ...Paths){
+    let LastElement = Element
+  
+    for (let i = 0; i < Paths.length; i++){
+      while (true){
+        const NewElement = LastElement.getElementsByClassName(Paths[i])[0]
+        
+        if (NewElement){
+          LastElement = NewElement
+          break
+        }
+  
+        await sleep(50)
+      }
+    }
+  
+    return LastElement
+}
+  
+
 async function TradeRowAdded(TradeRow){
     if (!TradeRow.className || TradeRow.className.search("trade-row") === -1) return
 
@@ -133,9 +153,9 @@ async function ListenToNewTradeData(){
     }
 }
 
-async function Main(){
+async function InjectTrade(){
     const OuterList = await WaitForId("trade-row-scroll-container")
-    const TradesList = OuterList.getElementsByClassName("simplebar-wrapper")[0].getElementsByClassName("simplebar-mask")[0].getElementsByClassName("simplebar-offset")[0].getElementsByClassName("simplebar-content-wrapper")[0].getElementsByClassName("simplebar-content")[0]
+    const TradesList = await WaitForClassPath(OuterList, "simplebar-wrapper", "simplebar-mask", "simplebar-offset", "simplebar-content-wrapper", "simplebar-content")
 
     new MutationObserver(function(Mutations){
         Mutations.forEach(function(Mutation){
@@ -159,4 +179,4 @@ async function Main(){
     ListenToNewTradeData()
 }
 
-Main()
+InjectTrade()

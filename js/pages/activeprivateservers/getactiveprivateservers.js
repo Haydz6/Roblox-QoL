@@ -25,7 +25,7 @@ async function RequestActivePrivateServers(){
     //     ActivePrivateServers.push(CreateDummyData())
     // }
 
-    const [Success, Result] = await RequestFunc(`https://www.roblox.com/users/inventory/list-json?assetTypeId=9&cursor=&itemsPerPage=100&pageNumber=${PreviousCursor}&placeTab=MyPrivateServers&userId=${UserId}`, "GET", undefined, undefined, true)
+    const [Success, Result] = await RequestFunc(`https://www.roblox.com/users/inventory/list-json?assetTypeId=9&cursor=&itemsPerPage=100&pageNumber=${PreviousCursor}&placeTab=MyPrivateServers&userId=${await GetUserId()}`, "GET", undefined, undefined, true)
 
     if (!Success) return false
 
@@ -54,14 +54,13 @@ async function RequestActivePrivateServers(){
         const Product = Server.Product
         const Thumbnail = Server.Thumbnail
 
-        //always false... if (!PrivateServer.CanJoin) continue
-
         if (!PrivateServer){
             continue
         }
 
         const FinalServer = {
             Name: Item.Name,
+            OwnerType: PrivateServer.UniverseId,
             OwnerName: PrivateServer.OwnerName,
             OwnerId: PrivateServer.OwnerId,
             Price: Product.PriceInRobux || 0,

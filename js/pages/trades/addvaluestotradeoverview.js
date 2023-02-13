@@ -1,3 +1,19 @@
+let TradeAssetsCache = {}
+let TradeAssetsFetched = false
+
+function SaveTradeAssetsCache(){
+    window.localStorage.setItem("robloxqol-TradeAssetsCache", JSON.stringify(TradeAssetsCache))
+}
+
+async function FetchTradeAssetsCache(){
+    if (TradeAssetsFetched) return
+
+    const TradeAssetsString = window.localStorage.getItem("robloxqol-TradeAssetsCache")
+    if (TradeAssetsString) TradeAssetsCache = JSON.parse(TradeAssetsString)
+
+    TradeAssetsFetched = true
+}
+
 function CreateValueOverview(){
     const Container = document.createElement("span")
     Container.className = "trade-value-overview"
@@ -83,6 +99,31 @@ async function TradeRowAdded(TradeRow){
 
     DetailsElement.getElementsByClassName("text-lead ng-binding")[0].appendChild(CreateLinkIcon(`https://www.rolimons.com/player/${TradeRow.getAttribute("userid")}`))
 
+    async function CreateOverviewFromAssets(OurAssets, OtherAssets){
+        const [Success, Assets, _] = await GetItemDetails(OurAssets.concat(OtherAssets), true)
+
+        if (!Success){
+            Failed()
+            return
+        }
+
+        const OurValue = CalcuateValueWithDuplicates(OurAssets, Assets)
+        const OtherValue = CalcuateValueWithDuplicates(OtherAssets, Assets)
+
+        Price1.innerText = numberWithCommas(OurValue)
+        Price2.innerText = numberWithCommas(OtherValue)
+
+        Stripe.style = `background-color: ${OurValue > OtherValue && "#ab3130" || "#4f7b58"};`
+    }
+
+    await FetchTradeAssetsCache()
+    const CachedAssets = TradeAssetsCache[TradeId]
+    
+    if (CachedAssets){
+        CreateOverviewFromAssets(CachedAssets.Gave, CachedAssets.Received)
+        return
+    }
+
     while (true){
         const [Success, Result, Response] = await RequestFunc(`https://trades.roblox.com/v1/trades/${TradeId}`, "GET", undefined, undefined, true)
 
@@ -100,54 +141,41 @@ async function TradeRowAdded(TradeRow){
             break
         }
 
-        let Values = {Received: 0, Gave: 0}
-
+        const Types = {}
         const Offers = Result.offers
 
         for (let i = 0; i < Offers.length; i++){
             const Offer = Offers[i]
-            const Type = Offer.user.id == UserId && "Gave" || "Received"
+            const Type = Offer.user.id == await GetUserId() && "Gave" || "Received"
             const Assets = Offer.userAssets
 
             const AssetIds = []
 
             for (let o = 0; o < Assets.length; o++){
                 AssetIds.push(Assets[o].assetId)
-                // const [Success, Info] = await GetItemDetails(Assets[o].assetId)
-
-                // if (!Success){
-                //     Failed()
-                //     return
-                // }
-
-                // Values[Type] += Info.Value
             }
 
-            const [Success, _, Value] = await GetItemDetails(AssetIds, true)
-
-            if (!Success){
-                Failed()
-                return
-            }
-
-            Values[Type] = Value
+            Types[Type] = AssetIds
         }
+        TradeAssetsCache[TradeId] = Types
+        SaveTradeAssetsCache()
 
-        Price1.innerText = numberWithCommas(Values.Gave)
-        Price2.innerText = numberWithCommas(Values.Received)
-
-        Stripe.style = `background-color: ${Values.Gave > Values.Received && "#ab3130" || "#4f7b58"};`
+        CreateOverviewFromAssets(Types.Gave, Types.Received)
+        
         break
     }   
 }
 
-async function Main(){
+IsFeatureEnabled("ValuesOnOverview").then(async function(Enabled){
+    if (!Enabled) return
+
     const InviteScript = document.createElement("script")
     InviteScript.src = chrome.runtime.getURL("js/pages/trades/injecttrade.js")
     document.head.appendChild(InviteScript)
 
     const OuterList = await WaitForId("trade-row-scroll-container")
-    const TradesList = OuterList.getElementsByClassName("simplebar-wrapper")[0].getElementsByClassName("simplebar-mask")[0].getElementsByClassName("simplebar-offset")[0].getElementsByClassName("simplebar-content-wrapper")[0].getElementsByClassName("simplebar-content")[0]
+    const TradesList = await WaitForClassPath(OuterList, "simplebar-wrapper", "simplebar-mask", "simplebar-offset", "simplebar-content-wrapper", "simplebar-content")
+    //const TradesList = OuterList.getElementsByClassName("simplebar-wrapper")[0].getElementsByClassName("simplebar-mask")[0].getElementsByClassName("simplebar-offset")[0].getElementsByClassName("simplebar-content-wrapper")[0].getElementsByClassName("simplebar-content")[0]
 
     new MutationObserver(function(Mutations){
         Mutations.forEach(function(Mutation){
@@ -166,8 +194,4 @@ async function Main(){
     for (let i = 0; i < Children.length; i++){
         TradeRowAdded(Children[i])
     }
-}
-
-IsFeatureEnabled("ValuesOnOverview").then(function(Enabled){
-    if (Enabled) Main()
 })

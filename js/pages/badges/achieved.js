@@ -17,7 +17,7 @@ function RequestBadgeInfo(BadgeId){
             PendingBadgeIds.push(PendingFetches[i].Badge)
         }
 
-        const [Success, Result] = await RequestFunc(`https://badges.roblox.com/v1/users/${UserId}/badges/awarded-dates?badgeIds=${PendingBadgeIds.join(",")}`)
+        const [Success, Result] = await RequestFunc(`https://badges.roblox.com/v1/users/${await GetUserId()}/badges/awarded-dates?badgeIds=${PendingBadgeIds.join(",")}`)
 
         if (!Success){
             for (let i = 0; i < PendingFetches.length; i++){

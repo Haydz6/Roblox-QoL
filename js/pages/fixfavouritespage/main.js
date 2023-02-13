@@ -19,11 +19,12 @@ async function GetUniversesLikes(Universes){
       UniverseIds = `${UniverseIds}${Universes[i]}`
     }
     
-    const [Success, Data] = await RequestFunc(URL+UniverseIds, "GET", undefined, undefined, true)
+    const [Success, Result] = await RequestFunc(URL+UniverseIds, "GET", undefined, undefined, true)
   
-    if (!Data) return
+    if (!Success) return
   
     const Lookup = {}
+    const Data = Result.data
   
     for (let i = 0; i < Data.length; i++){
       const Item = Data[i]
@@ -56,12 +57,12 @@ async function GetUniversesInfo(Universes){
       UniverseIds = `${UniverseIds}${Universes[i]}`
     }
     
-    const [Success, Data] = await RequestFunc(URL+UniverseIds, "GET", undefined, undefined, true)
+    const [Success, Result] = await RequestFunc(URL+UniverseIds, "GET", undefined, undefined, true)
   
-    if (!Data) return
+    if (!Success) return
   
-    //const Likes = await GetUniversesLikes(Universes)
     const Lookup = {}
+    const Data = Result.data
   
     for (let i = 0; i < Data.length; i++){
       const Item = Data[i]
@@ -121,42 +122,28 @@ async function ParsePage(Page){
 }
   
 async function GetPage(){
-    if (ReachedEnd || IsLoading) return
+  if (ReachedEnd || IsLoading) return
   
-    IsLoading = true
-    CurrentPage += 1
+  IsLoading = true
+  CurrentPage += 1
   
-    const [Success, Data] = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=100&pageNumber=${CurrentPage}&userId=${UserId}`, "GET", undefined, undefined, true)
-  
-    if (await ParsePage(Data)) {
-      ReachedEnd = true
-    }
-  
-    IsLoading = false
-}
+  const [Success, Data] = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=100&pageNumber=${CurrentPage}&userId=${await GetUserId()}`, "GET", undefined, undefined, true)
 
-// async function BlockRobloxRequest(){
-//   chrome.declarativeNetRequest.updateSessionRules({addRules: [
-//     {
-//       id: 1,
-//       priority: 1,
-//       action: {type: "block"},
-//       condition: {
-//         urlFilter: "https://apis.roblox.com/discovery-api/omni-recommendation",
-//         resourceTypes: ["xmlhttprequest", "main_frame"]
-//       }
-//     }
-//   ]})
-// }
+  if (await ParsePage(Data)) {
+    ReachedEnd = true
+  }
+  
+  IsLoading = false
+}
 
 function IsFavouritesPage(){
   return window.location.href.split("#")[1] === "/sortName?sort=Favorites"
 }
 
-async function RunMain(){
-  if (!IsFavouritesPage()) return
+IsFeatureEnabled("FixFavouritesPage").then(async function(Enabled){
+  if (!Enabled) return
 
-  while (!document.head) await sleep(100)
+  if (!IsFavouritesPage()) return
 
   const GameCarousel = await WaitForId("games-carousel-page")
 
@@ -167,14 +154,8 @@ async function RunMain(){
   GetPage()
   
   window.onscroll = function(){
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-       GetPage()
-      }
-  }
-}
-
-IsFeatureEnabled("FixFavouritesPage").then(function(Enabled){
-  if (Enabled){
-      RunMain()
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+      GetPage()
+    }
   }
 })

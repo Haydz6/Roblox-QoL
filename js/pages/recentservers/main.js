@@ -14,7 +14,9 @@ async function GetHeadshotsFromUserIds(UserIds){
     return [true, UserIdToHeadshot]
 }
 
-async function Main(){
+IsFeatureEnabled("RecentServers").then(async function(Enabled){
+    if (!Enabled) return
+
     const [Container, List, NoServers] = CreateRecentServersList()
 
     const FriendsList = await WaitForId("rbx-friends-running-games")
@@ -86,11 +88,5 @@ async function Main(){
         for (let o = 0; o < ImageElements.length; o++){
             ImageElements[o].src = Success && UserIdToHeadshot[UserId] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png"
         }
-    }
-}
-
-IsFeatureEnabled("RecentServers").then(function(Enabled){
-    if (Enabled){
-        Main()
     }
 })

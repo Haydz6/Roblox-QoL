@@ -48,7 +48,7 @@ async function UpdateRecentServer(){
 
     if (UpdateInt >= 3){
         UpdateInt = 0
-        RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: Presence.userPresenceType === 2, UniverseId: Presence.universeId || 0}))
+        RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: Presence.userPresenceType === 2, InStudio: Presence.userPresenceType === 3, UniverseId: Presence.universeId || 0}))
     }
 
     LastRecentServerSuccess = Date.now()

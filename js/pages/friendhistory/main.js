@@ -311,13 +311,9 @@ function CheckIfHistoryTabOpened(){
 
 window.addEventListener('popstate', CheckIfHistoryTabOpened)
 
-async function Main(){
+IsFeatureEnabled("FriendHistory").then(async function(Enabled){
+    if (!Enabled) return
+
     await HandleTabModification()
     CheckIfHistoryTabOpened()
-}
-
-IsFeatureEnabled("FriendHistory").then(function(Enabled){
-    if (Enabled){
-        Main()
-    }
 })

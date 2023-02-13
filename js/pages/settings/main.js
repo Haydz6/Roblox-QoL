@@ -31,6 +31,10 @@ const Settings = {
         HideFooter: {
             Title: "Hide Footer",
             Description: "Hides the footer at the bottom of the page."
+        },
+        AddDownloadButtonToNewVersionHistory: {
+            Title: "Add Download Button to version history",
+            Description: "Adds a download button to place version history."
         }
         // Mutuals: {
         //     Title: "Mutuals",
@@ -79,6 +83,18 @@ const Settings = {
         ValuesOnOverview: {
             Title: "Trade Value Overview",
             Description: "Allows you to see trade values on the overview list."
+        },
+        ShowSummaryOnTrade: {
+            Title: "Shows earnings on trade",
+            Description: "Shows how much you earnt/loss in value and rap on a trade."
+        },
+        ShowValueOnTrade: {
+            Title: "Show value on trade",
+            Description: "Shows total value of trade (rolimons)"
+        },
+        ShowDemandOnTrade: {
+            Title: "Show demand on trade",
+            Description: "Shows average demand of trade (rolimons)"
         },
         ValueDemandOnItem: {
             Title: "Demand/Value on Item",

@@ -5,12 +5,14 @@ function UpdateOptionsDropdownVisibility(){
     TradesDropdown.style = !DropdownOptionsOpen && "display: none;" || "display: block;"
 }
 
-async function Main(){
+IsFeatureEnabled("TradeFilters").then(async function(Enabled){
+    if (!Enabled) return
+
     const DropdownsList = await WaitForClass("input-group-btn group-dropdown trade-list-dropdown")
     const DefaultButtonsList = DropdownsList.getElementsByClassName("dropdown-menu")[0]
 
     TradesDropdown = CreateTradeDropdown()
-    const OptionsButton = CreateTradeDropdownOption("Trade Options") 
+    const OptionsButton = CreateTradeDropdownOption("Trade Options")
 
     let ShouldKeepOpen = false
 
@@ -49,10 +51,4 @@ async function Main(){
     DropdownsList.appendChild(TradesDropdown)
 
     DefaultButtonsList.appendChild(OptionsButton)
-}
-
-IsFeatureEnabled("TradeFilters").then(function(Enabled){
-    if (Enabled){
-        Main()
-    }
 })

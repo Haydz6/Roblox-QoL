@@ -251,13 +251,9 @@ function CheckIfMutualsTabOpened(){
 
 window.addEventListener('popstate', CheckIfMutualsTabOpened)
 
-async function Main(){
+IsFeatureEnabled("Mutuals").then(async function(Enabled){
+    if (!Enabled) return
+
     await HandleTabModification()
     CheckIfMutualsTabOpened()
-}
-
-IsFeatureEnabled("Mutuals").then(function(Enabled){
-    if (Enabled){
-        Main()
-    }
 })

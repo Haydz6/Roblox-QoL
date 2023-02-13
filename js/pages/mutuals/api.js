@@ -6,7 +6,7 @@ function GetTargetId(){
 }
 
 async function GetMutualFriends(TargetId){
-    const [Success, Friends] = await RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/friends`)
+    const [Success, Friends] = await RequestFunc(`https://friends.roblox.com/v1/users/${await GetUserId()}/friends`)
 
     if (!Success){
         return [false]

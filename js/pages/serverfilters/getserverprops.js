@@ -81,7 +81,7 @@ async function ElementAdded(Element){
 			ServerInfo = AngularInfo.return.memoizedProps
 			Attempts++
 		}
-
+		
 		if (!ServerInfo){
 			//Element.removeAttribute("qol-checked")
 			Element.removeAttribute("checking-qol-checked")
@@ -136,10 +136,10 @@ function HandleList(Id){
 	})
 }
 
-async function Main(){
+async function GetServerProps(){
 	HandleList("rbx-game-server-item-container")
 	HandleList("rbx-friends-game-server-item-container")
 	HandleList("rbx-private-game-server-item-container")
 }
 
-Main()
+GetServerProps()

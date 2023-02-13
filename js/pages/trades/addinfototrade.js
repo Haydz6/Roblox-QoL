@@ -92,6 +92,8 @@ async function TradeDataAdded(TradeData){
 }
 
 async function OffersAdded(BothOffers){
+    if (!await IsFeatureEnabled("ShowValueOnTrade") && !await IsFeatureEnabled("ShowDemandOnTrade") && !await IsFeatureEnabled("ShowSummaryOnTrade")) return
+
     const TotalValue = {Ours: 0, Other: 0}
     const Demands = {Ours: [], Other: []}
 
@@ -132,14 +134,21 @@ async function OffersAdded(BothOffers){
 
         const LineLabels = Offer.children[Offer.children.length-1]
 
-        const [ValueLine, ValueLabel] = CreateRobuxLineLabel("Rolimons Value:", "...")
-        const [DemandLine, DemandLabel] = CreateRobuxLineLabel("Rolimons Demand:", ".../5.0")
+        if (await IsFeatureEnabled("ShowValueOnTrade")){
+            const [ValueLine, ValueLabel] = CreateRobuxLineLabel("Rolimons Value:", "...")
+            RolimonsLabel[Type].Value = ValueLabel
 
-        RolimonsLabel[Type].Demand = DemandLabel
-        RolimonsLabel[Type].Value = ValueLabel
+            LineLabels.appendChild(ValueLine)
+        }
+
+        if (await IsFeatureEnabled("ShowDemandOnTrade")){
+            const [DemandLine, DemandLabel] = CreateRobuxLineLabel("Rolimons Demand:", ".../5.0")
+            RolimonsLabel[Type].Demand = DemandLabel
+
+            LineLabels.appendChild(DemandLine)
+        }
+
         RolimonsLabel[Type].Line = LineLabels
-
-        LineLabels.append(ValueLine, DemandLine)
     }
 
     if (AssetIds.length > 0){
@@ -186,45 +195,43 @@ async function OffersAdded(BothOffers){
             const Labels = RolimonsLabel[Type]
             const AssetIds = OfferAssetIds[Type]
 
-            console.log(Type, AssetIds)
-            console.log(AreResultsValid && numberWithCommas(CalcuateValueWithDuplicates(AssetIds, Result)) || "???")
-
-            Labels.Value.innerText = AreResultsValid && numberWithCommas(CalcuateValueWithDuplicates(AssetIds, Result)) || "???"
-            Labels.Demand.innerText = `${AreResultsValid && CalcuateDemandAverageWithDuplicates(AssetIds, Result) || "???"}/5.0`
+            if (Labels.Value) Labels.Value.innerText = AreResultsValid && numberWithCommas(CalcuateValueWithDuplicates(AssetIds, Result)) || "???"
+            if (Labels.Demand) Labels.Demand.innerText = `${AreResultsValid && CalcuateDemandAverageWithDuplicates(AssetIds, Result) || "???"}/5.0`
         }
 
-        const Divider = BothOffers[1].getElementsByClassName("rbx-divider")[0]
-        Divider.style = "overflow: unset; position: relative;"
+        if (await IsFeatureEnabled("ShowSummaryOnTrade")){
+            const Divider = BothOffers[1].getElementsByClassName("rbx-divider")[0]
+            const GainList = CreateGainList()
 
-        const GainList = CreateGainList()
+            if (AreResultsValid){
+                const ValueNet = TotalValue.Other - TotalValue.Ours
+                const ValueList = CreateGain(ValueNet, numberWithCommas(ValueNet), `${ValueNet >= 0 && "+" || "-"}${Math.abs(Math.floor((TotalValue.Other - TotalValue.Ours)/TotalValue.Ours * 100))}%`, "icon icon-rolimons-20x20")
+                GainList.appendChild(ValueList)
+            }
 
-        if (AreResultsValid){
-            const ValueNet = TotalValue.Other - TotalValue.Ours
-            const ValueList = CreateGain(ValueNet, numberWithCommas(ValueNet), `${ValueNet >= 0 && "+" || "-"}${Math.abs(Math.floor((TotalValue.Other - TotalValue.Ours)/TotalValue.Ours * 100))}%`, "icon icon-rolimons-20x20")
-            GainList.appendChild(ValueList)
-        }
+            const OurOffered = parseInt(RolimonsLabel.Ours.Line.children[0].children[1].getElementsByClassName("text-label robux-line-value ng-binding")[0].innerText.replaceAll(",", ""))
+            const OtherOffered = parseInt(RolimonsLabel.Other.Line.children[0].children[1].getElementsByClassName("text-label robux-line-value ng-binding")[0].innerText.replaceAll(",", ""))
+            const OurRap = parseInt(RolimonsLabel.Ours.Line.children[1].children[1].getElementsByClassName("text-robux-lg robux-line-value ng-binding")[0].innerText.replaceAll(",", "")) - OurOffered
+            const OtherRap = parseInt(RolimonsLabel.Other.Line.children[1].children[1].getElementsByClassName("text-robux-lg robux-line-value ng-binding")[0].innerText.replaceAll(",", "")) - OtherOffered
 
-        const OurOffered = parseInt(RolimonsLabel.Ours.Line.children[0].children[1].getElementsByClassName("text-label robux-line-value ng-binding")[0].innerText.replaceAll(",", ""))
-        const OtherOffered = parseInt(RolimonsLabel.Other.Line.children[0].children[1].getElementsByClassName("text-label robux-line-value ng-binding")[0].innerText.replaceAll(",", ""))
-        const OurRap = parseInt(RolimonsLabel.Ours.Line.children[1].children[1].getElementsByClassName("text-robux-lg robux-line-value ng-binding")[0].innerText.replaceAll(",", "")) - OurOffered
-        const OtherRap = parseInt(RolimonsLabel.Other.Line.children[1].children[1].getElementsByClassName("text-robux-lg robux-line-value ng-binding")[0].innerText.replaceAll(",", "")) - OtherOffered
-
-        const RapNet = OtherRap - OurRap
-        //const RapList = CreateGain(RapNet, `${RapNet < 0 && "-" || ""}${RapNet}${(OurOffered > 0 || OtherOffered > 0) && `${OfferedNet >= 0 && " +" || " -"} ${Math.abs(OfferedNet)}` || ""}`, `${RapNet >= 0 && "+" || "-"}${Math.abs(Math.floor((OtherRap - OurRap)/OurRap * 100))}%`, "icon icon-robux-16x16")
-        const RapList = CreateGain(RapNet, numberWithCommas(RapNet), `${RapNet >= 0 && "+" || "-"}${Math.abs(Math.floor((OtherRap - OurRap)/OurRap * 100))}%`, "icon icon-robux-16x16")
-        GainList.appendChild(RapList)
-
-        if (OurOffered > 0 || OtherOffered > 0){
-            const OfferedNet = OtherOffered - OurOffered
-            const RapList = CreateGain(OfferedNet, numberWithCommas(OfferedNet), undefined, "icon icon-offer-20x20")
+            const RapNet = OtherRap - OurRap
+            //const RapList = CreateGain(RapNet, `${RapNet < 0 && "-" || ""}${RapNet}${(OurOffered > 0 || OtherOffered > 0) && `${OfferedNet >= 0 && " +" || " -"} ${Math.abs(OfferedNet)}` || ""}`, `${RapNet >= 0 && "+" || "-"}${Math.abs(Math.floor((OtherRap - OurRap)/OurRap * 100))}%`, "icon icon-robux-16x16")
+            const RapList = CreateGain(RapNet, numberWithCommas(RapNet), `${RapNet >= 0 && "+" || "-"}${Math.abs(Math.floor((OtherRap - OurRap)/OurRap * 100))}%`, "icon icon-robux-16x16")
             GainList.appendChild(RapList)
-        }
 
-        Divider.appendChild(GainList)
+            if (OurOffered > 0 || OtherOffered > 0){
+                const OfferedNet = OtherOffered - OurOffered
+                const RapList = CreateGain(OfferedNet, numberWithCommas(OfferedNet), undefined, "icon icon-offer-20x20")
+                GainList.appendChild(RapList)
+            }
+
+            Divider.style = `overflow: unset; position: relative; margin: ${(18*2)+((OurOffered > 0 || OtherOffered > 0) && 18 || 0)}px 0px;`
+            Divider.appendChild(GainList)
+        }
     }
 }
 
-async function Main(){
+async function AddInfoToTrade(){
     const TradeListDetails = await WaitForClass("col-xs-12 col-sm-8 trades-list-detail")
     
     const children = TradeListDetails.children
@@ -246,4 +253,4 @@ async function Main(){
     }
 }
 
-Main()
+AddInfoToTrade()

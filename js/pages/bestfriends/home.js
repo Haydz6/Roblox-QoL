@@ -17,7 +17,3 @@ const FriendObserver = new MutationObserver(function(Mutations){
         }
     })
 })
-
-async function Main(){
-
-}
