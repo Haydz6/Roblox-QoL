@@ -27,7 +27,13 @@ function GetAlphaTween(b, e, i){
     return b + ((i/1) * (e-b))
 }
 
-function TweenLabel(Label, Start, End, Length, ModifierFunction){
+function TweenLabel(Label, Start, End, Length, ModifierFunction, OnlyGoesUp){
+    if (OnlyGoesUp && Start > End){
+        return new Promise((resolve) => {
+            resolve()
+        })
+    }
+
     return TweenNumber(Start, End, Length, function(i){
         Label.innerText = ModifierFunction && ModifierFunction(i) || i
     })
@@ -77,7 +83,7 @@ async function RunLiveStats(){
                     await Promise.all([
                         TweenLabel(ActiveValue, LastActive, Info.Playing, 5, numberWithCommas),
                         TweenLabel(FavouritesValue, LastFavourites, Info.Favourites, 5, numberWithCommas),
-                        TweenLabel(VisitsValue, LastVisits, Info.Visits, 5, numberWithCommas)
+                        TweenLabel(VisitsValue, LastVisits, Info.Visits, 5, numberWithCommas, true)
                     ])
                 } else {
                     IsFirst = false

@@ -232,7 +232,9 @@ async function DeclineAgedTrades(){
 
         function UpdateDescription(){
             const Hours = Slider.value
-            Description.innerText = `${Hours >= 24 && Math.floor(Hours/24) || Math.floor(Hours)} ${Hours >= 48 && "days" || Hours >= 24 && "day" || Hours > 1 && "hours" || "hour"}+ old trades will be ${TradeType === "Inbound" && "declined" || "cancelled"}`
+            const Days = Math.floor(Hours/24)
+            const HoursInDays = Math.floor(Hours%24)
+            Description.innerText = `${Hours >= 24 && Days || Math.floor(Hours)} ${Hours >= 48 && "days" || Hours >= 24 && "day" || Hours > 1 && "hours" || "hour"} ${Hours > 24 && HoursInDays || ""}${Hours >= 24 && (HoursInDays > 1 && " hours" || HoursInDays == 0 && "" || " hour") || ""} and older trades will be ${TradeType === "Inbound" && "declined" || "cancelled"}`
         }
 
         Slider.addEventListener("input", UpdateDescription)

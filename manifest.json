@@ -191,7 +191,9 @@
                 "js/pages/rolimonsprofile/rolimons.js",
 
                 "js/pages/themes/createelements.js",
-                "js/pages/themes/profile.js"
+                "js/pages/themes/profile.js",
+
+                "js/pages/badges/profilecount.js"
             ],
             "run_at": "document_idle",
             "all_frames": true

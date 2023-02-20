@@ -272,7 +272,7 @@ function CreateOutfitElement(OutfitName, OutfitImageURL, OutfitId, HideCloudIcon
     ItemCardNameLink.className = "item-card-name-link"
 
     let ItemCardNameLinkTitle = document.createElement("div")
-    ItemCardNameLinkTitle.title = "let"
+    ItemCardNameLinkTitle.title = OutfitName
     ItemCardNameLinkTitle.className = "text-overflow item-card-name ng-binding"
     ItemCardNameLinkTitle.innerText = OutfitName
 
