@@ -222,7 +222,7 @@ function CreateSignoutOption(OptionsList){
         if (Debounce) return
         Debounce = true
 
-        const NewKey = await InvalidateAuthKey()
+        const NewKey = await Reauthenticate()
 
         const [Modal, Backdrop, [OkButton], CloseButton] = CreateSuccessDialog(NewKey === "" && "Failed" || "Success", NewKey === "" && "Failed to sign out of all other sessions!" || "You have been signed out of all other sessions.", ["OK"])
 
