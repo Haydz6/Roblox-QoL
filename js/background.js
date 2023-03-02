@@ -38,6 +38,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
             sendResponse(Key)
         })
         return true
+    } else if (request.type === "forcereauthenticate"){
+        CachedAuthKey = ""
+        LocalStorage.remove("AuthKey").then(function(){
+            GetAuthKeyV2().then(function(Key){
+                sendResponse(Key)
+            })
+        })
+        return true
     } else if (request.type === "reauthenticate"){
         ReauthenticateV2().then(function(Key){
             sendResponse(Key)

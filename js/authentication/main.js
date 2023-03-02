@@ -19,5 +19,10 @@ async function GetAuthKey(){
 
 async function InvalidateAuthKey(){
   CachedAuthKey = ""
+  return await chrome.runtime.sendMessage({type: "forcereauthenticate"})
+}
+
+async function Reauthenticate(){
+  CachedAuthKey = ""
   return await chrome.runtime.sendMessage({type: "reauthenticate"})
 }
