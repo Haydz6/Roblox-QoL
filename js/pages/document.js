@@ -244,6 +244,10 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function RobuxToUSD(Robux){
+  return Math.floor((Robux * 0.0035) * 100)/100
+}
+
 function AbbreviateNumber(number, decPlaces, noPlus){
   decPlaces = Math.pow(10, decPlaces || 0)
 

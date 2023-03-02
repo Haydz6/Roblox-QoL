@@ -165,6 +165,20 @@ const Settings = {
             Description: "Notifies you when you make or lose a friend."
         },
     },
+    Assets: {
+        AddSales: {
+            Title: "Show Sales",
+            Description: "Shows the amount of sales on assets you manage/created."
+        },
+        AddCreationDate: {
+            Title: "Show Creation Date",
+            Description: "Shows the creation date of asset."
+        },
+        ShowUSDOnAsset: {
+            Title: "Show USD price",
+            Description: "Shows price of asset in USD (Devex Rate)"
+        }
+    },
     Fixes: {
         FixFavouritesPage: {
             Title: "Favourites Page Fix",

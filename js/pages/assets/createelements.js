@@ -62,3 +62,23 @@ function CreateCategoryIcon(Name, URL){
 
     return Container
 }
+
+function CreateAssetItemFieldContainer(Title, Content){
+    const Container = document.createElement("div")
+    Container.className = "clearfix item-field-container"
+
+    const Header = document.createElement("div")
+    Header.className = "font-header-1 text-subheader text-label text-overflow field-label"
+    Header.innerText = Title
+
+    const FieldContent = document.createElement("div")
+    FieldContent.className = "field-content"
+
+    const Description = document.createElement("span")
+    Description.innerText = Content
+
+    FieldContent.appendChild(Description)
+    Container.append(Header, FieldContent)
+
+    return Container
+}
