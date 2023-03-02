@@ -2,11 +2,11 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
-const WebServerEndpoints = {Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 
 const ManifestVersion = chrome.runtime.getManifest()["manifest_version"]
 
-const EnabledFeatures = {CountBadges: true, ShowValueOnTrade: true, ShowDemandOnTrade: true, ShowSummaryOnTrade: true, AddDownloadButtonToNewVersionHistory: true, AutodeclineOutboundTradeValue: false, AutodeclineOutboundTradeValueThreshold: 50, AutodeclineTradeValue: false, AutodeclineTradeValueThreshold: 50, Playtime: true, TradeNotifier: true, QuickDecline: true, QuickCancel: true, ProfileThemes: false, HideFooter: false, HideRobloxAds: false, MoveHomeFavouritesToThirdRow: true, HideDesktopAppBanner: true, RapOnProfile: true, ValueOnProfile: true, ValueDemandOnItem: true, ValuesOnOverview: true, RecentServers: true, TradeFilters: true, Mutuals: false, ExploreAsset: false, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
+const EnabledFeatures = {ShowUSDOnAsset: true, AddSales: true, AddCreationDate: true, CountBadges: true, ShowValueOnTrade: true, ShowDemandOnTrade: true, ShowSummaryOnTrade: true, AddDownloadButtonToNewVersionHistory: true, AutodeclineOutboundTradeValue: false, AutodeclineOutboundTradeValueThreshold: 50, AutodeclineTradeValue: false, AutodeclineTradeValueThreshold: 50, Playtime: true, TradeNotifier: true, QuickDecline: true, QuickCancel: true, ProfileThemes: false, HideFooter: false, HideRobloxAds: false, MoveHomeFavouritesToThirdRow: true, HideDesktopAppBanner: true, RapOnProfile: true, ValueOnProfile: true, ValueDemandOnItem: true, ValuesOnOverview: true, RecentServers: true, TradeFilters: true, Mutuals: false, ExploreAsset: false, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
 let AreEnabledFeaturesFetched = false
 
 let ROBLOSECURITY
@@ -34,15 +34,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     if (request.type === "notification"){
         chrome.notifications.create("", request.notification)
     } else if (request.type === "authentication"){
-        GetAuthKey().then(function(Key){
+        GetAuthKeyV2().then(function(Key){
             sendResponse(Key)
         })
         return true
     } else if (request.type === "reauthenticate"){
-        CachedAuthKey = ""
-        LocalStorage.remove("AuthKey")
-
-        GetAuthKey().then(function(Key){
+        ReauthenticateV2().then(function(Key){
             sendResponse(Key)
         })
         return true
@@ -92,7 +89,7 @@ async function SetFavouriteGame(UniverseId, Favourited){
     return RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "POST", undefined, JSON.stringify({isFavorited: Favourited}), true)
 }
 
-async function GetAuthKey(){
+async function GetAuthKeyV1(){
     while (FetchingAuthKey){
         await sleep(100)
     }
@@ -155,8 +152,8 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     if (URL.search("roblox.com") > -1) {
         Headers["x-csrf-token"] = CSRFToken
     } else if (URL.search(WebServerURL) > -1){
-        if (URL.search("/auth") == -1){
-            Headers.Authentication = await GetAuthKey()
+        if (URL.search("/auth") == -1 || URL.search("/reverify") > -1){
+            Headers.Authentication = await GetAuthKeyV2()
         }
     }
 
@@ -245,7 +242,7 @@ function numberWithCommas(x) {
 }
 
 if (ManifestVersion > 2){
-    const Scripts = ["js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"]
+    const Scripts = ["js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"]
     const FullScriptURLs = []
 
     for (let i = 0; i < Scripts.length; i++){

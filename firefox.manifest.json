@@ -31,7 +31,7 @@
         "js/pages/trades/injecttrade.js"
     ],
     "background": {
-        "scripts": ["js/background.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"],
+        "scripts": ["js/background.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"],
         "persistent": true
     },
     "content_scripts": [
@@ -174,7 +174,9 @@
                 "js/pages/rolimonsprofile/rolimons.js",
 
                 "js/pages/themes/createelements.js",
-                "js/pages/themes/profile.js"
+                "js/pages/themes/profile.js",
+
+                "js/pages/badges/profilecount.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -229,7 +231,8 @@
                 "js/pages/assets/createelements.js",
                 "js/pages/assets/main.js",
                 "js/pages/trades/rolimons.js",
-                "js/pages/assets/addrolimons.js"
+                "js/pages/assets/addrolimons.js",
+                "js/pages/assets/addinfo.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -265,7 +268,7 @@
         },
         {
             "matches": [
-                "*://create.roblox.com/creations/experiences/*/places/*/version-history"
+                "*://create.roblox.com/creations/experiences/*/places/*"
             ],
             "js": [
                 "js/pages/generalfixes/versionhistory/download.js",
