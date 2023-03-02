@@ -51,6 +51,8 @@ async function AddAssetUSDPrice(){
     const PriceContainer = await WaitForClass("price-container-text")
     const RobuxLabel = PriceContainer.getElementsByClassName("text-robux-lg")[0]
 
+    if (!RobuxLabel) return
+
     const Robux = parseInt(RobuxLabel.innerText.replaceAll(",", ""))
 
     const PriceLabel = document.createElement("span")
