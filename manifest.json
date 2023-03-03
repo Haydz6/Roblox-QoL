@@ -64,7 +64,8 @@
                 "js/pages/newmessageping.js",
                 "js/pages/generalfixes/hidedesktopbanner.js",
                 "js/pages/generalfixes/hiderobloxads.js",
-                "js/pages/generalfixes/disablefooter.js"
+                "js/pages/generalfixes/disablefooter.js",
+                "js/pages/generalfixes/addusdtorobux.js"
             ],
             "run_at": "document_start",
             "all_frames": true
