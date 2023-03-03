@@ -128,6 +128,10 @@ async function GetPlaceIdFromGamePage(){
   return parseInt(PlaceId)
 }
 
+function RequestFuncCORSBypass(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){
+  return chrome.runtime.sendMessage({type: "fetch", URL: URL, Method: Method, Headers: Headers, Body: Body, CredientalsInclude: CredientalsInclude, BypassResJSON: BypassResJSON})
+}
+
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){
   if (!Headers){
     Headers = {}

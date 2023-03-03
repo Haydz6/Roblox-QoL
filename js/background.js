@@ -59,6 +59,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         })
         //sendResponse(EnabledFeatures)
         return true
+    } else if (request.type === "fetch"){
+        RequestFunc(request.URL, request.Method, request.Headers, request.Body, request.CredientalsInclude, request.BypassResJSON).then(function(Result){
+            sendResponse(Result)
+        })
+        return true
     }
     
     const MessageBind = OnMessageBind[request.type]

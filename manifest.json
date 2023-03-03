@@ -256,6 +256,17 @@
         },
         {
             "matches": [
+                "*://*.roblox.com/game-pass/*"
+            ],
+            "js": [
+                "js/pages/assets/createelements.js",
+                "js/pages/assets/addinfo.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
                 "*://*.roblox.com/home",
                 "*://*.roblox.com/home?*"
             ],
