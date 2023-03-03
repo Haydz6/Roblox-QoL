@@ -37,8 +37,8 @@ const Settings = {
             Description: "Adds a download button to place version history."
         },
         AddUSDToRobux: {
-            Title: "Show USD on Robux",
-            Description: "Shows amount of robux in USD (Devex Rate)"
+            Title: "Show currency on Robux",
+            Description: "Shows amount of robux in currency selected (Devex Rate)"
         },
         Currency: {
             Title: "Currency",
@@ -195,8 +195,8 @@ const Settings = {
             Description: "Shows the creation date of asset."
         },
         ShowUSDOnAsset: {
-            Title: "Show USD price",
-            Description: "Shows price of asset in USD (Devex Rate)"
+            Title: "Show currency price",
+            Description: "Shows price of asset in currency selected (Devex Rate)"
         }
     },
     Fixes: {
