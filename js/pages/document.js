@@ -277,8 +277,6 @@ async function RobuxToCurrency(Robux){
   const Currency = ForceUSDCurrency && "USD" || await IsFeatureEnabled("Currency")
   const Multiplier = Currency === "USD" && 1 || ExchangeRateCache[Currency]
 
-  console.log(Robux, RobuxToUSD(Robux), Currency, Multiplier, ForceUSDCurrency)
-
   return new Intl.NumberFormat(Language, {style: "currency", currency: ForceUSDCurrency && "USD" || await IsFeatureEnabled("Currency"), currencyDisplay: "narrowSymbol", maximumFractionDigits: 2}).format(RobuxToUSD(Robux) * Multiplier)
 }
 
