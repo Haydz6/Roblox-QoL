@@ -222,7 +222,8 @@ async function CreateSettingsSection(OptionsList){
         const Title = CreateSectionTitle(title)
         OptionsList.appendChild(Title)
 
-        let NextIndex = 0
+        let NextIndex = 1
+
         for (const [feature, info] of Object.entries(settings)){
             let Index = NextIndex
             NextIndex++
@@ -236,7 +237,17 @@ async function CreateSettingsSection(OptionsList){
                 })
                 else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled)
 
-                OptionsList.insertBefore(Section, OptionsList.children[Index])
+                let TitleIndex = 0
+                let OptionsChildren = OptionsList.children
+
+                for (let i = 0; i < OptionsChildren.length; i++){
+                    if (OptionsChildren[i] == Title){
+                        TitleIndex = i
+                        break
+                    }
+                }
+
+                OptionsList.insertBefore(Section, OptionsList.children[TitleIndex+Index])
             })
         }
     }
