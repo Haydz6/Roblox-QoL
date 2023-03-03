@@ -113,6 +113,38 @@ function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, 
     return Section
 }
 
+function CreateSectionSettingsDropdown(Option, Title, Description, Options, Value, Update){
+    const Section = CreateSectionSettingsTemplate(Option, Title, Description)
+
+    const Dropdown = document.createElement("div")
+    Dropdown.style = "max-width: 250px; float: right; margin-top: -8px;"
+    
+    const Selections = document.createElement("select")
+    Selections.className = "input-field select-option rbx-select"
+
+    for (let i = 0; i < Options.length; i++){
+        const Option = document.createElement("option")
+        Option.text = Options[i]
+        Selections.add(Option)
+
+        if (Options[i] == Value){
+            Selections.selectedIndex = i
+        }
+    }
+
+    Selections.addEventListener("change", function(){
+        Update(Selections.value)
+    })
+
+    const DownArrow = document.createElement("span")
+    DownArrow.className = "icon-arrow icon-down-16x16"
+
+    Dropdown.append(Selections, DownArrow)
+    Section.insertBefore(Dropdown, Section.firstChild)
+
+    return Section
+}
+
 function CreateSuccessDialog(Title, Description, Buttons){
     const ModalWindow = document.createElement("div")
     ModalWindow.setAttribute("uib-modal-window", "modal-window")

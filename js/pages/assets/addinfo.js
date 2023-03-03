@@ -106,7 +106,7 @@ async function AddAssetUSDPrice(){
     const PriceLabel = document.createElement("span")
     PriceLabel.className = "text-label"
     PriceLabel.style = "margin-left: 5px; font-weight: 500;"
-    PriceLabel.innerText = `($${RobuxToUSD(Robux)})`
+    PriceLabel.innerText = `(${await RobuxToCurrency(Robux)})`
 
     RobuxLabel.appendChild(PriceLabel)
 }

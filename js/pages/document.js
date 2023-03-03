@@ -249,7 +249,37 @@ function numberWithCommas(x) {
 }
 
 function RobuxToUSD(Robux){
-  return Math.floor((Robux * 0.0035) * 100)/100
+  return Robux * 0.0035
+}
+
+let ExchangeRateCache
+let ForceUSDCurrency = false
+
+async function RobuxToCurrency(Robux){
+  if (ExchangeRateCache == true || !ExchangeRateCache){
+    while (ExchangeRateCache == true) await sleep(20)
+
+    if (!ExchangeRateCache){
+      ExchangeRateCache = true
+
+      const [Success, Result] = await RequestFunc("https://qol.haydz6.com/api/currency/rates", "GET")
+      if (!Success){
+        ForceUSDCurrency = true
+        ExchangeRateCache = {}
+        return
+      }
+
+      ExchangeRateCache = Result
+    }
+  }
+
+  const Language = getNavigatorLanguages()[0]
+  const Currency = ForceUSDCurrency && "USD" || await IsFeatureEnabled("Currency")
+  const Multiplier = Currency === "USD" && 1 || ExchangeRateCache[Currency]
+
+  console.log(Robux, RobuxToUSD(Robux), Currency, Multiplier, ForceUSDCurrency)
+
+  return new Intl.NumberFormat(Language, {style: "currency", currency: ForceUSDCurrency && "USD" || await IsFeatureEnabled("Currency"), currencyDisplay: "narrowSymbol", maximumFractionDigits: 2}).format(RobuxToUSD(Robux) * Multiplier)
 }
 
 function AbbreviateNumber(number, decPlaces, noPlus){
@@ -292,6 +322,19 @@ function ChildAdded(Node, SendInitial, Callback){
       const addedNodes = Mutation.addedNodes
       for (let i = 0; i < addedNodes.length; i++){
         Callback(addedNodes[i], Observer.disconnect)
+      }
+    })
+  }).observe(Node, {childList: true})
+}
+
+function ChildRemoved(Node, Callback){
+  return new MutationObserver(function(Mutations, Observer){
+    Mutations.forEach(function(Mutation) {
+      if (Mutation.type !== "childList") return
+
+      const removedNodes = Mutation.removedNodes
+      for (let i = 0; i < removedNodes.length; i++){
+        Callback(removedNodes[i], Observer.disconnect)
       }
     })
   }).observe(Node, {childList: true})

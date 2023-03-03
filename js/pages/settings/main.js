@@ -35,6 +35,26 @@ const Settings = {
         AddDownloadButtonToNewVersionHistory: {
             Title: "Add Download Button to version history",
             Description: "Adds a download button to place version history."
+        },
+        AddUSDToRobux: {
+            Title: "Show USD on Robux",
+            Description: "Shows amount of robux in USD (Devex Rate)"
+        },
+        Currency: {
+            Title: "Currency",
+            Description: "Shows amount of robux in currency you selected (Devex Rate)",
+            Type: "SelectionList",
+            GetList: async function(){
+                const [Success, Result] = await RequestFunc("https://qol.haydz6.com/api/currency/rates", "GET")
+                if (!Success) return []
+
+                const List = []
+
+                for (const [Currency, Rate] of Object.entries(Result)){
+                    List.push(Currency)
+                }
+                return List
+            }
         }
         // Mutuals: {
         //     Title: "Mutuals",
@@ -202,14 +222,22 @@ async function CreateSettingsSection(OptionsList){
         const Title = CreateSectionTitle(title)
         OptionsList.appendChild(Title)
 
+        let NextIndex = 0
         for (const [feature, info] of Object.entries(settings)){
-            let Section
-            const FeatureEnabled = await IsFeatureEnabled(feature)
+            let Index = NextIndex
+            NextIndex++
+            new Promise(async() => {
+                let Section
+                const FeatureEnabled = await IsFeatureEnabled(feature)
 
-            if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, info.Middleman)
-            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled)
+                if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, info.Middleman)
+                else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, function(NewValue){
+                    SetFeatureEnabled(feature, NewValue)
+                })
+                else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled)
 
-            OptionsList.appendChild(Section)
+                OptionsList.insertBefore(Section, OptionsList.children[Index])
+            })
         }
     }
 }
