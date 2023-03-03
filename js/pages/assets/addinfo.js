@@ -4,7 +4,7 @@ function RemoveBTRCreation(ItemDetails, Title){
     for (let i = 0; i < children.length; i++){
         const child = children[i]
 
-        if (child.children.length === 0) cont
+        if (child.children.length === 0) continue
 
         if (child.children[0].innerText === Title){
             child.remove()
