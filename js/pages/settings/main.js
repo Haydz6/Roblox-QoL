@@ -198,6 +198,10 @@ const Settings = {
             Title: "Show currency price",
             Description: "Shows price of asset in currency selected (Devex Rate)"
         }
+        // ShowSimilarUGCItems: {
+        //     Title: "Show recolors of UGC accessory",
+        //     Description: "Shows UGC accessories recolors"
+        // }
     },
     Fixes: {
         FixFavouritesPage: {

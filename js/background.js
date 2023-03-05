@@ -6,7 +6,7 @@ const WebServerEndpoints = {Playtime: WebServerURL+"api/presence/", Themes: WebS
 
 const ManifestVersion = chrome.runtime.getManifest()["manifest_version"]
 
-const EnabledFeatures = {Currency: "USD", AddUSDToRobux: true, ShowUSDOnAsset: true, AddSales: true, AddCreationDate: true, CountBadges: true, ShowValueOnTrade: true, ShowDemandOnTrade: true, ShowSummaryOnTrade: true, AddDownloadButtonToNewVersionHistory: true, AutodeclineOutboundTradeValue: false, AutodeclineOutboundTradeValueThreshold: 50, AutodeclineTradeValue: false, AutodeclineTradeValueThreshold: 50, Playtime: true, TradeNotifier: true, QuickDecline: true, QuickCancel: true, ProfileThemes: false, HideFooter: false, HideRobloxAds: false, MoveHomeFavouritesToThirdRow: true, HideDesktopAppBanner: true, RapOnProfile: true, ValueOnProfile: true, ValueDemandOnItem: true, ValuesOnOverview: true, RecentServers: true, TradeFilters: true, Mutuals: false, ExploreAsset: false, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
+const EnabledFeatures = {ShowSimilarUGCItems: false, Currency: "USD", AddUSDToRobux: true, ShowUSDOnAsset: true, AddSales: true, AddCreationDate: true, CountBadges: true, ShowValueOnTrade: true, ShowDemandOnTrade: true, ShowSummaryOnTrade: true, AddDownloadButtonToNewVersionHistory: true, AutodeclineOutboundTradeValue: false, AutodeclineOutboundTradeValueThreshold: 50, AutodeclineTradeValue: false, AutodeclineTradeValueThreshold: 50, Playtime: true, TradeNotifier: true, QuickDecline: true, QuickCancel: true, ProfileThemes: false, HideFooter: false, HideRobloxAds: false, MoveHomeFavouritesToThirdRow: true, HideDesktopAppBanner: true, RapOnProfile: true, ValueOnProfile: true, ValueDemandOnItem: true, ValuesOnOverview: true, RecentServers: true, TradeFilters: true, Mutuals: false, ExploreAsset: false, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
 let AreEnabledFeaturesFetched = false
 
 let ROBLOSECURITY
@@ -39,8 +39,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         })
         return true
     } else if (request.type === "forcereauthenticate"){
-        CachedAuthKey = ""
         LocalStorage.remove("AuthKey").then(function(){
+            CachedAuthKey = ""
             GetAuthKeyV2().then(function(Key){
                 sendResponse(Key)
             })
@@ -165,7 +165,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     if (URL.search("roblox.com") > -1) {
         Headers["x-csrf-token"] = CSRFToken
     } else if (URL.search(WebServerURL) > -1){
-        if (URL.search("/auth") == -1 || URL.search("/reverify") > -1){
+        if (!URL.includes("/auth") || URL.includes("/reverify")){
             Headers.Authentication = await GetAuthKeyV2()
         }
     }
