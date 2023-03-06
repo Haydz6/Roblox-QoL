@@ -19,6 +19,20 @@ async function ReauthenticateV2(){
     return CachedAuthKey
 }
 
+async function GetAuthKey(){
+    const [Success, Result] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"metadata", "GET")
+
+    if (!Success){
+        return await GetAuthKeyV2()
+    }
+
+    if (Result.Version == 1){
+        return await GetAuthKeyV1()
+    } else if (Result.Version >= 2){
+        return await GetAuthKeyV2()
+    }
+}
+
 async function GetAuthKeyV2(){
     while (FetchingAuthKey){
         await sleep(100)

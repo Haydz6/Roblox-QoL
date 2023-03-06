@@ -34,14 +34,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     if (request.type === "notification"){
         chrome.notifications.create("", request.notification)
     } else if (request.type === "authentication"){
-        GetAuthKeyV2().then(function(Key){
+        GetAuthKey().then(function(Key){
             sendResponse(Key)
         })
         return true
     } else if (request.type === "forcereauthenticate"){
         LocalStorage.remove("AuthKey").then(function(){
             CachedAuthKey = ""
-            GetAuthKeyV2().then(function(Key){
+            GetAuthKey().then(function(Key){
                 sendResponse(Key)
             })
         })
@@ -166,7 +166,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
         Headers["x-csrf-token"] = CSRFToken
     } else if (URL.search(WebServerURL) > -1){
         if (!URL.includes("/auth") || URL.includes("/reverify")){
-            Headers.Authentication = await GetAuthKeyV2()
+            Headers.Authentication = await GetAuthKey()
         }
     }
 
