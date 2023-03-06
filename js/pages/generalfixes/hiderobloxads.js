@@ -10,6 +10,9 @@ IsFeatureEnabled("HideRobloxAds").then(async function(Enabled){
         WaitForClass("Ads_WideSkyscraper").then(function(Ad){
             Ad.remove()
         })
+        WaitForClass("profile-ads-container").then(function(Ad){
+            Ad.remove()
+        })
 
         const MainContainer = await WaitForId("container-main")
         const Content = MainContainer.getElementsByClassName("content")[0]
