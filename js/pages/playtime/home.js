@@ -25,6 +25,7 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
         const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}`, "GET")
         if (Params === "time=all" && !ShowIfEmpty && Games.length === 0){
             ContainerHeader.remove()
+            GameCarousel.remove()
             return
         } else {
             ContainerHeader.style = ""
