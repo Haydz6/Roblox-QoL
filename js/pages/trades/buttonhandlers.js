@@ -809,7 +809,6 @@ async function DeclineValue(){
             let InboundsCancelled = 0
 
             Input.remove()
-            Button.remove()
 
             await GetAllTrades("Inbound", 100, true, async function(Success, Result, FetchNext, Cancel){
                 if (!Success){

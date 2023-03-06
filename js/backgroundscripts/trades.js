@@ -111,12 +111,25 @@ async function NotifyNewTrades(Trades, Type){
         const Offers = {Ours: AllOffers[0], Other: AllOffers[1]}
         await AddValueToOffers(AllOffers)
 
-        if (Type === "Inbound" && await IsFeatureEnabled("AutodeclineTradeValue")){
-            const Threshold = await IsFeatureEnabled("AutodeclineTradeValueThreshold")
-            const Percentage = (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100
+        if (Type === "Inbound"){
+            let Declined = false
 
-            if (-Threshold >= Percentage){
-                DeclineTrade(Trade.id)
+            if (await IsFeatureEnabled("AutodeclineTradeValue")){
+                const Threshold = await IsFeatureEnabled("AutodeclineTradeValueThreshold")
+                const Percentage = (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100
+
+                if (-Threshold >= Percentage){
+                    Declined = true
+                    DeclineTrade(Trade.id)
+                }
+            }
+            if (!Declined && await IsFeatureEnabled("AutodeclineLowTradeValue")){
+                const Threshold = await IsFeatureEnabled("AutodeclineLowTradeValueThreshold")
+
+                if (Threshold > Offers.Other.Value){
+                    Declined = true
+                    DeclineTrade(Trade.id)
+                }
             }
         }
         if (Type === "Outbound" && await IsFeatureEnabled("AutodeclineOutboundTradeValue")){

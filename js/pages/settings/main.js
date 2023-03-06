@@ -177,6 +177,24 @@ const Settings = {
                 SetFeatureEnabled(Feature, New)
                 return New+"%"
             }
+        },
+        AutodeclineLowTradeValue: {
+            Title: "Auto-decline Low Value Trades",
+            Description: "Declines any trade that you send which have less value then specified",
+        },
+        AutodeclineLowTradeValueThreshold: {
+            Title: "Auto-decline Low Value Trades Threshold",
+            Description: "",
+            Type: "InputBox",
+            Placeholder: "",
+            Middleman: function(Feature, PreviousValue, Value){
+                const Numbers = Value.replace(/^\D+/g, "")
+                if (Numbers === ""){
+                    return PreviousValue
+                }
+                SetFeatureEnabled(Feature, parseInt(Numbers))
+                return parseInt(Numbers)
+            }
         }
     },
     Friends: {
