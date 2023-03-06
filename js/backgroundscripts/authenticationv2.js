@@ -20,7 +20,25 @@ async function ReauthenticateV2(){
 }
 
 async function GetAuthKey(){
+    while (FetchingAuthKey){
+        await sleep(100)
+    }
+
+    if (CachedAuthKey != ""){
+        return CachedAuthKey
+    }
+
+    FetchingAuthKey = true
+    StoredKey = await LocalStorage.get("AuthKey")
+    
+    if (StoredKey){
+        CachedAuthKey = StoredKey
+        FetchingAuthKey = false
+        return CachedAuthKey
+    }
+
     const [Success, Result] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"metadata", "GET")
+    FetchingAuthKey = false
 
     if (!Success){
         return await GetAuthKeyV2()
