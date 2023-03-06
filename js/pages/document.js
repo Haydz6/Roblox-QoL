@@ -319,7 +319,9 @@ function ChildAdded(Node, SendInitial, Callback){
 
       const addedNodes = Mutation.addedNodes
       for (let i = 0; i < addedNodes.length; i++){
-        Callback(addedNodes[i], Observer.disconnect)
+        Callback(addedNodes[i], function(){
+          try {Observer.disconnect()} catch {}
+        })
       }
     })
   }).observe(Node, {childList: true})
@@ -332,7 +334,9 @@ function ChildRemoved(Node, Callback){
 
       const removedNodes = Mutation.removedNodes
       for (let i = 0; i < removedNodes.length; i++){
-        Callback(removedNodes[i], Observer.disconnect)
+        Callback(removedNodes[i], function(){
+          try {Observer.disconnect()} catch {}
+        })
       }
     })
   }).observe(Node, {childList: true})
