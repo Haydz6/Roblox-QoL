@@ -6,12 +6,18 @@ async function AddLinkToName(){
     const TradeHeader = await WaitForClass("trades-header-nowrap")
     let Titles = TradeHeader.getElementsByClassName("paired-name")[0]
 
+    let AddedLink = false
+
     ChildAdded(Titles, true, function(Element, Disconnect){
-        if (Titles.children.length >= 3){
+        if (!AddedLink && Titles.children.length >= 3){
+            AddedLink = true
+
             const LinkIcon = CreateLinkIcon(`https://www.rolimons.com/player/${GetUserIdFromTradeWithURL()}`)
             LinkIcon.style = "width: 30px;"
             Titles.children[2].appendChild(LinkIcon)
 
+            if (Disconnect) Disconnect()
+        } else if (AddedLink && Disconnect){
             Disconnect()
         }
     })
@@ -34,29 +40,31 @@ async function NewAsset(Asset){
     let CategoryCardLabel = CreateCategoriesCardLabel()
     Caption.appendChild(CategoryCardLabel)
 
-    QueueForItemDetails(AssetId).then(function([Success, Details]){
-        CurrencyLabel.innerText = Success && numberWithCommas(Details.Value) || "???"
+    if (await IsFeatureEnabled("ValueAndCategoriesOnOffer")){
+        QueueForItemDetails(AssetId).then(function([Success, Details]){
+            CurrencyLabel.innerText = Success && numberWithCommas(Details.Value) || "???"
 
-        if (Details?.Rare){
-            const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg"))
-            CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
-            CategoryCardLabel.appendChild(CategoryIcon)
-        }
-        if (Details?.Projected){
-            const CategoryIcon = CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg"))
-            CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
-            CategoryCardLabel.appendChild(CategoryIcon)
-        }
-        if (Details?.Hyped){
-            const CategoryIcon = CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg"))
-            CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
-            ValueElement.CategoryCardLabel.appendChild(CategoryIcon)
-        }
-    })
+            if (Details?.Rare){
+                const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg"))
+                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+                CategoryCardLabel.appendChild(CategoryIcon)
+            }
+            if (Details?.Projected){
+                const CategoryIcon = CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg"))
+                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+                CategoryCardLabel.appendChild(CategoryIcon)
+            }
+            if (Details?.Hyped){
+                const CategoryIcon = CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg"))
+                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+                ValueElement.CategoryCardLabel.appendChild(CategoryIcon)
+            }
+        })
+    }
 }
 
-function NewOfferAsset(Asset, AddToValue, AddToRap, AddDemand){
-    if (Asset.nodeType !== Node.ELEMENT_NODE || Asset.tagName.toLowerCase() !== "div" || Asset.children.length === 0) return
+async function NewOfferAsset(Asset, AddToValue, AddToRap, AddDemand){
+    if (Asset.nodeType !== Node.ELEMENT_NODE || Asset.tagName.toLowerCase() !== "div" || Asset.children.length === 0 || !await IsFeatureEnabled("ValueAndCategoriesOnOffer")) return
 
     const Thumbnail2D = Asset.getElementsByTagName("thumbnail-2d")[0]
     if (!Thumbnail2D) return
@@ -181,9 +189,16 @@ async function ListenToOffers(){
 
 async function ListenToSummaryOffers(Offers, Update){
     if (Offers.nodeType !== Node.ELEMENT_NODE || Offers.className.search("trade-request-window-offer") === -1) return
-    const [ValueLine, ValueValue] = CreateRobuxLineLabel("Rolimons Value:", "0")
-    const [DemandLine, DemandValue] = CreateRobuxLineLabel("Rolimons Demand:", "0.0/5.0")
-    Offers.append(ValueLine, DemandLine)
+    let ValueLine, ValueValue, DemandLine, DemandValue
+
+    if (await IsFeatureEnabled("ShowValueOnTrade")){
+        [ValueLine, ValueValue] = CreateRobuxLineLabel("Rolimons Value:", "0")
+        Offers.appendChild(ValueLine)
+    }
+    if (await IsFeatureEnabled("ShowDemandOnTrade")){
+        [DemandLine, DemandValue] = CreateRobuxLineLabel("Rolimons Demand:", "0.0/5.0")
+        Offers.appendChild(DemandLine)
+    }
 
     let TotalValue = 0
     let TotalRap = 0
@@ -220,6 +235,8 @@ async function ListenToSummaryOffers(Offers, Update){
     }
 
     function AddToValue(Value){
+        if (!ValueValue) return
+
         if (!Value){
             if (Value === false){
                 TotalValue = -1
@@ -248,6 +265,8 @@ async function ListenToSummaryOffers(Offers, Update){
     }
 
     function AddDemand(Demand){
+        if (!DemandValue) return
+
         if (!Demand){
             if (Demand === false){
                 Demands = [-2]
@@ -307,14 +326,30 @@ async function ListenForNewSummaryOffer(){
     const TotalRap = {Ours: 0, Other: 0}
     const TotalDonated = {Ours: 0, Other: 0}
 
-    const GainList = CreateGainList()
-    const [ValueList, UpdateValue] = CreateGain(0, "0", "+0%", "icon icon-rolimons-20x20", true)
-    const [RapList, UpdateRap] = CreateGain(0, "0", "+0%", "icon icon-robux-16x16", true)
-    const [DonatedList, UpdateDonated] = CreateGain(0, "0", undefined, "icon icon-offer-20x20", true)
-    GainList.append(ValueList, RapList, DonatedList)
-    Divider.appendChild(GainList)
+    let GainList
+    let ValueList, UpdateValue
+    let RapList, UpdateRap
+    let DonatedList, UpdateDonated
 
-    DonatedList.style.display = "none"
+    if (await IsFeatureEnabled("ShowSummaryOnTrade")){
+        GainList = CreateGainList()
+        Value = CreateGain(0, "0", "+0%", "icon icon-rolimons-20x20", true)
+        ValueList = Value[0]
+        UpdateValue = Value[1]
+
+        Rap = CreateGain(0, "0", "+0%", "icon icon-robux-16x16", true)
+        RapList = Rap[0]
+        UpdateRap = Rap[1]
+
+        Donated = CreateGain(0, "0", undefined, "icon icon-offer-20x20", true)
+        DonatedList = Donated[0]
+        UpdateDonated = Donated[1]
+
+        GainList.append(ValueList, RapList, DonatedList)
+        Divider.appendChild(GainList)
+    }
+
+    if (DonatedList) DonatedList.style.display = "none"
 
     function CalcuatePercentage(First, Second){
         const Percentage = Math.floor((First - Second)/Second * 100)
@@ -330,6 +365,8 @@ async function ListenForNewSummaryOffer(){
     }
 
     function Update(Offer, NewRap, NewValue, NewDonated){
+        if (!GainList) return
+
         const Type = Offer == Offers.children[0] && "Ours" || "Other"
         TotalValue[Type] = NewValue
         TotalRap[Type] = NewRap

@@ -120,6 +120,10 @@ const Settings = {
             Title: "Demand/Value on Item",
             Description: "Shows a limited item's demand and value."
         },
+        ValueAndCategoriesOnOffer: {
+            Title: "Show demand and categories on offer",
+            Description: "Shows a limited item's value and categories (rare, projected, hyped) on the offer page."
+        },
         RapOnProfile: {
             Title: "Rap on Profile",
             Description: "Shows a user's rap on their profile."
