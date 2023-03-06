@@ -782,49 +782,6 @@ async function DeclineValue(){
         document.body.appendChild(ModalWindow)
         document.body.appendChild(ModalBackdrop)
 
-        let TradeType = "Inbound"
-
-        const [Button, Dropdown, ButtonTitle] = CreateConfirmModalDropdown()
-
-        let IsDropdownOpen = false
-        function UpdateDropdownVisibility(){
-            Dropdown.style = `display: ${IsDropdownOpen && "block" || "none"};`
-        }
-
-        Button.addEventListener("click", function(){
-            IsDropdownOpen = !IsDropdownOpen
-            UpdateDropdownVisibility()
-        })
-
-        function UpdateTradeType(){
-            Title.innerText = `${TradeType === "Inbound" && "Decline" || "Cancel"} Loss Trades`
-
-            ButtonTitle.title = TradeType
-            ButtonTitle.innerText = TradeType
-        }
-
-        const InboundButton = CreateTradeDropdownOption("Inbound")
-        InboundButton.addEventListener("click", function(){
-            IsDropdownOpen = false
-            UpdateDropdownVisibility()
-
-            TradeType = "Inbound"
-            UpdateTradeType()
-        })
-
-        const OutboundButton = CreateTradeDropdownOption("Outbound")
-        OutboundButton.addEventListener("click", function(){
-            IsDropdownOpen = false
-            UpdateDropdownVisibility()
-
-            TradeType = "Outbound"
-            UpdateTradeType()
-        })
-
-        Dropdown.append(InboundButton, OutboundButton)
-        FormBody.appendChild(Button)
-        Form.appendChild(Dropdown)
-
         function Clear(){
             ModalBackdrop.remove()
             ModalWindow.remove()
@@ -845,7 +802,7 @@ async function DeclineValue(){
             CancelButton.setAttribute("disabled", true)
             Input.setAttribute("disabled", true)
 
-            Description.innerText = `Getting ${TradeType.toLowerCase()} trades`
+            Description.innerText = "Getting inbound trades"
 
             let Fails = 0
             let Successes = 0
@@ -853,9 +810,8 @@ async function DeclineValue(){
 
             Input.remove()
             Button.remove()
-            Dropdown.remove()
 
-            await GetAllTrades(TradeType, 100, true, async function(Success, Result, FetchNext, Cancel){
+            await GetAllTrades("Inbound", 100, true, async function(Success, Result, FetchNext, Cancel){
                 if (!Success){
                     Fails ++
                     Cancel()
@@ -878,7 +834,7 @@ async function DeclineValue(){
                     const Offers = {Ours: AllOffers[0], Other: AllOffers[1]}
                     await AddValueToOffers(AllOffers)
 
-                    if (Input.value >= Offers.Other.Value){
+                    if (Input.value <= Offers.Other.Value){
                         continue
                     }
 
@@ -888,7 +844,7 @@ async function DeclineValue(){
                     else {
                         Successes ++
                         InboundsCancelled ++
-                        Description.innerText = `${TradeType === "Inbound" && "Declining" || "Cancelling"} ${InboundsCancelled} ${TradeType.toLowerCase()} trades.`
+                        Description.innerText = `Declining ${InboundsCancelled} inbound trades.`
                     }
                 }
 
@@ -897,12 +853,12 @@ async function DeclineValue(){
 
             if (Fails > 0){
                 if (Successes > 0){
-                    Description.innerText = `Some ${TradeType.toLowerCase()} trades failed to decline.`
+                    Description.innerText = "Some inbound trades failed to decline."
                 } else {
-                    Description.innerText = `All ${TradeType.toLowerCase()} trades failed to decline.`
+                    Description.innerText = "All inbound trades failed to decline."
                 }
             } else {
-                Description.innerText = `${TradeType === "Inbound" && "Declined" || "Cancelled"} ${InboundsCancelled} ${TradeType.toLowerCase()} trades.`
+                Description.innerText = `Declined ${InboundsCancelled} inbound trades.`
             }
 
             Completed = true
@@ -911,7 +867,5 @@ async function DeclineValue(){
             CreateButton.removeAttribute("disabled")
             CreateButton.innerText = "Ok"
         })
-
-        UpdateDescription()
     })
 }
