@@ -1,5 +1,5 @@
 function IsPlaytimePage(){
-    return window.location.href.split("#")[1].includes("/sortName?sort=Playtime")
+    return window.location.href.split("#")[1]?.includes("/sortName?sort=Playtime")
 }
 
 function GetPlaytimeType(){
@@ -88,7 +88,7 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
         AllGames = Games
 
         CurrentCursor = 100
-        CreateGameCardsFromPlaytime(Games.slice(0, Math.min(Games.length, 100)), GameGrid, CacheFetchInt, FetchInt, Fail, Spinner)
+        await CreateGameCardsFromPlaytime(Games.slice(0, Math.min(Games.length, 100)), GameGrid, CacheFetchInt, FetchInt, Fail, Spinner)
 
         if (Games.length > 100) LoadMoreButton.style = ""
     }
