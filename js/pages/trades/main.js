@@ -2,7 +2,7 @@ let DropdownOptionsOpen = false
 let TradesDropdown
 
 function UpdateOptionsDropdownVisibility(){
-    TradesDropdown.style = !DropdownOptionsOpen && "display: none;" || "display: block;"
+    TradesDropdown.style.display = !DropdownOptionsOpen && "none" || "block"
 }
 
 IsFeatureEnabled("TradeFilters").then(async function(Enabled){
@@ -45,6 +45,7 @@ IsFeatureEnabled("TradeFilters").then(async function(Enabled){
     CancelAllOutbounds()
     DeclineAgedTrades()
     DeclineLoss()
+    DeclineValue()
     DeclineInboundProjections()
     DeclineInvalidTrades()
 

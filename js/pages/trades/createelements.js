@@ -18,7 +18,7 @@ function CreateTradeDropdownOption(Name){
 function CreateTradeDropdown(){
     const Dropdown = document.createElement("ul")
     Dropdown.className = "dropdown-menu dropdown-trades-options"
-    Dropdown.style = "display: none;"
+    Dropdown.style = "display: none; max-height: 300px;"
 
     return Dropdown
 }
