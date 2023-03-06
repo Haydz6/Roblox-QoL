@@ -343,6 +343,13 @@ async function Run(){
         return
     }
 
+    WaitForId("vertical-menu").then(function(Menu){
+        ChildAdded(Menu, true, function(Button){
+            const Child = Button.children[0]
+           Child.href = Child.href.replaceAll("?tab=robloxqol", "")
+        })
+    })
+
     HideOriginalSettingButtonActive()
     HandleTabChange(SettingsButtonList, NavigateContainer)
 
