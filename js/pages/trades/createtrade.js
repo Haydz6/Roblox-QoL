@@ -24,7 +24,7 @@ async function AddLinkToName(){
 }
 
 async function NewAsset(Asset){
-    if (Asset.nodeType !== Node.ELEMENT_NODE || Asset.tagName.toLowerCase() !== "li") return
+    if (Asset.nodeType !== Node.ELEMENT_NODE || Asset.tagName.toLowerCase() !== "li" || !await IsFeatureEnabled("ValueDemandOnItem")) return
     Asset.style = "margin-bottom: 0px!important; height: 250px!important;"
 
     const ItemCardContainer = Asset.children[0].children[0]
@@ -40,43 +40,48 @@ async function NewAsset(Asset){
     let CategoryCardLabel = CreateCategoriesCardLabel()
     Caption.appendChild(CategoryCardLabel)
 
-    if (await IsFeatureEnabled("ValueAndCategoriesOnOffer")){
-        QueueForItemDetails(AssetId).then(function([Success, Details]){
-            CurrencyLabel.innerText = Success && numberWithCommas(Details.Value) || "???"
+    QueueForItemDetails(AssetId).then(function([Success, Details]){
+        CurrencyLabel.innerText = Success && numberWithCommas(Details.Value) || "???"
 
-            if (Details?.Rare){
-                const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg"))
-                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
-                CategoryCardLabel.appendChild(CategoryIcon)
-            }
-            if (Details?.Projected){
-                const CategoryIcon = CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg"))
-                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
-                CategoryCardLabel.appendChild(CategoryIcon)
-            }
-            if (Details?.Hyped){
-                const CategoryIcon = CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg"))
-                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
-                ValueElement.CategoryCardLabel.appendChild(CategoryIcon)
-            }
-        })
-    }
+        if (Details?.Rare){
+            const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg"))
+            CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+            CategoryCardLabel.appendChild(CategoryIcon)
+        }
+        if (Details?.Projected){
+            const CategoryIcon = CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg"))
+            CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+            CategoryCardLabel.appendChild(CategoryIcon)
+        }
+        if (Details?.Hyped){
+            const CategoryIcon = CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg"))
+            CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+            ValueElement.CategoryCardLabel.appendChild(CategoryIcon)
+        }
+    })
 }
 
 async function NewOfferAsset(Asset, AddToValue, AddToRap, AddDemand){
-    if (Asset.nodeType !== Node.ELEMENT_NODE || Asset.tagName.toLowerCase() !== "div" || Asset.children.length === 0 || !await IsFeatureEnabled("ValueAndCategoriesOnOffer")) return
+    if (Asset.nodeType !== Node.ELEMENT_NODE || Asset.tagName.toLowerCase() !== "div" || Asset.children.length === 0) return
+    const CanShowCategoriesAndValues = await IsFeatureEnabled("ValueAndCategoriesOnOffer")
+    if (!CanShowCategoriesAndValues && !await IsFeatureEnabled("ShowValueOnTrade") && !await IsFeatureEnabled("ShowValueOnTrade") && !await IsFeatureEnabled("ShowSummaryOnTrade")) return
 
     const Thumbnail2D = Asset.getElementsByTagName("thumbnail-2d")[0]
     if (!Thumbnail2D) return
 
     const AssetId = parseInt(Thumbnail2D.getElementsByTagName("span")[0].getAttribute("thumbnail-target-id"))
-    const [ValueDiv, CurrencyLabel] = CreateValueCardLabel("item-value custom ng-scope")
 
-    Asset.appendChild(ValueDiv)
+    let ValueDiv, CurrencyLabel
+
+    if (CanShowCategoriesAndValues){
+        [ValueDiv, CurrencyLabel] = CreateValueCardLabel("item-value custom ng-scope")
+        Asset.appendChild(ValueDiv)
+    }
+
     AddToValue()
 
     QueueForItemDetails(AssetId).then(function([Success, Details]){
-        CurrencyLabel.innerText = Success && numberWithCommas(Details.Value) || "???"
+        if (CurrencyLabel) CurrencyLabel.innerText = Success && numberWithCommas(Details.Value) || "???"
 
         const RapElement = Asset.getElementsByClassName("item-value ng-scope")[0]
         let Rap = false
@@ -86,31 +91,31 @@ async function NewOfferAsset(Asset, AddToValue, AddToRap, AddDemand){
             if (RapLabel) Rap = parseInt(RapLabel.innerText.replaceAll(",", ""))
         }
 
-        console.log(Success, Rap)
-
         if (Success && Asset.parentElement.parentElement){
             AddToValue(Details.Value)
             AddToRap(Rap)
             AddDemand(Details.Demand)
 
-            let CategoryCardLabel = CreateCategoriesCardLabel()
-            Asset.appendChild(CategoryCardLabel)
-            CategoryCardLabel.style = "display: inline-flex !important; margin-left: 10px;"
+            if (CanShowCategoriesAndValues){
+                let CategoryCardLabel = CreateCategoriesCardLabel()
+                Asset.appendChild(CategoryCardLabel)
+                CategoryCardLabel.style = "display: inline-flex !important; margin-left: 10px;"
 
-            if (Details?.Rare){
-                const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg"))
-                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
-                CategoryCardLabel.appendChild(CategoryIcon)
-            }
-            if (Details?.Projected){
-                const CategoryIcon = CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg"))
-                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
-                CategoryCardLabel.appendChild(CategoryIcon)
-            }
-            if (Details?.Hyped){
-                const CategoryIcon = CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg"))
-                CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
-                CategoryCardLabel.appendChild(CategoryIcon)
+                if (Details?.Rare){
+                    const CategoryIcon = CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg"))
+                    CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+                    CategoryCardLabel.appendChild(CategoryIcon)
+                }
+                if (Details?.Projected){
+                    const CategoryIcon = CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg"))
+                    CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+                    CategoryCardLabel.appendChild(CategoryIcon)
+                }
+                if (Details?.Hyped){
+                    const CategoryIcon = CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg"))
+                    CategoryIcon.style = "height: 16px; margin-left: 0px!important; margin-right: 4px!important;"
+                    CategoryCardLabel.appendChild(CategoryIcon)
+                }
             }
         } else if (!Success) {
             AddToValue(false)
