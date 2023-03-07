@@ -18,6 +18,10 @@ function FindFirstId(Id){
   return document.getElementById(Id)
 }
 
+function FindFirstTag(Tag){
+  return document.getElementsByTagName(Tag)[0]
+}
+
 async function WaitForChildIndex(Parent, Index){
   let Element = null
 
@@ -64,12 +68,46 @@ async function WaitForId(Id){
     return Element
 }
 
+async function WaitForTag(Tag){
+  let Element = null
+
+  while (true) {
+    Element = FindFirstTag(Tag)
+    if (Element != undefined) {
+      break
+    }
+
+    await sleep(50)
+  }
+
+  return Element
+}
+
 async function WaitForClassPath(Element, ...Paths){
   let LastElement = Element
 
   for (let i = 0; i < Paths.length; i++){
     while (true){
       const NewElement = LastElement.getElementsByClassName(Paths[i])[0]
+      
+      if (NewElement){
+        LastElement = NewElement
+        break
+      }
+
+      await sleep(50)
+    }
+  }
+
+  return LastElement
+}
+
+async function WaitForTagPath(Element, ...Paths){
+  let LastElement = Element
+
+  for (let i = 0; i < Paths.length; i++){
+    while (true){
+      const NewElement = LastElement.getElementsByTagName(Paths[i])[0]
       
       if (NewElement){
         LastElement = NewElement
