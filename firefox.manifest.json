@@ -299,5 +299,27 @@
             ],
             "run_at": "document_idle",
             "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/transactions"
+            ],
+            "js": [
+                "js/pages/playtime/createelements.js",
+                "js/pages/economy/summary.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/groups/configure*"
+            ],
+            "js": [
+                "js/pages/playtime/createelements.js",
+                "js/pages/economy/summary.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
         }]
 }

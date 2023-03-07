@@ -82,7 +82,6 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions)
     Button.appendChild(Arrow)
 
     const PayoutList = document.createElement("div")
-    PayoutList.style = "padding-top: 10px;"
 
     Table.appendChild(Button)
 
@@ -108,7 +107,6 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions)
         PayoutList.appendChild(Spinner)
         if (Dropdown) Dropdown.style.display = "none"
 
-        console.log(CurrentOption)
         const [Success, AlreadyFetched, Items] = await Fetch(CurrentOption)
         HasLoaded = true
 
@@ -290,7 +288,6 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
     let CommissionsFetchIteration = [0]
 
     const [SummaryType] = await GetTypeAndIdFromURL()
-    console.log(SummaryType)
 
     async function HandleDropdownMenu(Menu){
         let i = 0
@@ -429,10 +426,11 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
 
             for (let i = 0; i < ToRead.length; i++){
                 const Info = ToRead[i]
-                const Id = Info.details.id
+                const Id = Info?.details?.place?.universeId || Info.details.id
 
                 if (!Map[Id]){
-                    const Asset = {Type: "Asset", Name: Info.details.name, Id: Id, Robux: 0}
+                    const IsPlace = Info?.details?.place
+                    const Asset = {Type: IsPlace && "Place" || "Asset", Name: IsPlace && IsPlace.name || Info.details.name, Id: Id, Robux: 0, Place: IsPlace}
                     Assets.push(Asset)
                     Map[Id] = Asset
                 }
@@ -462,8 +460,6 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
 
             Places = Assets
         }
-
-        console.log(Places)
         
         Places.sort(function(a, b){
             return b.Robux - a.Robux
