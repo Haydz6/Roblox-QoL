@@ -19,7 +19,7 @@ async function WaitForTableRow(TBody, Name){
 }
 
 function CreateGroupItem(Group, BackgroundColor){
-    const href = `https://roblox.com/${Group.Type == "Group" && "group" || Group.Type == "Place" && "games" || Group.Type == "User" && "users" || Group.Type == "Asset" && "catalog"}/${Group.Type == "Place" && Group.Place.placeId || Group.Id}/${Group.Type == "User" && "profile" || "-"}`
+    const href = `https://roblox.com/${Group.Type == "Group" && "group" || Group.Type == "Place" && "games" || Group.Type == "GamePass" && "game-pass" || Group.Type == "User" && "users" || Group.Type == "Asset" && "catalog"}/${Group.Type == "Place" && Group.Place.placeId || Group.Id}/${Group.Type == "User" && "profile" || "-"}`
 
     const Container = document.createElement("div")
     Container.style = BackgroundColor+"padding: 9px; height: 62px; display: flex; align-items: center;"
@@ -28,7 +28,7 @@ function CreateGroupItem(Group, BackgroundColor){
     Headshot.className = "avatar avatar-headshot-xs group-icon"
     Headshot.style = "float: left; flex-shrink: 0; margin-right: 12px;"
 
-    const AvatarCardLink = document.createElement("a")
+    const AvatarCardLink = document.createElement(Group.Type != "DeveloperProduct" && "a" || "span")
     AvatarCardLink.className = "avatar-card-link"
     AvatarCardLink.href = href
 
@@ -36,7 +36,7 @@ function CreateGroupItem(Group, BackgroundColor){
     Thumbnail2DContainer.className = "thumbnail-2d-container"
 
     const Img = document.createElement("img")
-    Img.src = Group.Icon
+    Img.src = Group.Icon || "https://create.roblox.com/assets/thumbnails/broken.svg"
 
     Thumbnail2DContainer.appendChild(Img)
     AvatarCardLink.appendChild(Thumbnail2DContainer)
@@ -46,8 +46,8 @@ function CreateGroupItem(Group, BackgroundColor){
     AvatarCardCaption.className = "avatar-card-caption"
     AvatarCardCaption.style = "width: calc(100% - 44px);"
 
-    const AvatarCardName = document.createElement("a")
-    AvatarCardName.className = "avatar-card-name text-name text-overflow"
+    const AvatarCardName = document.createElement(Group.Type != "DeveloperProduct" && "a" || "span")
+    AvatarCardName.className = `avatar-card-name ${Group.Type != "DeveloperProduct" && "text-name" || ""} text-overflow`
     AvatarCardName.href = href
     AvatarCardName.innerText = Group.Name
 
@@ -200,7 +200,7 @@ async function AddIcons(Groups){
 
             if (Group.Type == "Group") GroupToMap[Group.Id] = Group
             else UserToMap[Group.Id] = Group
-            Info.push({targetId: Group.Id, type: Group.Type == "Group" && "GroupIcon" || Group.Type == "Place" && "GameIcon" || Group.Type == "Asset" && "Asset" || "AvatarHeadShot", requestId: Group.Type, size: "150x150"})
+            Info.push({targetId: Group.Id, type: Group.Type == "Group" && "GroupIcon" || Group.Type == "Place" && "GameIcon" || Group.Type == "GamePass" && "GamePass" || Group.Type == "DeveloperProduct" && "DeveloperProduct" || Group.Type == "Asset" && "Asset" || "AvatarHeadShot", requestId: Group.Type, size: "150x150"})
         }
 
         const [Success, Result] = await RequestFunc("https://thumbnails.roblox.com/v1/batch", "POST", undefined, JSON.stringify(Info), true)
@@ -418,7 +418,7 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
             CacheSalesPayoutsTime = Time
         }
 
-        if (Type == "Asset"){
+        if (Type == "Asset" || Type == "Place"){
             const Map = {}
             const Assets = []
 
@@ -426,11 +426,16 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
 
             for (let i = 0; i < ToRead.length; i++){
                 const Info = ToRead[i]
-                const Id = Info?.details?.place?.universeId || Info.details.id
+                const Id = Type == "Place" && Info?.details?.place?.universeId || Info.details.id || Info?.details?.place?.universeId
 
                 if (!Map[Id]){
-                    const IsPlace = Info?.details?.place
-                    const Asset = {Type: IsPlace && "Place" || "Asset", Name: IsPlace && IsPlace.name || Info.details.name, Id: Id, Robux: 0, Place: IsPlace}
+                    let IsPlace = Type == "Place" && Info?.details?.place
+
+                    if (!IsPlace && Info.details.id == null){
+                        IsPlace = Info?.details?.place
+                    }
+
+                    const Asset = {Type: IsPlace && "Place" || Info?.details?.type == "GamePass" && "GamePass" || Info?.details?.type == "DeveloperProduct" && "DeveloperProduct" || "Asset", Name: IsPlace?.name && `${IsPlace.name}${Type == "Asset" && " (Private Servers)" || ""}` || Info.details.name, Id: Id, Robux: 0, Place: IsPlace}
                     Assets.push(Asset)
                     Map[Id] = Asset
                 }
@@ -570,7 +575,7 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
 
             CreateDetailedSummary(await WaitForTableRow(TBody, "Group Payouts"), FetchGroupPayouts, CanFetchGroupPayouts)
             CreateDetailedSummary(await WaitForTableRow(TBody, "Premium Payouts"), FetchPremiumPayouts, CanFetchPremiumPayouts)
-            CreateDetailedSummary(await WaitForTableRow(TBody, "Sales of Goods"), FetchSalesPayouts, CanFetchSalesPayouts, ["Asset", "User"])
+            CreateDetailedSummary(await WaitForTableRow(TBody, "Sales of Goods"), FetchSalesPayouts, CanFetchSalesPayouts, ["Place", "Asset", "User"])
             CreateDetailedSummary(await WaitForTableRow(TBody, "Commissions"), FetchCommissions, CanFetchCommissions, ["Asset", "User"])
         })
     } else {
