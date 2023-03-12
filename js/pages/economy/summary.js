@@ -67,7 +67,14 @@ function CreateGroupItem(Group, BackgroundColor){
     return Container
 }
 
-async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions){
+async function GetTypeAndIdFromURL(){
+    if (!window.location.href.includes("/groups/configure")) return ["users", await GetUserId()]
+
+    const Params = new URLSearchParams(window.location.search)
+    return ["groups", parseInt(Params.get("id"))]
+}
+
+async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions, Cache, FileUpload, FileTypeParser){
     const Table = TableRow.children[0]
     const RobuxContainer = TableRow.children[1]
 
@@ -82,6 +89,12 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions)
     Button.appendChild(Arrow)
 
     const PayoutList = document.createElement("div")
+    let UploadContainer, UploadButton
+
+    if (FileUpload){
+        [UploadContainer, UploadButton] = CreateCSVUpload()
+        UploadContainer.style.display = "none"
+    }
 
     Table.appendChild(Button)
 
@@ -90,34 +103,68 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions)
 
     let HasFetched = false
     let HasLoaded = false
+    let CSVFile
 
-    async function Get(){
-        if (!CanFetch(CurrentOption) || HasFetched) return
+    async function Get(ItemsPromise){
+        if (!ItemsPromise && (!CanFetch(CurrentOption) || HasFetched)) return
         HasFetched = true
         HasLoaded = false
 
         while (PayoutList.firstChild) {
             PayoutList.removeChild(PayoutList.lastChild)
         }
+        
+        let Items
 
         const Spinner = document.createElement("div")
         Spinner.className = "spinner spinner-default"
         PayoutList.style.paddingTop = "10px"
 
         PayoutList.appendChild(Spinner)
-        if (Dropdown) Dropdown.style.display = "none"
 
-        const [Success, AlreadyFetched, Items] = await Fetch(CurrentOption)
-        HasLoaded = true
+        if (!ItemsPromise){
+            if (Dropdown) Dropdown.style.display = "none"
 
-        Spinner.remove()
+            const [Success, AlreadyFetched, InnerItems] = await Fetch(CurrentOption)
+            HasLoaded = true
+            Items = InnerItems
 
-        if (Success && AlreadyFetched) return
-        if (!Success){
-            const Label = document.createElement("p")
-            Label.innerText = "Failed to load"
-            return
+            Spinner.remove()
+
+            if (Success && AlreadyFetched) return
+            if (!Success){
+                const Label = document.createElement("p")
+                Label.innerText = "Failed to load"
+                return
+            }
+        } else {
+            await Fetch("Cancel")
+
+            Cache[0]++
+            const CurrentCache = Cache[0]
+
+            Items = await ItemsPromise
+
+            if (Cache[0] != CurrentCache){
+                return
+            }
+
+            if (FileTypeParser) Items = await FileTypeParser(Items, CurrentOption, Cache, CurrentCache)
+
+            if (Cache[0] != CurrentCache){
+                return
+            }
+
+            if (Items){
+                Items.sort(function(a, b){
+                    return b.Robux - a.Robux
+                })
+            }
+
+            Spinner.remove()
         }
+
+        if (!Items) return
 
         if (Items.length == 0){
             PayoutList.style.paddingTop = ""
@@ -137,6 +184,7 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions)
         PayoutList.style.display = !Visible && "none" || ""
         RobuxContainer.style.display = Visible && "block" || ""
         if (Dropdown) Dropdown.style.display = (Visible && HasLoaded) && "revert" || "none"
+        if (UploadContainer) UploadContainer.style.display = !Visible && "none" || "contents"
 
         Arrow.className = `icon-${Visible && "down" || "right"}-16x16`
 
@@ -174,12 +222,24 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions)
                 HasFetched = false
 
                 Close()
-                Get()
+                Get(CSVFile && FileUpload(CSVFile, CurrentOption))
             })
 
             List.appendChild(Container)
         }
         Table.appendChild(DropdownContainer)
+    }
+    if (UploadContainer){
+        UploadButton.addEventListener("change", function(e){
+            let reader = new FileReader()
+            reader.onload = async function(File){
+                CSVFile = File.target.result
+                Get(FileUpload(CSVFile, CurrentOption))
+            }
+            reader.readAsText(e.target.files[0]);
+        })
+
+        Table.appendChild(UploadContainer)
     }
 
     Table.appendChild(PayoutList)
@@ -216,21 +276,43 @@ async function AddIcons(Groups){
     }
 }
 
-async function GetTypeAndIdFromURL(){
-    if (!window.location.href.includes("/groups/configure")) return ["users", await GetUserId()]
-
-    const Params = new URLSearchParams(window.location.search)
-    return ["groups", parseInt(Params.get("id"))]
-}
-
 async function FetchTranscations(Current, Cache, Type, Time, IncludeCallback){
     const Groups = []
     const GroupsMap = {}
     const Transcations = []
 
     let Cursor = ""
+    let ReachedEnd = false
 
     const [IdType, Id] = await GetTypeAndIdFromURL()
+    const ListCache = FetchCache(IdType, Type, Time)
+
+    const CurrentTime = (new Date().getTime())/1000
+
+    function HandleTransaction(Info){
+        if (Info.currency.type !== "Robux" || (IncludeCallback && !IncludeCallback(Info))) return "continue"
+
+        const CurrentDate = new Date(Info.created)
+        if (CurrentDate.getTime()/1000 <= CurrentTime-Time){
+            ReachedEnd = true
+            return "break"
+        }
+
+        const IsPlace = Info?.details?.place
+        const Id = IsPlace && Info?.details?.place?.universeId || Info.agent.id
+
+        if (!GroupsMap[Id]){
+            const Place = Info?.details?.place
+            const Group = {Type: IsPlace && "Place" || Info.agent.type, Name: IsPlace && Place.name || Info.agent.name, Id: Id, Robux: 0, Place: IsPlace && Place}
+            Groups.push(Group)
+            GroupsMap[Group.Id] = Group
+        }
+
+        GroupsMap[Id].Robux += Info.currency.amount
+        Transcations.push(Info)
+    }
+
+    const ToCache = []
 
     while (true){
         const [Success, Result] = await RequestFunc(`https://economy.roblox.com/v2/${IdType}/${Id}/transactions?cursor=${Cursor}&limit=100&transactionType=${Type}`, "GET", undefined, undefined, true)
@@ -240,32 +322,30 @@ async function FetchTranscations(Current, Cache, Type, Time, IncludeCallback){
         }
 
         const Data = Result.data
-        const CurrentTime = (new Date().getTime())/1000
-        let ReachedEnd = false
+        const CurrentFoundIds = {}
 
         for (let i = 0; i < Data.length; i++){
             const Info = Data[i]
 
-            if (Info.currency.type !== "Robux" || (IncludeCallback && !IncludeCallback(Info))) continue
+            if (IsIdInCache(IdType, Type, Time, Info.id)){
+                for (let o = 0; o < ListCache.List.length; o++){
+                    const CacheInfo = ListCache.List[o]
 
-            const CurrentDate = new Date(Info.created)
-            if (CurrentDate.getTime()/1000 <= CurrentTime-Time){
+                    if (CurrentFoundIds[CacheInfo.id]) continue
+
+                    const Terminator = HandleTransaction(CacheInfo)
+                    if (Terminator == "continue") continue
+                    else if (Terminator == "break") break
+                }
                 ReachedEnd = true
                 break
             }
 
-            const IsPlace = Info?.details?.place
-            const Id = IsPlace && Info?.details?.place?.universeId || Info.agent.id
-
-            if (!GroupsMap[Id]){
-                const Place = Info?.details?.place
-                const Group = {Type: IsPlace && "Place" || Info.agent.type, Name: IsPlace && Place.name || Info.agent.name, Id: Id, Robux: 0, Place: IsPlace && Place}
-                Groups.push(Group)
-                GroupsMap[Group.Id] = Group
-            }
-
-            GroupsMap[Id].Robux += Info.currency.amount
-            Transcations.push(Info)
+            const Terminator = HandleTransaction(Info)
+            ToCache.push(Info)
+            CurrentFoundIds[Info.id] = true
+            if (Terminator == "continue") continue
+            else if (Terminator == "break") break
         }
 
         if (ReachedEnd) break
@@ -273,6 +353,15 @@ async function FetchTranscations(Current, Cache, Type, Time, IncludeCallback){
         Cursor = Result.nextPageCursor
 
         if (!Cursor || Current != Cache[0]) break
+    }
+
+    if (ReachedEnd){
+        for (let i = 0; i < ToCache.length; i++){
+            AddToCache(IdType, Type, Time, ToCache[i])
+        }
+        SortCache(IdType, Type, Time)
+        TrimCache(IdType, Type, Time)
+        SaveCache(IdType, Type, Time)
     }
 
     return [true, Groups, Transcations]
@@ -336,6 +425,11 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
     }
 
     async function FetchGroupPayouts(){
+        if (Type == "Cancel"){
+            GroupPayoutFetchIteration[0]++
+            return
+        }
+
         if (LastGroupPayoutsTime == Time) return [true, true]
 
         GroupPayoutFetchIteration[0]++
@@ -368,6 +462,11 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
     }
 
     async function FetchPremiumPayouts(){
+        if (Type == "Cancel"){
+            PremiumPayoutFetchIteration[0]++
+            return
+        }
+
         if (LastPremiumPayoutsTime == Time) return [true, true]
 
         PremiumPayoutFetchIteration[0]++
@@ -400,6 +499,12 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
     }
 
     async function FetchSalesPayouts(Type){
+        if (Type == "Cancel"){
+            LastSalesPayoutsType = "Cancel"
+            SalesPayoutFetchIteration[0]++
+            return
+        }
+
         if (LastSalesPayoutsTime == Time && LastSalesPayoutsType == Type) return [true, true]
 
         SalesPayoutFetchIteration[0]++
@@ -487,6 +592,12 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
     }
 
     async function FetchCommissions(Type){
+        if (Type == "Cancel"){
+            LastComissionsType = "Cancel"
+            CommissionsFetchIteration[0]++
+            return
+        }
+
         if (LastCommissionsTime == Time && LastComissionsType == Type) return [true, true]
 
         CommissionsFetchIteration[0]++
@@ -575,7 +686,7 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
 
             CreateDetailedSummary(await WaitForTableRow(TBody, "Group Payouts"), FetchGroupPayouts, CanFetchGroupPayouts)
             CreateDetailedSummary(await WaitForTableRow(TBody, "Premium Payouts"), FetchPremiumPayouts, CanFetchPremiumPayouts)
-            CreateDetailedSummary(await WaitForTableRow(TBody, "Sales of Goods"), FetchSalesPayouts, CanFetchSalesPayouts, ["Place", "Asset", "User"])
+            CreateDetailedSummary(await WaitForTableRow(TBody, "Sales of Goods"), FetchSalesPayouts, CanFetchSalesPayouts, ["Place", "Asset", "User"], SalesPayoutFetchIteration, SalesOfGoodsCSV, ParseCSVSalesOfGoods)
             CreateDetailedSummary(await WaitForTableRow(TBody, "Commissions"), FetchCommissions, CanFetchCommissions, ["Asset", "User"])
         })
     } else {
@@ -585,7 +696,7 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
                 const Table = await WaitForClassPath(Child, "table section-content")
                 const TBody = await WaitForTagPath(Table, "tbody")
 
-                CreateDetailedSummary(await WaitForTableRow(TBody, "Sale of Goods"), FetchSalesPayouts, CanFetchSalesPayouts, ["Asset", "User"])
+                CreateDetailedSummary(await WaitForTableRow(TBody, "Sale of Goods"), FetchSalesPayouts, CanFetchSalesPayouts, ["Place", "Asset", "User"], SalesPayoutFetchIteration, SalesOfGoodsCSV, ParseCSVSalesOfGoods)
             })
         })
     }

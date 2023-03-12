@@ -337,9 +337,15 @@
             "matches": [
                 "*://*.roblox.com/transactions"
             ],
+            "css": [
+                "css/transactions.css"
+            ],
             "js": [
                 "js/pages/playtime/createelements.js",
-                "js/pages/economy/summary.js"
+                "js/pages/economy/csvtypeparser.js",
+                "js/pages/economy/csvtojson.js",
+                "js/pages/economy/summary.js",
+                "js/pages/economy/summarycache.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
@@ -348,9 +354,15 @@
             "matches": [
                 "*://*.roblox.com/groups/configure*"
             ],
+            "css": [
+                "css/transactions.css"
+            ],
             "js": [
                 "js/pages/playtime/createelements.js",
-                "js/pages/economy/summary.js"
+                "js/pages/economy/csvtypeparser.js",
+                "js/pages/economy/csvtojson.js",
+                "js/pages/economy/summary.js",
+                "js/pages/economy/summarycache.js"
             ],
             "run_at": "document_idle",
             "all_frames": true
