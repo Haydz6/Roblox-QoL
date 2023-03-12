@@ -21,6 +21,16 @@ let LastJobId = ""
 
 let UpdateInt = 3
 
+async function GetUniverseIdFromPlaceId(PlaceId){
+    const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/multiget-place-details?placeIds=${PlaceId}`, "GET", undefined, undefined, true)
+
+    if (!Success){
+        return 0
+    }
+
+    return Result?.[0]?.universeId || 0
+}
+
 async function UpdateRecentServer(){
     const [Success, Presence] = await GetCurrentGame()
     await GetAllRecentServers()
@@ -48,7 +58,15 @@ async function UpdateRecentServer(){
 
     if (UpdateInt >= 3){
         UpdateInt = 0
-        RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: Presence.userPresenceType === 2, InStudio: Presence.userPresenceType === 3, UniverseId: Presence.universeId || 0}))
+        const InGame = Presence.userPresenceType === 2
+        const InStudio = Presence.userPresenceType === 3
+        let UniverseId = Presence.universeId
+
+        if ((InGame || InStudio) && !UniverseId){
+            UniverseId = await GetUniverseIdFromPlaceId(Presence.placeId) || 0
+        }
+
+        RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId}))
     }
 
     LastRecentServerSuccess = Date.now()
