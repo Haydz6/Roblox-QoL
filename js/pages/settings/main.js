@@ -36,10 +36,10 @@ const Settings = {
             Title: "Add Download Button to version history",
             Description: "Adds a download button to place version history."
         },
-        // DetailedGroupTranscationSummary: {
-        //     Title: "Transaction Summary Source",
-        //     Description: "Shows source of income on transaction and group summary page"
-        // },
+        DetailedGroupTranscationSummary: {
+            Title: "Transaction Summary Source",
+            Description: "Shows source of income on transaction and group summary page"
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"
