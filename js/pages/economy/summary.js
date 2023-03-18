@@ -77,6 +77,7 @@ async function GetTypeAndIdFromURL(){
 async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions, Cache, FileUpload, FileTypeParser){
     const Table = TableRow.children[0]
     const RobuxContainer = TableRow.children[1]
+    const RobuxLabel = RobuxContainer.children[2]
 
     const Button = document.createElement("a")
 
@@ -89,12 +90,15 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions,
     Button.appendChild(Arrow)
 
     const PayoutList = document.createElement("div")
-    let UploadContainer, UploadButton
+    let UploadContainer, UploadButton, UploadLabel
 
     if (FileUpload){
-        [UploadContainer, UploadButton] = CreateCSVUpload()
+        [UploadContainer, UploadButton, UploadLabel] = CreateCSVUpload()
         UploadContainer.style.display = "none"
     }
+
+    const ImposterTextLabel = document.createElement("span")
+    RobuxContainer.insertBefore(ImposterTextLabel, RobuxLabel)
 
     Table.appendChild(Button)
 
@@ -119,6 +123,10 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions,
         const Spinner = document.createElement("div")
         Spinner.className = "spinner spinner-default"
         PayoutList.style.paddingTop = "10px"
+
+        ImposterTextLabel.style.display = "none"
+        RobuxLabel.style["text-decoration"] = ""
+        RobuxLabel.style["margin-left"] = ""
 
         PayoutList.appendChild(Spinner)
 
@@ -161,6 +169,17 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions,
                 })
             }
 
+            let TotalRobux = 0
+            for (let i = 0; i < Items.length; i++){
+                TotalRobux += Items[i].Robux
+            }
+            ImposterTextLabel.innerText = numberWithCommas(TotalRobux)
+            ImposterTextLabel.style.display = ""
+
+            RobuxLabel.style["text-decoration"] = "line-through"
+            RobuxLabel.style["margin-left"] = "8px"
+
+            HasLoaded = true
             Spinner.remove()
         }
 
@@ -193,7 +212,7 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions,
 
     ListenToTimeChange.push(function(){
         HasFetched = false
-        if (Visible) Get()
+        if (Visible && !CSVFile) Get()
     })
 
     if (DropdownOptions){
@@ -230,13 +249,35 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions,
         Table.appendChild(DropdownContainer)
     }
     if (UploadContainer){
+        UploadLabel.addEventListener("click", async function(e){
+            if (CSVFile){
+                CSVFile = null
+                UploadButton.value = null
+
+                HasFetched = false
+                UploadLabel.innerText = "Upload CSV Instead"
+                e.stopImmediatePropagation()
+
+                await sleep(10)
+                UploadLabel.setAttribute("for", "uploadCSV")
+                Get()
+            }
+        })
+
         UploadButton.addEventListener("change", function(e){
+            const TargetFile = e.target.files[0]
+            if (!TargetFile) return
+
             let reader = new FileReader()
             reader.onload = async function(File){
                 CSVFile = File.target.result
+                HasFetched = false
+                UploadLabel.removeAttribute("for")
+                UploadLabel.innerText = "Remove CSV"
+
                 Get(FileUpload(CSVFile, CurrentOption))
             }
-            reader.readAsText(e.target.files[0]);
+            reader.readAsText(TargetFile)
         })
 
         Table.appendChild(UploadContainer)

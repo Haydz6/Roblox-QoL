@@ -103,7 +103,6 @@ async function AddPlaceIds(Places){
             
             const Universes = Lookup[Game.id]
             for (let o = 0; o < Universes.length; o++){
-                console.log(Universes[o])
                 Universes[o].Name = Game.name
                 Universes[o].details.place.name = Game.name
                 Universes[o].details.place.placeId = Game.rootPlaceId
@@ -175,7 +174,7 @@ async function SalesOfGoodsCSV(CSV, Type){
         const Info = JSON[i]
         
         //if (!ItemLookup[InfoToString(Info)]){
-        const Item = {Type: Info.AssetType == "Game Pass" && "GamePass" || Info.AssetType == "Developer Product" && "DeveloperProduct" || Info.AssetType == "Private Server Product" && "Place" || "Asset", Name: Info.AssetName, UniverseId: Info.UniverseId, Robux: 0, Id: Info.AssetId, details: {place: {name: Info.Universe, placeId: 0, UniverseId: Info.UniverseId}}, currency: {amount: Info.Profit, type: "Robux"}, agent: {id: Info.UserId, type: "User", name: "Terminated User"}}
+        const Item = {Type: Info.AssetType == "Game Pass" && "GamePass" || Info.AssetType == "Developer Product" && "DeveloperProduct" || Info.AssetType == "Private Server Product" && "Place" || "Asset", Name: Info.AssetName, UniverseId: Info.UniverseId, Robux: 0, Id: Info.AssetId, details: {place: {name: Info.Universe, placeId: 0, universeId: Info.UniverseId}}, currency: {amount: Info.Profit, type: "Robux"}, agent: {id: Info.UserId, type: "User", name: "Terminated User"}}
         Item.details.type = Item.Type
         Item.details.id = Item.Id
         Item.details.name = Item.Name

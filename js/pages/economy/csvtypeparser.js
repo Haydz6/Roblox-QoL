@@ -20,6 +20,13 @@ async function ParseCSVSalesOfGoods(AllItems, Type, CurrentCache, Cache){
                 if (!IsPlace && Info.details.id == null){
                     IsPlace = Info?.details?.place
                 }
+                if (!IsPlace && Type == "Asset" && Info?.details?.type == "Place"){
+                    IsPlace = Info?.details?.place
+                }
+
+                if (Type == "Place" && isNaN(Info?.details?.place?.universeId)){
+                    continue
+                }
 
                 const Asset = {Type: IsPlace && "Place" || Info?.details?.type == "GamePass" && "GamePass" || Info?.details?.type == "DeveloperProduct" && "DeveloperProduct" || "Asset", Name: IsPlace?.name && `${IsPlace.name}${Type == "Asset" && " (Private Servers)" || ""}` || Info.details.name, Id: Id, Robux: 0, Place: IsPlace}
                 
@@ -55,8 +62,6 @@ async function ParseCSVSalesOfGoods(AllItems, Type, CurrentCache, Cache){
 
     if (CurrentCache[0] != Cache) return
     await AddIcons(Places)
-
-    console.log(Places)
 
     return Places
 }
