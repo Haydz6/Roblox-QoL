@@ -134,7 +134,7 @@ async function AddAssetInfo(){
                 const SalesField = CreateAssetItemFieldContainer("Sales", numberWithCommas(Type == "Gamepass" && Result.gamePassSalesData.totalSales || Result.Sales))
                 if (Type == "Gamepass" || Type == "Library") SalesField.className = "clearfix item-field-container"
 
-                const Index = (Type == "Gamepass" || Type == "Library") && (CreationEnabled && 3 || 2) || (CreationEnabled && 2 || 1)
+                const Index = (Type == "Gamepass" || Type == "Library") && 3 || (CreationEnabled && 2 || 1)
                 ItemDetails.insertBefore(SalesField, ItemDetails.children[Index])
             }
         })

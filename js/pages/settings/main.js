@@ -217,8 +217,8 @@ const Settings = {
             Description: "Shows the amount of sales on assets you manage/created."
         },
         AddCreationDate: {
-            Title: "Show Creation Date",
-            Description: "Shows the creation date of asset."
+            Title: "Show Created/Updated Date",
+            Description: "Shows the created and updated date of asset."
         },
         ShowUSDOnAsset: {
             Title: "Show currency price",
