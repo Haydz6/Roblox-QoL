@@ -15,7 +15,7 @@ function CreateAssetButton(URL){
 
 function CreateItemField(Title, Value, URL){
     const Container = document.createElement("div")
-    Container.className = "clearfix item-field-container"
+    Container.className = "clearfix item-info-row-container"
 
     const CurrencyIcon = document.createElement("span")
     CurrencyIcon.className = "icon icon-rolimons-20x20"
@@ -65,7 +65,7 @@ function CreateCategoryIcon(Name, URL){
 
 function CreateAssetItemFieldContainer(Title, Content){
     const Container = document.createElement("div")
-    Container.className = "clearfix item-field-container"
+    Container.className = "clearfix item-info-row-container"
 
     const Header = document.createElement("div")
     Header.className = "font-header-1 text-subheader text-label text-overflow field-label"

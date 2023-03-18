@@ -222,6 +222,10 @@ function ClearAllChildren(Element){
 
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
+function isNumeric(value) {
+  return /^-?\d+$/.test(value);
+}
+
 function SecondsToLengthShort(Seconds){
   const h = Math.floor(Seconds / 3600)
   const m = Math.floor(Seconds % 3600 / 60)
