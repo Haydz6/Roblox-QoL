@@ -79,7 +79,8 @@ async function ConvertExtraToOutfit(ExtraId){
 async function NewOutfitElementAdded(OutfitElement){
     await sleep(1000)
 
-    OutfitElement.style = "padding-left:0px; padding-right:0px;"
+    // OutfitElement.style["padding-left"] = "0px"
+    // OutfitElement.style["padding-right"] = "0px"
 
     const OutfitType = GetOutfitTypeFromElement(OutfitElement)
     const SettingsElement = OutfitElement.getElementsByTagName("div")[0].getElementsByClassName("item-card-container remove-panel outfit-card")[0].getElementsByClassName("item-card-caption")[0].getElementsByClassName("item-card-menu ng-scope ng-isolate-scope")[0]
@@ -150,7 +151,7 @@ async function NewOutfitElementAdded(OutfitElement){
         FinalConvertButton.removeAttribute("disabled")
     })
 
-    SettingsElement.style = "padding-top:10px"
+    SettingsElement.style["padding-top"] = "10px"
 
     SettingsElement.insertBefore(ConvertButton, SettingsElement.lastChild)
 }

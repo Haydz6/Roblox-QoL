@@ -83,6 +83,22 @@ async function WaitForTag(Tag){
   return Element
 }
 
+async function FindFromAttribute(AttributeName, AttributeValue){
+  let Element
+  
+  while (true){
+    Element = document.querySelector(`[${AttributeName}="${AttributeValue}"]`)
+
+    if (Element != undefined){
+      break
+    }
+
+    await sleep(50)
+  }
+
+  return Element
+}
+
 async function WaitForClassPath(Element, ...Paths){
   let LastElement = Element
 

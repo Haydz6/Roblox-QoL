@@ -38,7 +38,11 @@ const Settings = {
         },
         DetailedGroupTranscationSummary: {
             Title: "Transaction Summary Source",
-            Description: "Shows source of income on transaction and group summary page"
+            Description: "Shows source of income on transaction and group summary page."
+        },
+        OutfitSearchbar: {
+            Title: "Outfit Searchbar",
+            Description: "Adds a search bar to your avatar outfits."
         },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
