@@ -466,11 +466,6 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
     }
 
     async function FetchGroupPayouts(){
-        if (Type == "Cancel"){
-            GroupPayoutFetchIteration[0]++
-            return
-        }
-
         if (LastGroupPayoutsTime == Time) return [true, true]
 
         GroupPayoutFetchIteration[0]++
@@ -503,11 +498,6 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
     }
 
     async function FetchPremiumPayouts(){
-        if (Type == "Cancel"){
-            PremiumPayoutFetchIteration[0]++
-            return
-        }
-
         if (LastPremiumPayoutsTime == Time) return [true, true]
 
         PremiumPayoutFetchIteration[0]++
@@ -633,12 +623,6 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
     }
 
     async function FetchCommissions(Type){
-        if (Type == "Cancel"){
-            LastComissionsType = "Cancel"
-            CommissionsFetchIteration[0]++
-            return
-        }
-
         if (LastCommissionsTime == Time && LastComissionsType == Type) return [true, true]
 
         CommissionsFetchIteration[0]++
