@@ -1,3 +1,24 @@
+let PlaytimeBatchRequests = []
+
+function RequestPlaytimeBatchFetch(Type){
+    return new Promise(async(resolve, reject) => {
+        PlaytimeBatchRequests.push(resolve)
+
+        if (PlaytimeBatchRequests.length >= 2) {
+            function ResolveAll(Result){
+                for (let i = 0; i < PlaytimeBatchRequests.length; i++){
+                    PlaytimeBatchRequests[i](Result)
+                }
+            }
+
+            const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?time=all&type=Play,Edit&show=Some`, "GET")
+
+            if (!Success) ResolveAll([Success, Games])
+            else ResolveAll([Success, Games[Type]])
+        }
+    })
+}
+
 async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
     const [ContainerHeader, SeeAllButton] = CreateContainerHeader(Name, `https://roblox.com/discover#/sortName?sort=Playtime&type=${Type}`)
     if (!ShowIfEmpty) ContainerHeader.style = "display: none;"
@@ -12,6 +33,7 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
     ContainerHeader.appendChild(DropdownList)
 
     let FetchInt = [0]
+    let FirstRequest = true
 
     async function FetchGames(Params){
         FetchInt[0]++
@@ -22,7 +44,14 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
         const Spinner = CreateSpinner()
         GameCarousel.appendChild(Spinner)
 
-        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}&show=Some`, "GET")
+        let Success, Games
+        if (FirstRequest){
+            FirstRequest = false
+            [Success, Games] = await RequestPlaytimeBatchFetch(Type)
+        } else [
+            [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}&show=Some`, "GET")
+        ]
+
         if (Params === "time=all" && !ShowIfEmpty && Games.length === 0){
             ContainerHeader.remove()
             GameCarousel.remove()
