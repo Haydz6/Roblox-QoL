@@ -22,7 +22,7 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
         const Spinner = CreateSpinner()
         GameCarousel.appendChild(Spinner)
 
-        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}`, "GET")
+        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}&show=Some`, "GET")
         if (Params === "time=all" && !ShowIfEmpty && Games.length === 0){
             ContainerHeader.remove()
             GameCarousel.remove()
