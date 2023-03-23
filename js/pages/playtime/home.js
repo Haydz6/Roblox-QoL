@@ -2,19 +2,22 @@ let PlaytimeBatchRequests = []
 
 function RequestPlaytimeBatchFetch(Type){
     return new Promise(async(resolve, reject) => {
-        PlaytimeBatchRequests.push(resolve)
+        PlaytimeBatchRequests.push({resolve: resolve, Type: Type})
 
         if (PlaytimeBatchRequests.length >= 2) {
-            function ResolveAll(Result){
-                for (let i = 0; i < PlaytimeBatchRequests.length; i++){
-                    PlaytimeBatchRequests[i](Result)
-                }
-            }
-
             const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?time=all&type=Play,Edit&show=Some`, "GET")
 
-            if (!Success) ResolveAll([Success, Games])
-            else ResolveAll([Success, Games[Type]])
+            if (!Success) {
+                for (let i = 0; i < PlaytimeBatchRequests.length; i++){
+                    PlaytimeBatchRequests[i].resolve([Success, Games])
+                }
+            }
+            else {
+                for (let i = 0; i < PlaytimeBatchRequests.length; i++){
+                    const Request = PlaytimeBatchRequests[i]
+                    Request.resolve([Success, Games[Request.Type]])
+                }
+            }
         }
     })
 }
@@ -47,9 +50,9 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
         let Success, Games
         if (FirstRequest){
             FirstRequest = false
-            [Success, Games] = await RequestPlaytimeBatchFetch(Type)
+            ;([Success, Games] = await RequestPlaytimeBatchFetch(Type))
         } else [
-            [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}&show=Some`, "GET")
+            ([Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}&show=Some`, "GET"))
         ]
 
         if (Params === "time=all" && !ShowIfEmpty && Games.length === 0){
