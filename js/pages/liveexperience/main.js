@@ -28,14 +28,16 @@ function GetAlphaTween(b, e, i){
 }
 
 function TweenLabel(Label, Start, End, Length, ModifierFunction, OnlyGoesUp){
-    if (OnlyGoesUp && Start > End){
+    if ((OnlyGoesUp && Start > End) || Start == End){
         return new Promise((resolve) => {
             resolve()
         })
     }
 
     return TweenNumber(Start, End, Length, function(i){
-        Label.innerText = ModifierFunction && ModifierFunction(i) || i
+        const Result = ModifierFunction && ModifierFunction(i) || i
+        Label.innerText = Result
+        Label.title = Result
     })
 }
 
@@ -91,6 +93,10 @@ async function RunLiveStats(){
                     ActiveValue.innerText = numberWithCommas(Info.Playing)
                     FavouritesValue.innerText = numberWithCommas(Info.Favourites)
                     VisitsValue.innerText = numberWithCommas(Info.Visits)
+                    
+                    ActiveValue.title = numberWithCommas(Info.Playing)
+                    FavouritesValue.title = numberWithCommas(Info.Favourites)
+                    VisitsValue.title = numberWithCommas(Info.Visits)
 
                     await sleep(5*1000)
                 }
