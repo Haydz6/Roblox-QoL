@@ -1,6 +1,7 @@
 function CreateDownloadButton(){
     const Button = document.createElement("button")
     Button.className = "MuiButtonBase-root MuiButton-root jss1469 jss4591 MuiButton-text jss1472 jss4594 MuiButton-textSecondary MuiButton-textSizeSmall MuiButton-sizeSmall"
+    Button.style["overflow-x"] = "visible"
 
     const ButtonLabel = document.createElement("span")
     ButtonLabel.className = "MuiButton-label"
