@@ -97,16 +97,14 @@ async function RunLiveStats(){
                     ActiveValue.title = numberWithCommas(Info.Playing)
                     FavouritesValue.title = numberWithCommas(Info.Favourites)
                     VisitsValue.title = numberWithCommas(Info.Visits)
-
-                    await sleep(5*1000)
                 }
 
                 LastActive = Info.Playing
                 LastFavourites = Info.Favourites
                 LastVisits = Info.Visits
-            } else {
-                await sleep(5*1000)
             }
+
+            await sleep(5*1000)
         }
     })
 }
@@ -144,16 +142,14 @@ async function RunLiveLikes(){
                     DislikesLabel.innerText = (Info.Dislikes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Dislikes)
                     LikesLabel.innerText = (Info.Likes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Likes)
                     VoteBar.style = `width: ${Info.Ratio}%;`
-
-                    await sleep(5*1000)
                 }
 
                 LastLikes = Info.Likes
                 LastDislikes = Info.Dislikes
                 LastRatio = Info.Ratio
-            } else {
-                await sleep(5*1000)
             }
+
+            await sleep(5*1000)
         }
     })
 }
