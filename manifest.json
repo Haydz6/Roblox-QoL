@@ -314,7 +314,7 @@
         },
         {
             "matches": [
-                "*://create.roblox.com/dashboard/creations/experiences/*/places/*"
+                "*://create.roblox.com/dashboard*"
             ],
             "js": [
                 "js/pages/generalfixes/versionhistory/download.js",
