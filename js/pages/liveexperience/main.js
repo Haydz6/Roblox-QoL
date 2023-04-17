@@ -29,7 +29,8 @@ function GetAlphaTween(b, e, i){
 
 function TweenLabel(Label, Start, End, Length, ModifierFunction, OnlyGoesUp){
     if ((OnlyGoesUp && Start > End) || Start == End){
-        return new Promise((resolve) => {
+        return new Promise(async(resolve) => {
+            await sleep(5*1000)
             resolve()
         })
     }
@@ -97,14 +98,14 @@ async function RunLiveStats(){
                     ActiveValue.title = numberWithCommas(Info.Playing)
                     FavouritesValue.title = numberWithCommas(Info.Favourites)
                     VisitsValue.title = numberWithCommas(Info.Visits)
+
+                    await sleep(5*1000)
                 }
 
                 LastActive = Info.Playing
                 LastFavourites = Info.Favourites
                 LastVisits = Info.Visits
             }
-
-            await sleep(5*1000)
         }
     })
 }
@@ -142,14 +143,14 @@ async function RunLiveLikes(){
                     DislikesLabel.innerText = (Info.Dislikes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Dislikes)
                     LikesLabel.innerText = (Info.Likes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Likes)
                     VoteBar.style = `width: ${Info.Ratio}%;`
+
+                    await sleep(5*1000)
                 }
 
                 LastLikes = Info.Likes
                 LastDislikes = Info.Dislikes
                 LastRatio = Info.Ratio
             }
-
-            await sleep(5*1000)
         }
     })
 }
