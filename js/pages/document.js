@@ -366,8 +366,10 @@ function AbbreviateNumber(number, decPlaces, noPlus){
 function ChildAdded(Node, SendInitial, Callback){
   if (SendInitial){
     const children = Node.children
-    for (let i = 0; i < children.length; i++){
-      Callback(children[i])
+    if (children){
+      for (let i = 0; i < children.length; i++){
+        Callback(children[i])
+      }
     }
   }
 

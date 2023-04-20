@@ -333,8 +333,8 @@ async function HideOriginalSettingButtonActive(){
 function HandleTabChange(SettingsButtonList, QOLContainer){
     const children = SettingsButtonList.children;
     for (let i = 0; i < children.length; i++) {
-        children[i].getElementsByTagName("a")[0].addEventListener("click", function(){
-            window.location.search = ""
+        children[i].getElementsByTagName("a")[0]?.addEventListener("click", function(){
+            if (Child.href) window.location.search = ""
 
             QOLContainer.className = "menu-option ng-scope"
         })
@@ -352,9 +352,12 @@ async function Run(){
     }
 
     WaitForId("vertical-menu").then(function(Menu){
-        ChildAdded(Menu, true, function(Button){
-            const Child = Button.children[0]
-           Child.href = Child.href.replaceAll("?tab=robloxqol", "")
+        ChildAdded(Menu, true, async function(Button){
+            ChildAdded(Button, true, function(Child){
+                if (Child){
+                    Child.href = Child.href.replaceAll("?tab=robloxqol", "")
+                }
+            })
         })
     })
 
