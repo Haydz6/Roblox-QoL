@@ -1,4 +1,5 @@
 let KnownSessions
+let IPFailedSessions = {}
 const SessionButtonNotifications = {}
 const UsedNotificationIds = {}
 
@@ -123,6 +124,10 @@ async function CheckForNewSessions(){
 
         //if (Session.isCurrentSession) CurrentIP = Session.lastAccessedIp
     }
+    
+    if (CurrentIP){
+        IPFailedSessions = {}
+    }
 
     KnownSessions = NewKnownSessions
     SaveKnownSessions()
@@ -150,6 +155,7 @@ async function CheckForNewSessions(){
                 continue
             }
 
+            let ShouldNotify = IPFailedSessions[Session.token] != true
             if (!SameIP && DisallowOtherIPs){
                 if (CurrentIP){
                     LogoutSession(Session, true)
@@ -157,9 +163,11 @@ async function CheckForNewSessions(){
                     continue
                 } else {
                     delete KnownSessions[Session.token]
+                    IPFailedSessions[Session.token] = true
                     SaveKnownSessions()
                 }
             }
+            if (!ShouldNotify) continue
 
             const Location = GetLocationFromSession(Session)
 
