@@ -154,4 +154,4 @@ chrome.notifications.onClosed.addListener(function(NotificationId, byUser){
 })
 
 CheckForNewSessions()
-setInterval(CheckForNewSessions, 10*1000)
+setInterval(CheckForNewSessions, 5*1000)

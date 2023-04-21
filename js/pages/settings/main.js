@@ -254,7 +254,7 @@ const Settings = {
         },
         DisallowOtherIPs: {
             Title: "Disallow other IPs",
-            Description: "If a session is logged in from another/unknown IP, it will automatically log it out (Does not affect existing sessions)\nIf you become locked out while away from your device from this setting, use forget your password to regain access."
+            Description: "If a session is first logged in from another/unknown IP, it will automatically log it out (Does not affect existing sessions)\nIf you become locked out while away from your device from this setting, use forget your password to regain access."
         }
     }
 }
