@@ -242,6 +242,16 @@ const Settings = {
             Title: "Purchased Games Fix",
             Description: "Fixes the purchased games option in your inventory."
         },
+    },
+    Security: {
+        NewLoginNotifier: {
+            Title: "Notification on new login",
+            Description: "Sends notification to browser when a new login is detected. It includes the location, os, browser and IP of the login."
+        },
+        NewLoginNotifierTTS: {
+            Title: "TTS Notification on new login",
+            Description: "Uses text to speech to say location, os and browser."
+        }
     }
 }
 
@@ -251,39 +261,50 @@ function IsQOLSettingsOpened(){
     return urlParams.get("tab") === "robloxqol"
 }
 
+async function CreateSpecificSettingsSection(OptionsList, title, settings){
+    let Title
+
+    if (typeof(title) == "string"){
+        Title = CreateSectionTitle(title)
+        OptionsList.appendChild(Title)
+    } else {
+        Title = title
+    }
+
+    let NextIndex = 1
+
+    for (const [feature, info] of Object.entries(settings)){
+        let Index = NextIndex
+        NextIndex++
+        new Promise(async() => {
+            let Section
+            const FeatureEnabled = await IsFeatureEnabled(feature)
+
+            if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, info.Middleman)
+            else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, function(NewValue){
+                SetFeatureEnabled(feature, NewValue)
+            })
+            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled)
+
+            let TitleIndex = 0
+            let OptionsChildren = OptionsList.children
+
+            for (let i = 0; i < OptionsChildren.length; i++){
+                if (OptionsChildren[i] == Title){
+                    TitleIndex = i
+                    break
+                }
+            }
+
+            OptionsList.insertBefore(Section, OptionsList.children[TitleIndex+Index])
+        })
+    }
+}
+
 async function CreateSettingsSection(OptionsList){
     for (const [title, settings] of Object.entries(Settings)){
-        const Title = CreateSectionTitle(title)
-        OptionsList.appendChild(Title)
-
-        let NextIndex = 1
-
-        for (const [feature, info] of Object.entries(settings)){
-            let Index = NextIndex
-            NextIndex++
-            new Promise(async() => {
-                let Section
-                const FeatureEnabled = await IsFeatureEnabled(feature)
-
-                if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, info.Middleman)
-                else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, function(NewValue){
-                    SetFeatureEnabled(feature, NewValue)
-                })
-                else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled)
-
-                let TitleIndex = 0
-                let OptionsChildren = OptionsList.children
-
-                for (let i = 0; i < OptionsChildren.length; i++){
-                    if (OptionsChildren[i] == Title){
-                        TitleIndex = i
-                        break
-                    }
-                }
-
-                OptionsList.insertBefore(Section, OptionsList.children[TitleIndex+Index])
-            })
-        }
+        if (title == "Security") continue
+        CreateSpecificSettingsSection(OptionsList, title, settings)
     }
 }
 
@@ -321,6 +342,8 @@ function CreateSignoutOption(OptionsList){
 function CreateSecuritySection(OptionsList){
     const Title = CreateSectionTitle("Security")
     OptionsList.appendChild(Title)
+
+    CreateSpecificSettingsSection(OptionsList, Title, Settings.Security)
 
     CreateSignoutOption(OptionsList)
 }
