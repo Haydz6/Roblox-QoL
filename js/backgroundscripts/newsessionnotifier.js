@@ -90,6 +90,11 @@ async function LogoutSession(Session, TTS){
     }
 }
 
+async function FetchCurrentIP(){
+    const [Success, Result] = await RequestFunc("http://ip-api.com/json", "GET")
+    return Success && Result.query
+}
+
 async function CheckForNewSessions(){
     const Enabled = await IsFeatureEnabled("NewLoginNotifier")
     if (!Enabled) return
@@ -104,8 +109,10 @@ async function CheckForNewSessions(){
     const NewKnownSessions = {}
 
     const Sessions = Result.sessions
-    let CurrentIP //We should be getting current IP from external web request to get true device ip
+    let CurrentIP = await FetchCurrentIP() //We should be getting current IP from external web request to get true device ip
     //We should also ignore isCurrentSession as that will not help when a user gets their cookie stolen instead
+    //Decided not to ignore isCurrentSession UNLESS it is a strict disallow check. If strict disallow is on, it will check ALL sessions and if own session does not match own IP, it logs it out which invalidates our cookie.
+    //Add failsafe incase we cannot get current ip.
 
     for (let i = 0; i < Sessions.length; i++){
         const Session = Sessions[i]
@@ -114,11 +121,22 @@ async function CheckForNewSessions(){
         }
         NewKnownSessions[Session.token] = true
 
-        if (Session.isCurrentSession) CurrentIP = Session.lastAccessedIp
+        //if (Session.isCurrentSession) CurrentIP = Session.lastAccessedIp
     }
 
     KnownSessions = NewKnownSessions
     SaveKnownSessions()
+
+    const StrictlyDisallowOtherIPs = await IsFeatureEnabled("StrictlyDisallowOtherIPs")
+    if (StrictlyDisallowOtherIPs && CurrentIP){
+        for (let i = 0; i < Sessions.length; i++){
+            const Session = Sessions[i]
+            const SameIP = CurrentIP == Session.lastAccessedIp
+
+            if (!SameIP) LogoutSession(Session, true)
+        }
+    }
+
     if (!IsFirstScan && NewSessions.length > 0){
         const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs")
         const IgnoreSessionsFromSameIP = await IsFeatureEnabled("IgnoreSessionsFromSameIP")
@@ -133,9 +151,14 @@ async function CheckForNewSessions(){
             }
 
             if (!SameIP && DisallowOtherIPs){
-                LogoutSession(Session, true)
-                await sleep(500)
-                continue
+                if (CurrentIP){
+                    LogoutSession(Session, true)
+                    await sleep(500)
+                    continue
+                } else {
+                    delete KnownSessions[Session.token]
+                    SaveKnownSessions()
+                }
             }
 
             const Location = GetLocationFromSession(Session)
