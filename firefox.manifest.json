@@ -32,7 +32,7 @@
         "js/pages/trades/injecttrade.js"
     ],
     "background": {
-        "scripts": ["js/background.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/newsessionnotifier.js"],
+        "scripts": ["js/background.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/newsessionnotifier.js"],
         "persistent": true
     },
     "content_scripts": [

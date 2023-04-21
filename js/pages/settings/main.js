@@ -279,12 +279,13 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
         new Promise(async() => {
             let Section
             const FeatureEnabled = await IsFeatureEnabled(feature)
+            const FeatureKilled = await IsFeatureKilled(feature)
 
-            if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, info.Middleman)
-            else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, function(NewValue){
+            if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, FeatureKilled, info.Middleman)
+            else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, FeatureKilled, function(NewValue){
                 SetFeatureEnabled(feature, NewValue)
             })
-            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled)
+            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled)
 
             let TitleIndex = 0
             let OptionsChildren = OptionsList.children

@@ -31,8 +31,9 @@ function CreateSectionSettingsTemplate(Option, Title, Description){
 
     Section.appendChild(TitleLabel)
 
+    let Divider
     if (Description !== ""){
-        const Divider = document.createElement("div")
+        Divider = document.createElement("div")
         Divider.className = "rbx-divider"
 
         const DescriptionDiv = document.createElement("div")
@@ -47,16 +48,36 @@ function CreateSectionSettingsTemplate(Option, Title, Description){
         Section.append(Divider, DescriptionDiv)
     }
 
-    return Section
+    return [Section, Divider]
 }
 
-function CreateSectionSettingsToggable(Option, Title, Description, Enabled){
-    const Section = CreateSectionSettingsTemplate(Option, Title, Description)
+function CreateFeatureDisabled(){
+    const Container = document.createElement("div")
+    Container.style = "display: flex;"
+
+    const Icon = document.createElement("span")
+    Icon.className = "icon-warning"
+    
+    const Text = document.createElement("p")
+    Text.style = "color: #e44950;"
+    Text.innerText = "This feature has been disabled"
+
+    Container.append(Icon, Text)
+
+    return Container
+}
+
+function CreateSectionSettingsToggable(Option, Title, Description, Enabled, FeatureKilled){
+    const [Section, Divider] = CreateSectionSettingsTemplate(Option, Title, Description)
 
     const Slider = document.createElement("button")
     Slider.id = `${Option}-toggle`
     Slider.className = `btn-toggle receiver-destination-type-toggle ${Enabled && "on" || "off"}`
     Slider.setAttribute("role", "switch")
+    if (FeatureKilled){
+        Slider.setAttribute("disabled", "disabled")
+        Section.insertBefore(CreateFeatureDisabled(), Divider)
+    }
 
     Slider.addEventListener("click", function(){
         Enabled = !Enabled
@@ -84,8 +105,8 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled){
     return Section
 }
 
-function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, Value, Middleman){
-    const Section = CreateSectionSettingsTemplate(Option, Title, Description)
+function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, Value, FeatureKilled, Middleman){
+    const [Section, Divider] = CreateSectionSettingsTemplate(Option, Title, Description)
 
     const Input = document.createElement("input")
     Input.className = "form-control input-field new-input-field"
@@ -97,6 +118,10 @@ function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, 
     Input.placeholder = Placeholder
     Input.style = "width: 80px; float: right; height: 33px;"
     Input.value = Value
+    if (FeatureKilled){
+        Input.setAttribute("disabled", "disabled")
+        Section.insertBefore(CreateFeatureDisabled(), Divider)
+    }
 
     async function FocusLost(){
         const Result = Middleman(Option, await IsFeatureEnabled(Option), Input.value)
@@ -113,14 +138,18 @@ function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, 
     return Section
 }
 
-function CreateSectionSettingsDropdown(Option, Title, Description, Options, Value, Update){
-    const Section = CreateSectionSettingsTemplate(Option, Title, Description)
+function CreateSectionSettingsDropdown(Option, Title, Description, Options, Value, FeatureKilled, Update){
+    const [Section, Divider] = CreateSectionSettingsTemplate(Option, Title, Description)
 
     const Dropdown = document.createElement("div")
     Dropdown.style = "max-width: 250px; float: right; margin-top: -5px;"
     
     const Selections = document.createElement("select")
     Selections.className = "input-field select-option rbx-select"
+    if (FeatureKilled){
+        Selections.setAttribute("disabled", "disabled")
+        Section.insertBefore(CreateFeatureDisabled(), Divider)
+    }
 
     for (let i = 0; i < Options.length; i++){
         const Option = document.createElement("option")

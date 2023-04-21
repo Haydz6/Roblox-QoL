@@ -417,8 +417,22 @@ async function FetchAllFeaturesEnabled(){
     }
 }
 
+let KilledFeatures
+async function FetchAllFeaturesKilled(){
+  if (KilledFeatures) return
+  KilledFeatures = await chrome.runtime.sendMessage({type: "getkilledfeatures"})
+}
+
+async function IsFeatureKilled(FeatureName){
+  await FetchAllFeaturesKilled()
+  return KilledFeatures.includes(FeatureName)
+}
+
 async function IsFeatureEnabled(Feature){
     await FetchAllFeaturesEnabled()
+    let IsKilled = await IsFeatureKilled(Feature)
+    if (IsKilled) return false
+
     return EnabledFeatures[Feature]
 }
 

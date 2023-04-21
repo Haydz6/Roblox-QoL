@@ -2,7 +2,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
-const WebServerEndpoints = {Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 
 const ManifestVersion = chrome.runtime.getManifest()["manifest_version"]
 
@@ -256,7 +256,7 @@ function numberWithCommas(x) {
 }
 
 if (ManifestVersion > 2){
-    const Scripts = ["js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"]
+    const Scripts = ["js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js" ,"js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"]
     const FullScriptURLs = []
 
     for (let i = 0; i < Scripts.length; i++){
