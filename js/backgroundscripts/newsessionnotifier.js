@@ -28,15 +28,18 @@ async function CheckForNewSessions(){
     if (!Success) return
 
     const NewSessions = []
+    const NewKnownSessions = {}
+
     const Sessions = Result.sessions
     for (let i = 0; i < Sessions.length; i++){
         const Session = Sessions[i]
         if (!KnownSessions[Session.token]){
             if (!Session.isCurrentSession) NewSessions.push(Session)
-            KnownSessions[Session.token] = true
         }
+        NewKnownSessions[Session.token] = true
     }
 
+    KnownSessions = NewKnownSessions
     SaveKnownSessions()
     if (!IsFirstScan && NewSessions.length > 0){
         const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS")
