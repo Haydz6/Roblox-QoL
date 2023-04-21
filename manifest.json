@@ -133,6 +133,19 @@
         },
         {
             "matches": [
+                "*://*.roblox.com/discover*"
+            ],
+            "css": [
+                "css/playtime.css"
+            ],
+            "js": [
+                "js/pages/generalfixes/fixcontinuecuration.js"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        },
+        {
+            "matches": [
                 "*://*.roblox.com/games/*"
             ],
             "js": [

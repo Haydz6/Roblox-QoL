@@ -100,6 +100,10 @@ async function UpdateRecentServer(){
 
         Servers[Presence.gameId] = {LastPlayed: Math.floor(Date.now()/1000), UserId: UserId, Id: LastJobId}
 
+        new Promise(async() => {
+            RequestFunc(WebServerEndpoints.Playtime+"continue/set", "POST", null, JSON.stringify({UniverseId: Presence.universeId}))
+        })
+
         LastJobId = Presence.gameId
         LastPlaceId = Presence.placeId
 
