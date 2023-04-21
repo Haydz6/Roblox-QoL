@@ -1,26 +1,7 @@
 const AlreadyScannedTrades = {}
 const TradeNotifications = {}
+
 let FirstTradeScans = {Inbound: false, Outbound: false, Completed: false, Inactive: false}
-
-function GenerateNotificationId(Notifications, Length){
-    let Id = ""
-
-    while (true){
-        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-        const charactersLength = characters.length
-        let counter = 0
-
-        while (counter < Length) {
-            Id += characters.charAt(Math.floor(Math.random() * charactersLength))
-            counter += 1
-        }
-
-        if (!Notifications[Id]) break
-        Id = ""
-    }
-
-    return Id
-}
 
 async function GetHeadshotBlobFromUserId(UserId){
     const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserId}&size=60x60&format=Png&isCircular=true`, "GET", undefined, undefined, true)
@@ -156,7 +137,7 @@ async function NotifyNewTrades(Trades, Type){
                 }
             }
 
-            const NotificationId = GenerateNotificationId(TradeNotifications, 50)
+            const NotificationId = GenerateNotificationId(50)
             TradeNotifications[NotificationId] = {type: Type, tradeid: Trade.id, buttons: Buttons}
 
             chrome.notifications.create(NotificationId, {type: "basic", buttons: Buttons, priority: 2, eventTime: Date.now(), iconUrl: await GetHeadshotBlobFromUserId(Trade.user.id), title: Title, contextMessage: ContextMessage, message: `Trader: ${Trade.user.name}\nYour Value: ${Offers.Ours.Valid && numberWithCommas(Offers.Ours.Value) || "???"}\nTheir Value: ${Offers.Other.Valid && numberWithCommas(Offers.Other.Value) || "???"}`})

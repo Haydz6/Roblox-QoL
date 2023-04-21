@@ -184,8 +184,8 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
         if (NewCSRFToken){
             CSRFToken = NewCSRFToken
         }
-  
-        if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
+        
+        if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!" || (Response.headers.get("access-control-expose-headers") || "").includes("X-CSRF-TOKEN")){
             if (ResBody?.Result == "Invalid authentication!"){
                 CachedAuthKey = ""
                 await LocalStorage.remove("AuthKey")
