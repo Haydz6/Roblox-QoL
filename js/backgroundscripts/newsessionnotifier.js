@@ -104,7 +104,8 @@ async function CheckForNewSessions(){
     const NewKnownSessions = {}
 
     const Sessions = Result.sessions
-    let CurrentIP
+    let CurrentIP //We should be getting current IP from external web request to get true device ip
+    //We should also ignore isCurrentSession as that will not help when a user gets their cookie stolen instead
 
     for (let i = 0; i < Sessions.length; i++){
         const Session = Sessions[i]
