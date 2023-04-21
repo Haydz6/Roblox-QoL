@@ -46,7 +46,10 @@ async function IsFeatureKilled(FeatureName){
 }
 
 BindToOnMessage("getkilledfeatures", true, async function(){
-    await FetchKilledFeatures()
+    while (!FeatureKilledStatus){
+        await sleep(100)
+    }
+    
     return FeatureKilledStatus
 })
 
