@@ -58,6 +58,19 @@ function GetLocationFromSession(Session){
     return Location
 }
 
+async function LogoutSession(Session, TTS){
+    const [Success, Result] = await RequestFunc("https://apis.roblox.com/token-metadata-service/v1/logout", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({token: Session.token}), true, true)
+    const Title = Success && "Logged out of session" || "Failed to log out of session"
+    let Message = `${Success && "Logged" || "Failed to log"} out of session at ${GetLocationFromSession(Session)}\nRunning ${Session.agent?.value || "Unknown Browser"} on ${Session.agent?.os || "Unknown OS"}`
+    if (!Success) Message += `\n${Result.status} ${Result.statusText}`
+
+    chrome.notifications.create(null, {type: "basic", iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"), title: Title, message: Message, contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`, eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
+
+    if (TTS){
+        chrome.tts.speak(Message.replace("\n", ". "))
+    }
+}
+
 async function CheckForNewSessions(){
     const Enabled = await IsFeatureEnabled("NewLoginNotifier")
     if (!Enabled) return
@@ -72,21 +85,35 @@ async function CheckForNewSessions(){
     const NewKnownSessions = {}
 
     const Sessions = Result.sessions
+    let CurrentIP
+
     for (let i = 0; i < Sessions.length; i++){
         const Session = Sessions[i]
-        if (!KnownSessions[Session.token]){
+        if (!KnownSessions[Session.token] && !Session.isCurrentSession){
             if (!Session.isCurrentSession) NewSessions.push(Session)
         }
         NewKnownSessions[Session.token] = true
+
+        if (Session.isCurrentSession) CurrentIP = Session.lastAccessedIp
     }
 
     KnownSessions = NewKnownSessions
     SaveKnownSessions()
     if (!IsFirstScan && NewSessions.length > 0){
+        const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs")
         const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS")
-
+        
         for (let i = 0; i < NewSessions.length; i++){
             const Session = NewSessions[i]
+
+            if (DisallowOtherIPs){
+                if (!CurrentIP || CurrentIP != Session.lastAccessedIp){
+                    LogoutSession(Session, true)
+                    await sleep(500)
+                    continue
+                }
+            }
+
             const Location = GetLocationFromSession(Session)
 
             const NotificationId = GenerateNotificationId(50)
@@ -99,15 +126,6 @@ async function CheckForNewSessions(){
             await sleep(3000)
         }
     }
-}
-
-async function LogoutSession(Session){
-    const [Success, Result] = await RequestFunc("https://apis.roblox.com/token-metadata-service/v1/logout", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({token: Session.token}), true, true)
-    const Title = Success && "Logged out of session" || "Failed to log out of session"
-    let Message = `${Success && "Logged" || "Failed to log"} out of session at ${GetLocationFromSession(Session)}\nRunning ${Session.agent?.value || "Unknown Browser"} on ${Session.agent?.os || "Unknown OS"}`
-    if (!Success) Message += `\n${Result.status} ${Result.statusText}`
-
-    chrome.notifications.create(null, {type: "basic", iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"), title: Title, message: Message, contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`, eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
 }
 
 chrome.notifications.onButtonClicked.addListener(async function(NotificationId, ButtonIndex){
