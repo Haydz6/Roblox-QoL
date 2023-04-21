@@ -252,21 +252,26 @@ const Settings = {
             Title: "TTS Notification on new login",
             Description: "Uses text to speech to say location, os and browser."
         },
+        IgnoreSessionsFromSameIP: {
+            Title: "Ignore new sessions from same IP",
+            Description: "Ignores session if it has the same IP as current browser. (Recommended off for VPN or NAT users)"
+        },
         DisallowOtherIPs: {
             Title: "Disallow other IPs",
             Description: "If a session is first logged in from another/unknown IP, it will automatically log it out (Does not affect existing sessions)\nIf you become locked out while away from your device from this setting, use forget your password to regain access."
         },
-        IgnoreSessionsFromSameIP: {
-            Title: "Ignore new sessions from same IP",
-            Description: "Ignores session if it has the same IP as current browser."
-        }
     }
 }
 
 function IsQOLSettingsOpened(){
     const urlParams = new URLSearchParams(window.location.search)
 
-    return urlParams.get("tab") === "robloxqol"
+    let ParamsLength = 0
+    urlParams.forEach(function(){
+        ParamsLength++
+    })
+
+    return urlParams.get("tab") === "robloxqol" && ParamsLength == 1
 }
 
 async function CreateSpecificSettingsSection(OptionsList, title, settings){
@@ -373,21 +378,21 @@ function HandleTabChange(SettingsButtonList, QOLContainer){
     }
 }
 
-async function Run(){
-    const SettingsButtonList = await WaitForClass("menu-vertical submenus")
-
-    const [NavigateContainer] = CreateSettingNavigationButton("Roblox QoL", "?tab=robloxqol")
-    SettingsButtonList.appendChild(NavigateContainer)
-
-    if (!IsQOLSettingsOpened()) {
-        return
-    }
+async function OpenQOLSettings(SettingsButtonList, NavigateContainer){
+    //window.location.href = "https://www.roblox.com/my/account?tab=robloxqol"
+    window.history.pushState(null, "Settings", "/my/account?tab=robloxqol")
 
     WaitForId("vertical-menu").then(function(Menu){
         ChildAdded(Menu, true, async function(Button){
             ChildAdded(Button, true, function(Child){
                 if (Child){
                     Child.href = Child.href.replaceAll("?tab=robloxqol", "")
+
+                    if (Child.href.includes("#!/")){
+                        Child.addEventListener("click", function(){
+                            window.location.href = Child.href
+                        })
+                    }
                 }
             })
         })
@@ -407,4 +412,19 @@ async function Run(){
     CreateSecuritySection(OptionsList)
 }
 
-Run()
+async function StartQOLSettings(){
+    const IsOpen = IsQOLSettingsOpened()
+    const SettingsButtonList = await WaitForClass("menu-vertical submenus")
+
+    const [NavigateContainer] = CreateSettingNavigationButton("Roblox QoL")
+    SettingsButtonList.appendChild(NavigateContainer)
+
+    NavigateContainer.addEventListener("click", function(e){
+        e.preventDefault()
+        OpenQOLSettings(SettingsButtonList, NavigateContainer)
+    })
+
+    if (IsOpen) OpenQOLSettings(SettingsButtonList, NavigateContainer)
+}
+
+StartQOLSettings()

@@ -7,7 +7,7 @@ function CreateSettingNavigationButton(Text, href){
     const Button = document.createElement("a")
     Button.className = "menu-option-content"
     Button.setAttribute("ui-sref", "qol-settings")
-    Button.href = href
+    if (href) Button.href = href
 
     const Span = document.createElement("span")
     Span.className = "font-caption-header ng-binding"
