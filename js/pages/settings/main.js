@@ -251,7 +251,9 @@ const Settings = {
         NewLoginNotifierTTS: {
             Title: "TTS Notification on new login",
             Description: "Uses text to speech to say location, os and browser.",
-            Supported: chrome.tts != undefined
+            Supported: async function(){
+                return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "tts"})
+            }
         },
         IgnoreSessionsFromSameIP: {
             Title: "Ignore new sessions from same IP",
@@ -294,10 +296,10 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
     for (const [feature, info] of Object.entries(settings)){
         let Index = NextIndex
         NextIndex++
-        new Promise(async() => {
+        await new Promise(async(resolve) => {
             let Section
 
-            let IsSupported = info.Supported == undefined || info.Supported
+            let IsSupported = info.Supported == undefined || await info.Supported()
             const FeatureEnabled = await IsFeatureEnabled(feature)
             const FeatureKilled = await IsFeatureKilled(feature)
 
@@ -318,6 +320,7 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
             }
 
             OptionsList.insertBefore(Section, OptionsList.children[TitleIndex+Index])
+            resolve()
         })
     }
 }
