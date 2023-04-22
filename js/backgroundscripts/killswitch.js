@@ -10,7 +10,7 @@ async function FetchKilledFeatures(){
     if (AlreadyFetching) return
 
     IsFetchingFeatureKills = true
-    const [Success, Result] = await RequestFunc(WebServerEndpoints.Configuration+"features", "GET")
+    const [Success, Result] = await RequestFunc(WebServerEndpoints.Configuration+"disabled_features", "GET")
     IsFetchingFeatureKills = false
 
     if (!Success){
