@@ -178,7 +178,7 @@ async function CheckForNewSessions(){
     KnownSessions = NewKnownSessions
     SaveKnownSessions()
 
-    const StrictlyDisallowOtherIPs = await IsFeatureEnabled("StrictlyDisallowOtherIPs")
+    const StrictlyDisallowOtherIPs = await IsFeatureEnabled("StrictlyDisallowOtherIPs2")
     if (StrictlyDisallowOtherIPs && CurrentIP){
         for (let i = 0; i < Sessions.length; i++){
             const Session = Sessions[i]
@@ -189,7 +189,7 @@ async function CheckForNewSessions(){
     }
 
     if (!IsFirstScan && NewSessions.length > 0){
-        const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs")
+        const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs2")
         const IgnoreSessionsFromSameIP = await IsFeatureEnabled("IgnoreSessionsFromSameIP")
         const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS2")
         const ShowIP = await IsFeatureEnabled("ShowIPOnNewSession")

@@ -267,11 +267,11 @@ const Settings = {
             Title: "Ignore new sessions from same IP",
             Description: "Ignores session if it has the same IP as current browser. (Recommended off for VPN or NAT users)"
         },
-        DisallowOtherIPs: {
+        DisallowOtherIPs2: {
             Title: "Disallow other IPs on login",
             Description: "If a session is first logged in from another/unknown IP, it will automatically log it out (Does not affect existing sessions)\nIf you become locked out while away from your device from this setting, use forget your password to regain access."
         },
-        StrictlyDisallowOtherIPs: {
+        StrictlyDisallowOtherIPs2: {
             Title: "Strictly disallow other IP",
             Description: "If a session's IP does not match your device's IP, it will be logged out.\nIf you become locked out while away from your device from this setting, use forget your password to regain access."
         },
