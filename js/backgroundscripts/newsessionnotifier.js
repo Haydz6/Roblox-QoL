@@ -64,9 +64,11 @@ function SaveKnownSessions(){
     LocalStorage.set("KnownSessions", JSON.stringify(KnownSessions))
 }
 
-function GetLocationFromSession(Session){
+async function GetLocationFromSession(Session){
+    const ShowStateAndCountryOnly = await IsFeatureEnabled("ShowStateAndCountryOnNewSessionOnly")
+
     let Location = ""
-    if (Session.location?.city){
+    if (Session.location?.city && !ShowStateAndCountryOnly){
         Location = Session.location.city
     }
     if (Session.location?.subdivision){
@@ -115,8 +117,10 @@ async function LogoutSession(Session, TTS, LogoutCurrent){
         }
     }
 
+    const ShowIP = await IsFeatureEnabled("ShowIPOnNewSession")
+
     const Title = Success && `Logged out of${LogoutCurrent && " current" || ""} session` || `Failed to log out of${LogoutCurrent && " current" || ""} session`
-    let Message = `${Success && "Logged" || "Failed to log"} out of${LogoutCurrent && " current" || ""} session at ${GetLocationFromSession(Session)}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`
+    let Message = `${Success && "Logged" || "Failed to log"} out of${LogoutCurrent && " current" || ""} session at ${await GetLocationFromSession(Session)}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`
     if (!Success) Message += `\n${Response?.status || "Unknown"} ${Response?.statusText || "Unknown"}`
 
     //chrome.notifications.create(null, {type: "basic", iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"), title: Title, message: Message, contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`, eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
@@ -129,7 +133,7 @@ async function LogoutSession(Session, TTS, LogoutCurrent){
     iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"),
     title: Title,
     message: Message,
-    contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`,
+    contextMessage: ShowIP && `IP: ${Session.lastAccessedIp || "Unknown"}` || "IP: HIDDEN (SETTINGS)",
     eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)}, TTS && Message.replace("\n", ". "))
 }
 
@@ -188,6 +192,7 @@ async function CheckForNewSessions(){
         const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs")
         const IgnoreSessionsFromSameIP = await IsFeatureEnabled("IgnoreSessionsFromSameIP")
         const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS")
+        const ShowIP = await IsFeatureEnabled("ShowIPOnNewSession")
         
         for (let i = 0; i < NewSessions.length; i++){
             const Session = NewSessions[i]
@@ -210,7 +215,7 @@ async function CheckForNewSessions(){
             }
             if (!ShouldNotify) continue
 
-            const Location = GetLocationFromSession(Session)
+            const Location = await GetLocationFromSession(Session)
 
             const NotificationId = GenerateNotificationId(50)
             const Buttons = [{title: "Logout"}]
@@ -225,7 +230,7 @@ async function CheckForNewSessions(){
                 chrome.runtime.getURL("img/icons/icon128x128.png"),
                 title: "New Login for Roblox",
                 message: `A new login has been detected at ${Location}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`,
-                contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`,
+                contextMessage: ShowIP && `IP: ${Session.lastAccessedIp || "Unknown"}` || "IP: HIDDEN (SETTINGS)",
                 eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)},
                 TTSEnabled && `A new roblox login has been detected at ${Location}. Running ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`)
         }

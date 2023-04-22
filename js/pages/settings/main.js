@@ -255,6 +255,14 @@ const Settings = {
                 return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "tts"})
             }
         },
+        ShowStateAndCountryOnNewSessionOnly: {
+            Title: "Only show country and state on new session login",
+            Description: "Only shows country and state on new session notification (Disables city).",
+        },
+        ShowIPOnNewSession: {
+            Title: "Display IP on new session login",
+            Description: "Shows IP on new session notification.",
+        },
         IgnoreSessionsFromSameIP: {
             Title: "Ignore new sessions from same IP",
             Description: "Ignores session if it has the same IP as current browser. (Recommended off for VPN or NAT users)"
