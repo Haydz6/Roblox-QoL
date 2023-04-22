@@ -244,11 +244,11 @@ const Settings = {
         },
     },
     Security: {
-        NewLoginNotifier: {
+        NewLoginNotifier2: {
             Title: "Notification on new login",
             Description: "Sends notification to browser when a new login is detected. It includes the location, os, browser and IP of the login."
         },
-        NewLoginNotifierTTS: {
+        NewLoginNotifierTTS2: {
             Title: "TTS Notification on new login",
             Description: "Uses text to speech to say location, os and browser.",
             Supported: async function(){

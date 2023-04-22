@@ -143,7 +143,7 @@ async function FetchCurrentIP(){
 }
 
 async function CheckForNewSessions(){
-    const Enabled = await IsFeatureEnabled("NewLoginNotifier")
+    const Enabled = await IsFeatureEnabled("NewLoginNotifier2")
     if (!Enabled) return
 
     const IsFirstScan = await GetSavedKnownSessions()
@@ -191,7 +191,7 @@ async function CheckForNewSessions(){
     if (!IsFirstScan && NewSessions.length > 0){
         const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs")
         const IgnoreSessionsFromSameIP = await IsFeatureEnabled("IgnoreSessionsFromSameIP")
-        const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS")
+        const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS2")
         const ShowIP = await IsFeatureEnabled("ShowIPOnNewSession")
         
         for (let i = 0; i < NewSessions.length; i++){
