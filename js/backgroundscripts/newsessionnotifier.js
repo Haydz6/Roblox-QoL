@@ -197,7 +197,6 @@ async function CheckForNewSessions(){
             if (!SameIP && DisallowOtherIPs){
                 if (CurrentIP){
                     LogoutSession(Session, true)
-                    await sleep(500)
                     continue
                 } else {
                     delete KnownSessions[Session.token]
@@ -225,8 +224,6 @@ async function CheckForNewSessions(){
                 contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`,
                 eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)},
                 TTSEnabled && `A new roblox login has been detected at ${Location}. Running ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`)
-
-            //await sleep(3000)
         }
     }
 }
