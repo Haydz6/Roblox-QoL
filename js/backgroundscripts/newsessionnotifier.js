@@ -26,9 +26,9 @@ function GenerateNotificationId(Length){
 }
 
 async function QueueNotifications(Id, Notification, TTS){
-    if (ManifestVersion == 2){
-        delete Notification.buttons
-    } //Firefox does not support buttons
+    if (ManifestVersion == 2) delete Notification.buttons
+    if (!chrome.tts) TTS = undefined
+    //Firefox does not support buttons nor TTS
 
     QueuedNotifications.push({Id: Id, Notification: Notification, TTS: TTS})
 
