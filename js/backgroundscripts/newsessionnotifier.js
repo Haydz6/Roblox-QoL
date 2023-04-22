@@ -130,8 +130,8 @@ async function LogoutSession(Session, TTS, LogoutCurrent){
 }
 
 async function FetchCurrentIP(){
-    const [Success, Result] = await RequestFunc("http://ip-api.com/json", "GET")
-    return Success && Result.query
+    const [Success, Result] = await RequestFunc("https://api.ipify.org/?format=json", "GET")
+    return Success && Result.ip
 }
 
 async function CheckForNewSessions(){
