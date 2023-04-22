@@ -250,7 +250,8 @@ const Settings = {
         },
         NewLoginNotifierTTS: {
             Title: "TTS Notification on new login",
-            Description: "Uses text to speech to say location, os and browser."
+            Description: "Uses text to speech to say location, os and browser.",
+            Supported: chrome.tts != undefined
         },
         IgnoreSessionsFromSameIP: {
             Title: "Ignore new sessions from same IP",
@@ -295,14 +296,16 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
         NextIndex++
         new Promise(async() => {
             let Section
+
+            let IsSupported = info.Supported == undefined || info.Supported
             const FeatureEnabled = await IsFeatureEnabled(feature)
             const FeatureKilled = await IsFeatureKilled(feature)
 
-            if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, FeatureKilled, info.Middleman)
-            else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, FeatureKilled, function(NewValue){
+            if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, FeatureKilled, IsSupported, info.Middleman)
+            else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, FeatureKilled, IsSupported, function(NewValue){
                 SetFeatureEnabled(feature, NewValue)
             })
-            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled)
+            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled, IsSupported)
 
             let TitleIndex = 0
             let OptionsChildren = OptionsList.children
