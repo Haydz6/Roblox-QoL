@@ -175,17 +175,21 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
         let Response = await fetch(URL, {method: Method, headers: Headers, body: Body, credentials: CredientalsInclude && "include" || "omit"})
         let ResBody
   
-        if (!BypassResJSON){
-            ResBody = await (Response).json()
-        }
-  
+        // if ((Response.headers.get("access-control-expose-headers") || "").includes("X-CSRF-TOKEN"))
         let NewCSRFToken = Response.headers.get("x-csrf-token")
-  
         if (NewCSRFToken){
             CSRFToken = NewCSRFToken
         }
+
+        try {
+            if (!BypassResJSON){
+                ResBody = await (Response).json()
+            }
+        } catch {
+            ResBody = {Success: false, Result: "???"}
+        }
         
-        if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!" || (Response.headers.get("access-control-expose-headers") || "").includes("X-CSRF-TOKEN")){
+        if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
             if (ResBody?.Result == "Invalid authentication!"){
                 CachedAuthKey = ""
                 await LocalStorage.remove("AuthKey")

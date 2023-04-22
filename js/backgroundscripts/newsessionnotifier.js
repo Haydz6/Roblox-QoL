@@ -2,6 +2,8 @@ let KnownSessions
 let IPFailedSessions = {}
 const SessionButtonNotifications = {}
 const UsedNotificationIds = {}
+const QueuedNotifications = []
+let IsCheckingQueuedNotifications = false
 
 function GenerateNotificationId(Length){
     let Id = ""
@@ -21,6 +23,24 @@ function GenerateNotificationId(Length){
     }
 
     return Id
+}
+
+async function QueueNotifications(Id, Notification, TTS){
+    QueuedNotifications.push({Id: Id, Notification: Notification, TTS: TTS})
+
+    if (!IsCheckingQueuedNotifications){
+        IsCheckingQueuedNotifications = true
+
+        while (QueuedNotifications.length > 0){
+            const Queue = QueuedNotifications.splice(0, 1)[0]
+            chrome.notifications.create(Queue.Id, Queue.Notification)
+            if (Queue.TTS) chrome.tts.speak(Queue.TTS)
+
+            await sleep(3000)
+        }
+
+        IsCheckingQueuedNotifications = false
+    }
 }
 
 async function GetSavedKnownSessions(){
@@ -78,17 +98,35 @@ function GetBrowserFromSession(Session){
     return Type || "Unknown Browser"
 }
 
-async function LogoutSession(Session, TTS){
-    const [Success, Result] = await RequestFunc("https://apis.roblox.com/token-metadata-service/v1/logout", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({token: Session.token}), true, true)
-    const Title = Success && "Logged out of session" || "Failed to log out of session"
-    let Message = `${Success && "Logged" || "Failed to log"} out of session at ${GetLocationFromSession(Session)}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`
-    if (!Success) Message += `\n${Result.status} ${Result.statusText}`
+async function LogoutSession(Session, TTS, LogoutCurrent){
+    let Success, Result, Response
 
-    chrome.notifications.create(null, {type: "basic", iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"), title: Title, message: Message, contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`, eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
+    if (!LogoutCurrent) [Success, Result, Response] = await RequestFunc("https://apis.roblox.com/token-metadata-service/v1/logout", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({token: Session.token}), true, false)
+    else [Success, Result, Response] = await RequestFunc("https://auth.roblox.com/v2/logout", "POST", undefined, undefined, true)
 
-    if (TTS){
-        chrome.tts.speak(Message.replace("\n", ". "))
+    if (!Success && !LogoutCurrent){
+        if (Response?.status == 400 && Result?.errors?.[0]?.message == "attempting to invalidate current token"){
+            LogoutSession(Session, TTS, true)
+            return
+        }
     }
+
+    const Title = Success && `Logged out of${LogoutCurrent && " current" || ""} session` || `Failed to log out of${LogoutCurrent && " current" || ""} session`
+    let Message = `${Success && "Logged" || "Failed to log"} out of${LogoutCurrent && " current" || ""} session at ${GetLocationFromSession(Session)}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`
+    if (!Success) Message += `\n${Response?.status || "Unknown"} ${Response?.statusText || "Unknown"}`
+
+    //chrome.notifications.create(null, {type: "basic", iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"), title: Title, message: Message, contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`, eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
+
+    // if (TTS){
+    //     chrome.tts.speak(Message.replace("\n", ". "))
+    // }
+
+    QueueNotifications(null, {type: "basic",
+    iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"),
+    title: Title,
+    message: Message,
+    contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`,
+    eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)}, TTS && Message.replace("\n", ". "))
 }
 
 async function FetchCurrentIP(){
@@ -175,10 +213,20 @@ async function CheckForNewSessions(){
             const Buttons = [{title: "Logout"}]
             SessionButtonNotifications[NotificationId] = {session: Session, buttons: Buttons}
 
-            chrome.notifications.create(NotificationId, {type: "basic", buttons: Buttons, iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"), title: "New Login for Roblox", message: `A new login has been detected at ${Location}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`, contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`, eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
-            if (TTSEnabled) chrome.tts.speak(`A new roblox login has been detected at ${Location}. Running ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`)
-            
-            await sleep(3000)
+            //chrome.notifications.create(NotificationId, {type: "basic", buttons: Buttons, iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"), title: "New Login for Roblox", message: `A new login has been detected at ${Location}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`, contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`, eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
+            //if (TTSEnabled) chrome.tts.speak(`A new roblox login has been detected at ${Location}. Running ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`)
+            QueueNotifications(NotificationId,
+                {type: "basic",
+                buttons: Buttons,
+                iconUrl:
+                chrome.runtime.getURL("img/icons/icon128x128.png"),
+                title: "New Login for Roblox",
+                message: `A new login has been detected at ${Location}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`,
+                contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`,
+                eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)},
+                TTSEnabled && `A new roblox login has been detected at ${Location}. Running ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`)
+
+            //await sleep(3000)
         }
     }
 }
