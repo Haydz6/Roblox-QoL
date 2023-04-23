@@ -9,14 +9,11 @@ function CreatePingSound(){
 
 async function WaitForFactory(){
     while (!window.Roblox?.RealTime?.Factory){
-        console.log("waiting for factory")
         await new Promise(r => setTimeout(r, 100))
     }
 
-    console.log("factory")
     window.Roblox.RealTime.Factory.GetClient()?.Subscribe("ChatNotifications", message => {
-        let IsFocused = document.activeElement?.parentElement?.parentElement?.parentElement?.id === "dialog-container-"+message.ConversationId
-        console.log(message, IsFocused)
+        let IsFocused = document.activeElement?.closest(`#dialog-container-${message.ConversationId}`)
 
         if (!IsFocused && message.Type === "NewMessage") CreatePingSound()
     })  //Thanks Jullian!!
