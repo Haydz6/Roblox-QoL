@@ -159,8 +159,7 @@
                 "js/pages/serverfilters/addserverregion.js",
                 "js/pages/serverfilters/filters.js",
                 "js/pages/serverfilters/main.js",
-
-                "js/pages/quickserverinvite/injectcheckforinvite.js",
+                
                 "js/pages/quickserverinvite/createelements.js",
                 "js/pages/quickserverinvite/setinstalledidentifier.js",
                 "js/pages/quickserverinvite/main.js",
