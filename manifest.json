@@ -33,7 +33,8 @@
                 "js/modules/globe.js",
                 "js/pages/serverfilters/getserverprops.js",
                 "js/pages/quickserverinvite/checkforinvite.js",
-                "js/pages/trades/injecttrade.js"
+                "js/pages/trades/injecttrade.js",
+                "js/pages/generalfixes/scriptinjections/*"
             ],
             "matches": [
                 "https://www.roblox.com/*",
@@ -62,7 +63,7 @@
                 "js/authentication/main.js",
                 "js/pages/document.js",
                 "js/pages/settings/settingsdropdown.js",
-                "js/pages/newmessageping.js",
+                "js/pages/generalfixes/injectscripts.js",
                 "js/pages/generalfixes/hidedesktopbanner.js",
                 "js/pages/generalfixes/hiderobloxads.js",
                 "js/pages/generalfixes/disablefooter.js",

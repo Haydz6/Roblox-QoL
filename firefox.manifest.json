@@ -4,7 +4,7 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.9.1.1",
+    "version": "2.9.1.2",
     "homepage_url": "https://www.roblox.com/my/account?tab=robloxqol#!/info",
     "icons": {
         "128": "img/icons/icon128x128.png",
@@ -29,7 +29,8 @@
         "js/modules/globe.js",
         "js/pages/serverfilters/getserverprops.js",
         "js/pages/quickserverinvite/checkforinvite.js",
-        "js/pages/trades/injecttrade.js"
+        "js/pages/trades/injecttrade.js",
+        "js/pages/generalfixes/scriptinjections/*"
     ],
     "background": {
         "scripts": ["js/background.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/newsessionnotifier.js"],
@@ -45,11 +46,11 @@
                 "js/authentication/main.js",
                 "js/pages/document.js",
                 "js/pages/settings/settingsdropdown.js",
-                "js/pages/newmessageping.js",
                 "js/pages/generalfixes/hidedesktopbanner.js",
                 "js/pages/generalfixes/hiderobloxads.js",
                 "js/pages/generalfixes/disablefooter.js",
-                "js/pages/generalfixes/addusdtorobux.js"
+                "js/pages/generalfixes/addusdtorobux.js",
+                "js/pages/generalfixes/scriptinjections/*"
             ],
             "run_at": "document_start",
             "all_frames": true
