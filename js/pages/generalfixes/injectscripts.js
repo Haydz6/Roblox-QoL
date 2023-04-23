@@ -1,4 +1,9 @@
-async function InjectScript(Path){
+async function InjectScript(Path, URLMatch){
+    if (URLMatch){
+        const Regexp = new RegExp(URLMatch.replace(/\*/g, "[^ ]*"))
+        if (!Regexp.test(window.location.href)) return
+    }
+
     const Script = document.createElement("script")
     Script.src = chrome.runtime.getURL("js/pages/generalfixes/scriptinjections/"+Path+".js")
 
@@ -13,4 +18,4 @@ IsFeatureEnabled("NewMessagePing2").then(async function(Enabled){
     InjectScript("newmessageping")
 })
 
-InjectScript("checkforinvite")
+InjectScript("checkforinvite", "*://*.roblox.com/games/*")
