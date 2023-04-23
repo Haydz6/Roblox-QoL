@@ -1,5 +1,4 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms))
-console.log("document starting")
 
 const EnabledFeatures = {}
 let AreEnabledFeaturesFetched = false
@@ -446,5 +445,3 @@ async function SetFeatureEnabled(Feature, Enabled){
 }
 
 GetUserId()
-
-console.log("document ready")
