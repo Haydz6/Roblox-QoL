@@ -27,7 +27,7 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
     if (!ShowIfEmpty) ContainerHeader.style = "display: none;"
     const GameCarousel = CreateGameCarousel()
 
-    const [ContinueTitle, ContinueRow] = await SearchForRow(GamesList, "/sortName/v2/Continue")
+    const [ContinueTitle, ContinueRow] = await SearchForRow(GamesList, 100000003)
     
     GamesList.insertBefore(GameCarousel, ContinueRow.nextSibling)
     GamesList.insertBefore(ContainerHeader, GameCarousel)

@@ -1,4 +1,4 @@
-async function SearchForRow(Container, URL){
+async function SearchForRow(Container, SortId){
     while (true){
         const Children = Container.children
 
@@ -8,7 +8,7 @@ async function SearchForRow(Container, URL){
 
             if (Child.className === "container-header"){
                 const href = Child.getElementsByTagName("h2")[0].getElementsByTagName("a")[0].href
-                if (href.search(URL) > -1){
+                if (href.search("sortId="+SortId) > -1){
                     return [Child, Children[i+1]]
                 }
             }
@@ -22,7 +22,7 @@ IsFeatureEnabled("MoveHomeFavouritesToThirdRow").then(async function(Enabled){
     if (!Enabled) return
 
     const Container = await WaitForClass("game-home-page-container")
-    const [FavTitle, FavRow] = await SearchForRow(Container, "Favorites")
+    const [FavTitle, FavRow] = await SearchForRow(Container, 100000001)
     //const [RecommendedTitle, _] = await SearchForRow(Container, "Recommended")
     const ThirdTitle = Container.children[4]
 
