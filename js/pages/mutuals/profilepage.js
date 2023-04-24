@@ -1,5 +1,5 @@
 IsFeatureEnabled("Mutuals").then(async function(Enabled){
-    if (!Enabled) return
+    if (!Enabled || (await GetUserId() == GetTargetId())) return
 
     const HeadersList = await WaitForClass("details-info")
     const TargetId = GetTargetId()

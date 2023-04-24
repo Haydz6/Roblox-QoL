@@ -6,6 +6,12 @@ function GetTargetId(){
 }
 
 async function GetMutualFriends(TargetId){
+    // const [Success, Result] = await RequestFunc("https://apis.roblox.com/profile-insights-api/v1/multiProfileInsights", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: [TargetId], count: 200}))
+    
+    // if (!Success) return [false]
+
+    // return [true, Result.userInsights[0].profileInsights.mutualFriendInsight.mutualFriends]
+
     const [Success, Friends] = await RequestFunc(`https://friends.roblox.com/v1/users/${await GetUserId()}/friends`)
 
     if (!Success){
