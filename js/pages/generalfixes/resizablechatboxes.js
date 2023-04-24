@@ -11,7 +11,7 @@ IsFeatureEnabled("ResizableChatBoxes").then(async function(Enabled){
             const DialogHeader = await WaitForClassPath(MainDialog, "dialog-header")
 
             const DragElement = document.createElement("div")
-            DragElement.style = "width: 10%; height: 50%; cursor: nw-resize; position: absolute;"
+            DragElement.style = "width: 10%; height: 50%; position: absolute;"
             DialogHeader.appendChild(DragElement)
 
             function IsCollapsed(){
@@ -34,11 +34,13 @@ IsFeatureEnabled("ResizableChatBoxes").then(async function(Enabled){
                             LastCollapsed = Collapsed
 
                             if (Collapsed) {
+                                DragElement.style.cursor = ""
                                 Container.style.height = ""
                                 Container.style.width = ""
                             } else {
                                 if (LastHeight) Container.style.height = LastHeight
                                 if (LastWidth) Container.style.width = LastWidth
+                                DragElement.style.cursor = "nw-resize"
                             }
                         }
 
