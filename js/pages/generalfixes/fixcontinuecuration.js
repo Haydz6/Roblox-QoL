@@ -29,7 +29,8 @@ IsFeatureEnabled("FixContinueCuration").then(async function(Enabled){
         }
 
         for (let i = Result.length-1; i >= 0; i--){
-            CardsInOrder.unshift(Cards[Result[i]])
+            const Card = Cards[Result[i]]
+            if (Card) CardsInOrder.unshift(Card)
         }
 
         Grid.append(...CardsInOrder)
