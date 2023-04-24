@@ -10,16 +10,16 @@ IsFeatureEnabled("ResizableChatBoxes").then(async function(Enabled){
             const ScrollChat = await WaitForClassPath(MainDialog, "rbx-scrollbar")
             const DialogHeader = await WaitForClassPath(MainDialog, "dialog-header")
 
-            const DragElement = document.createElement("div")
-            DragElement.style = "width: 10%; height: 50%; position: absolute;"
-            DialogHeader.appendChild(DragElement)
-
             function IsCollapsed(){
                 return Container.className.includes("collapsed")
             }
             function IsFocused(){
                 return Container.className.includes("focused")
             }
+
+            const DragElement = document.createElement("div")
+            DragElement.style = "width: 10%; height: 50%; position: absolute;" + (!IsCollapsed() ? " cursor: nw-resize;" : "")
+            DialogHeader.appendChild(DragElement)
 
             let LastWidth
             let LastHeight
