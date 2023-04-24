@@ -436,6 +436,8 @@ async function OpenQOLSettings(SettingsButtonList, NavigateContainer){
 
 async function StartQOLSettings(){
     const IsOpen = IsQOLSettingsOpened()
+    if (new URLSearchParams(window.location.search).get("roseal")) return
+
     const SettingsButtonList = await WaitForClass("menu-vertical submenus")
 
     const [NavigateContainer] = CreateSettingNavigationButton("Roblox QoL")
