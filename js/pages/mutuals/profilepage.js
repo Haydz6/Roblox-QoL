@@ -2,6 +2,7 @@ IsFeatureEnabled("Mutuals").then(async function(Enabled){
     if (!Enabled) return
 
     const HeadersList = await WaitForClass("details-info")
+    const TargetId = GetTargetId()
 
     const [List, Count] = CreateMututalHeader(TargetId)
 
@@ -9,7 +10,7 @@ IsFeatureEnabled("Mutuals").then(async function(Enabled){
     Count.innerText = "..."
     HeadersList.insertBefore(List, HeadersList.firstChild)
 
-    const [Success, Mutuals] = await GetMutualFriends(GetTargetId())
+    const [Success, Mutuals] = await GetMutualFriends(TargetId)
 
     if (!Success){
         Count.title = "ERR"

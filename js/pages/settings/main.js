@@ -44,6 +44,10 @@ const Settings = {
             Title: "Outfit Searchbar",
             Description: "Adds a search bar to your avatar outfits."
         },
+        Mutuals2: {
+            Title: "Friend Mutuals",
+            Description: "Shows mutuals on a users page."
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"

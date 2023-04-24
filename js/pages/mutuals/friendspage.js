@@ -6,9 +6,38 @@ let OriginalFriendsCount
 
 let OpenConnections = []
 
+let AllMutuals
+
+async function LoadPage(Page){
+    if (!AllMutuals){
+        while (true){
+            const [Success, Result] = await GetMutualFriends(GetTargetId())
+
+            if (!Success){
+                await sleep(1000)
+                continue
+            }
+
+            AllMutuals = Result.reverse()
+            break
+        }
+    }
+
+    const PageFriends = []
+
+    const Start = (Page * 18) - 18
+    const End = Math.min(Page * 18, AllMutuals.length)
+
+    for (let i = Start; i < End; i++){
+        PageFriends.push(AllMutuals[i])
+    }
+
+    return [PageFriends, AllMutuals.length > Page * 18, AllMutuals.length]
+}
+
 function ModifyHeaderTab(Tab){
-    if (Tab.className === "rbx-tab"){
-        Tab.style = "min-width: 20%;"
+    if (Tab.className.includes("rbx-tab")){
+        Tab.style = "min-width: 25%;"
 
         if (!Tab.getAttribute("custom")) Tab.getElementsByTagName("a")[0].className = "rbx-tab-heading"
     }
@@ -30,18 +59,6 @@ const FriendsListMutationObserver = new MutationObserver(function(Mutations){
     })
 })
 
-const TabWidthMutationObserver = new MutationObserver(function(Mutations){
-    Mutations.forEach(function(Mutation){
-        if (Mutation.type == "childList"){
-            const NewChildren = Mutation.addedNodes
-
-            for (let i = 0; i < NewChildren.length; i++){
-                ModifyHeaderTab(NewChildren[i])
-            }
-        }
-    })
-})
-
 function AddConnection(Callback, Type, Element){
     OpenConnections.push({Callback: Callback, Type: Type, Element: Element})
     return Callback
@@ -50,12 +67,7 @@ function AddConnection(Callback, Type, Element){
 async function HandleTabModification(){
     const NavTabs = await WaitForClass("nav nav-tabs")
 
-    TabWidthMutationObserver.observe(NavTabs, {childList: true})
-
-    const Children = NavTabs.children
-    for (let i = 0; i < Children.length; i++){
-        ModifyHeaderTab(Children[i])
-    }
+    ChildAdded(NavTabs, true, ModifyHeaderTab)
 
     const [Tab, Underline] = CreateHeaderTab("Mutuals", "mutuals", "#!/friends?tab=mutuals", IsMutualsTabOpen())
     NavTabs.appendChild(Tab)
@@ -67,7 +79,7 @@ function IsMutualsTabOpen(){
 }
 
 function CreateFromFriendHistory(Friend, FriendsList){
-    const Element = CreateFriend(Friend.Id, Friend.Name, Friend.DisplayName, Friend.Image, undefined, undefined, undefined, Friend.Verified)
+    const Element = CreateFriend(Friend.id, Friend.name, Friend.displayName, Friend.Image, undefined, undefined, undefined, Friend.hasVerifiedBadge)
 
     CurrentMutualsElements.push(Element)
 
@@ -83,15 +95,15 @@ async function AddImagesToHistory(AllHistory){
 
         if (History.Image) continue
 
-        if (!IdToHistory[History.Id]){
-            IdToHistory[History.Id] = []
+        if (!IdToHistory[History.id]){
+            IdToHistory[History.id] = []
         }
 
-        IdToHistory[History.Id].push(History)
+        IdToHistory[History.id].push(History)
 
         Requests.push({
-            requestId: History.Id,
-            targetId: History.Id,
+            requestId: History.id,
+            targetId: History.id,
             type: 2,
             size: "150x150",
             format: "Png",
@@ -128,8 +140,6 @@ async function AddImagesToHistory(AllHistory){
 }
 
 async function HandleMutualsPage(){
-    console.log("handling")
-
     await sleep(100)
     const BackButton = await WaitForClass("btn-generic-left-sm")
     const NextButton = await WaitForClass("btn-generic-right-sm")
@@ -145,8 +155,6 @@ async function HandleMutualsPage(){
     }
 
     async function Fetch(){
-        console.log(CurrentPage)
-
         await sleep(50)
 
         SetButtonStatus(BackButton, false)
