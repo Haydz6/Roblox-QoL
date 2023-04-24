@@ -48,6 +48,10 @@ const Settings = {
             Title: "Friend Mutuals",
             Description: "Shows mutuals on a users page."
         },
+        ResizableChatBoxes: {
+            Title: "Resizable chat boxes",
+            Description: "Allows you to resize the chat boxes on the roblox site. (Drag top left)"
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"

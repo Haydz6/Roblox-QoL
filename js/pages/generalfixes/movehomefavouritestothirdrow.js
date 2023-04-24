@@ -8,7 +8,7 @@ async function SearchForRow(Container, SortId){
 
             if (Child.className === "container-header"){
                 const href = Child.getElementsByTagName("h2")[0].getElementsByTagName("a")[0].href
-                if (href.search("sortId="+SortId) > -1){
+                if (href.includes("sortId="+SortId)){
                     return [Child, Children[i+1]]
                 }
             }
