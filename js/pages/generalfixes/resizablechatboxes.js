@@ -17,14 +17,14 @@ IsFeatureEnabled("ResizableChatBoxes").then(async function(Enabled){
                 return Container.className.includes("focused")
             }
 
-            const DragElement = document.createElement("div")
-            DragElement.style = "width: 10%; height: 50%; position: absolute;" + (!IsCollapsed() ? " cursor: nw-resize;" : "")
-            DialogHeader.appendChild(DragElement)
-
             let LastWidth
             let LastHeight
             let LastCollapsed = IsCollapsed()
             let LastFocused = false
+
+            const DragElement = document.createElement("div")
+            DragElement.style = "width: 10%; height: 50%; position: absolute;" + (!LastCollapsed ? " cursor: nw-resize;" : " display: none;")
+            DialogHeader.appendChild(DragElement)
 
             new MutationObserver(function(Mutations){
                 Mutations.forEach(function(Mutation){
@@ -34,6 +34,7 @@ IsFeatureEnabled("ResizableChatBoxes").then(async function(Enabled){
                             LastCollapsed = Collapsed
 
                             if (Collapsed) {
+                                DragElement.style.display = "none"
                                 DragElement.style.cursor = ""
                                 Container.style.height = ""
                                 Container.style.width = ""
@@ -41,6 +42,7 @@ IsFeatureEnabled("ResizableChatBoxes").then(async function(Enabled){
                                 if (LastHeight) Container.style.height = LastHeight
                                 if (LastWidth) Container.style.width = LastWidth
                                 DragElement.style.cursor = "nw-resize"
+                                DragElement.style.display = ""
                             }
                         }
 
