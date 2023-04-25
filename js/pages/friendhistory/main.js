@@ -270,6 +270,12 @@ function CheckIfHistoryTabOpened(){
     WaitForClass("friends-filter").then(function(Filter){
         Filter.style = Open && "display:none;" || ""
     })
+    
+    if (Open){
+        WaitForId("friends").then(function(Tab){
+            Tab.getElementsByTagName("a")[0].className = "rbx-tab-heading"
+        })
+    }
 
     HistoryHeaderTab.className = `rbx-tab-heading${Open && " active" || ""}`
 
