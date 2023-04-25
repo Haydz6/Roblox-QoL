@@ -5,17 +5,6 @@ function GetTargetId(){
     return TargetId
 }
 
-async function GetMutualFriendsCount(TargetId){
-    const [Success, Result] = await RequestFuncCORSBypass("https://apis.roblox.com/profile-insights-api/v1/multiProfileInsights", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: [TargetId], count: 200}), true)
-    
-    if (!Success) return [false]
-
-    const Mutuals = Result.userInsights[0].profileInsights?.[0]?.mutualFriendInsight?.mutualFriends
-    if (!Mutuals) return [true, 0]
-
-    return [true, Object.keys(Mutuals).length]
-}
-
 async function GetMutualFriends(TargetId){
     // const [Success, Result] = await RequestFunc("https://apis.roblox.com/profile-insights-api/v1/multiProfileInsights", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: [TargetId], count: 200}))
     
@@ -54,4 +43,23 @@ async function GetMutualFriends(TargetId){
     }
 
     return [true, Mutuals]
+}
+
+async function GetMutualFriendsCount(TargetId){
+    const [Success, Result, Response] = await RequestFuncCORSBypass("https://apis.roblox.com/profile-insights-api/v1/multiProfileInsights", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: [TargetId], count: 200}), true)
+    
+    if (!Success){
+        if (Response?.status == 404){
+            const [Success, Result] = await GetMutualFriends(TargetId)
+            if (!Success) return [false]
+            return [true, Result.length]
+        }
+
+        return [false]
+    }
+
+    const Mutuals = Result.userInsights[0].profileInsights?.[0]?.mutualFriendInsight?.mutualFriends
+    if (!Mutuals) return [true, 0]
+
+    return [true, Object.keys(Mutuals).length]
 }

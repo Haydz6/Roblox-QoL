@@ -62,7 +62,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     } else if (request.type === "fetch"){
         console.log(request)
         RequestFunc(request.URL, request.Method, request.Headers, request.Body, request.CredientalsInclude, request.BypassResJSON).then(async function([Success, Result, Response]){
-            sendResponse([Success, Result || await Response.text(), Response])
+            sendResponse([Success, Result || await Response.text(), Response && {ok: Response.ok, status: Response.status}])
         })
         return true
     }
