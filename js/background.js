@@ -189,7 +189,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
             ResBody = {Success: false, Result: "???"}
         }
         
-        if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
+        if (!Response.ok && (ResBody?.message == "Token Validation Failed" || NewCSRFToken || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
             if (ResBody?.Result == "Invalid authentication!"){
                 CachedAuthKey = ""
                 await LocalStorage.remove("AuthKey")

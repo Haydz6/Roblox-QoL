@@ -10,7 +10,7 @@ IsFeatureEnabled("Mutuals").then(async function(Enabled){
     Count.innerText = "..."
     HeadersList.insertBefore(List, HeadersList.firstChild)
 
-    const [Success, Mutuals] = await GetMutualFriends(TargetId)
+    const [Success, Mutuals] = await GetMutualFriendsCount(TargetId)
 
     if (!Success){
         Count.title = "ERR"
@@ -18,6 +18,6 @@ IsFeatureEnabled("Mutuals").then(async function(Enabled){
         return
     }
 
-    Count.title = Mutuals.length
-    Count.innerText = Mutuals.length
+    Count.title = Mutuals
+    Count.innerText = Mutuals
 })
