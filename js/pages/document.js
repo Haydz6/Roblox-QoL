@@ -418,8 +418,8 @@ async function FetchAllFeaturesEnabled(){
 }
 
 let KilledFeatures
-async function FetchAllFeaturesKilled(){
-  if (KilledFeatures) return
+async function FetchAllFeaturesKilled(BypassCheck){
+  if (KilledFeatures && !BypassCheck) return
   KilledFeatures = await chrome.runtime.sendMessage({type: "getkilledfeatures"})
 }
 
@@ -443,5 +443,7 @@ async function SetFeatureEnabled(Feature, Enabled){
     //window.localStorage.setItem("robloxQOL-settings", JSON.stringify(EnabledFeatures))
     chrome.runtime.sendMessage({type: "changesetting", feature: Feature, enabled: Enabled})
 }
+
+setInterval(FetchAllFeaturesKilled, 20*1000, true)
 
 GetUserId()
