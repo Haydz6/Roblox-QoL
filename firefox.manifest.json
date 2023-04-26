@@ -65,8 +65,7 @@
                 "js/pages/extraoutfits/createnormaloutfitelement.js",
                 "js/pages/extraoutfits/main.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -77,8 +76,7 @@
                 "js/pages/friendhistory/loadpages.js",
                 "js/pages/friendhistory/main.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -93,8 +91,7 @@
                 "js/pages/purchasedgamesinventoryfix/getpurchasedgames.js",
                 "js/pages/purchasedgamesinventoryfix/main.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -112,8 +109,7 @@
                 "js/pages/playtime/createelements.js",
                 "js/pages/playtime/allgames.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -144,8 +140,7 @@
                 "js/pages/playtime/createelements.js",
                 "js/pages/playtime/game.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -155,8 +150,7 @@
                 "js/pages/settings/createelements.js",
                 "js/pages/settings/main.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -181,8 +175,7 @@
 
                 "js/pages/badges/profilecount.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -194,8 +187,7 @@
                 "js/pages/mutuals/api.js",
                 "js/pages/mutuals/friendspage.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -219,8 +211,7 @@
                 "js/pages/trades/createtrade.js",
                 "js/pages/trades/openontrade.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -237,8 +228,7 @@
                 "js/pages/assets/addrolimons.js",
                 "js/pages/assets/addinfo.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -253,8 +243,7 @@
                 "js/pages/assets/main.js",
                 "js/pages/assets/addinfo.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -264,8 +253,7 @@
                 "js/pages/assets/createelements.js",
                 "js/pages/assets/addinfo.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -283,8 +271,7 @@
                 "js/pages/playtime/createcards.js",
                 "js/pages/playtime/home.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -293,8 +280,7 @@
             "js": [
                 "js/pages/quickserverinvite/setinstalledidentifier.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -304,8 +290,7 @@
                 "js/pages/generalfixes/versionhistory/download.js",
                 "js/pages/generalfixes/versionhistory/newcreate.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -315,8 +300,7 @@
                 "js/pages/generalfixes/versionhistory/download.js",
                 "js/pages/generalfixes/versionhistory/olddevelop.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -332,8 +316,7 @@
                 "js/pages/economy/summary.js",
                 "js/pages/economy/summarycache.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -349,7 +332,6 @@
                 "js/pages/economy/summary.js",
                 "js/pages/economy/summarycache.js"
             ],
-            "run_at": "document_idle",
-            "all_frames": true
+            "run_at": "document_idle"
         }]
 }

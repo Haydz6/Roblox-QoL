@@ -141,8 +141,8 @@ async function AddAssetInfo(){
     }
 }
 
-async function AddAssetUSDPrice(){
-    if (!await IsFeatureEnabled("ShowUSDOnAsset")) return
+IsFeatureEnabled("ShowUSDOnAsset").then(async function(Enabled){
+    if (!Enabled) return
 
     const PriceContainer = await WaitForClass("price-container-text")
     const RobuxLabel = PriceContainer.getElementsByClassName("text-robux-lg")[0]
@@ -157,7 +157,6 @@ async function AddAssetUSDPrice(){
     PriceLabel.innerText = `(${await RobuxToCurrency(Robux)})`
 
     RobuxLabel.appendChild(PriceLabel)
-}
+})
 
 AddAssetInfo()
-AddAssetUSDPrice()
