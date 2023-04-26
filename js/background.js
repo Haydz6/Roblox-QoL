@@ -244,6 +244,9 @@ async function FetchAllFeaturesEnabled(){
 
 async function IsFeatureEnabled(Feature){
     await FetchAllFeaturesEnabled()
+    const IsKilled = await IsFeatureKilled(Feature)
+    if (IsKilled) return false
+
     return EnabledFeatures[Feature]
 }
 

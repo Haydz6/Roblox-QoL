@@ -430,7 +430,7 @@ async function IsFeatureKilled(FeatureName){
 
 async function IsFeatureEnabled(Feature){
     await FetchAllFeaturesEnabled()
-    let IsKilled = await IsFeatureKilled(Feature)
+    const IsKilled = await IsFeatureKilled(Feature)
     if (IsKilled) return false
 
     return EnabledFeatures[Feature]
