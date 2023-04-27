@@ -4,7 +4,7 @@
     "short_name": "Roblox QoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
-    "version": "2.10.1",
+    "version": "2.11.0",
     "homepage_url": "https://www.roblox.com/my/account?tab=robloxqol#!/info",
     "icons": {
         "128": "img/icons/icon128x128.png",
@@ -33,7 +33,7 @@
         "js/pages/generalfixes/scriptinjections/*"
     ],
     "background": {
-        "scripts": ["js/background.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/inboxnotifications.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/newsessionnotifier.js"],
+        "scripts": ["js/background.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/newsessionnotifier.js"],
         "persistent": true
     },
     "content_scripts": [
