@@ -419,13 +419,12 @@ async function FetchAllFeaturesEnabled(){
 
 let KilledFeatures
 async function FetchAllFeaturesKilled(BypassCheck){
-  console.log(KilledFeatures, !BypassCheck)
   if (KilledFeatures && !BypassCheck) return
   KilledFeatures = await chrome.runtime.sendMessage({type: "getkilledfeatures"})
 }
 
 async function IsFeatureKilled(FeatureName){
-  await FetchAllFeaturesKilled()
+  await FetchAllFeaturesKilled(false)
   return KilledFeatures.includes(FeatureName)
 }
 

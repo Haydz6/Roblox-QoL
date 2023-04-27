@@ -275,7 +275,7 @@ BindToOnMessage("canpingformessage", false, function(){
 })
 
 if (ManifestVersion > 2){
-    const Scripts = ["js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js.backgroundscripts/inboxnotifications.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"]
+    const Scripts = ["js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/inboxnotifications.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"]
     const FullScriptURLs = []
 
     for (let i = 0; i < Scripts.length; i++){
