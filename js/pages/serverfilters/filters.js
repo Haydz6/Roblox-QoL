@@ -29,7 +29,7 @@ async function HandleMapRegion(){
     await import(chrome.runtime.getURL("js/modules/globe.js"))
 
     const World = Globe()
-    .globeImageUrl(chrome.runtime.getURL("img/filters/world.jpg"))
+    .globeImageUrl(chrome.runtime.getURL("img/filters/world.png"))
     //.ringsData(gData)
     .ringColor(() => colorInterpolator)
     .ringMaxRadius('maxR')
