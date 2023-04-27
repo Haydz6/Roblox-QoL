@@ -12,8 +12,14 @@ async function InjectScript(Path, URLMatch){
     document.head.appendChild(Script)
 }
 
-IsFeatureEnabled("NewMessagePing2").then(async function(Enabled){
+IsFeatureEnabled("NewMessagePing3").then(async function(Enabled){
     if (!Enabled) return
+
+    window.addEventListener("message", async function(event){
+        if (event.source === window && event.type === "message" && event.data === "canpingformessage"){
+            if (await chrome.runtime.sendMessage({type: "canpingformessage"})) window.postMessage("canpingformessage-confirm")
+        }
+    })
 
     InjectScript("newmessageping")
 })
