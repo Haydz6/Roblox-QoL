@@ -13,6 +13,13 @@ function SaveScannedInboxMessages(){
     LocalStorage.set("ScannedInboxMessages", JSON.stringify(ScannedInboxMessages))
 }
 
+async function GetHeadshotThumbnailFromUserId(UserId){
+    const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserId}&size=420x420&format=Png&isCircular=false`, "GET", undefined, undefined, true)
+
+    if (!Success) return "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png"
+    return Result.data[0].imageUrl
+}
+
 async function CheckForNewMessages(){
     if (!await IsFeatureEnabled("InboxNotifications")) return
     await GetScannedInboxMessages()
@@ -25,13 +32,13 @@ async function CheckForNewMessages(){
     let FirstMessage
     let TotalNewMessages = 0
 
-    const AllowSystemMessages = await IsFeatureEnabled("SystemInboxNofitications")
+    const IgnoreSystemMessages = await IsFeatureEnabled("IgnoreSystemInboxNofitications")
 
     for (let i = 0; i < Collection.length; i++){
         const Message = Collection[i]
         if (ScannedInboxMessages.includes(Message.id)) continue
         ScannedInboxMessages.unshift(Message.id)
-        if (Message.isRead || (!AllowSystemMessages && Message.isSystemMessage)) continue
+        if (Message.isRead || (IgnoreSystemMessages && Message.isSystemMessage)) continue
 
         FirstMessage = Message
         TotalNewMessages ++
@@ -45,11 +52,12 @@ async function CheckForNewMessages(){
 
     if (!FirstMessage) return
 
-    QueueNotification(null, {type: "basic",
-    iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"),
-    title: `Message from ${Message.sender.name}: ${Message.subject}` + TotalNewMessages > 1 ? ` and ${TotalNewMessages-1} others` : "",
-    message: Message.body,
-    eventTime: new Date(Message.created).getTime()})
+    QueueNotifications(null, {type: "basic",
+    iconUrl: await GetHeadshotThumbnailFromUserId(FirstMessage.sender.id),
+    title: FirstMessage.subject,
+    message: FirstMessage.body,
+    eventTime: new Date(FirstMessage.created).getTime(),
+    contextMessage: `From ${FirstMessage.sender.name}` + (TotalNewMessages > 1 ? ` (${TotalNewMessages} new messages)` : "")})
 }
 
 setInterval(CheckForNewMessages, 60*1000)
