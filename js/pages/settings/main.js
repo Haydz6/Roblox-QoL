@@ -263,6 +263,26 @@ const Settings = {
                 return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "tts"})
             }
         },
+        NewLoginNotifierTTSVolume: {
+            Title: "TTS Notification on new login volume",
+            Description: "Volume can be between 0 - 1",
+            Type: "InputBox",
+            Placeholder: "",
+            Middleman: function(Feature, PreviousValue, Value){
+                const Numbers = Value.replace(/^\D+/g, "")
+                if (Numbers === ""){
+                    return PreviousValue
+                }
+                if (Value.charAt(0) === ".") Value = "0"+Value
+                const NewNumber = clamp(parseFloat(Value), 0, 1)
+                SetFeatureEnabled(Feature, NewNumber)
+                return NewNumber
+            }
+        },
+        OnlyReadNewLoginNotifierTitle: {
+            Title: "Read title for TTS notifications",
+            Description: "Only speaks the title (and location if new login) instead of the entire notifiction."
+        },
         ShowStateAndCountryOnNewSessionOnly: {
             Title: "Only show country and state on new session login",
             Description: "Only shows country and state on new session notification (Disables city).",

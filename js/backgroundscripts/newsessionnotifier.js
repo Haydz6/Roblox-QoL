@@ -38,7 +38,10 @@ async function QueueNotifications(Id, Notification, TTS){
         while (QueuedNotifications.length > 0){
             const Queue = QueuedNotifications.splice(0, 1)[0]
             chrome.notifications.create(Queue.Id, Queue.Notification)
-            if (Queue.TTS) chrome.tts.speak(Queue.TTS)
+            if (Queue.TTS){
+                const Volume = await IsFeatureEnabled("NewLoginNotifierTTSVolume") || 1
+                chrome.tts.speak(Queue.TTS, {volume: Volume})
+            }
 
             await sleep(3000)
         }
@@ -129,12 +132,21 @@ async function LogoutSession(Session, TTS, LogoutCurrent){
     //     chrome.tts.speak(Message.replace("\n", ". "))
     // }
 
+    let TTSMessage
+    if (TTS){
+        if (await IsFeatureEnabled("OnlyReadNewLoginNotifierTitle")){
+            TTSMessage = Title
+        } else {
+            TTSMessage = Message.replace("\n", ". ")
+        }
+    }
+
     QueueNotifications(null, {type: "basic",
     iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"),
     title: Title,
     message: Message,
     contextMessage: ShowIP && `IP: ${Session.lastAccessedIp || "Unknown"}` || "IP: HIDDEN (SETTINGS)",
-    eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)}, TTS && Message.replace("\n", ". "))
+    eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)}, TTSMessage)
 }
 
 async function FetchCurrentIP(){
@@ -221,8 +233,15 @@ async function CheckForNewSessions(){
             const Buttons = [{title: "Logout"}]
             SessionButtonNotifications[NotificationId] = {session: Session, buttons: Buttons}
 
-            //chrome.notifications.create(NotificationId, {type: "basic", buttons: Buttons, iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"), title: "New Login for Roblox", message: `A new login has been detected at ${Location}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`, contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`, eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
-            //if (TTSEnabled) chrome.tts.speak(`A new roblox login has been detected at ${Location}. Running ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`)
+            let TTSMessage
+            if (TTSEnabled){
+                if (await IsFeatureEnabled("OnlyReadNewLoginNotifierTitle")){
+                    TTSMessage = `A new roblox login has been detected at ${Location}.`
+                } else {
+                    TTSMessage = `A new roblox login has been detected at ${Location}. Running ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`
+                }
+            }
+
             QueueNotifications(NotificationId,
                 {type: "basic",
                 buttons: Buttons,
@@ -232,7 +251,7 @@ async function CheckForNewSessions(){
                 message: `A new login has been detected at ${Location}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`,
                 contextMessage: ShowIP && `IP: ${Session.lastAccessedIp || "Unknown"}` || "IP: HIDDEN (SETTINGS)",
                 eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)},
-                TTSEnabled && `A new roblox login has been detected at ${Location}. Running ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`)
+                TTSMessage)
         }
     }
 }
