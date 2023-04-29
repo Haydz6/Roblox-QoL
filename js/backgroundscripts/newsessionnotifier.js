@@ -115,8 +115,7 @@ async function LogoutSession(Session, TTS, LogoutCurrent){
 
     if (!Success && !LogoutCurrent){
         if (Response?.status == 400 && Result?.errors?.[0]?.message == "attempting to invalidate current token"){
-            LogoutSession(Session, TTS, true)
-            return
+            return await LogoutSession(Session, TTS, true)
         }
     }
 
@@ -191,12 +190,18 @@ async function CheckForNewSessions(){
     SaveKnownSessions()
 
     const StrictlyDisallowOtherIPs = await IsFeatureEnabled("StrictlyDisallowOtherIPs2")
+    let KillCurrentSession
+    const LogoutPromises = []
+
     if (StrictlyDisallowOtherIPs && CurrentIP){
         for (let i = 0; i < Sessions.length; i++){
             const Session = Sessions[i]
             const SameIP = CurrentIP == Session.lastAccessedIp
 
-            if (!SameIP) LogoutSession(Session, true)
+            if (!SameIP){
+                if (!Session.isCurrentSession) LogoutPromises.push(LogoutSession(Session, true))
+                else KillCurrentSession = Session //Gotta do this as we have to complete the other requests before logging ourselves out!
+            }
         }
     }
 
@@ -217,7 +222,7 @@ async function CheckForNewSessions(){
             let ShouldNotify = IPFailedSessions[Session.token] != true
             if (!SameIP && DisallowOtherIPs){
                 if (CurrentIP){
-                    LogoutSession(Session, true)
+                    LogoutPromises.push(LogoutSession(Session, true))
                     continue
                 } else {
                     delete KnownSessions[Session.token]
@@ -253,6 +258,11 @@ async function CheckForNewSessions(){
                 eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)},
                 TTSMessage)
         }
+    }
+
+    if (KillCurrentSession){
+        await Promise.all(LogoutPromises)
+        LogoutSession(KillCurrentSession, true)
     }
 }
 
