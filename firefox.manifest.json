@@ -46,11 +46,11 @@
                 "js/authentication/main.js",
                 "js/pages/document.js",
                 "js/pages/settings/settingsdropdown.js",
+                "js/pages/generalfixes/injectscripts.js",
                 "js/pages/generalfixes/hidedesktopbanner.js",
                 "js/pages/generalfixes/hiderobloxads.js",
                 "js/pages/generalfixes/disablefooter.js",
                 "js/pages/generalfixes/addusdtorobux.js",
-                "js/pages/generalfixes/injectscripts.js",
                 "js/pages/generalfixes/resizablechatboxes.js"
             ],
             "run_at": "document_start"
@@ -63,7 +63,8 @@
                 "js/pages/extraoutfits/createelements.js",
                 "js/pages/extraoutfits/handleconversion.js",
                 "js/pages/extraoutfits/createnormaloutfitelement.js",
-                "js/pages/extraoutfits/main.js"
+                "js/pages/extraoutfits/main.js",
+                "js/pages/extraoutfits/outfitsearch.js"
             ],
             "run_at": "document_idle"
         },
@@ -113,6 +114,18 @@
         },
         {
             "matches": [
+                "*://*.roblox.com/discover*"
+            ],
+            "css": [
+                "css/playtime.css"
+            ],
+            "js": [
+                "js/pages/generalfixes/fixcontinuecuration.js"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
                 "*://*.roblox.com/games/*"
             ],
             "js": [
@@ -124,8 +137,7 @@
                 "js/pages/serverfilters/addserverregion.js",
                 "js/pages/serverfilters/filters.js",
                 "js/pages/serverfilters/main.js",
-
-                "js/pages/quickserverinvite/injectcheckforinvite.js",
+                
                 "js/pages/quickserverinvite/createelements.js",
                 "js/pages/quickserverinvite/setinstalledidentifier.js",
                 "js/pages/quickserverinvite/main.js",
@@ -284,7 +296,7 @@
         },
         {
             "matches": [
-                "*://create.roblox.com/dashboard/creations/experiences/*/places/*"
+                "*://create.roblox.com/dashboard*"
             ],
             "js": [
                 "js/pages/generalfixes/versionhistory/download.js",
