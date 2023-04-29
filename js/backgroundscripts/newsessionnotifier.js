@@ -184,7 +184,9 @@ async function CheckForNewSessions(){
 
         if (!Session.lastAccessedIp && !GiveSessionChances[Session.token]){
             GiveSessionChances[Session.token] = true
-            Session.Ignore = true
+            Session.DoNotLogout = true
+            NewSessions.push(Session)
+            
             continue
         } else if (GiveSessionChances[Session.token]){
             delete GiveSessionChances[Session.token]
@@ -212,7 +214,7 @@ async function CheckForNewSessions(){
     if (StrictlyDisallowOtherIPs && CurrentIP){
         for (let i = 0; i < Sessions.length; i++){
             const Session = Sessions[i]
-            if (Session.Ignore) continue
+            if (Session.DoNotLogout) continue
 
             const SameIP = CurrentIP == Session.lastAccessedIp
 
@@ -239,7 +241,7 @@ async function CheckForNewSessions(){
             }
 
             let ShouldNotify = IPFailedSessions[Session.token] != true
-            if (!SameIP && DisallowOtherIPs){
+            if (!SameIP && DisallowOtherIPs && !Session.DoNotLogout){
                 if (CurrentIP){
                     LogoutPromises.push(LogoutSession(Session, true))
                     continue
