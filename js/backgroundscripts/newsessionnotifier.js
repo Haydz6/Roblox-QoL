@@ -169,7 +169,7 @@ async function CheckForNewSessions(){
     const [Success, Result] = await RequestFunc("https://apis.roblox.com/token-metadata-service/v1/sessions?nextCursor=&desiredLimit=500", "GET", null, null, true)
 
     if (!Success) return
-
+    
     const NewSessions = []
     const NewKnownSessions = {}
 
@@ -186,7 +186,7 @@ async function CheckForNewSessions(){
             GiveSessionChances[Session.token] = true
             Session.DoNotLogout = true
             NewSessions.push(Session)
-            
+
             continue
         } else if (GiveSessionChances[Session.token]){
             delete GiveSessionChances[Session.token]
