@@ -261,8 +261,7 @@ async function CheckForNewSessions(){
             QueueNotifications(NotificationId,
                 {type: "basic",
                 buttons: Buttons,
-                iconUrl:
-                chrome.runtime.getURL("img/icons/icon128x128.png"),
+                iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"),
                 title: "New Login for Roblox",
                 message: `A new login has been detected at ${Location}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`,
                 contextMessage: ShowIP && `IP: ${Session.lastAccessedIp || "Unknown"}` || "IP: HIDDEN (SETTINGS)",
@@ -293,8 +292,7 @@ async function CheckForNewSessions(){
         QueueNotifications(NotificationId,
             {type: "basic",
             buttons: Buttons,
-            iconUrl:
-            chrome.runtime.getURL("img/icons/icon128x128.png"),
+            iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"),
             title: `New Login${FirstLoadNewSessions.length > 1 ? "s" : ""} for Roblox`,
             message: `${FirstLoadNewSessions.length} new session${FirstLoadNewSessions.length > 1 ? "s" : ""} have been created while you were gone. Would you like to see them?`})
     }
@@ -320,8 +318,7 @@ chrome.notifications.onButtonClicked.addListener(async function(NotificationId, 
             QueueNotifications(NewNotificationId,
                 {type: "basic",
                 buttons: NewButtons,
-                iconUrl:
-                chrome.runtime.getURL("img/icons/icon128x128.png"),
+                iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"),
                 title: "New Login for Roblox",
                 message: `A new login has been detected at ${Location}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`,
                 contextMessage: ShowIP && `IP: ${Session.lastAccessedIp || "Unknown"}` || "IP: HIDDEN (SETTINGS)",
