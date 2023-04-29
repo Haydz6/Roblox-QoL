@@ -1,6 +1,8 @@
 let KnownSessions
+let KnownSessionsUserId
 let IPFailedSessions = {}
 const SessionButtonNotifications = {}
+const NewSessionButtonNotifications = {}
 const UsedNotificationIds = {}
 const QueuedNotifications = []
 let IsCheckingQueuedNotifications = false
@@ -50,21 +52,22 @@ async function QueueNotifications(Id, Notification, TTS){
     }
 }
 
-async function GetSavedKnownSessions(){
-    if (KnownSessions) return
+async function GetSavedKnownSessions(UserId){
+    if (KnownSessions && KnownSessionsUserId === UserId) return [false, false]
+    KnownSessionsUserId = UserId
 
-    const SavedSessions = await LocalStorage.get("KnownSessions")
+    const SavedSessions = await LocalStorage.get("KnownSessions-"+UserId)
     if (SavedSessions){
         KnownSessions = JSON.parse(SavedSessions)
-        return false
+        return [true, false]
     } else {
         KnownSessions = {}
-        return true
+        return [true, true]
     }
 }
 
-function SaveKnownSessions(){
-    LocalStorage.set("KnownSessions", JSON.stringify(KnownSessions))
+async function SaveKnownSessions(UserId){
+    LocalStorage.set("KnownSessions-"+UserId, JSON.stringify(KnownSessions))
 }
 
 async function GetLocationFromSession(Session){
@@ -157,7 +160,10 @@ async function CheckForNewSessions(){
     const Enabled = await IsFeatureEnabled("NewLoginNotifier2")
     if (!Enabled) return
 
-    const IsFirstScan = await GetSavedKnownSessions()
+    const UserId = await GetCurrentUserId()
+    if (!UserId) return
+
+    const [IsFirstLoad, IsFirstScan] = await GetSavedKnownSessions(UserId)
 
     const [Success, Result] = await RequestFunc("https://apis.roblox.com/token-metadata-service/v1/sessions?nextCursor=&desiredLimit=500", "GET", null, null, true)
 
@@ -187,7 +193,7 @@ async function CheckForNewSessions(){
     }
 
     KnownSessions = NewKnownSessions
-    SaveKnownSessions()
+    SaveKnownSessions(UserId)
 
     const StrictlyDisallowOtherIPs = await IsFeatureEnabled("StrictlyDisallowOtherIPs2")
     let KillCurrentSession
@@ -205,6 +211,7 @@ async function CheckForNewSessions(){
         }
     }
 
+    let FirstLoadNewSessions = []
     if (!IsFirstScan && NewSessions.length > 0){
         const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs2")
         const IgnoreSessionsFromSameIP = await IsFeatureEnabled("IgnoreSessionsFromSameIP")
@@ -232,6 +239,10 @@ async function CheckForNewSessions(){
             }
             if (!ShouldNotify) continue
 
+            if (IsFirstLoad){
+                FirstLoadNewSessions.push(Session)
+                continue
+            }
             const Location = await GetLocationFromSession(Session)
 
             const NotificationId = GenerateNotificationId(50)
@@ -273,7 +284,48 @@ async function CheckForNewSessions(){
         if (!PromisesFinished) LogoutSession(KillCurrentSession, true)
         PromisesFinished = true
     }
+
+    if (IsFirstLoad && FirstLoadNewSessions.length > 0){
+        const Buttons = [{title: "Show"}]
+        NewSessionButtonNotifications[NotificationId] = {sessions: FirstLoadNewSessions, buttons: Buttons}
+
+        QueueNotifications(NotificationId,
+            {type: "basic",
+            buttons: Buttons,
+            iconUrl:
+            chrome.runtime.getURL("img/icons/icon128x128.png"),
+            title: `New Login${FirstLoadNewSessions.length > 1 ? "s" : ""} for Roblox`,
+            message: `${FirstLoadNewSessions.length} new sessions have been created while you were gone. Would you like to see them?`})
+    }
 }
+
+chrome.notifications.onButtonClicked.addListener(async function(NotificationId, ButtonIndex){
+    const Notification = NewSessionButtonNotifications[NotificationId]
+    if (!Notification) return
+
+    const Button = Notification.buttons[ButtonIndex]
+    if (Button.title === "Show"){
+        const Sessions = Notification.sessions
+        for (let i = 0; i < Sessions.length; i++){
+            const Session = Sessions[i]
+            const Location = await GetLocationFromSession(Session)
+
+            const NewNotificationId = GenerateNotificationId(50)
+            const NewButtons = [{title: "Logout"}]
+            SessionButtonNotifications[NewNotificationId] = {session: Session, buttons: NewButtons}
+
+            QueueNotifications(NewNotificationId,
+                {type: "basic",
+                buttons: NewButtons,
+                iconUrl:
+                chrome.runtime.getURL("img/icons/icon128x128.png"),
+                title: "New Login for Roblox",
+                message: `A new login has been detected at ${Location}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`,
+                contextMessage: ShowIP && `IP: ${Session.lastAccessedIp || "Unknown"}` || "IP: HIDDEN (SETTINGS)",
+                eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
+        }
+    }
+})
 
 chrome.notifications.onButtonClicked.addListener(async function(NotificationId, ButtonIndex){
     const Notification = SessionButtonNotifications[NotificationId]
@@ -295,6 +347,7 @@ chrome.notifications.onClicked.addListener(function(NotificationId){
 chrome.notifications.onClosed.addListener(function(NotificationId, byUser){
     if (byUser){
         delete SessionButtonNotifications[NotificationId]
+        delete NewSessionButtonNotifications[NotificationId]
         delete TradeNotifications[NotificationId]
         delete UsedNotificationIds[NotificationId]
     }
