@@ -287,6 +287,7 @@ async function CheckForNewSessions(){
 
     if (IsFirstLoad && FirstLoadNewSessions.length > 0){
         const Buttons = [{title: "Show"}]
+        const NotificationId = GenerateNotificationId(50)
         NewSessionButtonNotifications[NotificationId] = {sessions: FirstLoadNewSessions, buttons: Buttons}
 
         QueueNotifications(NotificationId,
@@ -295,7 +296,7 @@ async function CheckForNewSessions(){
             iconUrl:
             chrome.runtime.getURL("img/icons/icon128x128.png"),
             title: `New Login${FirstLoadNewSessions.length > 1 ? "s" : ""} for Roblox`,
-            message: `${FirstLoadNewSessions.length} new sessions have been created while you were gone. Would you like to see them?`})
+            message: `${FirstLoadNewSessions.length} new session${FirstLoadNewSessions.length > 1 ? "s" : ""} have been created while you were gone. Would you like to see them?`})
     }
 }
 
@@ -306,6 +307,8 @@ chrome.notifications.onButtonClicked.addListener(async function(NotificationId, 
     const Button = Notification.buttons[ButtonIndex]
     if (Button.title === "Show"){
         const Sessions = Notification.sessions
+        const ShowIP = await IsFeatureEnabled("ShowIPOnNewSession")
+
         for (let i = 0; i < Sessions.length; i++){
             const Session = Sessions[i]
             const Location = await GetLocationFromSession(Session)
