@@ -1,6 +1,7 @@
 let KnownSessions
 let KnownSessionsUserId
 let IPFailedSessions = {}
+const GiveSessionChances = {}
 const SessionButtonNotifications = {}
 const NewSessionButtonNotifications = {}
 const UsedNotificationIds = {}
@@ -180,6 +181,15 @@ async function CheckForNewSessions(){
 
     for (let i = 0; i < Sessions.length; i++){
         const Session = Sessions[i]
+
+        if (!Session.lastAccessedIp && !GiveSessionChances[Session.token]){
+            GiveSessionChances[Session.token] = true
+            Session.Ignore = true
+            continue
+        } else if (GiveSessionChances[Session.token]){
+            delete GiveSessionChances[Session.token]
+        }
+
         if (!KnownSessions[Session.token] && !Session.isCurrentSession){
             if (!Session.isCurrentSession) NewSessions.push(Session)
         }
@@ -202,6 +212,8 @@ async function CheckForNewSessions(){
     if (StrictlyDisallowOtherIPs && CurrentIP){
         for (let i = 0; i < Sessions.length; i++){
             const Session = Sessions[i]
+            if (Session.Ignore) continue
+
             const SameIP = CurrentIP == Session.lastAccessedIp
 
             if (!SameIP){
