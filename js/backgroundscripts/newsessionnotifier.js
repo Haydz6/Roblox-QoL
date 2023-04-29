@@ -261,8 +261,17 @@ async function CheckForNewSessions(){
     }
 
     if (KillCurrentSession){
+        let PromisesFinished = false
+        setTimeout(function(){
+            if (!PromisesFinished){
+                PromisesFinished = true
+                LogoutSession(KillCurrentSession, true)
+            }
+        }, 3*1000) //Wait for all promises with 3 second timeout
+
         await Promise.all(LogoutPromises)
-        LogoutSession(KillCurrentSession, true)
+        if (!PromisesFinished) LogoutSession(KillCurrentSession, true)
+        PromisesFinished = true
     }
 }
 
