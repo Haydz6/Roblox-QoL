@@ -12,6 +12,8 @@ function CreateHeaderAndValueForHover(HoverElement, HeaderText, ValueText){
 
     HoverElement.appendChild(Header)
     HoverElement.appendChild(Value)
+
+    return Value
 }
 
 function CreateInfoDiv(){
@@ -65,7 +67,7 @@ function CreateServerInfo(Element, Server){
     }
 
     CreateHeaderAndValueForHover(HoverElement, "Server Region", Server.Region)
-    CreateHeaderAndValueForHover(HoverElement, "Uptime", SecondsToLength((Date.now()/1000)-Server.CreatedTimestamp))
+    const UptimeLabel = CreateHeaderAndValueForHover(HoverElement, "Uptime", SecondsToLength((Date.now()/1000)-Server.CreatedTimestamp))
     CreateHeaderAndValueForHover(HoverElement, "Version Date", Server.Version === 0 && "Unknown" || TimestampToDate(Server.Version, false))
 
     SetVisibility(false)
@@ -73,8 +75,13 @@ function CreateServerInfo(Element, Server){
     let RegionLabelHovered = false
     let HoverElementHovered = false
 
-    function UpdateVisiblity(){
+    async function UpdateVisiblity(){
         SetVisibility(RegionLabelHovered || HoverElementHovered)
+
+        while (RegionLabelHovered || HoverElementHovered){
+            UptimeLabel.innerText = SecondsToLength((Date.now()/1000)-Server.CreatedTimestamp)
+            await sleep(250)
+        }
     }
 
     RegionLabel.addEventListener("mouseenter", function(){
