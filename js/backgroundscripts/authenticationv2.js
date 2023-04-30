@@ -37,18 +37,9 @@ async function GetAuthKey(){
         return CachedAuthKey
     }
 
-    const [Success, Result] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"metadata", "GET")
     FetchingAuthKey = false
 
-    if (!Success){
-        return await GetAuthKeyV2()
-    }
-
-    if (Result.Version == 1){
-        return await GetAuthKeyV1()
-    } else if (Result.Version >= 2){
-        return await GetAuthKeyV2()
-    }
+    return await GetAuthKeyV2()
 }
 
 async function GetAuthKeyV2(){

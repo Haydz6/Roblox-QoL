@@ -6,7 +6,7 @@ const WebServerEndpoints = {Configuration: WebServerURL+"api/config/", Playtime:
 
 const ManifestVersion = chrome.runtime.getManifest()["manifest_version"]
 
-const EnabledFeatures = {OnlyReadNewLoginNotifierTitle: true, NewLoginNotifierTTSVolume: 0.6, ResizableChatBoxes: true, ShowStateAndCountryOnNewSessionOnly: true, ShowIPOnNewSession: false, StrictlyDisallowOtherIPs2: false, IgnoreSessionsFromSameIP: false, DisallowOtherIPs2: false, NewLoginNotifierTTS2: true, NewLoginNotifier2: true, FixContinueCuration: true, OutfitSearchbar: true, DetailedGroupTranscationSummary: true, ValueAndCategoriesOnOffer: true, AutodeclineLowTradeValue: false, AutodeclineLowTradeValueThreshold: 0, ShowSimilarUGCItems: false, Currency: "USD", AddUSDToRobux: true, ShowUSDOnAsset: true, AddSales: true, AddCreationDate: true, CountBadges: true, ShowValueOnTrade: true, ShowDemandOnTrade: true, ShowSummaryOnTrade: true, AddDownloadButtonToNewVersionHistory: true, AutodeclineOutboundTradeValue: false, AutodeclineOutboundTradeValueThreshold: 50, AutodeclineTradeValue: false, AutodeclineTradeValueThreshold: 50, Playtime: true, TradeNotifier: true, QuickDecline: true, QuickCancel: true, ProfileThemes: false, HideFooter: false, HideRobloxAds: false, MoveHomeFavouritesToThirdRow: true, HideDesktopAppBanner: true, RapOnProfile: true, ValueOnProfile: true, ValueDemandOnItem: true, ValuesOnOverview: true, RecentServers: true, TradeFilters: true, Mutuals2: true, ExploreAsset: false, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing3: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
+const EnabledFeatures = {GameFolders: true, OnlyReadNewLoginNotifierTitle: true, NewLoginNotifierTTSVolume: 0.6, ResizableChatBoxes: true, ShowStateAndCountryOnNewSessionOnly: true, ShowIPOnNewSession: false, StrictlyDisallowOtherIPs2: false, IgnoreSessionsFromSameIP: false, DisallowOtherIPs2: false, NewLoginNotifierTTS2: true, NewLoginNotifier2: true, FixContinueCuration: true, OutfitSearchbar: true, DetailedGroupTranscationSummary: true, ValueAndCategoriesOnOffer: true, AutodeclineLowTradeValue: false, AutodeclineLowTradeValueThreshold: 0, ShowSimilarUGCItems: false, Currency: "USD", AddUSDToRobux: true, ShowUSDOnAsset: true, AddSales: true, AddCreationDate: true, CountBadges: true, ShowValueOnTrade: true, ShowDemandOnTrade: true, ShowSummaryOnTrade: true, AddDownloadButtonToNewVersionHistory: true, AutodeclineOutboundTradeValue: false, AutodeclineOutboundTradeValueThreshold: 50, AutodeclineTradeValue: false, AutodeclineTradeValueThreshold: 50, Playtime: true, TradeNotifier: true, QuickDecline: true, QuickCancel: true, ProfileThemes: false, HideFooter: false, HideRobloxAds: false, MoveHomeFavouritesToThirdRow: true, HideDesktopAppBanner: true, RapOnProfile: true, ValueOnProfile: true, ValueDemandOnItem: true, ValuesOnOverview: true, RecentServers: true, TradeFilters: true, Mutuals2: true, ExploreAsset: false, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing3: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, LiveExperienceStats: true, ServerRegions: true}
 let AreEnabledFeaturesFetched = false
 
 let ROBLOSECURITY
@@ -102,61 +102,6 @@ async function GetCurrentUserId(){
 
 async function SetFavouriteGame(UniverseId, Favourited){
     return RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "POST", undefined, JSON.stringify({isFavorited: Favourited}), true)
-}
-
-async function GetAuthKeyV1(){
-    while (FetchingAuthKey){
-        await sleep(100)
-    }
-    
-    if (CachedAuthKey != ""){
-        return CachedAuthKey
-    }
-
-    FetchingAuthKey = true
-    StoredKey = await LocalStorage.get("AuthKey")
-    
-    if (StoredKey){
-        CachedAuthKey = StoredKey
-        FetchingAuthKey = false
-        return CachedAuthKey
-    }
-    
-    const [GetFavoriteSuccess, FavoriteResult] = await RequestFunc(WebServerEndpoints.Authentication+"fetch", "POST", undefined, JSON.stringify({UserId: parseInt(await GetCurrentUserId())}))
-    
-    if (!GetFavoriteSuccess){
-        FetchingAuthKey = false
-        return CachedAuthKey
-    }
-    
-    UniverseId = FavoriteResult.UniverseId
-    
-    const [FavouriteSuccess] = await SetFavouriteGame(UniverseId, true)
-    
-    if (!FavouriteSuccess){
-        FetchingAuthKey = false
-        return CachedAuthKey
-    }
-    
-    const [ServerSuccess, ServerResult] = await RequestFunc(WebServerEndpoints.Authentication+"verify", "POST", undefined, JSON.stringify({UserId: parseInt(await GetCurrentUserId())}))
-    
-    if (ServerSuccess){
-        CachedAuthKey = ServerResult.Key
-        LocalStorage.set("AuthKey", CachedAuthKey)
-    }
-    
-    new Promise(async function(){
-        while (true){
-            const [FavSuccess] = await SetFavouriteGame(UniverseId, false)
-    
-            if (FavSuccess) break
-            await sleep(1000)
-        }
-    })
-    
-    FetchingAuthKey = false
-    
-    return CachedAuthKey
 }
 
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){
