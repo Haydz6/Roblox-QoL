@@ -47,13 +47,13 @@ function CreateCSVUpload(){
     Label.setAttribute("for", "uploadCSV")
     Label.className = "csv-upload-button"
     Label.innerText = "Upload CSV Instead"
-    Label.setAttribute("accept", ".csv")
 
     const Input = document.createElement("input")
     Input.style = "display: none;"
     Input.type = "file"
     Input.id = "uploadCSV"
     Input.name = "filename"
+    Input.setAttribute("accept", ".csv")
 
     Form.append(Label, Input)
     Container.appendChild(Form)
