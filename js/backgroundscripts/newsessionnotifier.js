@@ -152,8 +152,11 @@ async function FetchCurrentIP(){
 }
 
 async function CheckForNewSessions(){
-    const Enabled = await IsFeatureEnabled("NewLoginNotifier3")
-    if (!Enabled) return
+    const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs2")
+    const NotificationEnabled = await IsFeatureEnabled("NewLoginNotifier3")
+    const StrictlyDisallowOtherIPs = await IsFeatureEnabled("StrictlyDisallowOtherIPs2")
+    const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS3")
+    if (!NotificationEnabled && !DisallowOtherIPs && !StrictlyDisallowOtherIPs && !TTSEnabled) return
 
     const UserId = await GetCurrentUserId()
     if (!UserId) return
@@ -197,7 +200,6 @@ async function CheckForNewSessions(){
     KnownSessions = NewKnownSessions
     SaveKnownSessions(UserId)
 
-    const StrictlyDisallowOtherIPs = await IsFeatureEnabled("StrictlyDisallowOtherIPs2")
     let KillCurrentSession
     const LogoutPromises = []
 
@@ -217,9 +219,7 @@ async function CheckForNewSessions(){
 
     let FirstLoadNewSessions = []
     if (!IsFirstScan && NewSessions.length > 0){
-        const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs2")
         const IgnoreSessionsFromSameIP = await IsFeatureEnabled("IgnoreSessionsFromSameIP")
-        const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS3")
         const ShowIP = await IsFeatureEnabled("ShowIPOnNewSession")
         
         for (let i = 0; i < NewSessions.length; i++){
