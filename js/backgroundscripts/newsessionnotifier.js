@@ -186,9 +186,7 @@ async function CheckForNewSessions(){
             delete GiveSessionChances[Session.token]
         }
 
-        if (!KnownSessions[Session.token] && !Session.isCurrentSession){
-            if (!Session.isCurrentSession) NewSessions.push(Session)
-        }
+        if (!KnownSessions[Session.token] && !Session.isCurrentSession) NewSessions.push(Session)
         NewKnownSessions[Session.token] = true
     }
     
