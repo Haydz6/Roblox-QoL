@@ -168,12 +168,15 @@ const LocalStorage = {set: function(key, value){
 chrome.cookies.onChanged.addListener(function(Change){
     const Cookie = Change.cookie
     if (Cookie.domain.search("roblox.com") > -1 && Cookie.httpOnly && Cookie.name === ".ROBLOSECURITY"){
-        UserId = null
+        LocalStorage.remove("AuthKey").then(function(){
+            UserId = null
+            CachedAuthKey = ""
 
-        if (!Change.removed){
-            console.log("userid update")
-            GetCurrentUserId()
-        }
+            if (!Change.removed){
+                console.log("userid update")
+                GetCurrentUserId()
+            }
+        })
     }
 })
 

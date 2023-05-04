@@ -129,12 +129,6 @@ async function LogoutSession(Session, TTS, LogoutCurrent){
     let Message = `${Success && "Logged" || "Failed to log"} out of${LogoutCurrent && " current" || ""} session at ${await GetLocationFromSession(Session)}\nRunning ${GetBrowserFromSession(Session)} on ${Session.agent?.os || "Unknown OS"}`
     if (!Success) Message += `\n${Response?.status || "Unknown"} ${Response?.statusText || "Unknown"}`
 
-    //chrome.notifications.create(null, {type: "basic", iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"), title: Title, message: Message, contextMessage: `IP: ${Session.lastAccessedIp || "Unknown"}`, eventTime: Session.lastAccessedTimestampEpochMilliseconds && parseInt(Session.lastAccessedTimestampEpochMilliseconds)})
-
-    // if (TTS){
-    //     chrome.tts.speak(Message.replace("\n", ". "))
-    // }
-
     let TTSMessage
     if (TTS){
         if (await IsFeatureEnabled("OnlyReadNewLoginNotifierTitle")){
@@ -196,8 +190,6 @@ async function CheckForNewSessions(){
             if (!Session.isCurrentSession) NewSessions.push(Session)
         }
         NewKnownSessions[Session.token] = true
-
-        //if (Session.isCurrentSession) CurrentIP = Session.lastAccessedIp
     }
     
     if (CurrentIP){
