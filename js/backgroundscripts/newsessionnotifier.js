@@ -158,17 +158,16 @@ async function FetchCurrentIP(){
 }
 
 async function CheckForNewSessions(){
-    const Enabled = await IsFeatureEnabled("NewLoginNotifier2")
+    const Enabled = await IsFeatureEnabled("NewLoginNotifier3")
     if (!Enabled) return
 
     const UserId = await GetCurrentUserId()
     if (!UserId) return
 
-    const [IsFirstLoad, IsFirstScan] = await GetSavedKnownSessions(UserId)
-
     const [Success, Result] = await RequestFunc("https://apis.roblox.com/token-metadata-service/v1/sessions?nextCursor=&desiredLimit=500", "GET", null, null, true)
-
     if (!Success) return
+
+    const [IsFirstLoad, IsFirstScan] = await GetSavedKnownSessions(UserId)
     
     const NewSessions = []
     const NewKnownSessions = {}
@@ -182,13 +181,14 @@ async function CheckForNewSessions(){
     for (let i = 0; i < Sessions.length; i++){
         const Session = Sessions[i]
 
-        if (!Session.lastAccessedIp && !GiveSessionChances[Session.token]){
-            GiveSessionChances[Session.token] = true
+        if (!KnownSessions[Session.token] && !Session.lastAccessedIp && !GiveSessionChances[Session.token]){
+            GiveSessionChances[Session.token] = {DoNotAlert: IsFirstLoad}
             Session.DoNotLogout = true
             NewSessions.push(Session)
 
             continue
         } else if (GiveSessionChances[Session.token]){
+            Session.DoNotAlert = GiveSessionChances[Session.token].DoNotAlert
             delete GiveSessionChances[Session.token]
         }
 
@@ -229,7 +229,7 @@ async function CheckForNewSessions(){
     if (!IsFirstScan && NewSessions.length > 0){
         const DisallowOtherIPs = await IsFeatureEnabled("DisallowOtherIPs2")
         const IgnoreSessionsFromSameIP = await IsFeatureEnabled("IgnoreSessionsFromSameIP")
-        const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS2")
+        const TTSEnabled = await IsFeatureEnabled("NewLoginNotifierTTS3")
         const ShowIP = await IsFeatureEnabled("ShowIPOnNewSession")
         
         for (let i = 0; i < NewSessions.length; i++){
@@ -257,6 +257,8 @@ async function CheckForNewSessions(){
                 FirstLoadNewSessions.push(Session)
                 continue
             }
+            if (Session.DoNotAlert) continue
+
             const Location = await GetLocationFromSession(Session)
 
             const NotificationId = GenerateNotificationId(50)
