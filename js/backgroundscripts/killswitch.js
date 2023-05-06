@@ -17,7 +17,7 @@ async function FetchKilledFeatures(){
         FeatureKilledFails++
 
         if (!FeatureKilledStatus){
-            const Cache = LocalStorage.get("KilledFeatures")
+            const Cache = await LocalStorage.get("KilledFeatures")
             if (Cache){
                 FeatureKilledStatus = JSON.parse(Cache)
                 return
