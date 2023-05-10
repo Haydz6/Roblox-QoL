@@ -32,21 +32,42 @@ const Settings = {
                 async function CheckLogin(){
                     const Info = await chrome.runtime.sendMessage({type: "GetDiscordInfo"})
 
-                    if (!Info){
-                        Label.innerText = "Click here to login."
-                        Label.href = "https://discord.com/app"
+                    if (Info == undefined){
+                        Label.innerText = "(Click here to login)"
                         SetAvatar()
                     } else {
-                        Label.innerText = `${Info.Name}#${Info.Discriminator}`
-                        Label.href = "https://discord.com/app"
-                        SetAvatar(Info)
+                        if (Info === false){
+                            Label.innerText = "(Connected to external)"
+                        } else {
+                            Label.innerText = `${Info.Name}#${Info.Discriminator}`
+                        }
                     }
+
+                    Label.href = "https://discord.com/app"
+                    SetAvatar(Info)
                 }
 
                 setInterval(CheckLogin, 1*1000)
                 CheckLogin()
             }
         },
+        ExternalDiscordPresence: {
+            Title: "External Discord Presence",
+            Description: "Displays what you are playing and join button on discord. (Requires external program, does not have same limitations as browser version)",
+            Run: async function(Title){
+                async function CheckConnected(){
+                    const Connected = await chrome.runtime.sendMessage({type: "DiscordExternalConnected"})
+                    Title.innerText = `External Discord Presence (${Connected ? "Connected" : "Not Connected"})`
+                }
+
+                setInterval(CheckConnected, 1*1000)
+                CheckConnected()
+            }
+        },
+        DiscordPresenceJoin: {
+            Title: "Show Join Button",
+            Description: "Adds join button to presence to allow other users to join you."
+        }
     },
     Features: {
         ExtraOutfits: {

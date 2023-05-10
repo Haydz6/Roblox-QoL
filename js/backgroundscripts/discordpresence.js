@@ -17,8 +17,28 @@ async function CloseDiscord(){
     }
 }
 
+async function GetPlaceInfo(PlaceId){
+    const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/multiget-place-details?placeIds=${PlaceId}`, "GET", null, null, true)
+
+    if (!Success) return [false]
+    return [true, Result[0]]
+}
+
+async function GetUniverseThumbnail(UniverseId){
+    const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${UniverseId}&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false`, "GET", null, null, true)
+    if (!Success) return "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/512/512/Image/Png"
+    return Result.data[0].imageUrl
+}
+
+async function ImageUrlToExternalDiscord(ImageUrl){
+    const [Success, Result] = await RequestFunc("https://canary.discord.com/api/v9/applications/1105722413905346660/external-assets", "POST", {"Content-Type": "application/json", "Authorization": DiscordToken}, JSON.stringify({urls: [ImageUrl]}))
+
+    if (!Success) return "1105722509627772958"
+    return "mp:"+Result[0].external_asset_path
+}
+
 async function OpenDiscord(Resume){
-    if (!Resume && (DiscordLoggedIn || !await GetDiscordToken())) return
+    if (!await IsFeatureEnabled("DiscordPresence") || ExternalDiscordLoggedIn || (!Resume && (DiscordLoggedIn || !await GetDiscordToken()))) return
 
     const ws = new WebSocket(Resume?.url || "wss://gateway.discord.gg/?v=10&encoding=json")
     DiscordWS = ws
@@ -47,29 +67,13 @@ async function OpenDiscord(Resume){
     let PlaceId = 0
     let JobId = ""
     let StartedPlaying = 0
-
-    async function GetPlaceInfo(PlaceId){
-        const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/multiget-place-details?placeIds=${PlaceId}`, "GET", null, null, true)
-
-        if (!Success) return [false]
-        return [true, Result[0]]
-    }
-
-    async function GetUniverseThumbnail(UniverseId){
-        const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${UniverseId}&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false`, "GET", null, null, true)
-        if (!Success) return "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/512/512/Image/Png"
-        return Result.data[0].imageUrl
-    }
-
-    async function ImageUrlToExternalDiscord(ImageUrl){
-        const [Success, Result] = await RequestFunc("https://canary.discord.com/api/v9/applications/1005469189907173486/external-assets", "POST", {"Content-Type": "application/json", "Authorization": DiscordToken}, JSON.stringify({urls: [ImageUrl]}))
-    
-        if (!Success) return "1105460088052912208"
-        return "mp:"+Result[0].external_asset_path
-    }
+    let LastJoinButtonState = await IsFeatureEnabled("DiscordPresenceJoin")
 
     async function UpdatePresence(){
-        if (LastPlaceId != PlaceId || LastJobId != JobId){
+        let JoinButtonEnabled = await IsFeatureEnabled("DiscordPresenceJoin")
+
+        if (LastPlaceId != PlaceId || LastJobId != JobId || (LastPlaceId != 0 && JoinButtonEnabled != LastJoinButtonState)){
+            LastJoinButtonState = JoinButtonEnabled
             if (LastPlaceId == 0){
                 JobId = LastJobId
                 PlaceId = LastPlaceId
@@ -89,9 +93,9 @@ async function OpenDiscord(Resume){
             const [Success, Result] = await GetPlaceInfo(LastPlaceId)
             if (!Success) return
 
+            if (LastPlaceId != PlaceId || LastJobId != JobId) StartedPlaying = Date.now()
             JobId = LastJobId
             PlaceId = LastPlaceId
-            StartedPlaying = Date.now()
 
             const ThumbnailURL = await ImageUrlToExternalDiscord(await GetUniverseThumbnail(Result.universeId))
             let GameName = Result.name
@@ -100,6 +104,13 @@ async function OpenDiscord(Resume){
 
             if (GameName.length < 2) {
                 GameName = GameName+"\x2800\x2800\x2800" //Fix from github.com/pizzaboxer/bloxstrap/blob/main/Bloxstrap/Integrations/DiscordRichPresence.cs
+            }
+
+            const Buttons = ["View Game"]
+            const ButtonUrls = [`https://www.roblox.com/games/${PlaceId}`]
+            if (JoinButtonEnabled){
+                Buttons.unshift("Join")
+                ButtonUrls.unshift(`roblox://experiences/start?placeId=${PlaceId}&gameInstanceId=${JobId}`)
             }
 
             Send({
@@ -111,15 +122,15 @@ async function OpenDiscord(Resume){
                         "type": 0,
                         "instance": true,
                         "created_at": StartedPlaying,
-                        "application_id": "1099579535135101029",
+                        "application_id": "1105722413905346660",
                         "details": GameName,
-                        "buttons": ["Join", "View Game"],
-                        "metadata": {"button_urls": [`roblox://experiences/start?placeId=${PlaceId}&gameInstanceId=${JobId}`, `https://www.roblox.com/games/${PlaceId}`]},
+                        "buttons": Buttons,
+                        "metadata": {"button_urls": ButtonUrls},
                         "state": `by ${OwnerName}${IsVerified ? " ☑️" : ""}`,
                         "assets": {
                                     "large_text": GameName,
                                     "large_image": ThumbnailURL,
-                                    "small_image": "1105431743290417244",
+                                    "small_image": "1105722508038115438",
                                     "small_text": "Roblox"
                                 },
                         "timestamps": {
@@ -135,6 +146,7 @@ async function OpenDiscord(Resume){
 
     let HeartbeatId
     let HeartbeatTimeoutId
+    let UpdatePresenceId
     let LastSequence
     let ShouldReconnect = false
     let SessionId
@@ -188,11 +200,16 @@ async function OpenDiscord(Resume){
         DiscordLoggedIn = true
         await Login()
 
-        setInterval(UpdatePresence, 5*1000)
+        UpdatePresenceId = setInterval(UpdatePresence, 5*1000)
     }
 
     const ReconnectCodes = [4000, 4001, 4002, 4003, 4005, 4007, 4008, 4009]
     ws.onclose = async function(event){
+        DiscordInfo = null
+        if (UpdatePresenceId){
+            clearInterval(UpdatePresenceId)
+            UpdatePresenceId = null
+        }
         if (HeartbeatTimeoutId){
             clearTimeout(HeartbeatTimeoutId)
             HeartbeatTimeoutId = null
@@ -227,8 +244,8 @@ BindToOnMessage("NewDiscordToken", false, function(Result){
 })
 
 BindToOnMessage("GetDiscordInfo", false, function(){
-    console.log(DiscordInfo)
-    return DiscordInfo
+    if (DiscordInfo) return DiscordInfo
+    if (ExternalDiscordLoggedIn) return false
 })
 
-OpenDiscord()
+setTimeout(OpenDiscord, 1000)
