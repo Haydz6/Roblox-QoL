@@ -1,4 +1,53 @@
 const Settings = {
+    Discord: {
+        DiscordPresence: {
+            Title: "Discord Presence",
+            Description: "Displays what you are playing and join button on discord. (You will not be able to see your own presence if you already have activity, this is a discord limitation)\nUses the account logged into the browser version.",
+            Run: async function(Title){
+                const Avatar = document.createElement("span")
+                Avatar.className = "avatar avatar-headshot-xs user"
+                Avatar.style = "display: none; margin-left: 10px; height: 23px; width: 23px;"
+
+                const ThumbnailContainer = document.createElement("span")
+                ThumbnailContainer.className = "thumbnail-2d-container avatar-card-image"
+
+                const Image = document.createElement("img")
+                ThumbnailContainer.appendChild(Image)
+                Avatar.appendChild(ThumbnailContainer)
+
+                const Label = document.createElement("a")
+                Label.style = "margin-left: 7px;"
+                Label.target = "_blank"
+                Title.append(Avatar, Label)
+
+                function SetAvatar(Info){
+                    if (Info){
+                        Image.src = `https://cdn.discordapp.com/avatars/${Info.Id}/${Info.Avatar}.webp?size=80`
+                        Avatar.style.display = "inline-flex"
+                    } else {
+                        Avatar.style.display = "none"
+                    }
+                }
+
+                async function CheckLogin(){
+                    const Info = await chrome.runtime.sendMessage({type: "GetDiscordInfo"})
+
+                    if (!Info){
+                        Label.innerText = "Click here to login."
+                        Label.href = "https://discord.com/app"
+                        SetAvatar()
+                    } else {
+                        Label.innerText = `${Info.Name}#${Info.Discriminator}`
+                        Label.href = "https://discord.com/app"
+                        SetAvatar(Info)
+                    }
+                }
+
+                setInterval(CheckLogin, 1*1000)
+                CheckLogin()
+            }
+        },
+    },
     Features: {
         ExtraOutfits: {
             Title: "Extra Outfits",
@@ -252,11 +301,11 @@ const Settings = {
         },
     },
     Security: {
-        NewLoginNotifier2: {
+        NewLoginNotifier3: {
             Title: "Notification on new login",
             Description: "Sends notification to browser when a new login is detected. It includes the location, os, browser and IP of the login."
         },
-        NewLoginNotifierTTS2: {
+        NewLoginNotifierTTS3: {
             Title: "TTS Notification on new login",
             Description: "Uses text to speech to say location, os and browser.",
             Supported: async function(){
@@ -344,6 +393,8 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
                 SetFeatureEnabled(feature, NewValue)
             })
             else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled, IsSupported)
+
+            if (info.Run) info.Run(Section.getElementsByTagName("label")[0], Section.getElementsByClassName("text-description")[0])
 
             let TitleIndex = 0
             let OptionsChildren = OptionsList.children

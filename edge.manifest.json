@@ -56,6 +56,15 @@
     "content_scripts": [
         {
             "matches": [
+                "*://*.discord.com/*"
+            ],
+            "js": [
+                "js/pages/discord/fetchtoken.js"
+            ],
+            "run_at": "document_start"
+        },
+        {
+            "matches": [
                 "*://*.roblox.com/*"
             ],
             "js": [

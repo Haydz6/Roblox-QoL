@@ -31,6 +31,7 @@ function GenerateNotificationId(Length){
 async function QueueNotifications(Id, Notification, TTS){
     if (ManifestVersion == 2) delete Notification.buttons
     if (!chrome.tts) TTS = undefined
+    if (!Notification && !TTS) return
     //Firefox does not support buttons nor TTS
 
     QueuedNotifications.push({Id: Id, Notification: Notification, TTS: TTS})
@@ -40,7 +41,7 @@ async function QueueNotifications(Id, Notification, TTS){
 
         while (QueuedNotifications.length > 0){
             const Queue = QueuedNotifications.splice(0, 1)[0]
-            chrome.notifications.create(Queue.Id, Queue.Notification)
+            if (Queue.Notification) chrome.notifications.create(Queue.Id, Queue.Notification)
             if (Queue.TTS){
                 const Volume = await IsFeatureEnabled("NewLoginNotifierTTSVolume") || 1
                 chrome.tts.speak(Queue.TTS, {volume: Volume})
@@ -265,7 +266,7 @@ async function CheckForNewSessions(){
             }
 
             QueueNotifications(NotificationId,
-                {type: "basic",
+                NotificationEnabled && {type: "basic",
                 buttons: Buttons,
                 iconUrl: chrome.runtime.getURL("img/icons/icon128x128.png"),
                 title: "New Login for Roblox",
