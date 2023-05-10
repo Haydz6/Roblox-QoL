@@ -2,6 +2,12 @@ let ExternalDiscordLoggingIn = false
 let ExternalDiscordLoggedIn = false
 let ExternalDiscordWS
 
+function UpdateExternalDiscordCookie(Cookie){
+    if (ExternalDiscordLoggedIn){
+        ExternalDiscordWS.send(JSON.stringify({Authentication: Cookie}))
+    }
+}
+
 async function OpenExternalDiscord(Tries){
     if (!await IsFeatureEnabled("ExternalDiscordPresence") || ExternalDiscordLoggedIn || ExternalDiscordLoggingIn) return
 
@@ -23,27 +29,21 @@ async function OpenExternalDiscord(Tries){
 
     let PlaceId = 0
     let JobId = ""
+    let InGame = false
     let StartedPlaying = 0
     let LastJoinButtonState = await IsFeatureEnabled("DiscordPresenceJoin")
 
     async function UpdatePresence(){
         let JoinButtonEnabled = await IsFeatureEnabled("DiscordPresenceJoin")
 
-        if (LastPlaceId != PlaceId || LastJobId != JobId || (LastPlaceId != 0 && JoinButtonEnabled != LastJoinButtonState)){
+        if (LastInGame != InGame || LastPlaceId != PlaceId || LastJobId != JobId || (LastPlaceId != 0 && JoinButtonEnabled != LastJoinButtonState)){
             LastJoinButtonState = JoinButtonEnabled
-            if (LastPlaceId == 0){
+            if (!LastInGame || LastPlaceId == 0){
                 JobId = LastJobId
                 PlaceId = LastPlaceId
+                InGame = LastInGame
 
-                Send({
-                    "op": 3,
-                    "d": {
-                        "since": StartedPlaying,
-                        "activities": [],
-                        "status": "online",
-                        "afk": false
-                    }
-                })
+                Send({})
                 return
             }
 
@@ -53,6 +53,7 @@ async function OpenExternalDiscord(Tries){
             if (LastPlaceId != PlaceId || LastJobId != JobId) StartedPlaying = new Date().toISOString()
             JobId = LastJobId
             PlaceId = LastPlaceId
+            InGame = LastInGame
 
             const ThumbnailURL = await GetUniverseThumbnail(Result.universeId)
             let GameName = Result.name
@@ -69,18 +70,20 @@ async function OpenExternalDiscord(Tries){
             }
 
             Send({
-                "Activity": {
-                        "Details": GameName,
-                        "Buttons": Buttons,
-                        "State": `by ${OwnerName}${IsVerified ? " ☑️" : ""}`,
-                        "LargeText": GameName,
-                        "LargeImage": ThumbnailURL,
-                        "SmallImage": "https://cdn.discordapp.com/app-assets/1105722413905346660/1105722508038115438.png",
-                        "SmallText": "Roblox",
-                        "Timestamps": {
-                            "Start": StartedPlaying
+                Activity: {
+                        Details: GameName,
+                        Buttons: Buttons,
+                        State: `by ${OwnerName}${IsVerified ? " ☑️" : ""}`,
+                        LargeText: GameName,
+                        LargeImage: ThumbnailURL,
+                        SmallImage: "https://cdn.discordapp.com/app-assets/1105722413905346660/1105722508038115438.png",
+                        SmallText: "Roblox",
+                        Timestamps: {
+                            Start: StartedPlaying
                         },
-                    }
+                    },
+                PlaceId: PlaceId,
+                JobId: JobId
             })
         }
     }
@@ -90,6 +93,7 @@ async function OpenExternalDiscord(Tries){
         ExternalDiscordLoggedIn = true
         ExternalDiscordLoggingIn = false
         PresenceIntervalId = setInterval(UpdatePresence, 5*1000)
+        ExternalDiscordWS.send(JSON.stringify({Authentication: ROBLOSECURITY}))
         CloseDiscord()
     }
 
@@ -104,6 +108,21 @@ async function OpenExternalDiscord(Tries){
         ExternalDiscordWS = null
 
         if (err.code === 1006 && Tries <= 4) return OpenExternalDiscord(Tries + 1)
+    }
+
+    ExternalDiscordWS.onmessage = function(Message){
+        let Result
+        try {
+            Result = JSON.parse(Message.data)
+        } catch {}
+
+        if (!Result?.Type) return //Heartbeat
+        if (Result.Type == "Timestamp"){
+            InGame = true
+            PlaceId = Result.PlaceId
+            JobId = Result.JobId
+            StartedPlaying = new Date(Result.Timestamp).toISOString()
+        }
     }
 }
 

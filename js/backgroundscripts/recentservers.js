@@ -18,6 +18,7 @@ let AllRecentServers
 let LastRecentServerSuccess = Date.now()
 let LastPlaceId = 0
 let LastJobId = ""
+let LastInGame = false
 
 let UpdateInt = 3
 
@@ -70,6 +71,7 @@ async function UpdateRecentServer(){
     }
 
     LastRecentServerSuccess = Date.now()
+    LastInGame = Presence.userPresenceType === 2
 
     //Check if player has left server
     if (Presence.userPresenceType !== 2 && LastPlaceId !== 0){
