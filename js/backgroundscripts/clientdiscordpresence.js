@@ -28,6 +28,7 @@ async function OpenExternalDiscord(Tries){
     }
 
     let PlaceId = 0
+    let UniverseId = 0
     let JobId = ""
     let InGame = false
     let StartedPlaying = 0
@@ -41,24 +42,26 @@ async function OpenExternalDiscord(Tries){
             if (!LastInGame || LastPlaceId == 0){
                 JobId = LastJobId
                 PlaceId = LastPlaceId
+                UniverseId = LastUniverseId
                 InGame = LastInGame
 
                 Send({})
                 return
             }
 
-            const [Success, Result] = await GetPlaceInfo(LastPlaceId)
+            const [Success, Result] = await GetUniverseInfo(LastUniverseId)
             if (!Success) return
 
-            if (LastPlaceId != PlaceId || LastJobId != JobId) StartedPlaying = new Date().toISOString()
+            if (LastUniverseId != UniverseId) StartedPlaying = new Date().toISOString()
             JobId = LastJobId
             PlaceId = LastPlaceId
+            UniverseId = LastUniverseId
             InGame = LastInGame
 
-            const ThumbnailURL = await GetUniverseThumbnail(Result.universeId)
+            const ThumbnailURL = await GetUniverseThumbnail(UniverseId)
             let GameName = Result.name
-            const OwnerName = Result.builder
-            const IsVerified = Result.hasVerifiedBadge
+            const OwnerName = Result.creator.name
+            const IsVerified = Result.creator.hasVerifiedBadge
 
             if (GameName.length < 2) {
                 GameName = GameName+"\x2800\x2800\x2800" //Fix from github.com/pizzaboxer/bloxstrap/blob/main/Bloxstrap/Integrations/DiscordRichPresence.cs
@@ -120,6 +123,7 @@ async function OpenExternalDiscord(Tries){
         if (Result.Type == "Timestamp"){
             InGame = true
             PlaceId = Result.PlaceId
+            UniverseId = Result.UniverseId
             JobId = Result.JobId
             StartedPlaying = new Date(Result.Timestamp).toISOString()
         }

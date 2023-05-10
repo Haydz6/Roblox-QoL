@@ -17,6 +17,7 @@ let AllRecentServers
 
 let LastRecentServerSuccess = Date.now()
 let LastPlaceId = 0
+let LastUniverseId = 0
 let LastJobId = ""
 let LastInGame = false
 
@@ -53,6 +54,7 @@ async function UpdateRecentServer(){
 
         LastRecentServerSuccess = Date.now()
         LastPlaceId = 0
+        LastUniverseId = 0
         LastJobId = ""
         return
     }
@@ -87,6 +89,7 @@ async function UpdateRecentServer(){
 
         LastJobId = ""
         LastPlaceId = 0
+        LastUniverseId = 0
 
         return
     }
@@ -108,6 +111,7 @@ async function UpdateRecentServer(){
 
         LastJobId = Presence.gameId
         LastPlaceId = Presence.placeId
+        LastUniverseId = Presence.universeId
 
         SaveRecentServers()
     }

@@ -24,6 +24,13 @@ async function GetPlaceInfo(PlaceId){
     return [true, Result[0]]
 }
 
+async function GetUniverseInfo(UniverseId){
+    const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games?universeIds=${UniverseId}`, "GET", null, null, true)
+
+    if (!Success) return [false]
+    return [true, Result.data[0]]
+}
+
 async function GetUniverseThumbnail(UniverseId){
     const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${UniverseId}&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false`, "GET", null, null, true)
     if (!Success) return "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/512/512/Image/Png"
@@ -65,6 +72,7 @@ async function OpenDiscord(Resume){
     }
 
     let PlaceId = 0
+    let UniverseId = 0
     let JobId = ""
     let InGame = false
     let StartedPlaying = 0
@@ -78,6 +86,7 @@ async function OpenDiscord(Resume){
             if (!LastInGame || LastPlaceId == 0){
                 JobId = LastJobId
                 PlaceId = LastPlaceId
+                UniverseId = LastUniverseId
                 InGame = LastInGame
 
                 Send({
@@ -92,18 +101,19 @@ async function OpenDiscord(Resume){
                 return
             }
 
-            const [Success, Result] = await GetPlaceInfo(LastPlaceId)
+            const [Success, Result] = await GetUniverseInfo(LastUniverseId)
             if (!Success) return
 
-            if (LastPlaceId != PlaceId || LastJobId != JobId) StartedPlaying = Date.now()
+            if (LastUniverseId != UniverseId) StartedPlaying = Date.now()
             JobId = LastJobId
             PlaceId = LastPlaceId
+            UniverseId = LastUniverseId
             InGame = LastInGame
 
-            const ThumbnailURL = await ImageUrlToExternalDiscord(await GetUniverseThumbnail(Result.universeId))
+            const ThumbnailURL = await ImageUrlToExternalDiscord(await GetUniverseThumbnail(UniverseId))
             let GameName = Result.name
-            const OwnerName = Result.builder
-            const IsVerified = Result.hasVerifiedBadge
+            const OwnerName = Result.creator.name
+            const IsVerified = Result.creator.hasVerifiedBadge
 
             if (GameName.length < 2) {
                 GameName = GameName+"\x2800\x2800\x2800" //Fix from github.com/pizzaboxer/bloxstrap/blob/main/Bloxstrap/Integrations/DiscordRichPresence.cs
