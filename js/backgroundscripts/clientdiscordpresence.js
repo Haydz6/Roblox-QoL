@@ -1,6 +1,7 @@
 let ExternalDiscordLoggingIn = false
 let ExternalDiscordLoggedIn = false
 let ExternalDiscordWS
+let ExternalDiscordInfo
 
 function UpdateExternalDiscordCookie(Cookie){
     if (ExternalDiscordLoggedIn){
@@ -33,6 +34,8 @@ async function OpenExternalDiscord(Tries){
     let InGame = false
     let StartedPlaying = 0
     let LastJoinButtonState = await IsFeatureEnabled("DiscordPresenceJoin")
+
+    let LastPresence
 
     async function UpdatePresence(){
         let JoinButtonEnabled = await IsFeatureEnabled("DiscordPresenceJoin")
@@ -72,7 +75,7 @@ async function OpenExternalDiscord(Tries){
                 Buttons.unshift({Label: "Join", Url: `roblox://experiences/start?placeId=${PlaceId}&gameInstanceId=${JobId}`})
             }
 
-            Send({
+            LastPresence = {
                 Activity: {
                         Details: GameName,
                         Buttons: Buttons,
@@ -87,7 +90,9 @@ async function OpenExternalDiscord(Tries){
                     },
                 PlaceId: PlaceId,
                 JobId: JobId
-            })
+            }
+
+            Send(LastPresence)
         }
     }
 
@@ -109,6 +114,7 @@ async function OpenExternalDiscord(Tries){
         ExternalDiscordLoggingIn = false
         ExternalDiscordLoggedIn = false
         ExternalDiscordWS = null
+        ExternalDiscordInfo = null
 
         if (err.code === 1006 && Tries <= 4) return OpenExternalDiscord(Tries + 1)
     }
@@ -119,6 +125,8 @@ async function OpenExternalDiscord(Tries){
             Result = JSON.parse(Message.data)
         } catch {}
 
+        console.log(Result)
+
         if (!Result?.Type) return //Heartbeat
         if (Result.Type == "Timestamp"){
             InGame = true
@@ -126,20 +134,21 @@ async function OpenExternalDiscord(Tries){
             UniverseId = Result.UniverseId
             JobId = Result.JobId
             StartedPlaying = new Date(Result.Timestamp).toISOString()
+        } else if (Result.Type == "Authentication"){
+            ExternalDiscordInfo = Result.User
+            if (LastPresence) Send(LastPresence)
         }
     }
 }
 
 function CloseExternalDiscord(){
-    if (ExternalDiscordWS){
-        ExternalDiscordWS.close(1000)
-        ExternalDiscordWS = null
-    }
+    if (ExternalDiscordWS) ExternalDiscordWS.close(1000)
 }
-
-BindToOnMessage("DiscordExternalConnected", false, function(){
-    return ExternalDiscordLoggedIn
-})
 
 OpenExternalDiscord()
 setInterval(OpenExternalDiscord, 10*1000)
+
+BindToOnMessage("GetExternalDiscordInfo", false, function(){
+    if (ExternalDiscordInfo) return ExternalDiscordInfo
+    return ExternalDiscordLoggedIn
+})

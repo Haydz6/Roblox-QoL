@@ -34,7 +34,6 @@ const Settings = {
 
                     if (Info == undefined){
                         Label.innerText = "(Click here to login)"
-                        SetAvatar()
                     } else {
                         if (Info === false){
                             Label.innerText = "(Connected to external)"
@@ -55,13 +54,47 @@ const Settings = {
             Title: "External Discord Presence",
             Description: "Displays what you are playing and join button on discord. (Requires external program, does not have same limitations as browser version)",
             Run: async function(Title){
-                async function CheckConnected(){
-                    const Connected = await chrome.runtime.sendMessage({type: "DiscordExternalConnected"})
-                    Title.innerText = `External Discord Presence (${Connected ? "Connected" : "Not Connected"})`
+                const Avatar = document.createElement("span")
+                Avatar.className = "avatar avatar-headshot-xs user"
+                Avatar.style = "display: none; margin-left: 10px; height: 23px; width: 23px;"
+
+                const ThumbnailContainer = document.createElement("span")
+                ThumbnailContainer.className = "thumbnail-2d-container avatar-card-image"
+
+                const Image = document.createElement("img")
+                ThumbnailContainer.appendChild(Image)
+                Avatar.appendChild(ThumbnailContainer)
+
+                const Label = document.createElement("a")
+                Label.style = "margin-left: 7px;"
+                Label.target = "_blank"
+                Title.append(Avatar, Label)
+
+                function SetAvatar(Info){
+                    if (Info){
+                        Image.src = `https://cdn.discordapp.com/avatars/${Info.id}/${Info.avatar}.webp?size=80`
+                        Avatar.style.display = "inline-flex"
+                    } else {
+                        Avatar.style.display = "none"
+                    }
                 }
 
-                setInterval(CheckConnected, 1*1000)
-                CheckConnected()
+                async function CheckLogin(){
+                    const Info = await chrome.runtime.sendMessage({type: "GetExternalDiscordInfo"})
+
+                    if (Info == false){
+                        Label.innerText = "(Not Connected)"
+                    } else if (Info != true) {
+                        Label.innerText = `${Info.username}#${Info.discriminator}`
+                    } else {
+                        Label.innerText = "(Discord Not Detected)"
+                    }
+
+                    SetAvatar(Info != true && Info)
+                }
+
+                setInterval(CheckLogin, 1*1000)
+                CheckLogin()
             }
         },
         DiscordPresenceJoin: {
