@@ -187,6 +187,8 @@ async function OpenDiscord(Resume){
             Close()
         } else if (Result.op == 10){
             HeartbeatTimeoutId = setTimeout(function(){
+                if (!HeartbeatTimeoutId) return
+
                 HeartbeatId = setInterval(Heartbeat, Result.d.heartbeat_interval)
                 Heartbeat()
             }, Result.d.heartbeat_interval * Math.random())
