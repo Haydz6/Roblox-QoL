@@ -370,7 +370,7 @@ const Settings = {
             Title: "Notification on new login",
             Description: "Sends notification to browser when a new login is detected. It includes the location, os, browser and IP of the login."
         },
-        NewLoginNotifierTTS3: {
+        NewLoginNotifierTTS4: {
             Title: "TTS Notification on new login",
             Description: "Uses text to speech to say location, os and browser.",
             Supported: async function(){
@@ -405,7 +405,7 @@ const Settings = {
             Title: "Display IP on new session login",
             Description: "Shows IP on new session notification.",
         },
-        IgnoreSessionsFromSameIP: {
+        IgnoreSessionsFromSameIP2: {
             Title: "Ignore new sessions from same IP",
             Description: "Ignores session if it has the same IP as current browser. (Recommended off for VPN or NAT users)"
         },
