@@ -52,8 +52,8 @@ const Settings = {
         },
         ExternalDiscordPresence: {
             Title: "External Discord Presence",
-            Description: "Displays what you are playing and join button on discord. (Requires external program, does not have same limitations as browser version)",
-            Run: async function(Title){
+            Description: "Displays what you are playing and join button on discord. (",
+            Run: async function(Title, Description){
                 const Avatar = document.createElement("span")
                 Avatar.className = "avatar avatar-headshot-xs user"
                 Avatar.style = "display: none; margin-left: 10px; height: 23px; width: 23px;"
@@ -69,6 +69,17 @@ const Settings = {
                 Label.style = "margin-left: 7px;"
                 Label.target = "_blank"
                 Title.append(Avatar, Label)
+
+                const DownloadLink = document.createElement("a")
+                DownloadLink.href = "https://qol.haydz6.com/discord-presence-client"
+                DownloadLink.innerText = "Requires external program"
+                DownloadLink.style = "text-decoration: underline; cursor: pointer;"
+                DownloadLink.target = "_blank"
+
+                const FinishText = document.createElement("text")
+                FinishText.innerText = " does not have same limitations as browser version)"
+
+                Description.append(DownloadLink, FinishText)
 
                 function SetAvatar(Info){
                     if (Info){
