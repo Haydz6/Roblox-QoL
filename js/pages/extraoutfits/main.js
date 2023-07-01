@@ -15,6 +15,19 @@ let CustomesOpenInt = 0
 //   }
 // }
 
+const LayeredOrderLookup = {
+  [70]: 3,
+  [71]: 3,
+  [66]: 4,
+  [69]: 5,
+  [72]: 6,
+  [64]: 7,
+  [65]: 8,
+  [68]: 9,
+  [67]: 10,
+  [41]: 11
+}
+
 function IsCustomesListOpen(){
   return CostumesList.className == "tab-pane ng-scope active" && document.getElementsByClassName("btn-secondary-xs btn-float-right ng-binding ng-scope")[0] && document.querySelectorAll('[ng-click="createOutfitClicked()"]').length > 0
 }
@@ -90,7 +103,7 @@ async function WearExtraOutfit(Id){
     return [false, OutfitInfo]
   }
 
-  const Assets = []
+  let Assets = []
   const OutfitAssets = OutfitInfo.assets
   const OutfitMeta = OutfitInfo.assetsMeta
 
@@ -121,7 +134,64 @@ async function WearExtraOutfit(Id){
   //   }
   // }
 
-  await Promise.all(AllPromises)
+  const LayeredAssets = []
+  
+  const Responses = await Promise.all(AllPromises)
+  for (let i = 0; i < Responses.length; i++){
+    const Response = Responses[i]
+    if (Response.url == "https://avatar.roblox.com/v2/avatar/set-wearing-assets" && !Response.ok){
+      let json
+      try {
+        json = Response.json()
+      } catch {}
+
+      const ValidationErrors = json?.ValidationErrors
+      if (!ValidationErrors) break
+
+      for (let v = 0; v < ValidationErrors.length; v++){
+        const Error = ValidationErrors[v]
+        if (Error.Code == 3){
+          LayeredAssets.push(parseInt(Error.FieldData))
+        }
+      }
+    }
+  }
+
+
+  if (LayeredAssets.length > 0) {
+    Assets = []
+    const DetailBatch = []
+
+    for (let i = 0; i < LayeredAssets.length; i++){
+      const AssetId = LayeredAssets[i]
+      OutfitAssets.splice(OutfitAssets.indexOf(AssetId))
+      DetailBatch.push({itemType: 1, id: AssetId})
+    }
+
+    for (let i = 0; i < OutfitAssets.length; i++){
+      Assets.push({id: OutfitAssets[i]})
+    }
+
+    const [Success, Result] = await RequestFunc("https://catalog.roblox.com/v1/catalog/items/details", "POST", {"Content-Type": "application/json"}, JSON.stringify({items: DetailBatch}))
+    if (!Success){
+      CreateAlert("Some of your costume failed to wear", false)
+      RedrawCharacter()
+      return
+    }
+
+    const Data = Result.data
+    for (let i = 0; i < Data.length; i++){
+      const Item = Data[i]
+      Assets.push({id: Item.id, meta: {order: LayeredOrderLookup[Item.assetType], version: 1}})
+    }
+
+    const [SetSuccess] = await RequestFunc("https://avatar.roblox.com/v2/avatar/set-wearing-assets", "POST", {"Content-Type": "application/json"}, JSON.stringify({assets: Assets}), true)
+    if (!SetSuccess){
+      CreateAlert("Some of your costume failed to wear", false)
+      RedrawCharacter()
+      return
+    }
+  }
 
   CreateAlert("Successfully wore costume", true)
 
