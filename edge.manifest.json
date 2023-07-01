@@ -270,6 +270,16 @@
         },
         {
             "matches": [
+                "*://*.roblox.com/catalog/*/*/item",
+                "*://*.roblox.com/library/*/*/item"
+            ],
+           "js": [
+                "js/pages/assets/itemfromimage.js"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
                 "*://*.roblox.com/library/*"
             ],
             "css": [

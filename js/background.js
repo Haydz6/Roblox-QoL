@@ -235,10 +235,6 @@ BindToOnMessage("canpingformessage", false, function(){
     return true
 })
 
-const window = null
-let Discord = {}
-let e = {}
-let exports = {}
 if (ManifestVersion > 2){
     const Scripts = ["js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"]
     const FullScriptURLs = []

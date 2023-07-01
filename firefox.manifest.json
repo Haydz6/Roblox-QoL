@@ -18,8 +18,7 @@
         "storage",
         "notifications",
         "cookies",
-        "webRequest",
-        "tts"
+        "webRequest"
     ],
     "web_accessible_resources": [
         "img/*",
@@ -248,6 +247,16 @@
                 "js/pages/trades/rolimons.js",
                 "js/pages/assets/addrolimons.js",
                 "js/pages/assets/addinfo.js"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "*://*.roblox.com/catalog/*/*/item",
+                "*://*.roblox.com/library/*/*/item"
+            ],
+           "js": [
+                "js/pages/assets/itemfromimage.js"
             ],
             "run_at": "document_idle"
         },

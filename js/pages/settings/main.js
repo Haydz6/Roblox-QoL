@@ -38,7 +38,11 @@ const Settings = {
                         if (Info === false){
                             Label.innerText = "(Connected to external)"
                         } else {
-                            Label.innerText = `${Info.Name}#${Info.Discriminator}`
+                            if (Info.Discriminator == 0) {
+                                Label.innerText = Info.Name
+                            } else {
+                                Label.innerText = `${Info.Name}#${Info.Discriminator}`
+                            }
                         }
                     }
 
@@ -96,7 +100,11 @@ const Settings = {
                     if (Info == false){
                         Label.innerText = "(Not Connected)"
                     } else if (Info != true) {
-                        Label.innerText = `${Info.username}#${Info.discriminator}`
+                        if (Info.discriminator == 0) {
+                            Label.innerText = Info.username
+                        } else {
+                            Label.innerText = `${Info.username}#${Info.discriminator}`
+                        }
                     } else {
                         Label.innerText = "(Discord Not Detected)"
                     }
