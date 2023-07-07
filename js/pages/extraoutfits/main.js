@@ -138,19 +138,25 @@ async function WearExtraOutfit(Id){
   const LayeredAssets = []
   
   const Responses = await Promise.all(AllPromises)
-  for (let i = 0; i < Responses.length; i++){
-    const Response = Responses[i]
-    if (Response.url == "https://avatar.roblox.com/v2/avatar/set-wearing-assets" && !Response.ok){
-      let json
-      try {
-        json = Response.json()
-      } catch {}
 
-      const ValidationErrors = json?.ValidationErrors
+  for (let i = 0; i < Responses.length; i++){
+    const Response = Responses[i][2]
+    
+    if (Response.url == "https://avatar.roblox.com/v2/avatar/set-wearing-assets" && !Response.ok){
+      let json = Responses[i][1]
+
+      let ValidationErrors = json?.ValidationErrors || json?.errors?.[0]?.message
       if (!ValidationErrors) break
 
+      if (typeof(ValidationErrors) == "string") {
+        ValidationErrors = JSON.parse(ValidationErrors)?.ValidationErrors
+      }
+
+      console.log(ValidationErrors)
       for (let v = 0; v < ValidationErrors.length; v++){
         const Error = ValidationErrors[v]
+        console.log(Error?.Code)
+
         if (Error.Code == 3){
           LayeredAssets.push(parseInt(Error.FieldData))
         }
