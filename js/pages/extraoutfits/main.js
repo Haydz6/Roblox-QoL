@@ -33,9 +33,10 @@ function IsCustomesListOpen(){
 }
 
 async function RedrawCharacter(){
-  RedrawButton = await WaitForClass("toggle-three-dee btn-control btn-control-small ng-binding")
-  RedrawButton.click()
-  RedrawButton.click()
+  // RedrawButton = await WaitForClass("toggle-three-dee btn-control btn-control-small ng-binding")
+  // RedrawButton.click()
+  // RedrawButton.click()
+  document.dispatchEvent(new CustomEvent("RedrawThumbnail"))
 }
 
 function IsInputValid(Input, Text){

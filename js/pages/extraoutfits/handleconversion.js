@@ -28,7 +28,7 @@ async function ConvertOutfitToExtra(OutfitId, Image){
     return [ExtraSuccess, NewExtraOutfit, DeleteSuccess]
 }
 
-async function ConvertNoIdOutfitToExtra(Element){
+async function ConvertNoIdOutfitToExtra(Element){ //wtf is this
     //const Outfit = NoIdElementToOutfitInfo[Element]
     const ExtraOutfit = {scales: Outfit.scale, bodyColors: Outfit.bodyColors, playerAvatarType: Outfit.playerAvatarType, assets: Outfit.assets, emotes: [], defaultShirtApplied: false, defaultPantsApplied: false}
     
