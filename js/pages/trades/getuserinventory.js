@@ -24,7 +24,6 @@ async function GetUserLimitedInventory(UserId){
                 return [true, false]
             }
 
-            console.log(Response.status, Result)
             return [false, false, Inventory]
         }
 

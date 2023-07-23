@@ -80,9 +80,9 @@ function CreateThemeList(){
 
             List.appendChild(ImageContainer)
 
-            ImageContainer.addEventListener("click", function(){
-                console.log(Name)
-            })
+            // ImageContainer.addEventListener("click", function(){
+            //     console.log(Name)
+            // })
         }
 
         Loaded = true

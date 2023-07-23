@@ -71,7 +71,6 @@ async function AddQuickDecline(TradeRow){
 
         for (let i = 0; i < AllButtons.length; i++){
             const Button = AllButtons[i]
-            console.log(Button.className.search("btn-control-md"), Button.innerText === "Decline", Button.className.search("ng-hide"))
             if (Button.className.search("btn-control-md") > -1 && Button.innerText === "Decline" && Button.className.search("ng-hide") === -1){
                 Button.click()
                 const Confirm = FindFirstId("modal-action-button")

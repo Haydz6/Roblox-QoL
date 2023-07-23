@@ -12,7 +12,6 @@ IsFeatureEnabled("AddDownloadButtonToNewVersionHistory").then(async function(Ena
     const PlaceId = GetPlaceId()
 
     ChildAdded(await WaitForId("versionHistoryItems"), true, async function(Container){
-        console.log("new")
         let Table
 
         while (!Table){

@@ -5,8 +5,6 @@ async function IsRobloxServerAlive(PlaceId, JobId){
         return [false, false]
     }
 
-    console.log(Success, Result.status)
-
     if (Result.status === 6 || Result.status === 12 || Result.status === 11){
         return [true, false]
     } else if (Result.Status === 2){

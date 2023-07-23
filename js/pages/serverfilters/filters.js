@@ -115,8 +115,6 @@ async function HandleMapRegion(){
             })
         }
 
-        console.log(GlobeData)
-
         World.tilesData(GlobeData)
         .tileWidth(5)
         .tileHeight(3)

@@ -2,15 +2,12 @@ async function WatchNewTradeUsername(TradeData){
     const TradesHeader = TradeData.getElementsByClassName("trades-header-nowrap font-title")[0]
     let TitleHeader
 
-    console.log(TradesHeader)
-
     while (!TitleHeader){
         TitleHeader = TradesHeader.getElementsByClassName("paired-name")[0]
         await sleep(20)
     }
 
     async function NewTradeUsername(Title){
-        console.log(Title)
         if (Title.nodeType !== Node.ELEMENT_NODE) return
 
         while (Title.parentElement.getElementsByTagName("span").length < 3) await sleep(20)
@@ -23,7 +20,6 @@ async function WatchNewTradeUsername(TradeData){
             await sleep(20)
         }
 
-        console.log(Username.children.length)
         if (Username.children.length > 0) return
 
         const LinkIcon = CreateLinkIcon(`https://www.rolimons.com/player/${UserId}`)

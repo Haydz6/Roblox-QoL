@@ -433,7 +433,6 @@ async function DeclineLoss(){
                     const Offers = {Ours: AllOffers[0], Other: AllOffers[1]}
                     await AddValueToOffers(AllOffers)
 
-                    console.log(-Slider.value * 5, (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100)
                     if (-Slider.value * 5 < (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100){
                         continue
                     }

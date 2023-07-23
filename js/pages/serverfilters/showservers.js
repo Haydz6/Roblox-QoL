@@ -6,6 +6,7 @@ let RefreshButtonConn
 
 let FilterInt = 0
 let FirstEightServerElements = []
+let CurrentFilterFunction, CurrentFilterFunctionArgs
 
 async function GetImageUrlsFromServer(Servers){
     const Batch = []
@@ -119,7 +120,54 @@ async function ReplaceLoadMoreServersButton(){
     return Button
 }
 
-function EnableFilterMode(){
+let SortSelect, FilterCheckbox
+let FakeOptions
+
+async function GetRobloxSorts(){
+    const RealSortSelect = await WaitForId("sort-select")
+    const RealFilterCheckbox = await WaitForId("filter-checkbox")
+
+    const Options = await WaitForClass("server-list-options")
+    FakeOptions = Options.cloneNode(true)
+    FakeOptions.style = "display:none;"
+
+    SortSelect = FakeOptions.querySelector("#sort-select")
+    FilterCheckbox = FakeOptions.querySelector("#filter-checkbox")
+
+    SortSelect.id = "fake-sort-select"
+    SortSelect.removeAttribute("disabled")
+    FilterCheckbox.id = "fake-filter-checkbox"
+    FilterCheckbox.removeAttribute("disabled")
+    FakeOptions.getElementsByClassName("checkbox")[0].getElementsByClassName("checkbox-label")[0].setAttribute("for", "fake-filter-checkbox")
+
+    Options.parentNode.appendChild(FakeOptions)
+
+    SortSelect.addEventListener("change", ReupdateFilter)
+    FilterCheckbox.addEventListener("change", ReupdateFilter)
+
+    RealSortSelect.addEventListener("change", function(){
+        SortSelect.value = RealSortSelect.value
+    })
+    RealFilterCheckbox.addEventListener("change", function(){
+        FilterCheckbox.value = RealFilterCheckbox.value
+    })
+}
+
+function GetCurrentRobloxServerFilters(){
+    return [SortSelect.value, FilterCheckbox.value]
+}
+
+function ReupdateFilter(){
+    if (CurrentFilterFunction) {
+        const FilterFunction = CurrentFilterFunction
+        const FilterArgs = CurrentFilterFunctionArgs || []
+
+        DisableFilter()
+        FilterFunction(...FilterArgs)
+    }
+}
+
+function EnableFilterMode(HideDefaultFilters){
     WaitForId("rbx-running-games").then(function(ServerList){
         const Options = ServerList.getElementsByClassName("container-header")[0].getElementsByClassName("server-list-container-header")[0]
         
@@ -145,6 +193,10 @@ function EnableFilterMode(){
     WaitForClass("server-list-options").then(function(Options){
         Options.style = "display:none;"
     })
+
+    if (HideDefaultFilters == false) {
+        FakeOptions.style = ""
+    }
 
     WaitForId("rbx-game-server-item-container").then(function(Servers){
         const children = Servers.children
@@ -172,9 +224,7 @@ async function EnableAvailableSpaces(){
 
     EnableFilterMode()
 
-    console.log("button wait.")
     await ReplaceLoadMoreServersButton()
-    console.log("button gone.")
 
     async function Fetch(){
         if (AtEnd) return
@@ -464,9 +514,7 @@ async function EnableSmallestServer(){
 
     EnableFilterMode()
 
-    console.log("button wait.")
     await ReplaceLoadMoreServersButton()
-    console.log("button gone.")
 
     async function Fetch(){
         if (AtEnd) return
@@ -521,9 +569,11 @@ function DistanceBetweenCoordinates(lat1, lon1, lat2, lon2) {
 async function EnableBestConnection(){
     let Cursor = ""
     let AtEnd = false
+    let SortByLowestPlayers = false
     let ServersFetched = 0
 
-    EnableFilterMode()
+    EnableFilterMode(false)
+    CurrentFilterFunction = EnableBestConnection
 
     await ReplaceLoadMoreServersButton()
 
@@ -531,6 +581,10 @@ async function EnableBestConnection(){
 
     function SortServerElements(){
         AllServers.sort(function(a, b){
+            if (SortByLowestPlayers && a.Distance == b.Distance){
+                return a.playing - b.playing
+            }
+
             return a.Distance - b.Distance
         })
 
@@ -579,7 +633,9 @@ async function EnableBestConnection(){
 
         if (CacheFilterInt != FilterInt) return
 
-        const [Success, Result] = await GetRobloxServers(Cursor)
+        const [Type, ExcludeFull] = GetCurrentRobloxServerFilters()
+        SortByLowestPlayers = Type == "Asc"
+        const [Success, Result] = await GetRobloxServers(Cursor, Type == "Asc", ExcludeFull)
 
         if (CacheFilterInt != FilterInt) return
 
@@ -664,7 +720,9 @@ async function EnableRegionFilter(Region){
     let ServersFetched = 0
     const DuplicateJobIds = {}
 
-    EnableFilterMode()
+    EnableFilterMode(false)
+    CurrentFilterFunction = EnableRegionFilter
+    CurrentFilterFunctionArgs = [Region]
 
     await ReplaceLoadMoreServersButton()
 
@@ -676,7 +734,8 @@ async function EnableRegionFilter(Region){
         FilterInt ++
         const CacheFilterInt = FilterInt
 
-        const [Success, Result] = await GetRobloxServers(Cursor)
+        const [Type, ExcludeFull] = GetCurrentRobloxServerFilters()
+        const [Success, Result] = await GetRobloxServers(Cursor, Type == "Asc", ExcludeFull)
 
         if (CacheFilterInt != FilterInt) return
 
@@ -752,7 +811,10 @@ async function DisableFilter(){
     //     RefreshButton.style = ""
     // })
     FilterInt ++
+    CurrentFilterFunction = null
+    CurrentFilterFunctionArgs = null
 
+    FakeOptions.style = "display:none;"
     WaitForClass("server-list-options").then(function(Options){
         Options.style = ""
     })
@@ -838,3 +900,5 @@ async function DisableFilter(){
 
     // Fetch()
 }
+
+GetRobloxSorts()

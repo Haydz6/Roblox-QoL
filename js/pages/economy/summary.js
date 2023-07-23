@@ -125,8 +125,10 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions,
         PayoutList.style.paddingTop = "10px"
 
         ImposterTextLabel.style.display = "none"
-        RobuxLabel.style["text-decoration"] = ""
-        RobuxLabel.style["margin-left"] = ""
+        if (RobuxLabel){
+            RobuxLabel.style["text-decoration"] = ""
+            RobuxLabel.style["margin-left"] = ""
+        }
 
         PayoutList.appendChild(Spinner)
 
@@ -176,8 +178,10 @@ async function CreateDetailedSummary(TableRow, Fetch, CanFetch, DropdownOptions,
             ImposterTextLabel.innerText = numberWithCommas(TotalRobux)
             ImposterTextLabel.style.display = ""
 
-            RobuxLabel.style["text-decoration"] = "line-through"
-            RobuxLabel.style["margin-left"] = "8px"
+            if (RobuxLabel){
+                RobuxLabel.style["text-decoration"] = "line-through"
+                RobuxLabel.style["margin-left"] = "8px"
+            }
 
             HasLoaded = true
             Spinner.remove()
