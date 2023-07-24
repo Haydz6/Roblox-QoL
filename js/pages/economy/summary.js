@@ -730,3 +730,5 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
         })
     }
 })
+
+KillAllCaches() //took too much room.
