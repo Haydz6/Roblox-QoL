@@ -2,7 +2,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
-const WebServerEndpoints = {Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {Analytics: WebServerURL+"api/analytics/", Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 
 const Manifest = chrome.runtime.getManifest()
 const ExtensionVersion = Manifest.version
@@ -165,6 +165,29 @@ const LocalStorage = {set: function(key, value){
     return chrome.storage.local.remove(key)
 }}
 
+function GetBrowser(){
+    var aKeys = ["MSIE", "Firefox", "Safari", "Chrome", "Opera"];
+    var sUsrAg = navigator.userAgent;
+    var nIdx = aKeys.length - 1;
+    
+    while(nIdx > -1 && sUsrAg.indexOf(aKeys[nIdx]) === -1){
+        nIdx--;
+    }  
+
+    var browserStr = "Unknown";
+    if (nIdx > -1){
+        browserStr = aKeys[nIdx]
+    }
+
+    return browserStr
+}
+
+function SendLoginAnalytics(){
+    RequestFunc(WebServerEndpoints.Analytics+"login", "POST", null, JSON.stringify({
+        Browser: GetBrowser()
+    }))
+}
+
 chrome.cookies.onChanged.addListener(function(Change){
     const Cookie = Change.cookie
     if (Cookie.domain.search("roblox.com") > -1 && Cookie.httpOnly && Cookie.name === ".ROBLOSECURITY"){
@@ -183,12 +206,14 @@ chrome.cookies.onChanged.addListener(function(Change){
 
         ROBLOSECURITY = Cookie.value
         UpdateExternalDiscordCookie(ROBLOSECURITY)
+        SendLoginAnalytics()
     }
 })
 
 chrome.cookies.get({name: ".ROBLOSECURITY", url: "https://roblox.com"}).then(function(Cookie){
     ROBLOSECURITY = Cookie.value
     UpdateExternalDiscordCookie(ROBLOSECURITY)
+    SendLoginAnalytics()
 })
 
 async function FetchAllFeaturesEnabled(){
