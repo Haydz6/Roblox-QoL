@@ -303,11 +303,9 @@ function ExecuteContentScriptsFromTab(Tab){
 
         for (let o = 0; o < Info.matches.length; o++){
             const Match = Info.matches[o]
-            //const Regex = new RegExp(Match.replace(/\*/g, "[^]*")).test(URL)
-            //*://*.roblox.com/my/avatar*
-            //if (Regex.test(URL)){
             if (URL.match(Match.replace(/\*/g, "[^]*"))){
-                JS.push(...Info.js)
+                if (Info.js) JS.push(...Info.js)
+                if (Info.css) CSS.push(...Info.css)
             }
         }
     }
