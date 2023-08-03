@@ -27,7 +27,6 @@ async function WaitForChildIndex(Parent, Index){
 
   while (true) {
     Element = Parent.children[Index || 0]
-    console.log(Parent.children)
     if (Element != undefined) {
       break
     }
