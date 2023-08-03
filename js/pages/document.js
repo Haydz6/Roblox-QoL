@@ -425,7 +425,7 @@ async function FetchAllFeaturesKilled(BypassCheck){
 
 async function IsFeatureKilled(FeatureName){
   await FetchAllFeaturesKilled(false)
-  return KilledFeatures.includes(FeatureName)
+  return KilledFeatures ? KilledFeatures.includes(FeatureName) : false
 }
 
 async function IsFeatureEnabled(Feature){
@@ -445,5 +445,6 @@ async function SetFeatureEnabled(Feature, Enabled){
 }
 
 setInterval(FetchAllFeaturesKilled, 20*1000, true)
-
 GetUserId()
+
+chrome.runtime.sendMessage({type: "InjectContentScripts"})

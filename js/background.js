@@ -73,14 +73,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     const MessageBind = OnMessageBind[request.type]
     if (MessageBind){
         if (MessageBind.Async){
-            MessageBind.Callback(request).then(function(Result){
+            MessageBind.Callback(request, sender).then(function(Result){
                 sendResponse(Result)
             })
 
             return true
         }
 
-        sendResponse(MessageBind.Callback(request))
+        sendResponse(MessageBind.Callback(request, sender))
     }
 })
 
@@ -210,7 +210,14 @@ chrome.cookies.onChanged.addListener(function(Change){
     }
 })
 
-chrome.cookies.get({name: ".ROBLOSECURITY", url: "https://roblox.com"}).then(function(Cookie){
+let CookieGetFunc
+if (ManifestVersion > 2) {
+    CookieGetFunc = chrome.cookies.get
+} else {
+    CookieGetFunc = browser.cookies.get
+}
+
+CookieGetFunc({name: ".ROBLOSECURITY", url: "https://roblox.com"}).then(function(Cookie){
     ROBLOSECURITY = Cookie.value
     UpdateExternalDiscordCookie(ROBLOSECURITY)
     SendLoginAnalytics()
@@ -261,7 +268,7 @@ BindToOnMessage("canpingformessage", false, function(){
 })
 
 if (ManifestVersion > 2){
-    const Scripts = ["js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"]
+    const Scripts = ["js/backgroundscripts/inject.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js"]
     const FullScriptURLs = []
 
     for (let i = 0; i < Scripts.length; i++){
