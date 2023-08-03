@@ -1,5 +1,5 @@
 async function AddOptionToSettingsDropdown(){
-    ChildAdded(await WaitForId("navbar-settings"), true, async function(){
+    ChildAdded(await WaitForId("navbar-settings"), false, async function(){
         const Dropdown = await WaitForId("settings-popover-menu")
 
         const List = document.createElement("li")
