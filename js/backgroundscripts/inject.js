@@ -311,13 +311,14 @@ function ExecuteContentScriptsFromTab(Tab){
     }
 
     if (ManifestVersion > 2){
-        chrome.scripting.executeScript({files: [...JS, ...CSS], injectImmediately: true, target: {tabId: TabId}})
+        chrome.scripting.executeScript({files: JS, injectImmediately: true, target: {tabId: TabId}})
+        chrome.scripting.insertCSS({files: CSS, target: {tabId: TabId}})
     } else {
         for (let i = 0; i < JS.length; i++){
             chrome.tabs.executeScript(TabId, {file: JS[i], runAt: "document_start"})
         }
         for (let i = 0; i < CSS.length; i++){
-            chrome.tabs.executeScript(TabId, {file: CSS[i], runAt: "document_start"})
+            chrome.tabs.insertCSS(TabId, {file: CSS[i], runAt: "document_start"})
         }
     }
 }
