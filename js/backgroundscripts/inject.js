@@ -291,6 +291,20 @@ const ContentScripts = [{
     "run_at": "document_idle"
 }]
 
+function RemoveDuplicateFromArray(Array){
+    const Exists = {}
+    const NewArray = []
+
+    for (let i = 0; i < Array.length; i++){
+        const Value = Array[i]
+        if (Exists[Value]) continue
+        NewArray.push(Value)
+        Exists[Value] = true
+    }
+
+    return NewArray
+}
+
 function ExecuteContentScriptsFromTab(Tab){
     const JS = []
     const CSS = []
@@ -310,15 +324,18 @@ function ExecuteContentScriptsFromTab(Tab){
         }
     }
 
+    const FilteredJS = RemoveDuplicateFromArray(JS)
+    const FilteredCSS = RemoveDuplicateFromArray(CSS)
+
     if (ManifestVersion > 2){
-        chrome.scripting.executeScript({files: JS, injectImmediately: true, target: {tabId: TabId}})
-        chrome.scripting.insertCSS({files: CSS, target: {tabId: TabId}})
+        chrome.scripting.executeScript({files: FilteredJS, injectImmediately: true, target: {tabId: TabId}})
+        chrome.scripting.insertCSS({files: FilteredCSS, target: {tabId: TabId}})
     } else {
-        for (let i = 0; i < JS.length; i++){
-            chrome.tabs.executeScript(TabId, {file: JS[i], runAt: "document_start"})
+        for (let i = 0; i < FilteredJS.length; i++){
+            chrome.tabs.executeScript(TabId, {file: FilteredJS[i], runAt: "document_start"})
         }
-        for (let i = 0; i < CSS.length; i++){
-            chrome.tabs.insertCSS(TabId, {file: CSS[i], runAt: "document_start"})
+        for (let i = 0; i < FilteredCSS.length; i++){
+            chrome.tabs.insertCSS(TabId, {file: FilteredCSS[i], runAt: "document_start"})
         }
     }
 }
