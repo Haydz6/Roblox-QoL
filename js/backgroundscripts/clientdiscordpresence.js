@@ -129,8 +129,6 @@ async function OpenExternalDiscord(Tries){
             Result = JSON.parse(Message.data)
         } catch {}
 
-        console.log(Result)
-
         if (!Result?.Type) return //Heartbeat
         if (Result.Type == "Timestamp"){
             InGame = true
