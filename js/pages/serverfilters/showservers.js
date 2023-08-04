@@ -597,6 +597,32 @@ async function EnableBestConnection(){
         })
     }
 
+    let Lat, Lng, Err
+    let FetchingLocation = false
+
+    async function GetLocation(){
+        while (FetchingLocation){
+            await sleep(100)
+        }
+        if ((Lat && Lng) && !Err){
+            return
+        }
+        FetchingLocation = true
+
+        navigator.geolocation.getCurrentPosition(function(Position){
+            Lat = Position.coords.latitude
+            Lng = Position.coords.longitude
+        }, function(Error){
+            Err = Error.message
+        }, {maximumAge: 86400, timeout: 60*1000, enableHighAccuracy: false})
+
+        while (!Lat && !Lng && !Err){
+            await sleep(100)
+        }
+
+        FetchingLocation = false
+    }
+
     async function Fetch(){
         if (AtEnd) return
         
@@ -612,18 +638,7 @@ async function EnableBestConnection(){
         FilterInt ++
         const CacheFilterInt = FilterInt
 
-        let Lat, Lng, Err
-
-        navigator.geolocation.getCurrentPosition(function(Position){
-            Lat = Position.coords.latitude
-            Lng = Position.coords.longitude
-        }, function(Error){
-            Err = Error.message
-        }, {maximumAge: 86400, timeout: 60*1000, enableHighAccuracy: false})
-
-        while (!Lat && !Lng && !Err){
-            await sleep(100)
-        }
+        await GetLocation()
 
         if (Err){
             SetButtonLoadingState(true)
