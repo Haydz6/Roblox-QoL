@@ -41,6 +41,7 @@ async function CreateTypeTime(UniverseId, Type, Name, Icon){
 
         Button.addEventListener("click", function(){
             DropdownButton.innerText = Title
+            DropdownButton.title = Title
             GetPlaytime(Params)
             CloseList()
         })

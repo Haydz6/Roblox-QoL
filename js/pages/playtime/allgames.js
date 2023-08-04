@@ -99,6 +99,7 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
 
         Button.addEventListener("click", function(){
             DropdownButton.innerText = Title
+            DropdownButton.title = Title
             FetchGames(Params)
             CloseList()
         })
