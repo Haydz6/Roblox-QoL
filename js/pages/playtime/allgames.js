@@ -15,6 +15,12 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
     const [SortContainer, GameGrid, Title] = CreateSortDiscover(Type == "Edit" && "Studio Sessions" || "Playtime")
     GameCarousel.appendChild(SortContainer)
 
+    ChildRemoved(GameCarousel, function(Child){
+        if (Child === SortContainer) {
+            GameCarousel.appendChild(SortContainer)
+        }
+    })
+
     const [DropdownList, List, DropdownButton, CloseList] = CreateDropdownList("All Time")
     DropdownList.style = "width: 150px; display: inline-table; float: revert; margin-left: 20px;"
     Title.appendChild(DropdownList)
