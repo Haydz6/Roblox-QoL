@@ -328,8 +328,12 @@ function ExecuteContentScriptsFromTab(Tab){
     const FilteredCSS = RemoveDuplicateFromArray(CSS)
 
     if (ManifestVersion > 2){
-        chrome.scripting.executeScript({files: FilteredJS, injectImmediately: true, target: {tabId: TabId}})
-        chrome.scripting.insertCSS({files: FilteredCSS, target: {tabId: TabId}})
+        if (FilteredJS.length > 0) {
+            hrome.scripting.executeScript({files: FilteredJS, injectImmediately: true, target: {tabId: TabId}})
+        }
+        if (FilteredCSS.length > 0) {
+            chrome.scripting.insertCSS({files: FilteredCSS, target: {tabId: TabId}})
+        }
     } else {
         for (let i = 0; i < FilteredJS.length; i++){
             chrome.tabs.executeScript(TabId, {file: FilteredJS[i], runAt: "document_start"})
