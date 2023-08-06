@@ -82,7 +82,6 @@ const ContentScripts = [{
         "js/pages/serverfilters/main.js",
         
         "js/pages/quickserverinvite/createelements.js",
-        "js/pages/quickserverinvite/setinstalledidentifier.js",
         "js/pages/quickserverinvite/main.js",
 
         "js/pages/badges/achieved.js",
