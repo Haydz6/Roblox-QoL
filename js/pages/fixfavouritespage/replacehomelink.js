@@ -8,7 +8,7 @@ IsFeatureEnabled("FixFavouritesPage").then(async function(Enabled){
             const Button = SeeAllButtons[i]
             if (Button.href.search("sortName/v2/Favorites") > -1){
                 Button.href = "https://roblox.com/discover#/sortName?sort=Favorites"
-                break
+                return
             }
         }
 

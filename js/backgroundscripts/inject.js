@@ -329,7 +329,7 @@ function ExecuteContentScriptsFromTab(Tab){
 
     if (ManifestVersion > 2){
         if (FilteredJS.length > 0) {
-            hrome.scripting.executeScript({files: FilteredJS, injectImmediately: true, target: {tabId: TabId}})
+            chrome.scripting.executeScript({files: FilteredJS, injectImmediately: true, target: {tabId: TabId}})
         }
         if (FilteredCSS.length > 0) {
             chrome.scripting.insertCSS({files: FilteredCSS, target: {tabId: TabId}})
