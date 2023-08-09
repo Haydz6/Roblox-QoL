@@ -9,7 +9,7 @@ const ContentScripts = [{
         "js/pages/extraoutfits/main.js",
         "js/pages/extraoutfits/outfitsearch.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -20,7 +20,7 @@ const ContentScripts = [{
         "js/pages/friendhistory/loadpages.js",
         "js/pages/friendhistory/main.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -35,7 +35,7 @@ const ContentScripts = [{
         "js/pages/purchasedgamesinventoryfix/getpurchasedgames.js",
         "js/pages/purchasedgamesinventoryfix/main.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -53,7 +53,7 @@ const ContentScripts = [{
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/allgames.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -65,7 +65,7 @@ const ContentScripts = [{
     "js": [
         "js/pages/generalfixes/fixcontinuecuration.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -94,7 +94,7 @@ const ContentScripts = [{
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/game.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -104,7 +104,7 @@ const ContentScripts = [{
         "js/pages/settings/createelements.js",
         "js/pages/settings/main.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -129,7 +129,7 @@ const ContentScripts = [{
 
         "js/pages/badges/profilecount.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -141,7 +141,7 @@ const ContentScripts = [{
         "js/pages/mutuals/api.js",
         "js/pages/mutuals/friendspage.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -165,7 +165,7 @@ const ContentScripts = [{
         "js/pages/trades/createtrade.js",
         "js/pages/trades/openontrade.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -182,7 +182,7 @@ const ContentScripts = [{
         "js/pages/assets/addrolimons.js",
         "js/pages/assets/addinfo.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -192,7 +192,7 @@ const ContentScripts = [{
    "js": [
         "js/pages/assets/itemfromimage.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -207,7 +207,7 @@ const ContentScripts = [{
         "js/pages/assets/main.js",
         "js/pages/assets/addinfo.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -217,7 +217,7 @@ const ContentScripts = [{
         "js/pages/assets/createelements.js",
         "js/pages/assets/addinfo.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -235,7 +235,7 @@ const ContentScripts = [{
         "js/pages/playtime/createcards.js",
         "js/pages/playtime/home.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -271,7 +271,7 @@ const ContentScripts = [{
         "js/pages/economy/summarycache.js",
         "js/pages/economy/summary.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 },
 {
     "matches": [
@@ -287,7 +287,7 @@ const ContentScripts = [{
         "js/pages/economy/summary.js",
         "js/pages/economy/summarycache.js"
     ],
-    "run_at": "document_idle"
+    "run_at": "document_start"
 }]
 
 function RemoveDuplicateFromArray(Array){
@@ -304,8 +304,28 @@ function RemoveDuplicateFromArray(Array){
     return NewArray
 }
 
+function ParseAndRunJS(TabId, JS, CSS, runAt){
+    const FilteredJS = RemoveDuplicateFromArray(JS)
+    const FilteredCSS = RemoveDuplicateFromArray(CSS)
+    if (ManifestVersion > 2){
+        if (FilteredJS.length > 0) {
+            chrome.scripting.executeScript({files: FilteredJS, injectImmediately: runAt == "document_start", target: {tabId: TabId}})
+        }
+        if (FilteredCSS.length > 0) {
+            chrome.scripting.insertCSS({files: FilteredCSS, target: {tabId: TabId}})
+        }
+    } else {
+        for (let i = 0; i < FilteredJS.length; i++){
+            chrome.tabs.executeScript(TabId, {file: FilteredJS[i], runAt: runAt})
+        }
+        for (let i = 0; i < FilteredCSS.length; i++){
+            chrome.tabs.insertCSS(TabId, {file: FilteredCSS[i], runAt: runAt})
+        }
+    }
+}
+
 function ExecuteContentScriptsFromTab(Tab){
-    const JS = []
+    const JS = {document_start: [], document_idle: []}
     const CSS = []
 
     const URL = Tab.url
@@ -317,30 +337,14 @@ function ExecuteContentScriptsFromTab(Tab){
         for (let o = 0; o < Info.matches.length; o++){
             const Match = Info.matches[o]
             if (URL.match(Match.replace(/\*/g, "[^]*"))){
-                if (Info.js) JS.push(...Info.js)
+                if (Info.js) JS[Info.run_at || "document_start"].push(...Info.js)
                 if (Info.css) CSS.push(...Info.css)
             }
         }
     }
 
-    const FilteredJS = RemoveDuplicateFromArray(JS)
-    const FilteredCSS = RemoveDuplicateFromArray(CSS)
-
-    if (ManifestVersion > 2){
-        if (FilteredJS.length > 0) {
-            chrome.scripting.executeScript({files: FilteredJS, injectImmediately: true, target: {tabId: TabId}})
-        }
-        if (FilteredCSS.length > 0) {
-            chrome.scripting.insertCSS({files: FilteredCSS, target: {tabId: TabId}})
-        }
-    } else {
-        for (let i = 0; i < FilteredJS.length; i++){
-            chrome.tabs.executeScript(TabId, {file: FilteredJS[i], runAt: "document_start"})
-        }
-        for (let i = 0; i < FilteredCSS.length; i++){
-            chrome.tabs.insertCSS(TabId, {file: FilteredCSS[i], runAt: "document_start"})
-        }
-    }
+    ParseAndRunJS(TabId, JS.document_start, CSS, "document_start")
+    ParseAndRunJS(TabId, JS.document_idle, [], "document_idle")
 }
 
 BindToOnMessage("InjectContentScripts", false, function(_, Sender){

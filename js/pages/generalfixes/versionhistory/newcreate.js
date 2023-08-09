@@ -75,13 +75,11 @@ let LastVersionHistoryContainer
 IsFeatureEnabled("AddDownloadButtonToNewVersionHistory").then(async function(Enabled){
     if (!Enabled) return
 
-    while (true){
+    setInterval(async function(){
         const VersionHistoryContainer = await WaitForClass("MuiTable-root")
         if (VersionHistoryContainer !== LastVersionHistoryContainer){
             LastVersionHistoryContainer = VersionHistoryContainer
             NewContainerAdded(VersionHistoryContainer)
         }
-
-        await sleep(20)
-    }
+    }, 20)
 })
