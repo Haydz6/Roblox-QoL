@@ -20,6 +20,7 @@ let LastPlaceId = 0
 let LastUniverseId = 0
 let LastJobId = ""
 let LastInGame = false
+let LastInStudio = false
 
 let UpdateInt = 3
 
@@ -69,11 +70,12 @@ async function UpdateRecentServer(){
             UniverseId = await GetUniverseIdFromPlaceId(Presence.placeId)
         }
 
-        RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0}))
+        if (InGame !== LastInGame || InStudio !== LastInStudio || UniverseId !== LastUniverseId) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0}))
     }
 
     LastRecentServerSuccess = Date.now()
     LastInGame = Presence.userPresenceType === 2
+    LastInStudio = Presence.userPresenceType === 3
 
     //Check if player has left server
     if (Presence.userPresenceType !== 2 && LastPlaceId !== 0){
@@ -105,9 +107,11 @@ async function UpdateRecentServer(){
 
         Servers[Presence.gameId] = {LastPlayed: Math.floor(Date.now()/1000), UserId: UserId, Id: LastJobId}
 
-        new Promise(async() => {
-            RequestFunc(WebServerEndpoints.Playtime+"continue/set", "POST", null, JSON.stringify({UniverseId: Presence.universeId}))
-        })
+        if (LastUniverseId !== Presence.universeId){
+            new Promise(async() => {
+                RequestFunc(WebServerEndpoints.Playtime+"continue/set", "POST", null, JSON.stringify({UniverseId: Presence.universeId}))
+            })
+        }
 
         LastJobId = Presence.gameId
         LastPlaceId = Presence.placeId

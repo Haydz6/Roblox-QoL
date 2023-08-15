@@ -128,6 +128,7 @@ async function GetRobloxSorts(){
     const RealFilterCheckbox = await WaitForId("filter-checkbox")
 
     const Options = await WaitForClass("server-list-options")
+
     FakeOptions = Options.cloneNode(true)
     FakeOptions.style = "display:none;"
 
@@ -916,4 +917,4 @@ async function DisableFilter(){
     // Fetch()
 }
 
-GetRobloxSorts()
+setTimeout(GetRobloxSorts, 0)

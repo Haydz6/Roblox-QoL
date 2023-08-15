@@ -76,20 +76,20 @@ const ContentScripts = [{
         "js/pages/liveexperience/main.js",
         "js/pages/serverfilters/createelements.js",
         "js/pages/serverfilters/showservers.js",
-        "js/pages/serverfilters/filterservers.js",
-        "js/pages/serverfilters/addserverregion.js",
-        "js/pages/serverfilters/filters.js",
-        "js/pages/serverfilters/main.js",
+        // "js/pages/serverfilters/filterservers.js",
+        // "js/pages/serverfilters/addserverregion.js",
+        // "js/pages/serverfilters/filters.js",
+        // "js/pages/serverfilters/main.js",
         
         "js/pages/quickserverinvite/createelements.js",
         "js/pages/quickserverinvite/main.js",
 
         "js/pages/badges/achieved.js",
 
-        "js/pages/recentservers/createelements.js",
-        "js/pages/recentservers/isserveralive.js",
-        "js/pages/recentservers/recentservers.js",
-        "js/pages/recentservers/main.js",
+        // "js/pages/recentservers/createelements.js",
+        // "js/pages/recentservers/isserveralive.js",
+        // "js/pages/recentservers/recentservers.js",
+        // "js/pages/recentservers/main.js",
 
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/game.js"

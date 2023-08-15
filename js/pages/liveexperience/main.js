@@ -77,37 +77,39 @@ async function RunLiveStats(){
 
     let IsFirst = true
 
-    new Promise(async() => {
-        while (true){
-            const [Success, Info] = await GetLiveStatsFromCurrentPlace()
+    async function Update(){
+        const [Success, Info] = await GetLiveStatsFromCurrentPlace()
 
-            if (Success){
-                if (!IsFirst){
-                    await Promise.all([
-                        TweenLabel(ActiveValue, LastActive, Info.Playing, 5, numberWithCommas),
-                        TweenLabel(FavouritesValue, LastFavourites, Info.Favourites, 5, numberWithCommas),
-                        TweenLabel(VisitsValue, LastVisits, Info.Visits, 5, numberWithCommas, true)
-                    ])
-                } else {
-                    IsFirst = false
+        if (Success){
+            if (!IsFirst){
+                Promise.all([
+                    TweenLabel(ActiveValue, LastActive, Info.Playing, 5, numberWithCommas),
+                    TweenLabel(FavouritesValue, LastFavourites, Info.Favourites, 5, numberWithCommas),
+                    TweenLabel(VisitsValue, LastVisits, Info.Visits, 5, numberWithCommas, true)
+                ])
+            } else {
+                IsFirst = false
 
-                    ActiveValue.innerText = numberWithCommas(Info.Playing)
-                    FavouritesValue.innerText = numberWithCommas(Info.Favourites)
-                    VisitsValue.innerText = numberWithCommas(Info.Visits)
-                    
-                    ActiveValue.title = numberWithCommas(Info.Playing)
-                    FavouritesValue.title = numberWithCommas(Info.Favourites)
-                    VisitsValue.title = numberWithCommas(Info.Visits)
+                ActiveValue.innerText = numberWithCommas(Info.Playing)
+                FavouritesValue.innerText = numberWithCommas(Info.Favourites)
+                VisitsValue.innerText = numberWithCommas(Info.Visits)
+                
+                ActiveValue.title = numberWithCommas(Info.Playing)
+                FavouritesValue.title = numberWithCommas(Info.Favourites)
+                VisitsValue.title = numberWithCommas(Info.Visits)
 
-                    await sleep(5*1000)
-                }
-
-                LastActive = Info.Playing
-                LastFavourites = Info.Favourites
-                LastVisits = Info.Visits
+                //await sleep(5*1000)
             }
+
+            LastActive = Info.Playing
+            LastFavourites = Info.Favourites
+            LastVisits = Info.Visits
         }
-    })
+
+        setTimeout(Update, 5000)
+    }
+
+    Update()
 }
 
 async function RunLiveLikes(){
@@ -124,35 +126,37 @@ async function RunLiveLikes(){
 
     let IsFirst = true
 
-    new Promise(async() => {
-        while (true){
-            const [Success, Info] = await GetLikesFromCurrentPlace()
+    async function Update(){
+        const [Success, Info] = await GetLikesFromCurrentPlace()
 
-            if (Success){
-                if (!IsFirst){
-                    await Promise.all([
-                        TweenLabel(DislikesLabel, LastDislikes, Info.Dislikes, 5, Info.Dislikes < 10000 && numberWithCommas || AbbreviateNumber),
-                        TweenLabel(LikesLabel, LastLikes, Info.Likes, 5, Info.Likes < 10000 && numberWithCommas || AbbreviateNumber),
-                        TweenNumber(LastRatio, Info.Ratio, 5, function(i){
-                            VoteBar.style = `width: ${i}%;`
-                        })
-                    ])
-                } else {
-                    IsFirst = false
+        if (Success){
+            if (!IsFirst){
+                Promise.all([
+                    TweenLabel(DislikesLabel, LastDislikes, Info.Dislikes, 5, Info.Dislikes < 10000 && numberWithCommas || AbbreviateNumber),
+                    TweenLabel(LikesLabel, LastLikes, Info.Likes, 5, Info.Likes < 10000 && numberWithCommas || AbbreviateNumber),
+                    TweenNumber(LastRatio, Info.Ratio, 5, function(i){
+                        VoteBar.style = `width: ${i}%;`
+                    })
+                ])
+            } else {
+                IsFirst = false
 
-                    DislikesLabel.innerText = (Info.Dislikes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Dislikes)
-                    LikesLabel.innerText = (Info.Likes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Likes)
-                    VoteBar.style = `width: ${Info.Ratio}%;`
+                DislikesLabel.innerText = (Info.Dislikes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Dislikes)
+                LikesLabel.innerText = (Info.Likes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Likes)
+                VoteBar.style = `width: ${Info.Ratio}%;`
 
-                    await sleep(5*1000)
-                }
-
-                LastLikes = Info.Likes
-                LastDislikes = Info.Dislikes
-                LastRatio = Info.Ratio
+               // await sleep(5*1000)
             }
+
+            LastLikes = Info.Likes
+            LastDislikes = Info.Dislikes
+            LastRatio = Info.Ratio
         }
-    })
+
+        setTimeout(Update, 5000)
+    }
+
+    Update()
 }
 
 IsFeatureEnabled("LiveExperienceStats").then(function(Enabled){

@@ -122,6 +122,24 @@ function CreateNotification(Friends, NewFriends, LostFriends){
     })
 }
 
+let LastFriends
+
+function HasFriendsChanged(NewFriends){
+    if (!LastFriends) return true
+    if (NewFriends.length != LastFriends.length) return true
+
+    const Map = {}
+    for (let i = 0; i < LastFriends.length; i++){
+        Map[LastFriends[i]] = true
+    }
+
+    for (let i = 0; i < NewFriends.length; i++){
+        if (!Map[NewFriends[i]]) return true
+    }
+
+    return false
+}
+
 async function UpdateHistory(){
     if (!await CanUpdateHistory()) return
 
@@ -135,6 +153,9 @@ async function UpdateHistory(){
     for (let i = 0; i < Data.length; i++){
         Friends.push(Data[i].id)
     }
+
+    if (!HasFriendsChanged(Friends)) return
+    LastFriends = Friends
 
     const [UpdateSuccess, UpdateResult] = await RequestFunc(WebServerEndpoints.History+"update", "POST", undefined, JSON.stringify(Friends))
 

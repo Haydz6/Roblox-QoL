@@ -22,64 +22,76 @@ function FindFirstTag(Tag){
   return document.getElementsByTagName(Tag)[0]
 }
 
-async function WaitForChildIndex(Parent, Index){
-  let Element = null
-
-  while (true) {
+function WaitForChildIndex(Parent, Index){
+  function Look(resolve){
+    let Element = null
+  
     Element = Parent.children[Index || 0]
-    if (Element != undefined) {
-      break
+    if (Element == undefined) {
+      setTimeout(Look, 50, resolve)
+      return
     }
-
-    await sleep(50)
+  
+    resolve(Element)
   }
 
-  return Element
+  return new Promise((resolve) => {
+    Look(resolve)
+  })
 }
 
-async function WaitForClass(ClassName){
+function WaitForClass(ClassName){
+  function Look(resolve){
     let Element = null
   
-    while (true) {
-      Element = FindFirstClass(ClassName)
-      if (Element != undefined) {
-        break
-      }
-  
-      await sleep(50)
+    Element = FindFirstClass(ClassName)
+    if (Element == null){
+      setTimeout(Look, 50, resolve)
+      return
     }
   
-    return Element
+    resolve(Element)
+  }
+
+  return new Promise((resolve) => {
+    Look(resolve)
+  })
 }
 
-async function WaitForId(Id){
+function WaitForId(Id){
+  function Look(resolve){
     let Element = null
   
-    while (true) {
-      Element = FindFirstId(Id)
-      if (Element != undefined) {
-        break
-      }
-  
-      await sleep(50)
+    Element = FindFirstId(Id)
+    if (Element == null){
+      setTimeout(Look, 50, resolve)
+      return
     }
   
-    return Element
+    resolve(Element)
+  }
+
+  return new Promise((resolve) => {
+    Look(resolve)
+  })
 }
 
-async function WaitForTag(Tag){
-  let Element = null
-
-  while (true) {
+function WaitForTag(Tag){
+  function Look(resolve){
+    let Element = null
+  
     Element = FindFirstTag(Tag)
-    if (Element != undefined) {
-      break
+    if (Element == null){
+      setTimeout(Look, 50, resolve)
+      return
     }
-
-    await sleep(50)
+  
+    resolve(Element)
   }
 
-  return Element
+  return new Promise((resolve) => {
+    Look(resolve)
+  })
 }
 
 async function FindFromAttribute(AttributeName, AttributeValue){
