@@ -70,7 +70,8 @@ async function UpdateRecentServer(){
             UniverseId = await GetUniverseIdFromPlaceId(Presence.placeId)
         }
 
-        if (InGame !== LastInGame || InStudio !== LastInStudio || UniverseId !== LastUniverseId) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0}))
+        //if (InGame !== LastInGame || InStudio !== LastInStudio || UniverseId !== LastUniverseId) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0}))
+        RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0}))
     }
 
     LastRecentServerSuccess = Date.now()
