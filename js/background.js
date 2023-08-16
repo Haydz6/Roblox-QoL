@@ -183,7 +183,7 @@ function GetBrowser(){
 }
 
 function CallLogin(){
-    RequestFunc(WebServerEndpoints.User+"login", "POST")
+    RequestFunc(WebServerEndpoints.User+"login", "GET")
 }
 
 chrome.cookies.onChanged.addListener(function(Change){
