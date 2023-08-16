@@ -12,6 +12,7 @@ function UpdateExternalDiscordCookie(Cookie){
 //This does not collect user data. This just connects to an external program to talk to discord for game presence as discord does not allow websocket connections at all,
 //so an external program is used to convert the websocket to IPC which is what discord uses.
 //Additionally this feature is off by default and shown by the IsFeatureEnabled function, will not try and sort of websocket connections by default
+//Source code for what the extension connects to can be seen here: https://github.com/Haydz6/Roblox-QoL-Discord-Client
 
 async function OpenExternalDiscord(Tries){
     if (!await IsFeatureEnabled("ExternalDiscordPresence") || ExternalDiscordLoggedIn || ExternalDiscordLoggingIn) return
