@@ -2,7 +2,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
-const WebServerEndpoints = {Analytics: WebServerURL+"api/analytics/", Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {User: WebServerURL+"api/user/", Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 
 const Manifest = chrome.runtime.getManifest()
 const ExtensionVersion = Manifest.version
@@ -182,10 +182,8 @@ function GetBrowser(){
     return browserStr
 }
 
-function SendLoginAnalytics(){
-    RequestFunc(WebServerEndpoints.Analytics+"login", "POST", null, JSON.stringify({
-        Browser: GetBrowser()
-    }))
+function CallLogin(){
+    RequestFunc(WebServerEndpoints.User+"login", "POST")
 }
 
 chrome.cookies.onChanged.addListener(function(Change){
@@ -206,7 +204,7 @@ chrome.cookies.onChanged.addListener(function(Change){
 
         ROBLOSECURITY = Cookie.value
         UpdateExternalDiscordCookie(ROBLOSECURITY)
-        SendLoginAnalytics()
+        CallLogin()
     }
 })
 
@@ -220,7 +218,7 @@ if (ManifestVersion > 2) {
 CookieGetFunc({name: ".ROBLOSECURITY", url: "https://roblox.com"}).then(function(Cookie){
     ROBLOSECURITY = Cookie.value
     UpdateExternalDiscordCookie(ROBLOSECURITY)
-    SendLoginAnalytics()
+    CallLogin()
 })
 
 async function FetchAllFeaturesEnabled(){
