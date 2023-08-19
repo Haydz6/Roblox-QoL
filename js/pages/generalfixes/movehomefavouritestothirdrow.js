@@ -26,6 +26,6 @@ IsFeatureEnabled("MoveHomeFavouritesToThirdRow").then(async function(Enabled){
     //const [RecommendedTitle, _] = await SearchForRow(Container, "Recommended")
     const ThirdTitle = Container.children[4]
 
-    Container.insertBefore(FavTitle, ThirdTitle)
     Container.insertBefore(FavRow, ThirdTitle)
+    Container.insertBefore(FavTitle, FavRow)
 })

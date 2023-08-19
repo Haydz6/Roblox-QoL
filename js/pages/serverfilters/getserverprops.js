@@ -109,6 +109,31 @@ async function ElementAdded(Element){
 			}
 		})
 	}).observe(Element, {attributes: true})
+
+	let ServerUpdatedDefer = false
+	new MutationObserver(function(Mutations){
+		if (ServerUpdatedDefer) return
+
+		Mutations.forEach(function(Mutation){
+			if (ServerUpdatedDefer) return
+
+			if (Mutation.type === "childList"){
+				ServerUpdatedDefer = true
+				setTimeout(function(){
+					ServerUpdatedDefer = false
+						
+					Element.removeAttribute("jobid")
+					Element.removeAttribute("placeid")
+
+					const ServerRegion = Element.getElementsByClassName("text-info rbx-game-status rbx-game-server-status text-overflow server-info")[0]
+					if (ServerRegion) ServerRegion.remove()
+
+					Element.removeAttribute("qol-checked")
+				}, 0)
+			}
+		})
+	}).observe(Element.getElementsByClassName("player-thumbnails-container")[0], {childList: true})
+
 	UpdateInfo()
 }
 
