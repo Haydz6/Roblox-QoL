@@ -122,7 +122,7 @@ async function AddAssetInfo(){
                 CreatorLink.className = "text-name"
                 CreatorLink.style = "margin-left: 8px;"
                 CreatorLink.innerText = Creator
-                CreatorLink.href = `https://roblox.com/${Type == "User" && "users" || "groups"}/${Id}/profile`
+                CreatorLink.href = `https://roblox.com/${Type == "User" && "users" || "groups"}/${Id}` + Type == "Users" ? "/profile" : ""
 
                 CreatedField.children[1].appendChild(CreatorLink)
             })

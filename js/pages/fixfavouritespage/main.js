@@ -149,6 +149,13 @@ IsFeatureEnabled("FixFavouritesPage").then(async function(Enabled){
 
   const [SortContainer, GameGrid] = CreateSortDiscover("Favorites")
   List = GameGrid
+
+  ChildRemoved(GameCarousel, function(Child){
+    if (Child === SortContainer) {
+      GameCarousel.appendChild(SortContainer)
+    }
+  })
+
   GameCarousel.appendChild(SortContainer)
 
   GetPage()
