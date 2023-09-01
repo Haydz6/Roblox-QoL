@@ -106,7 +106,7 @@ async function OpenExternalDiscord(Tries){
         ExternalDiscordLoggedIn = true
         ExternalDiscordLoggingIn = false
         PresenceIntervalId = setInterval(UpdatePresence, 5*1000)
-        ExternalDiscordWS.send(JSON.stringify({Authentication: ROBLOSECURITY}))
+        //ExternalDiscordWS.send(JSON.stringify({Authentication: ROBLOSECURITY}))
         CloseDiscord()
     }
 
