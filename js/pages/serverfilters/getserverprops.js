@@ -54,6 +54,8 @@ async function GetRefreshButton(){
 
 async function ElementAdded(Element){
 	if (Element.className.search("game-server-item") === -1) return
+	if (Element.getAttribute("client-hooked")) return
+    Element.setAttribute("client-hooked", true)
 
 	async function UpdateInfo(){
 		if (Element.getAttribute("checking-qol-checked") || Element.getAttribute("qol-checked")) return

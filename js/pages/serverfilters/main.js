@@ -11,6 +11,8 @@ function InjectServerPropsRetriever(){
 
 function OnNewServerElement(Element){
     if (Element.className.search("rbx-game-server-item") > -1 || Element.className.search("rbx-friends-game-server-item") > -1){
+        if (Element.getAttribute("hooked")) return
+        Element.setAttribute("hooked", true)
 
         function UpdateRegion(){
             if (!Element.getAttribute("qol-checked")){
@@ -28,6 +30,7 @@ function OnNewServerElement(Element){
                 }
             })
         }).observe(Element, {attributes: true})
+
         UpdateRegion()
     }
 }

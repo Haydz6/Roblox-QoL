@@ -26,6 +26,9 @@ function CreateInfoDiv(){
 function CreateServerInfo(Element, Server){
     // if (Element.getAttribute("has-region")) return
 
+    const OldServerRegion = Element.getElementsByClassName("text-info rbx-game-status rbx-game-server-status text-overflow server-info")[0]
+	if (OldServerRegion) OldServerRegion.remove()
+
     Element.setAttribute("has-region", true)
 
     const RegionContainer = document.createElement("div")
