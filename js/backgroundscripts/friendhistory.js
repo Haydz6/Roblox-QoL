@@ -1,3 +1,6 @@
+let CachedFriends = []
+let FetchedSavedFriends = false
+
 async function AddNamesToHistory(AllHistory){
     const IdsToFetch = []
     const IdToHistory = {}
@@ -97,6 +100,22 @@ async function CanUpdateHistory(){
     return true
 }
 
+async function GetSavedFriends(){
+    if (FetchedSavedFriends) return
+
+    const LastFriends = await LocalStorage.get("lastfriends")
+
+    if (LastFriends){
+        CachedFriends = JSON.parse(LastFriends)
+    }
+
+    FetchedSavedFriends = true
+}
+
+function SaveFriends(){
+    LocalStorage.set("lastfriends", JSON.stringify(CachedFriends))
+}
+
 function CreateNotification(Friends, NewFriends, LostFriends){
     const Friend = Friends[0]
     
@@ -141,6 +160,7 @@ function HasFriendsChanged(NewFriends){
 }
 
 async function UpdateHistory(){
+    await GetSavedFriends()
     if (!await CanUpdateHistory()) return
 
     const [Success, Result] = await RequestFunc(`https://friends.roblox.com/v1/users/${await GetCurrentUserId()}/friends`, "GET", undefined, undefined, true)
@@ -153,6 +173,8 @@ async function UpdateHistory(){
     for (let i = 0; i < Data.length; i++){
         Friends.push(Data[i].id)
     }
+    CachedFriends = Friends
+    SaveFriends()
 
     if (!HasFriendsChanged(Friends)) return
     LastFriends = Friends
@@ -187,3 +209,7 @@ async function UpdateHistory(){
 
 UpdateHistory()
 setInterval(UpdateHistory, 60*1000)
+
+BindToOnMessage("GetCachedFriends", false, function(){
+    return CachedFriends
+})
