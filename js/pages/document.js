@@ -110,6 +110,20 @@ async function FindFromAttribute(AttributeName, AttributeValue){
   return Element
 }
 
+function FindClassPath(Element, ...Paths){
+  let LastElement = Element
+
+  for (let i = 0; i < Paths.length; i++){
+    const NewElement = LastElement.getElementsByClassName(Paths[i])[0]
+      
+    if (NewElement){
+      LastElement = NewElement
+    } else return
+  }
+
+  return LastElement
+}
+
 async function WaitForClassPath(Element, ...Paths){
   let LastElement = Element
 
