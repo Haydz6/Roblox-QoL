@@ -94,10 +94,8 @@ async function CreateServersFromRobloxServers(Servers){
 }
 
 async function ReplaceLoadMoreServersButton(){
-   const Parent = await WaitForClass("rbx-running-games-footer")
-   const OldLoadMoreButton = FindClassPath(Parent, "rbx-running-games-load-more btn-control-md btn-full-width")
-    
-    console.log(OldLoadMoreButton)
+    const Parent = await WaitForClass("rbx-running-games-footer")
+    const OldLoadMoreButton = FindClassPath(Parent, "rbx-running-games-load-more btn-control-md btn-full-width")
 
     if (OldLoadMoreButton){
         if (!DefaultLoadMoreServersButton){
