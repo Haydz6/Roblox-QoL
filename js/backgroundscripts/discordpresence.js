@@ -34,7 +34,7 @@ async function GetUniverseInfo(UniverseId){
 async function GetUniverseThumbnail(UniverseId){
     const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${UniverseId}&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false`, "GET", null, null, true)
     if (!Success) return "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/512/512/Image/Png"
-    return Result.data[0].imageUrl
+    return Result.data[0]?.imageUrl || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/512/512/Image/Png"
 }
 
 async function ImageUrlToExternalDiscord(ImageUrl){

@@ -24,14 +24,39 @@ let LastInStudio = false
 
 let UpdateInt = 3
 
+const PlaceIdToUniverseCache = {}
+
 async function GetUniverseIdFromPlaceId(PlaceId){
+    const Cache = PlaceIdToUniverseCache[PlaceId]
+    if (Cache) return Cache
+
     const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/multiget-place-details?placeIds=${PlaceId}`, "GET", undefined, undefined, true)
 
     if (!Success){
         return 0
     }
 
-    return Result?.[0]?.universeId || 0
+    const UniverseId = Result?.[0]?.universeId || 0
+    PlaceIdToUniverseCache[PlaceId] = UniverseId
+
+    setTimeout(function(){
+        delete PlaceIdToUniverseCache[PlaceId]
+    }, 60*1000)
+
+    return UniverseId
+}
+
+function CanUpdatePlaytimeEndpoint(InGame, InStudio, UniverseId){
+    if (InGame || InStudio) {
+        if (UpdateInt >= 6) {
+            UpdateInt = 0
+            return true
+        }
+    } else if (LastInGame != InGame || LastInStudio != InStudio || LastUniverseId != UniverseId) {
+        return true
+    }
+
+    return false
 }
 
 async function UpdateRecentServer(){
@@ -59,24 +84,20 @@ async function UpdateRecentServer(){
         LastJobId = ""
         return
     }
+    //Update playtime
+    const InGame = Presence.userPresenceType === 2
+    const InStudio = Presence.userPresenceType === 3
+    let UniverseId = Presence.universeId
 
-    if (UpdateInt >= 3){
-        UpdateInt = 0
-        const InGame = Presence.userPresenceType === 2
-        const InStudio = Presence.userPresenceType === 3
-        let UniverseId = Presence.universeId
-
-        if ((InGame || InStudio) && !UniverseId){
-            UniverseId = await GetUniverseIdFromPlaceId(Presence.placeId)
-        }
-
-        //if (InGame !== LastInGame || InStudio !== LastInStudio || UniverseId !== LastUniverseId) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0}))
-        RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0}))
+    if ((InGame || InStudio) && !UniverseId){
+        UniverseId = await GetUniverseIdFromPlaceId(Presence.placeId)
     }
+    UniverseId = UniverseId || 0
+
+    if (CanUpdatePlaytimeEndpoint(InGame, InStudio, UniverseId)) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0}))
+    //Updated playtime
 
     LastRecentServerSuccess = Date.now()
-    LastInGame = Presence.userPresenceType === 2
-    LastInStudio = Presence.userPresenceType === 3
 
     //Check if player has left server
     if (Presence.userPresenceType !== 2 && LastPlaceId !== 0){
@@ -93,12 +114,7 @@ async function UpdateRecentServer(){
         LastJobId = ""
         LastPlaceId = 0
         LastUniverseId = 0
-
-        return
-    }
-
-    //Check if player is in a server
-    if (Presence.userPresenceType === 2){
+    } else if (Presence.userPresenceType === 2){ //Check if player is in a server
         let Servers = AllRecentServers[Presence.placeId]
 
         if (!Servers){
@@ -114,12 +130,15 @@ async function UpdateRecentServer(){
             })
         }
 
-        LastJobId = Presence.gameId
-        LastPlaceId = Presence.placeId
-        LastUniverseId = Presence.universeId
-
         SaveRecentServers()
     }
+
+    LastInGame = InGame
+    LastInStudio = InStudio
+
+    LastJobId = Presence.gameId
+    LastPlaceId = Presence.placeId
+    LastUniverseId = Presence.universeId || 0
 }
 
 function SaveRecentServers(){
@@ -224,4 +243,4 @@ if (ManifestVersion < 3){
 }
 
 UpdateRecentServer()
-setInterval(UpdateRecentServer, 10*1000)
+setInterval(UpdateRecentServer, 5*1000)
