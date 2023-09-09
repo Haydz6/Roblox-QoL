@@ -156,9 +156,8 @@ function CreateGamePlaytime(Type, Name, Icon){
     Container.style = "height: 17px; margin: 6px 0px;"
 
     const Image = document.createElement("img")
-    Image.style = "background-image:none; margin:-6px; margin-top:0px; margin-bottom:0.5px; transform:scale(0.4); border:none; margin-left:-8px; margin-right:-5px; margin-top:-0.6px; height: 33px; width: 33px;"
     Image.src = Icon || chrome.runtime.getURL("/img/playtime.png")
-    Image.className = "info-label icon-pastname"
+    Image.className = "info-label icon-pastname info-icon-playtime"
 
     const NameLabel = document.createElement("span")
     NameLabel.className = "text-label"

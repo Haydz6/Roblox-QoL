@@ -8,10 +8,17 @@
     padding-right: 12px;
 }
 
+.light-mode .confirm-modal-dropdown-button {
+    color: hsla(0,0%,0%,.7);
+}
+
+.light-mode .confirm-modal-dropdown-button {
+    color: hsla(0,0%,100%,.7);
+}
+
 .confirm-modal-dropdown-button {
     background-color: transparent;
     border-color: transparent;
-    color: hsla(0,0%,100%,.7);
     margin-left: 36%;
 }
 
@@ -22,8 +29,15 @@
     left: 29%!important;
 }
 
-.trade-value-overview {
+.light-theme .trade-value-overview {
+    background-color: #e4e4e4;
+}
+
+.dark-theme .trade-value-overview {
     background-color: #909090;
+}
+
+.trade-value-overview {
     bottom: 0px;
     right: 0px;
     position: absolute;
@@ -85,6 +99,10 @@
     margin-right: 4px;
 }
 
+.light-theme .link-icon {
+    filter: brightness(0.4);
+}
+
 .link-icon {
     width: 16px;
     margin-left: 4px;
@@ -129,6 +147,7 @@
 }
 
 .gain-summary > .box > .icon-robux-16x16 {
+    background-image: url(https://images.rbxcdn.com/e3fed0d20e85a51518b2756e66343a5e-economy_small_dark.svg);
     margin-right: 4px;
 }
 

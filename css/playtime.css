@@ -1,3 +1,20 @@
+.light-theme .info-icon-playtime {
+    filter: brightness(0.5);
+}
+
+.info-icon-playtime {
+    background-image: none!important;
+    margin: -0.6px -5px 0.5px -8px!important;
+    transform: scale(0.4)!important;
+    border: none!important;
+    height: 33px!important;
+    width: 33px!important;
+}
+
+.light-theme .icon-playtime {
+    filter: brightness(0.5);
+}
+
 .icon-playtime {
     background-image: url(chrome-extension://__MSG_@@extension_id__/img/playtime.png)!important;
     background-position: revert!important;

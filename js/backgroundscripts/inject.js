@@ -71,6 +71,9 @@ const ContentScripts = [{
     "matches": [
         "*://*.roblox.com/games/*"
     ],
+    "css": [
+        "css/playtime.css"
+    ],
     "js": [
         "js/pages/liveexperience/api.js",
         "js/pages/liveexperience/main.js",

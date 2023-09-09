@@ -1,11 +1,25 @@
 .filter-link-icon:after {
-    background-image: url(../img/filters/filter.png)!important;
     background-size: 100%!important;
 }
 
+.dark-theme .filter-link-icon:after {
+    background-image: url(../img/filters/filter.png)!important;
+}
+
+.light-theme .filter-link-icon:after {
+    background-image: url(../img/filters/light-filter.png)!important;
+}
+
 .clear-filter-link-icon:after {
-    background-image: url(../img/filters/clearfilter.png)!important;
     background-size: 100%!important;
+}
+
+.dark-theme .clear-filter-link-icon:after {
+    background-image: url(../img/filters/clearfilter.png)!important;
+}
+
+.light-theme .clear-filter-link-icon:after {
+    background-image: url(../img/filters/light-clearfilter.png)!important;
 }
 
 .rbx-filter {
@@ -20,10 +34,18 @@
     height: 222px;
     position: absolute;
     z-index: 5;
-    background-color: rgb(25,25,25);
     top: 24px;
     border-radius: 12px;
     padding: 5px;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,.3);
+}
+
+.light-theme .filter-list {
+    background-color: #ffffff;
+}
+
+.dark-theme .filter-list {
+    background-color: rgb(25,25,25);
 }
 
 .filter-button {
@@ -32,16 +54,24 @@
     margin-bottom: 5px;
 }
 
+.dark-theme .filter-globe {
+    background-color: rgb(25,25,25);
+}
+
+.light-theme .filter-globe {
+    background-color: #ffffff;
+}
+
 .filter-globe {
     width: 575px;
     height: 450px;
     position: absolute;
     z-index: 5;
-    background-color: rgb(25,25,25);
     bottom: -300px;
     left: -580px;
     border-radius: 12px;
     padding: 0px;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,.3);
 }
 
 .filter-globe-serverinfo {
