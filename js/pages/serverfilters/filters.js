@@ -47,23 +47,25 @@ async function HandleMapRegion(){
     const WorldElements = WorldContainer.getElementsByTagName("div")[2]
     const WorldCanvas = WorldContainer.getElementsByTagName("canvas")[0]
 
-    World.controls().zoomSpeed = 3
-    World.controls().minZoom = 0.25
-    World.controls().maxZoom = 0.4
-    World.controls().minDistance = 0.25
-    World.controls().miaxDistance = 0.4
-    World.controls().autoRotate = true
-    World.controls().autoRotateSpeed = 1
-    World.controls().update()
+    const Controls = World.controls()
+
+    Controls.zoomSpeed = 3
+    Controls.minZoom = 0.25
+    Controls.maxZoom = 0.4
+    Controls.minDistance = 0.25
+    Controls.miaxDistance = 0.4
+    Controls.autoRotate = true
+    Controls.autoRotateSpeed = 1
+    Controls.update()
 
     GlobeDiv.addEventListener("mouseenter", function(){
         IsHovering = true
-        World.controls().autoRotate = false
+        Controls.autoRotate = false
      })
 
     GlobeDiv.addEventListener("mouseleave", function(){
         IsHovering = false
-        World.controls().autoRotate = true
+        Controls.autoRotate = true
     })
 
     WorldCanvas.style["border-radius"] = "12px"
@@ -157,7 +159,7 @@ async function HandleMapRegion(){
             }
 
 
-            if (!IsHovering) World.controls().update()
+            if (!IsHovering) Controls.update()
 
             window.requestAnimationFrame(UpdateElements)
         }
