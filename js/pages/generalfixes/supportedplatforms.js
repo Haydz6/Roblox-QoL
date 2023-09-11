@@ -30,16 +30,14 @@ IsFeatureEnabled("SupportedPlatforms").then(async function(Enabled){
 
     const GlobalContainer = await WaitForClass("game-stats-container")
     let AllowedGears = FindFirstClass("icon-nogear")
+    let className = GlobalContainer.children[0].className
 
-    if (AllowedGears) AllowedGears = AllowedGears.parentElement.parentElement
-    if (!AllowedGears) AllowedGears = GlobalContainer.children[GlobalContainer.children.length-1]
-
-    const [Placeholder, PlaceholderList] = CreateAllowedDevicesContainer(AllowedGears.className) //Fix for roseal
+   const [Placeholder, PlaceholderList] = CreateAllowedDevicesContainer(className) //Fix for roseal
     GlobalContainer.appendChild(Placeholder)
 
-    AllowedGears.remove()
+    if (AllowedGears) AllowedGears.parentElement.parentElement.remove()
 
-    const [Container, List] = CreateAllowedDevicesContainer(AllowedGears.className)
+    const [Container, List] = CreateAllowedDevicesContainer(className)
 
     const [Success, Body] = await RequestFunc(WebServerEndpoints.Game+"platforms?universeid="+ (await GetUniverseIdFromGamePage()))
     if (!Success){
