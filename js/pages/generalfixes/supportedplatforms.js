@@ -30,16 +30,21 @@ IsFeatureEnabled("SupportedPlatforms").then(async function(Enabled){
     const GlobalContainer = await WaitForClass("game-stats-container")
     const AllowedGears = GlobalContainer.children[GlobalContainer.children.length-1]
 
-    const [Placeholder] = CreateAllowedDevicesContainer(AllowedGears.className) //Fix for roseal
+    const [Placeholder, PlaceholderList] = CreateAllowedDevicesContainer(AllowedGears.className) //Fix for roseal
     GlobalContainer.appendChild(Placeholder)
 
     AllowedGears.remove()
 
     const [Container, List] = CreateAllowedDevicesContainer(AllowedGears.className)
-    GlobalContainer.appendChild(Container)
 
     const [Success, Body] = await RequestFunc(WebServerEndpoints.Game+"platforms?universeid="+ (await GetUniverseIdFromGamePage()))
-    if (!Success) return
+    if (!Success){
+        PlaceholderList.innerText = "Couldn't fetch"
+        return
+    } else if (Body.length == 0){
+        PlaceholderList.innerText = "Unknown"
+        return
+    }
 
     for (let i = 0; i < Body.length; i++){
         List.appendChild(CreatePlatformIcon(Body[i]))
