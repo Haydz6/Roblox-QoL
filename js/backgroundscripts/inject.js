@@ -95,7 +95,9 @@ const ContentScripts = [{
         "js/pages/recentservers/main.js",
 
         "js/pages/playtime/createelements.js",
-        "js/pages/playtime/game.js"
+        "js/pages/playtime/game.js",
+
+        "js/pages/generalfixes/supportedplatforms.js"
     ],
     "run_at": "document_start"
 },

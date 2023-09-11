@@ -14,11 +14,10 @@ function UpdateExternalDiscordCookie(Cookie){
 //Additionally this feature is off by default and shown by the IsFeatureEnabled function, will not try and sort of websocket connections by default
 //Source code for what the extension connects to can be seen here: https://github.com/Haydz6/Roblox-QoL-Discord-Client
 
-async function OpenExternalDiscord(Tries){
+async function OpenExternalDiscord(){
     if (!await IsFeatureEnabled("ExternalDiscordPresence") || ExternalDiscordLoggedIn || ExternalDiscordLoggingIn) return
 
-    if (!Tries) Tries = 0
-    ExternalDiscordWS = new WebSocket("ws://localhost:"+(9300+Tries)+"/presence")
+    ExternalDiscordWS = new WebSocket("ws://localhost:9300/presence")
     
     if (!ExternalDiscordWS){
         return
@@ -121,7 +120,7 @@ async function OpenExternalDiscord(Tries){
         ExternalDiscordWS = null
         ExternalDiscordInfo = null
 
-        if (err.code === 1006 && Tries <= 4) return OpenExternalDiscord(Tries + 1)
+        //if (err.code === 1006 && Tries <= 4) return OpenExternalDiscord(Tries + 1)
     }
 
     ExternalDiscordWS.onmessage = function(Message){

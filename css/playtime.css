@@ -2,6 +2,10 @@
     filter: brightness(0.5);
 }
 
+.light-theme .info-icon-devices {
+    filter: brightness(0.5);
+}
+
 .info-icon-playtime {
     background-image: none!important;
     margin: -0.6px -5px 0.5px -8px!important;

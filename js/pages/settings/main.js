@@ -174,6 +174,10 @@ const Settings = {
             Title: "Resizable chat boxes",
             Description: "Allows you to resize the chat boxes on the roblox site. (Drag top left)"
         },
+        SupportedPlatforms: {
+            Title: "Show Supported Platforms",
+            Description: "Shows what platforms a game supports. (Replaces allowed gears)"
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"
