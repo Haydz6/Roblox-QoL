@@ -29,7 +29,10 @@ IsFeatureEnabled("SupportedPlatforms").then(async function(Enabled){
     if (!Enabled) return
 
     const GlobalContainer = await WaitForClass("game-stats-container")
-    const AllowedGears = GlobalContainer.children[GlobalContainer.children.length-1]
+    let AllowedGears = FindFirstClass("icon-nogear")
+
+    if (AllowedGears) AllowedGears = AllowedGears.parentElement.parentElement
+    if (!AllowedGears) AllowedGears = GlobalContainer.children[GlobalContainer.children.length-1]
 
     const [Placeholder, PlaceholderList] = CreateAllowedDevicesContainer(AllowedGears.className) //Fix for roseal
     GlobalContainer.appendChild(Placeholder)
