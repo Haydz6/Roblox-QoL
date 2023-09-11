@@ -229,16 +229,21 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     let ResBody
 
     if (!BypassResJSON){
-      ResBody = await (Response).json()
+      try {
+        ResBody = await (Response).json()
+      } catch { //Hacky way for roblox's new api
+        ResBody = {Success: false, Result: "???"}
+        Response.ok = false
+      }
     }
 
     let NewCSRFToken = Response.headers.get("x-csrf-token")
-
+    
     if (NewCSRFToken){
       CSRFToken = NewCSRFToken
     }
 
-    if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
+    if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed" || NewCSRFToken) || ResBody?.Result == "Invalid authentication!"){
       if (ResBody?.Result == "Invalid authentication!"){
         await InvalidateAuthKey()
         console.log("auth key invalid, getting a new one")

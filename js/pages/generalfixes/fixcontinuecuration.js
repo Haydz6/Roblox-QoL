@@ -1,5 +1,20 @@
+console.log(window.location.href)
+
 IsFeatureEnabled("FixContinueCuration").then(async function(Enabled){
     if (!Enabled) return
+    if (!window.location.href.includes("#/sortName")) return
+
+    const [Success, Body] = await RequestFunc("https://apis.roblox.com/discovery-api/omni-recommendation", "POST", {"Content-Type": "application/json"}, JSON.stringify({pageType: "Continue", "sessionId": "a", "supportedTreatmentTypes": []}), true)
+    if (!Success) return
+
+    const Sorts = Body.sorts
+    for (let i = 0; i < Sorts.length; i++){
+        const Sort = Sorts[i]
+        if (Sort.topicId == 100000003){
+            if (!window.location.href.includes("sortName/v2/"+Sort.topic)) return
+            break
+        }
+    }
 
     setTimeout(async function(){
         const [Success, Result] = await RequestFunc(WebServerEndpoints.Playtime+"continue/fetch", "GET")
