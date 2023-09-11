@@ -3,6 +3,7 @@ function CreatePlatformIcon(IconName){
     Icon.className = "info-icon-devices"
     Icon.style = `background-image: url(${chrome.runtime.getURL(`img/devices/${IconName}.png`)}); background-size: contain; display: inline-block; height: 20px; width: 20px; margin: 0px 3px;`
     Icon.setAttribute("data-toggle", "tooltip")
+    Icon.setAttribute("data-placement", "bottom")
     Icon.setAttribute("data-original-title", IconName)
 
     return Icon
@@ -52,4 +53,6 @@ IsFeatureEnabled("SupportedPlatforms").then(async function(Enabled){
 
     Placeholder.remove()
     GlobalContainer.appendChild(Container)
+
+    InjectScript("TooltipSupportedDevices")
 })
