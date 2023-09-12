@@ -60,5 +60,4 @@ IsFeatureEnabled("ShowSimilarUGCItems").then(async function(Enabled){
     if (!Enabled) return
     const Container = await WaitForClass("item-social-container")
     CreateSimilarList(Container, GetAssetIdFromURL())
-    console.log(Container)
 })

@@ -98,7 +98,6 @@ function CreatePrivateServerCard(GameIcon, Name, OwnerName, OwnerId, OwnerType, 
     CreatorNameButton.setAttribute("ng-bind", "item.PrivateServer.nameForDisplay")
     CreatorNameButton.href = OwnerType === "User" && `https://roblox.com/users/${OwnerId}/profile/` || `https://roblox.com/groups/${OwnerId}`
     CreatorNameButton.innerText = ` ${OwnerType === "User" && "@" || ""}${OwnerName}`
-    console.log(OwnerType)
 
     CreatorNameDiv.appendChild(CreatorNameBySpan)
     CreatorNameDiv.appendChild(CreatorNameFakeButton)

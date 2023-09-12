@@ -188,8 +188,6 @@ async function AddImagesToHistory(AllHistory){
 }
 
 async function HandleHistoryPage(){
-    console.log("handling")
-
     await sleep(100)
     const BackButton = await WaitForClass("btn-generic-left-sm")
     const NextButton = await WaitForClass("btn-generic-right-sm")
@@ -205,8 +203,6 @@ async function HandleHistoryPage(){
     }
 
     async function Fetch(){
-        console.log(CurrentPage)
-
         await sleep(50)
 
         SetButtonStatus(BackButton, false)

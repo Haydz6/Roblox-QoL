@@ -423,9 +423,7 @@ async function CustomesOpened(){
   //   })
   // })
 
-  console.log("waiting for item-cards")
   ItemCardsList = CostumesList.getElementsByTagName("div")[1].getElementsByTagName("div")[0].getElementsByTagName("ul")[0]
-  console.log("got")
 
   CacheCustomesOpenInt = CustomesOpenInt
 

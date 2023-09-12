@@ -164,7 +164,6 @@ const NewOutfitElementObserver = new MutationObserver(function(mutationList, obs
         for (let i = 0; i < NewNodes.length; i++){
             const NewNode = NewNodes[i]
             if (NewNode.className === "list-item item-card ng-scope six-column" && NewNode.getAttribute("ng-class") === "{'five-column' : !avatarLibrary.metaData.isCategoryReorgEnabled, 'six-column' : avatarLibrary.metaData.isCategoryReorgEnabled}") {
-                console.log("new")
                 NewOutfitElementAdded(NewNode)
             }
         }
