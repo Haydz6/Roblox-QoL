@@ -9,8 +9,6 @@ async function DoesAssetIdMatchImageId(AssetId, ImageId){
 }
 
 async function GetItemFromImage(ImageId){
-    console.log("looking for", ImageId)
-
     const Promises = []
 
     for (let i = ImageId + 1; i < ImageId + 101; i++){

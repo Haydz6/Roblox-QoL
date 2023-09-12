@@ -246,10 +246,8 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     if (!Response.ok && (ResBody?.message == "Token Validation Failed" || ResBody?.errors?.[0]?.message == "Token Validation Failed" || NewCSRFToken) || ResBody?.Result == "Invalid authentication!"){
       if (ResBody?.Result == "Invalid authentication!"){
         await InvalidateAuthKey()
-        console.log("auth key invalid, getting a new one")
       }
 
-      console.log("sending with csrf token")
       return await RequestFunc(URL, Method, Headers, Body, CredientalsInclude)
     }
 

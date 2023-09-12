@@ -1,5 +1,3 @@
-console.log(window.location.href)
-
 IsFeatureEnabled("FixContinueCuration").then(async function(Enabled){
     if (!Enabled) return
     if (!window.location.href.includes("#/sortName")) return

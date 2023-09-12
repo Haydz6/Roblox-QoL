@@ -93,7 +93,6 @@ async function RequestActivePrivateServers(){
             NextCursor = Result.nextPageCursor
 
             for (let o = 0; o < Result.data.length; o++){
-                console.log(Result.data[o])
                 RobloxServers.push(Result.data[o])
             }
 
@@ -128,7 +127,6 @@ async function RequestActivePrivateServers(){
 
                 if (!Success){
                     if (ServerInfo?.errors?.[0]?.code === 8){
-                        console.log("private servers disabled for "+Server.PlaceId)
                         break
                     }
 

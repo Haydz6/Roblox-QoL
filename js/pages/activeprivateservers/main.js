@@ -14,9 +14,6 @@ function HideDefaultCard(Element, Hide){
 function HideRobloxDefaultCards(ServerListElement, Hide){
     const children = ServerListElement.children
 
-    console.log(ServerListElement)
-    console.log(children)
-
     for (let i = 0; i < children.length; i++){
        HideDefaultCard(children[i], Hide)
     }
@@ -52,7 +49,6 @@ function AddConnection(Callback, Type, Element){
 
 async function ActivePrivateServersOpened(){
     CurrentPage = 1
-    console.log("opened")
 
     WaitForClass("breadcrumb-container").then(Container => {
         Container.getElementsByTagName("li")[2].getElementsByTagName("span")[0].innerText = "Active Private Servers"
