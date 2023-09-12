@@ -18,7 +18,7 @@ function CreateAllowedDevicesContainer(ClassName){
     Title.innerText = "Allowed Device"
 
     const List = document.createElement("p")
-    List.className = "text-lead font-caption-body stat-gears"
+    List.className = "spinner spinner-default"
 
     Container.append(Title, List)
 
@@ -35,7 +35,6 @@ IsFeatureEnabled("SupportedPlatforms").then(async function(Enabled){
     if (AllowedGears) AllowedGears.parentElement.parentElement.remove()
 
     const [Container, List] = CreateAllowedDevicesContainer(className)
-    List.className = "spinner spinner-default"
     GlobalContainer.appendChild(Container)
 
     const [Success, Body] = await RequestFunc(WebServerEndpoints.Game+"platforms?universeid="+ (await GetUniverseIdFromGamePage()))
