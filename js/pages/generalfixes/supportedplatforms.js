@@ -32,28 +32,26 @@ IsFeatureEnabled("SupportedPlatforms").then(async function(Enabled){
     let AllowedGears = FindFirstClass("icon-nogear")
     let className = GlobalContainer.children[0].className
 
-   const [Placeholder, PlaceholderList] = CreateAllowedDevicesContainer(className) //Fix for roseal
-    GlobalContainer.appendChild(Placeholder)
-
     if (AllowedGears) AllowedGears.parentElement.parentElement.remove()
 
     const [Container, List] = CreateAllowedDevicesContainer(className)
+    List.className = "spinner spinner-default"
+    GlobalContainer.appendChild(Container)
 
     const [Success, Body] = await RequestFunc(WebServerEndpoints.Game+"platforms?universeid="+ (await GetUniverseIdFromGamePage()))
+    List.className = "text-lead font-caption-body stat-gears"
+
     if (!Success){
-        PlaceholderList.innerText = "Couldn't fetch"
+        List.innerText = "Couldn't fetch"
         return
     } else if (Body.length == 0){
-        PlaceholderList.innerText = "Unknown"
+        List.innerText = "Unknown"
         return
     }
 
     for (let i = 0; i < Body.length; i++){
         List.appendChild(CreatePlatformIcon(Body[i]))
     }
-
-    Placeholder.remove()
-    GlobalContainer.appendChild(Container)
 
     InjectScript("TooltipSupportedDevices")
 })
