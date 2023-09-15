@@ -300,7 +300,8 @@ async function HandleFilterClick(Container, FilterButton){
 
     Container.appendChild(FilterList)
     WaitForId("roproServerFiltersButton").then(function(Button){
-        Button.style.display = "none" //Turning off ropro filter settings keeps the button for some odd reason?
+        //Button.style.display = "none" //Turning off ropro filter settings keeps the button for some odd reason? Old behaviour, both should show side by side.
+        Button.style.right = "220px"
     })
 }
 
