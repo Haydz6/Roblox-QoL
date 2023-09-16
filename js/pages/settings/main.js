@@ -182,6 +182,10 @@ const Settings = {
             Title: "Last Online on Home",
             Description: "Shows last online if friend is offline on home page."
         },
+        HideOffline: {
+            Title: "Appear offline (Website Only)",
+            Description: "Makes you appear offline to other users while browsing the website. (This only works on the website, it is a limitation of roblox)"
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"
