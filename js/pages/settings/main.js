@@ -178,6 +178,10 @@ const Settings = {
             Title: "Show Supported Devices",
             Description: "Shows what devices a game supports. (Replaces allowed gears)"
         },
+        FriendsHomeLastOnline: {
+            Title: "Last Online on Home",
+            Description: "Shows last online if friend is offline on home page."
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"

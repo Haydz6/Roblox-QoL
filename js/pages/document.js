@@ -275,6 +275,23 @@ function isNumeric(value) {
   return /^-?\d+$/.test(value);
 }
 
+function SecondsToLengthSingle(Seconds){
+  const d = Math.floor(Seconds / (3600*24))
+  const h = Math.floor(Seconds % (3600*24) / 3600)
+  const m = Math.floor(Seconds % 3600 / 60)
+  const s = Math.floor(Seconds % 60)
+
+  if (d > 0){
+    return `${d} day${d == 1 ? "" : "s"}`
+  } else if (h > 0){
+    return `${h} hour${h == 1 ? "" : "s"}`
+  } else if (m > 0){
+    return `${m} minute${m == 1 ? "" : "s"}`
+  }
+
+  return `${s} second${s == 1 ? "" : "s"}`
+}
+
 function SecondsToLengthShort(Seconds){
   const h = Math.floor(Seconds / 3600)
   const m = Math.floor(Seconds % 3600 / 60)
@@ -282,14 +299,14 @@ function SecondsToLengthShort(Seconds){
 
   if (h > 0){
     if (h < 100){
-      return `${h} hr${h == 1 && "" || "s"} ${m} min${m == 1 && "" || "s"}`
+      return `${h} hr${h == 1 ? "" : "s"} ${m} min${m == 1 ? "" : "s"}`
     }
-    return `${h} hr${h == 1 && "" || "s"}`
+    return `${h} hr${h == 1 ? "" : "s"}`
   } else if (m > 0){
-    return `${m} min${m == 1 && "" || "s"}`
+    return `${m} min${m == 1 ? "" : "s"}`
   }
 
-  return `${s} second${s == 1 && "" || "s"}`
+  return `${s} second${s == 1 ? "" : "s"}`
 }
 
 function SecondsToLength(Seconds, OnlyOne, HideDays){
@@ -301,16 +318,16 @@ function SecondsToLength(Seconds, OnlyOne, HideDays){
   const trueh = Math.floor(Seconds / 3600)
 
   if (d > 0 && !HideDays){
-      return `${d} day${d > 1 && "s" || ""}`
+      return `${d} day${d > 1 ? "s" : ""}`
   } else if (HideDays && trueh > 0 || h > 0){
-      return `${HideDays && trueh || h} hour${(HideDays && trueh > 1 || h > 1) && "s" || ""}`
+      return `${HideDays ? trueh : h} hour${(HideDays && trueh > 1 || h > 1) && "s" || ""}`
   } else if (m > 0 && !OnlyOne){
-      return `${m} minute${m > 1 && "s" || ""} ${s} second${s > 1 && "s" || ""}`
+      return `${m} minute${m > 1 ? "s" : ""} ${s} second${s > 1 ? "s" : ""}`
   } else if (m > 0 && OnlyOne){
-    return `${m} minute${m > 1 && "s" || ""}`
+    return `${m} minute${m > 1 ? "s" : ""}`
   }
 
-  return `${s} second${s == 1 && "" || "s"}`
+  return `${s} second${s == 1 ? "" : "s"}`
 }
 
 function SplitArrayIntoChunks(Array, chunkSize){

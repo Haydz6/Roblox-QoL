@@ -239,13 +239,14 @@ const ContentScripts = [{
     ],
     "js": [
         "js/pages/generalfixes/movehomefavouritestothirdrow.js",
+        "js/pages/generalfixes/friendshomelastonline.js",
         "js/pages/fixfavouritespage/replacehomelink.js",
 
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/createcards.js",
         "js/pages/playtime/home.js",
 
-        "js/pages/pinned/home.js"
+        "js/pages/pinned/home.js",
     ],
     "run_at": "document_start"
 },
