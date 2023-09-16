@@ -47,73 +47,56 @@ async function BatchGetLastOnline(UserId){
 IsFeatureEnabled("FriendsHomeLastOnline").then(async function(Enabled){
     if (!Enabled) return
 
-    const FriendsContainer = await WaitForClass("home-friends")
-    const FriendsList = await WaitForClassPath(FriendsContainer, "people-list", "hlist")
+    function GetPlaceName(Child){
+        const Existing = Child.getElementsByClassName("place-name")[0]
+        if (Existing) return Existing
 
-    ChildAdded(FriendsList, true, async function(Child){
-        if (Child.type === undefined) return //thanks js
+        const PlaceName = document.createElement("div")
+        PlaceName.className = "text-overflow xsmall text-label place-name"
+        Child.getElementsByClassName("friend-link")[0].appendChild(PlaceName)
 
-        const UserId = parseInt(Child.getAttribute("rbx-user-id")) || parseInt(Child.id.replace("people-", ""))
-        if (!UserId) return
+        return PlaceName
+    }
 
-        const AvatarContainer = Child.getElementsByClassName("avatar-container")[0]
-        if (!AvatarContainer) return
+    const OfflineUsers = {}
 
-        function GetPlaceName(){
-            const Existing = Child.getElementsByClassName("place-name")[0]
-            if (Existing) return Existing
+    async function SetUserOffline(Presence){
+        const UserId = Presence.userId || Presence.id
+        OfflineUsers[UserId] = true
 
-            const PlaceName = document.createElement("div")
-            PlaceName.className = "text-overflow xsmall text-label place-name"
-            Child.getElementsByClassName("friend-link")[0].appendChild(PlaceName)
+        const FriendItem = document.getElementById("people-"+UserId)
+        if (!FriendItem) return
 
-            return PlaceName
+        const LastOnline = new Date(await BatchGetLastOnline(UserId))
+        const PlaceName = GetPlaceName(FriendItem)
+
+        while (OfflineUsers[UserId]){
+            PlaceName.innerText = SecondsToLengthSingle((Date.now()/1000) - (LastOnline.getTime()/1000)) + " ago"
+            await sleep(500)
         }
+    }
 
-        let IsOffline = false
+    async function SetUserOnline(Presence){
+        const UserId = Presence.userId || Presence.id
+        delete OfflineUsers[UserId]
+    }
 
-        async function UpdateStatus(){
-            const FriendStatus = Child.getElementsByClassName("avatar-status friend-status")[0]
-            if (!FriendStatus.className.includes("icon")){ //Offline
-                if (IsOffline) return
-                IsOffline = true
-
-                const LastOnline = new Date(await BatchGetLastOnline(UserId))
-                const PlaceName = GetPlaceName()
-
-                while (IsOffline){
-                    PlaceName.innerText = SecondsToLengthSingle((Date.now()/1000) - (LastOnline.getTime()/1000)) + " ago"
-                    await sleep(500)
-                }
-            } else {
-                IsOffline = false
-            }
-        }
-
-        // new MutationObserver(function(Mutations){
-        //     Mutations.forEach(function(Mutation){
-        //         if (Mutation.type === "attributes"){
-        //             if (Mutation.attributeName == "class"){
-        //                 UpdateStatus()
-        //             }
-        //         }
-        //     })
-        // }).observe(FriendStatus, {attributes: true})
-
-        let FriendStatus
-        ChildAdded(AvatarContainer, true, function(Child){
-            if (Child.className.includes("avatar-status friend-status")){
-                FriendStatus = Child
-                UpdateStatus()
-            }
-        })
-        ChildRemoved(AvatarContainer, function(Child){
-            if (Child == FriendStatus){
-                FriendStatus = null
-                UpdateStatus()
-            }
-        })
-
-        UpdateStatus()
+    document.addEventListener("Roblox.Presence.Update", async function(Event){
+        const Presence = Event.detail[0]
+        if (Presence.userPresenceType === 0) SetUserOffline(Presence)
+        else SetUserOnline(Presence)
     })
+
+    let PeopleList
+    while (true){
+        PeopleList = document.querySelector('[ng-controller="peopleListContainerController"]')
+        if (PeopleList) break
+        await sleep(100)
+    }
+
+    const PeopleController = angular.element(PeopleList).scope()
+    for (const [_, User] of Object.entries(PeopleController.library.friendsDict)){
+        if (User.presence.userPresenceType === 0) SetUserOffline(User)
+        else SetUserOnline(User)
+    }
 })
