@@ -16,7 +16,8 @@
         "cookies",
         "declarativeNetRequest",
         "tts",
-        "scripting"
+        "scripting",
+        "webRequest"
     ],
     "host_permissions": [
         "*://*.haydz6.com/",

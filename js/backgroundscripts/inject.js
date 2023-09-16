@@ -315,6 +315,15 @@ const ContentScripts = [{
         "css/groups.css"
     ],
     "run_at": "document_start"
+},
+{
+    "matches": [
+        "*://*.roblox.com/banned-user/*"
+    ],
+    "js": [
+       "js/pages/banned/profile.js"
+    ],
+    "run_at": "document_start"
 }]
 
 function RemoveDuplicateFromArray(Array){

@@ -1,0 +1,1449 @@
+<div class="profile-container ng-scope" ng-modules="robloxApp, profile, angularLazyImg, peopleList, aliases, groupList, userDescription">
+    <div ng-controller="profileBaseController" class="ng-scope">
+
+
+<div class="section profile-header ">
+
+    <div class="section-content profile-header-content ng-scope" ng-controller="profileHeaderController">
+<script type="text/javascript">
+
+    var Roblox = Roblox || {};
+    Roblox.ProfileHeaderData = {"profileusername":"%USERNAME%","previoususernames":""};
+</script>
+
+<div data-profileuserid="%USERID%" data-friendscount="%FRIENDSCOUNT%" data-followerscount="%FOLLOWERSCOUNT%" data-followingscount="%FOLLOWINGSCOUNT%" data-arefriends="false" data-friendurl="https://www.roblox.com/users/%USERID%/friends#!/friends" data-incomingfriendrequestpending="false" data-maysendfriendinvitation="false" data-friendrequestpending="false" data-mayfollow="false" data-isfollowing="false" data-canmessage="true" data-messagesdisabled="false" data-messageurl="/messages/compose?recipientId=%USERID%" data-canbefollowed="false" data-cantrade="false" data-isblockbuttonvisible="false" data-getfollowscript="" data-ismorebtnvisible="false" data-isvieweeblocked="false" data-mayimpersonate="false" data-mayupdatestatus="false" data-updatestatusurl="" data-statustext="" data-statusdate="1/1/0001 12:00:00 AM" data-editstatusmaxlength="254" data-ischatdisabledbyprivacysetting="false" data-angularpresencestatusenabled="false" profile-header-data="" set-message-btn-display="setMessageBtnDisplay(layout)" profile-header-layout="profileHeaderLayout" class="hidden ng-isolate-scope"></div>
+
+        <div class="profile-header-top">
+        <div class="avatar avatar-headshot-lg card-plain profile-avatar-image">
+            <span class="avatar-card-link avatar-image-link">
+                <!-- ngIf: profileHeaderLayout.profileUserId --><thumbnail-2d ng-if="profileHeaderLayout.profileUserId" class="avatar-card-image profile-avatar-thumb ng-scope ng-isolate-scope" thumbnail-target-id="profileHeaderLayout.profileUserId" thumbnail-type="thumbnailTypes.avatarHeadshot"><span ng-class="$ctrl.getCssClasses()" class="thumbnail-2d-container headshot-thumbnail-image" thumbnail-type="AvatarHeadshot" thumbnail-target-id="%USERID%"> <!-- ngIf: $ctrl.thumbnailUrl && !$ctrl.isLazyLoadingEnabled() --><img ng-if="$ctrl.thumbnailUrl &amp;&amp; !$ctrl.isLazyLoadingEnabled()" ng-src="" thumbnail-error="$ctrl.setThumbnailLoadFailed" ng-class="{'loading': $ctrl.thumbnailUrl &amp;&amp; !isLoaded }" image-load="" alt="" title="" class="ng-scope ng-isolate-scope headshot-thumbnail-image" src=""><!-- end ngIf: $ctrl.thumbnailUrl && !$ctrl.isLazyLoadingEnabled() --> <!-- ngIf: $ctrl.thumbnailUrl && $ctrl.isLazyLoadingEnabled() --> </span> </thumbnail-2d><!-- end ngIf: profileHeaderLayout.profileUserId -->
+            </span>
+            <script type="text/javascript">
+                $(".profile-avatar-thumb img").on('load', function () {
+                    if (Roblox && Roblox.Performance) {
+                        Roblox.Performance.setPerformanceMark("head_avatar");
+                    }
+                });
+            </script>
+        </div>
+        <div class="header-caption">
+            <div class="header-names">
+                <div class="header-title">
+                    <h1 ng-non-bindable="" class="profile-name text-overflow">
+                        %DISPLAYNAME%
+                    </h1>
+                    <h1 ng-non-bindable="" class="profile-name text-overflow font-header-1">
+                        %DISPLAYNAME%
+                    </h1>
+                    <div data-toggle="tooltip" data-placement="bottom" data-original-title="Banned User" class="banned-user-icon" style="width: 30px; height: 30px; display: inline-block; margin-left: 10px;"><svg fill="#ffffff" height="100%" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve">
+                        <g id="XMLID_509_">
+                            <path id="XMLID_510_" d="M65,330h200c8.284,0,15-6.716,15-15V145c0-8.284-6.716-15-15-15h-15V85c0-46.869-38.131-85-85-85
+                                S80,38.131,80,85v45H65c-8.284,0-15,6.716-15,15v170C50,323.284,56.716,330,65,330z M180,234.986V255c0,8.284-6.716,15-15,15
+                                s-15-6.716-15-15v-20.014c-6.068-4.565-10-11.824-10-19.986c0-13.785,11.215-25,25-25s25,11.215,25,25
+                                C190,223.162,186.068,230.421,180,234.986z M110,85c0-30.327,24.673-55,55-55s55,24.673,55,55v45H110V85z"></path>
+                        </g>
+                        </svg></div>
+                </div>
+                    <div class="profile-display-name font-caption-body text text-overflow" ng-non-bindable="">
+                        @%USERNAME%
+                    </div>
+                
+            </div>
+            <div class="header-details">
+                <ul class="details-info">
+                    <li>
+                        <div class="text-label font-caption-header ng-binding" ng-bind="'Label.Friends' | translate">Friends</div>
+                        <a class="text-name" href="https://www.roblox.com/users/%USERID%/friends#!/friends">
+                            <span class="font-header-2 ng-binding" title="%FRIENDSCOUNT%" ng-bind="profileHeaderLayout.friendsCount | abbreviate">%FRIENDSCOUNT%</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="text-label font-caption-header ng-binding" ng-bind="'Label.Followers' | translate">Followers</div>
+                        <a class="text-name" href="https://www.roblox.com/users/%USERID%/friends#!/followers">
+                            <span class="font-header-2 ng-binding" title="3747" ng-bind="getAbbreviatedStringFromCountValue(profileHeaderLayout.followersCount)">%FOLLOWERSCOUNTABBREV%</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="text-label font-caption-header ng-binding" ng-bind="'Label.Following' | translate">Following</div>
+                        <a class="text-name" href="https://www.roblox.com/users/%USERID%/friends#!/following">
+                            <span class="font-header-2 ng-binding" title="1178" ng-bind="getAbbreviatedStringFromCountValue(profileHeaderLayout.followingsCount)">%FOLLOWINGSCOUNTABBREV%</span>
+                        </a>
+                    </li>
+                </ul>
+                    <ul class="details-actions desktop-action">
+                        <!-- ngIf: !profileHeaderLayout.areFriends --><li class="btn-friends ng-scope" ng-if="!profileHeaderLayout.areFriends">
+                            <!-- ngIf: profileHeaderLayout.incomingFriendRequestPending -->
+                            <!-- ngIf: !profileHeaderLayout.incomingFriendRequestPending
+                                            && profileHeaderLayout.maySendFriendInvitation -->
+                            <!-- ngIf: !profileHeaderLayout.incomingFriendRequestPending
+                                        && !profileHeaderLayout.maySendFriendInvitation
+                                        && profileHeaderLayout.friendRequestPending -->
+                            <!-- ngIf: !profileHeaderLayout.incomingFriendRequestPending
+                                        && !profileHeaderLayout.maySendFriendInvitation
+                                        && !profileHeaderLayout.friendRequestPending --><button ng-if="!profileHeaderLayout.incomingFriendRequestPending
+                                        &amp;&amp; !profileHeaderLayout.maySendFriendInvitation
+                                        &amp;&amp; !profileHeaderLayout.friendRequestPending" class="btn-control-md disabled ng-binding ng-scope" ng-bind="'Action.AddFriend' | translate">Add Friend</button><!-- end ngIf: !profileHeaderLayout.incomingFriendRequestPending
+                                        && !profileHeaderLayout.maySendFriendInvitation
+                                        && !profileHeaderLayout.friendRequestPending -->
+                        </li><!-- end ngIf: !profileHeaderLayout.areFriends -->
+                        <!-- ngIf: profileHeaderLayout.areFriends -->
+                        <li class="btn-messages" id="profile-message-btn">
+                            <button class="btn-control-md ng-binding" ng-disabled="!profileHeaderLayout.enableMessageBtn" ng-show="profileHeaderLayout.showMessageBtn" ng-click="sendMessage()" ng-bind="'Action.Message' | translate" disabled="disabled">Message</button>
+                        </li>
+                        <li class="btn-messages ng-hide" id="profile-chat-btn" ng-show="profileHeaderLayout.showChatBtn">
+                            <button class="btn-primary-md ng-binding" ng-click="chat()" ng-bind="'Action.Chat' | translate">Chat</button>
+                        </li>
+                        <!-- ngIf: profileHeaderLayout.canBeFollowed -->
+                    </ul>
+                    <ul class="details-actions mobile-action" ng-class="{'three-item-list': profileHeaderLayout.canBeFollowed}">
+                        <!-- ngIf: !profileHeaderLayout.areFriends --><li class="btn-friends ng-scope" ng-if="!profileHeaderLayout.areFriends">
+                            <!-- ngIf: profileHeaderLayout.incomingFriendRequestPending -->
+                            <!-- ngIf: !profileHeaderLayout.incomingFriendRequestPending && profileHeaderLayout.maySendFriendInvitation -->
+                            <!-- ngIf: !profileHeaderLayout.incomingFriendRequestPending
+                                        && !profileHeaderLayout.maySendFriendInvitation
+                                        && profileHeaderLayout.friendRequestPending -->
+                            <!-- ngIf: !profileHeaderLayout.incomingFriendRequestPending
+                                        && !profileHeaderLayout.maySendFriendInvitation
+                                        && !profileHeaderLayout.friendRequestPending --><a ng-if="!profileHeaderLayout.incomingFriendRequestPending
+                                        &amp;&amp; !profileHeaderLayout.maySendFriendInvitation
+                                        &amp;&amp; !profileHeaderLayout.friendRequestPending" class="action-friend-pending ng-scope">
+                                <div class="icon-friend-pending"></div>
+                                <div class="text-label small ng-binding" ng-bind="'Action.AddFriend' | translate">Add Friend</div>
+                            </a><!-- end ngIf: !profileHeaderLayout.incomingFriendRequestPending
+                                        && !profileHeaderLayout.maySendFriendInvitation
+                                        && !profileHeaderLayout.friendRequestPending -->
+                        </li><!-- end ngIf: !profileHeaderLayout.areFriends -->
+                        <!-- ngIf: profileHeaderLayout.areFriends -->
+                        <!-- ngIf: profileHeaderLayout.showMessageBtn --><li class="btn-messages center-icon ng-scope" id="profile-message-icon" ng-if="profileHeaderLayout.showMessageBtn">
+                            <!-- ngIf: !profileHeaderLayout.enableMessageBtn --><div ng-if="!profileHeaderLayout.enableMessageBtn" class="action-message-disabled ng-scope">
+                                <div class="icon-send-message-disabled"></div>
+                                <div class="text-label small ng-binding" ng-bind="'Action.Message' | translate">Message</div>
+                            </div><!-- end ngIf: !profileHeaderLayout.enableMessageBtn -->
+                            <!-- ngIf: profileHeaderLayout.enableMessageBtn -->
+                        </li><!-- end ngIf: profileHeaderLayout.showMessageBtn -->
+                        <!-- ngIf: profileHeaderLayout.showChatBtn -->
+                        <!-- ngIf: profileHeaderLayout.canBeFollowed -->
+                    </ul>
+            </div><!--header-details-->
+        </div>
+            <div user-status=""></div>
+    </div>
+    <p ng-show="profileHeaderLayout.hasError" class="text-error header-details-error ng-binding ng-hide" ng-bind="profileHeaderLayout.errorMsg"></p>
+    <div id="profile-header-more" class="profile-header-more ng-hide" ng-show="profileHeaderLayout.isMoreBtnVisible">
+        <button id="popover-link" class="rbx-menu-item btn-generic-more-sm" popover-placement="bottom-right" popover-trigger="'outsideClick'" uib-popover-template="'profile-header-popover-contents'">
+            <span class="icon-more"></span>
+        </button>
+        <script type="text/ng-template" id="profile-header-popover-contents">
+            <ul class="dropdown-menu"
+                role="menu">
+                <li ng-show="profileHeaderLayout.showMessageLink"
+                    id="profile-message-in-menu">
+                    <button role="button"
+                            id="profile-message"
+                            ng-click="sendMessage()"
+                            ng-cloak
+                            ng-bind="'Action.Message' | translate"></button>
+                </li>
+                <li ng-show="profileHeaderLayout.mayFollow"
+                    ng-cloak>
+                    <button role="button"
+                            ng-bind="profileHeaderLayout.isFollowing ? 'Action.Unfollow' : 'Action.Follow' | translate"
+                            ng-click="checkIsFollowing()"
+                            id="profile-follow-user"
+                            ng-cloak></button>
+                </li>
+                    <li ng-show="profileHeaderLayout.canTrade"
+                        ng-cloak>
+                        <button role="button"
+                                ng-click="tradeItems()"
+                                id="profile-trade-items"
+                                ng-bind="'Action.TradeItems' | translate"></button>
+                    </li>
+                <li ng-show="profileHeaderLayout.isBlockButtonVisible"
+                    ng-cloak>
+                    <button role="button"
+                            ng-bind="!profileHeaderLayout.isVieweeBlocked ? 'Action.BlockUser' : 'Action.UnblockUser'| translate"
+                            ng-click="blockUser()"
+                            id="profile-block-user"
+                            ng-cloak></button>
+                </li>
+                                    <li>
+                        <a href="https://www.roblox.com/users/%USERID%/inventory/"
+                           ng-bind="'Action.Inventory' | translate"></a>
+                    </li>
+                                    <li>
+                        <a href="https://www.roblox.com/users/%USERID%/favorites#!/places"
+                           ng-bind="'Action.Favorites' | translate"></a>
+                    </li>
+            </ul>
+        </script>
+        <script type="text/javascript">
+                $(function() {
+                    $(".details-actions, .mobile-details-actions").on("click", ".profile-join-game", function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // NOTE: global var set due to legacy game launch code.
+                        play_placeId = 0;
+                        try {
+                            ;
+                            if (!true)
+                            {
+                                var referrerId = Roblox.UrlParser ? Roblox.UrlParser.getParameterValueByName("rbxp") : null;
+                                if (Roblox.GamePlayEvents) {
+                                    var context = Roblox.GamePlayEvents.contextCategories.joinUser;
+                                    Roblox.GamePlayEvents.SendGamePlayIntent(context, play_placeId, referrerId);
+                                }
+                            }
+                        }
+                        catch (e) {
+                            if (GoogleAnalyticsEvents && GoogleAnalyticsEvents.FireEvent) {
+                                GoogleAnalyticsEvents.FireEvent(["Protocol", "Launch Failure", "follow", 0]);
+                            }
+
+                        }
+                        return false;
+                    });
+                });
+        </script>
+    </div>
+
+    <captcha activated="captcha.activated" captcha-action-type="captcha.actionTypes.followUser" captcha-failed="followUserCaptchaFailed" captcha-passed="followUserCaptchaPassed" input-params="captcha.inputParams" return-token-in-success-cb="true" class="ng-isolate-scope"><div class="captcha-container ng-scope" ng-controller="captchaV2Controller"> <div class="modal" ng-class="$ctrl.getCaptchaClasses()" ng-click="$ctrl.hideCaptcha()"> <div class="modal-dialog"> <div class="modal-content"> <div class="modal-body" ng-click="$event.stopPropagation()"> <button type="button" class="close" ng-click="$ctrl.hideCaptcha()"> <span aria-hidden="true"><span class="icon-close"></span></span><span class="sr-only">Close</span> </button> <div id="captchaV2-1" class="captchav2-funcaptcha-modal-body"></div> </div> </div> </div> </div> </div></captcha>
+
+    </div><!--profile-header-content-->
+</div><!-- profile-header -->
+
+        <!-- ngInclude: 'system-feedback' --><div ng-include="'system-feedback'" class="ng-scope"><div class="alert-system-feedback ng-scope"><div class="alert alert-warning"></div></div></div>
+        <div class="rbx-tabs-horizontal">
+            <ul id="horizontal-tabs" class="nav nav-tabs" role="tablist" profile-tab-click="">
+                <li class="rbx-tab active">
+                    <a class="rbx-tab-heading" href="#about" id="tab-about">
+                        <span class="text-lead">About</span>
+                        <span class="rbx-tab-subtitle"></span>
+                    </a>
+                </li>
+                <li class="rbx-tab">
+                    <a class="rbx-tab-heading" href="#creations" id="tab-creations">
+                        <span class="text-lead">Creations</span>
+                        <span class="rbx-tab-subtitle"></span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content rbx-tab-content">
+                <div class="tab-pane active" id="about">
+                    <div class="section profile-about ng-scope" ng-controller="profileUtilitiesController">
+
+        <div class="container-header">
+            <h2>About</h2>
+        </div>
+        <div class="section-content remove-panel">
+            %DESCRIPTION%
+        </div>
+
+    <div class="section-content remove-panel">
+        <div id="aliases-container">
+            <div class="border-top ng-hide" ng-hide="isAliasesLoaded">
+                <span class="spinner spinner-default"></span>
+            </div>
+            <div aliases-container=""><div class="border-top ng-scope ng-hide" ng-controller="aliasesContainerController" ng-show="layout.isAliasesShown"> <div class="user-tag-header"> <span class="font-header-2 ng-binding" ng-bind="layout.label">Alias</span> <button class="btn-generic-edit-sm" ng-click="changeAlias()"> <span class="icon-edit"></span> </button> </div> <div class="font-header-2 text-subheader user-tag ng-binding" ng-bind="library.currentUserTag"></div> </div></div>
+        </div>
+        <div class="border-top profile-about-footer">
+
+                <a href="https://www.roblox.com/abusereport/UserProfile?id=%USERID%&amp;redirectUrl=https%3A%2F%2Fwww.roblox.com%2Fusers%2F%USERID%%2Fprofile" class="abuse-report-link abuse-report-modal">
+                    <span class="text-error ng-binding" ng-bind="'Label.ReportAbuse' | translate">Report Abuse</span>
+                </a>
+
+        </div>
+    </div>
+</div>
+
+<div id="profile-current-wearing-avatar" class="section profile-avatar"><div class="container-header"><h2>Currently Wearing</h2></div><div class="col-sm-6 section-content profile-avatar-left"><div class="thumbnail-holder"><span class="thumbnail-2d-container thumbnail-span"><img class="main-body-thumbnail-image" src="" alt="" title=""></span><button type="button" class="enable-three-dee btn-control btn-control-lg btn--width">3D</button></div></div><div class="col-sm-6 section-content profile-avatar-right"><div class="profile-avatar-mask"><div class="profile-accoutrements-container"><div class="profile-accoutrements-slider"><ul class="accoutrement-items-container"><li class="accoutrement-item"><a class="" href="/catalog/6711567675"><span class="thumbnail-2d-container"><img class="accoutrment-image" src="https://tr.rbxcdn.com/b29ac5848d135e52515b90feeb8081f5/150/150/Hat/Png" alt="Alchemist Elemental Hat" title="Alchemist Elemental Hat"></span><div class="asset-restriction-icon"></div></a></li><li class="accoutrement-item"><a class="" href="/catalog/6711569677"><span class="thumbnail-2d-container"><img class="accoutrment-image" src="https://tr.rbxcdn.com/64b345ea2d1f2c7dc50d9c136a65e39c/150/150/Hat/Png" alt="Alchemist Elemental Sash" title="Alchemist Elemental Sash"></span><div class="asset-restriction-icon"></div></a></li><li class="accoutrement-item"><a class="" href="/catalog/7540621403"><span class="thumbnail-2d-container"><img class="accoutrment-image" src="https://tr.rbxcdn.com/6dd16ab149cca5ef79a5f888d10dbfcc/150/150/Hat/Png" alt="Pink Mega Fluffy Tail" title="Pink Mega Fluffy Tail"></span><div class="asset-restriction-icon"></div></a></li><li class="accoutrement-item"><a class="" href="/catalog/12333521696"><span class="thumbnail-2d-container"><img class="accoutrment-image" src="https://tr.rbxcdn.com/658819742a224f88bfabb7969cd517f9/150/150/Hat/Png" alt="Pink Kemono Cat" title="Pink Kemono Cat"></span><div class="asset-restriction-icon"></div></a></li><li class="accoutrement-item"><a class="" href="/catalog/12557913007"><span class="thumbnail-2d-container"><img class="accoutrment-image" src="https://tr.rbxcdn.com/59f203e9e4ca2cab5facda751b892f45/150/150/Shirt/Png" alt="pink shirt v2" title="pink shirt v2"></span><div class="asset-restriction-icon"></div></a></li><li class="accoutrement-item"><a class="" href="/catalog/12557918215"><span class="thumbnail-2d-container"><img class="accoutrment-image" src="https://tr.rbxcdn.com/e3907407581373d7b9b6555f505e26d9/150/150/Pants/Png" alt="pink pants v2" title="pink pants v2"></span><div class="asset-restriction-icon"></div></a></li></ul></div><div class="profile-accoutrements-page-container"><span class="profile-accoutrements-page page-active"></span></div></div></div></div></div>
+
+
+    <div class="section layer profile-collections ng-scope" ng-controller="profileCollectionsController">
+        <div class="container-header">
+            <h2 ng-bind="'Heading.Collections' | translate" class="ng-binding">Collections</h2>
+            <div class="collection-btns">
+                    <a href="https://www.roblox.com/users/%USERID%/inventory/" class="btn-min-width btn-secondary-xs btn-more inventory-link see-all-link-icon ng-binding" ng-bind="'Action.Inventory' | translate">Inventory</a>
+                            </div>
+        </div>
+            <!-- ngInclude: 'profile-collections-section' --><div class="section-content remove-panel ng-scope" ng-include="'profile-collections-section'"><ul class="hlist collections-list item-list ng-scope" ng-init="getCollectionsData()"><!-- ngRepeat: item in collections --><li class="list-item asset-item collections-item ng-scope" ng-repeat="item in collections"><a ng-href="https://www.roblox.com/catalog/12052729454/Retro-Series-Sorcerers-Mushroom" class="collections-link" title="Retro Series: Sorcerers Mushroom" href="https://www.roblox.com/catalog/12052729454/Retro-Series-Sorcerers-Mushroom"><div class="img-container"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/80543d081aa49e5eca00bdce74a1cf57/140/140/Hat/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/80543d081aa49e5eca00bdce74a1cf57/140/140/Hat/Png"><div class="asset-restriction-icon"><span ng-show="item.AssetRestrictionIcon&amp;&amp;item.AssetRestrictionIcon.CssTag" class="icon-label ng-hide icon-null-label" ng-class="'icon-'+item.AssetRestrictionIcon.CssTag+'-label'"></span></div></div><span class="font-header-2 text-overflow item-name"><!-- ngIf: item.HasPremiumBenefit --> <span ng-bind="item.Name" class="ng-binding">Retro Series: Sorcerers Mushroom</span></span></a></li><!-- end ngRepeat: item in collections --><li class="list-item asset-item collections-item ng-scope" ng-repeat="item in collections"><a ng-href="https://www.roblox.com/catalog/11743776865/Retro-Series-Tree-Swing" class="collections-link" title="Retro Series: Tree Swing" href="https://www.roblox.com/catalog/11743776865/Retro-Series-Tree-Swing"><div class="img-container"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/98e43699ec18aeb7956ceade85f8f92d/140/140/Hat/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/98e43699ec18aeb7956ceade85f8f92d/140/140/Hat/Png"><div class="asset-restriction-icon"><span ng-show="item.AssetRestrictionIcon&amp;&amp;item.AssetRestrictionIcon.CssTag" class="icon-label ng-hide icon-null-label" ng-class="'icon-'+item.AssetRestrictionIcon.CssTag+'-label'"></span></div></div><span class="font-header-2 text-overflow item-name"><!-- ngIf: item.HasPremiumBenefit --> <span ng-bind="item.Name" class="ng-binding">Retro Series: Tree Swing</span></span></a></li><!-- end ngRepeat: item in collections --></ul></div>
+
+    </div>
+
+<div groups-showcase="" display-user-id="%USERID%" class="ng-isolate-scope"><!-- ngIf: !metadata.areProfileGroupsHidden --><div ng-if="!metadata.areProfileGroupsHidden" ng-class="{'section': !layout.isGridOn, 'container-list': layout.isGridOn}" ng-show="groups.length > 0" class="ng-scope ng-hide section"> <div class="container-header"> <h2 ng-bind="'Heading.Groups' | translate" class="ng-binding">Groups</h2> <div class="container-buttons"> <button class="profile-view-selector btn-secondary-xs btn-generic-slideshow-xs" title="Slideshow View" type="button" ng-click="updateDisplay(false)" ng-class="{'btn-secondary-xs btn-generic-slideshow-xs': !layout.isGridOn, 'btn-control-xs btn-generic-slideshow-xs': layout.isGridOn}"> <span class="icon-slideshow selected" ng-class="{'selected': !layout.isGridOn}"></span> </button> <button class="profile-view-selector btn-control-xs btn-generic-grid-xs" title="Grid View" type="button" ng-click="updateDisplay(true)" ng-class="{'btn-secondary-xs btn-generic-grid-xs': layout.isGridOn, 'btn-control-xs btn-generic-grid-xs': !layout.isGridOn}"> <span class="icon-grid" ng-class="{'selected': layout.isGridOn}"></span> </button> </div> </div> <div class="profile-slide-container section-content remove-panel"> <groups-showcase-grid groups-cache="groups" ng-show="layout.isGridOn" class="ng-isolate-scope ng-hide"><ul class="hlist game-cards group-list" horizontal-scroll-bar="$ctrl.loadMoreGroups()"> <!-- ngRepeat: group in $ctrl.groups --> </ul> <a ng-click="$ctrl.loadMoreGroups()" class="btn btn-control-xs load-more-button ng-binding ng-hide" ng-bind="'Label.LoadMore' | translate" ng-show="$ctrl.layout.canLoadMore">Load More</a></groups-showcase-grid> <div id="groups-switcher" class="switcher slide-switcher groups ng-isolate-scope" groups-showcase-switcher="" groups="groups" ng-hide="layout.isGridOn"><ul class="slide-items-container switcher-items hlist"> <!-- ngRepeat: group in groups --> </ul> <!-- ngIf: multipleItems() --> <!-- ngIf: multipleItems() --> </div> </div> </div><!-- end ngIf: !metadata.areProfileGroupsHidden --></div>
+
+
+    <div class="container-list favorite-games-container">
+        <div class="container-header">
+            <h2 ng-bind="'Heading.FavoriteGames' | translate" class="ng-binding">Favorites</h2>
+            <a href="https://www.roblox.com/users/%USERID%/favorites#!/places" class="btn-secondary-xs btn-min-width btn-more see-all-link-icon">Favorites</a>
+        </div>
+
+        
+
+<ul class="hlist game-cards">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?SortFilter=5&amp;PlaceId=14696833053&amp;Position=1&amp;SortPosition=1&amp;PageId=6637688b-1bf5-449a-9ddc-478c4e5d0fbc&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" src="https://t4.rbxcdn.com/19cbf9cfefcbb366224ab42fdbb896f1" alt="pls" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://t4.rbxcdn.com/19cbf9cfefcbb366224ab42fdbb896f1&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="pls" ng-non-bindable="">
+                pls
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label hidden">0%</span>
+                    <span class="info-label no-vote "></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?SortFilter=5&amp;PlaceId=14652874807&amp;Position=2&amp;SortPosition=1&amp;PageId=6637688b-1bf5-449a-9ddc-478c4e5d0fbc&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" src="https://t2.rbxcdn.com/70e87bd44dd1198ca4024d27478484da" alt="secret" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://t2.rbxcdn.com/70e87bd44dd1198ca4024d27478484da&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="secret" ng-non-bindable="">
+                secret
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label hidden">0%</span>
+                    <span class="info-label no-vote "></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?SortFilter=5&amp;PlaceId=14104248348&amp;Position=3&amp;SortPosition=1&amp;PageId=6637688b-1bf5-449a-9ddc-478c4e5d0fbc&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" src="https://tr.rbxcdn.com/0cbaed6f7b69555e2c89292029101abd/150/150/Image/Jpeg" alt="[DRINKS!] On Tap 17+" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/0cbaed6f7b69555e2c89292029101abd/150/150/Image/Jpeg&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="[DRINKS!] On Tap 17+" ng-non-bindable="">
+                [DRINKS!] On Tap 17+
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">95%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="348">348</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?SortFilter=5&amp;PlaceId=11927338608&amp;Position=4&amp;SortPosition=1&amp;PageId=6637688b-1bf5-449a-9ddc-478c4e5d0fbc&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" src="https://tr.rbxcdn.com/0916dd1fc2f64d4f1bc0cc242aa30fae/150/150/Image/Jpeg" alt="Lawcountry | BETA ACCESS" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/0916dd1fc2f64d4f1bc0cc242aa30fae/150/150/Image/Jpeg&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Lawcountry | BETA ACCESS" ng-non-bindable="">
+                Lawcountry | BETA ACCESS
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">70%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="1">1</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?SortFilter=5&amp;PlaceId=1215581239&amp;Position=5&amp;SortPosition=1&amp;PageId=6637688b-1bf5-449a-9ddc-478c4e5d0fbc&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" src="https://tr.rbxcdn.com/0eae9d04a48da655d2697cb9e32bf034/150/150/Image/Jpeg" alt="Doomspire Brickbattle" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/0eae9d04a48da655d2697cb9e32bf034/150/150/Image/Jpeg&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Doomspire Brickbattle" ng-non-bindable="">
+                Doomspire Brickbattle
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">83%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="242">242</span>
+            </div>
+        </a>
+    </div>
+</li>
+</ul>
+    </div>
+
+
+    <div class="section" id="roblox-badges-container"><div class="container-header"><h2>Roblox Badges</h2><a class="btn-fixed-width btn-secondary-xs btn-more see-all-link">See More</a></div><div class="section-content remove-panel"><ul class="hlist badge-list"><li class="list-item asset-item"><a class="" href="https://www.roblox.com/info/roblox-badges#Badge2" title="This badge is given to members who have embraced the Roblox community and have made at least 20 friends. People who have this badge are good people to know and can probably help you out if you are having trouble."><span class="border asset-thumb-container icon-badge-friendship" title="Friendship"></span><span class="font-header-2 text-overflow item-name">Friendship</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/info/roblox-badges#Badge3" title="This badge was granted when a user scored 10 victories in experiences that use classic combat scripts. It was retired Summer 2015 and is no longer attainable."><span class="border asset-thumb-container icon-badge-combat-initiation" title="Combat Initiation"></span><span class="font-header-2 text-overflow item-name">Combat Initiation</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/info/roblox-badges#Badge4" title="This badge was granted when a user scored 100 or more victories in experiences that use classic combat scripts. It was retired Summer 2015 and is no longer attainable."><span class="border asset-thumb-container icon-badge-warrior" title="Warrior"></span><span class="font-header-2 text-overflow item-name">Warrior</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/info/roblox-badges#Badge18" title="This badge is awarded to users who have ever belonged to the illustrious Builders Club. These people are part of a long tradition of Roblox greatness."><span class="border asset-thumb-container icon-badge-welcome-to-the-club" title="Welcome To The Club"></span><span class="font-header-2 text-overflow item-name">Welcome To The Club</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/info/roblox-badges#Badge12" title="This badge recognizes members who have visited Roblox for one year or more. They are stalwart community members who have stuck with us over countless releases, and have helped shape Roblox into the experience that it is today. These medalists are the true steel, the core of the Robloxian history ... and its future."><span class="border asset-thumb-container icon-badge-veteran" title="Veteran"></span><span class="font-header-2 text-overflow item-name">Veteran</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/info/roblox-badges#Badge6" title="The homestead badge is earned by having your personal place visited 100 times. People who achieve this have demonstrated their ability to build cool things that other Robloxians were interested enough in to check out. Get a jump-start on earning this reward by inviting people to come visit your place."><span class="border asset-thumb-container icon-badge-homestead" title="Homestead"></span><span class="font-header-2 text-overflow item-name">Homestead</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/info/roblox-badges#Badge7" title="The Bricksmith badge is earned by having a popular personal place. Once your place has been visited 1000 times, you will receive this award. Robloxians with Bricksmith badges are accomplished builders who were able to create a place that people wanted to explore a thousand times. They no doubt know a thing or two about putting bricks together."><span class="border asset-thumb-container icon-badge-bricksmith" title="Bricksmith"></span><span class="font-header-2 text-overflow item-name">Bricksmith</span></a></li></ul></div></div>
+
+    <div class="section" id="player-badges-container"><div class="container-header"><h2>Badges</h2><a class="btn-fixed-width btn-secondary-xs btn-more see-all-link-icon" href="https://www.roblox.com/users/%USERID%/inventory/#!/badges">See All</a></div><div class="section-content remove-panel"><ul class="hlist badge-list"><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2144899225/Welcome-to-Roblox-HQ" title="Where creativity thrives and imagination is powered. ✨ Thanks for visiting the Roblox Headquarters!"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/adff7b815da711595518db10415c5201/150/150/Image/Png" alt="Where creativity thrives and imagination is powered. ✨ Thanks for visiting the Roblox Headquarters!" title="Where creativity thrives and imagination is powered. ✨ Thanks for visiting the Roblox Headquarters!"></span><span class="font-header-2 text-overflow item-name">Welcome to Roblox HQ!</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2142462762/1-Gem" title="There's no 'I' in Team, BUT there is in WIN.
+"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/2d42cca6d79a962150787e2cbf1ff7a6/150/150/Image/Png" alt="There's no 'I' in Team, BUT there is in WIN.
+" title="There's no 'I' in Team, BUT there is in WIN.
+"></span><span class="font-header-2 text-overflow item-name">1 Gem</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2142462390/Welcome" title="Welcome to Teamwork Obby!"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/2607d34421d744a659e986f166d6fc85/150/150/Image/Png" alt="Welcome to Teamwork Obby!" title="Welcome to Teamwork Obby!"></span><span class="font-header-2 text-overflow item-name">Welcome!</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2124920932/Welcome-to-the-Party" title="Earned for joining &quot;Building Simulator X&quot; for the 1st time!"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/5e04def304b4b0e39a519858f8ecc2d6/150/150/Image/Png" alt="Earned for joining &quot;Building Simulator X&quot; for the 1st time!" title="Earned for joining &quot;Building Simulator X&quot; for the 1st time!"></span><span class="font-header-2 text-overflow item-name">Welcome to the Party!</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2145863551/Welcome" title="How far will you float?"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/906d1d14c6da148983ba155f8f460b44/150/150/Image/Png" alt="How far will you float?" title="How far will you float?"></span><span class="font-header-2 text-overflow item-name">Welcome!</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2149852302/You-Played-Admin-Roulette" title="Test your luck with Admin Roulette!"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/e1e0a818979c0e755e2095cc58c8d510/150/150/Image/Png" alt="Test your luck with Admin Roulette!" title="Test your luck with Admin Roulette!"></span><span class="font-header-2 text-overflow item-name">You Played Admin Roulette!</span></a></li></ul></div></div>
+
+    <div class="section profile-statistics" id="profile-statistics-container"><div class="section profile-statistics"><div class="container-header"><h2>Statistics</h2></div><div class="section-content"><ul class="profile-stats-container"><li class="profile-stat"><p class="text-label">Join Date</p><p class="text-lead">%JOINDATE%</p></li><li class="profile-stat"><p class="text-label">Place Visits</p><p class="text-lead">%PLACEVISITS%</p></li></ul></div></div></div>
+
+                </div>
+                <div class="tab-pane" id="creations" profile-empty-tab="">
+                    
+    <div class="profile-game ng-scope section" ng-controller="profileGridController" ng-init="init('game-cards','game-container')" ng-class="{'section': !isGridOn,
+                    'container-list': isGridOn}">
+        <div class="container-header">
+            <h3 ng-non-bindable="">Experiences</h3>
+            <div class="container-buttons">
+                <button class="profile-view-selector btn-secondary-xs btn-generic-slideshow-xs" title="Slideshow View" type="button" ng-click="updateDisplay(false)" ng-class="{'btn-secondary-xs btn-generic-slideshow-xs': !isGridOn, 'btn-control-xs btn-generic-slideshow-xs': isGridOn}">
+                    <span class="icon-slideshow selected" ng-class="{'selected': !isGridOn}"></span>
+                </button>
+                <button class="profile-view-selector btn-control-xs btn-generic-grid-xs" title="Grid View" type="button" ng-click="updateDisplay(true)" ng-class="{'btn-secondary-xs btn-generic-grid-xs': isGridOn, 'btn-control-xs btn-generic-grid-xs': !isGridOn}">
+                    <span class="icon-grid" ng-class="{'selected': isGridOn}"></span>
+                </button>
+            </div>
+        </div>
+        <div ng-show="isGridOn" class="game-grid ng-hide">
+            <ul class="hlist game-cards" style="max-height: -8px" horizontal-scroll-bar="loadMore()">
+                        <div class="game-container shown" data-index="0" ng-class="{'shown': 0 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=3579244394&amp;Position=1&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/45fdafff87591778482c69eb9a66a017/352/352/Image/Png" alt="Lumber INC 3: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/45fdafff87591778482c69eb9a66a017/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Lumber INC 3: Remade" ng-non-bindable="">
+                Lumber INC 3: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">84%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="109">109</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="1" ng-class="{'shown': 1 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=3586082435&amp;Position=2&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/42e20ea93eff074f4b2291df1fdb24fd/352/352/Image/Png" alt="Mining INC: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/42e20ea93eff074f4b2291df1fdb24fd/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Mining INC: Remade" ng-non-bindable="">
+                Mining INC: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">83%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="2" ng-class="{'shown': 2 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=6551683582&amp;Position=3&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/ed3250a97f3661bdd070b1cdd06c0a43/352/352/Image/Png" alt="Silent Dark: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/ed3250a97f3661bdd070b1cdd06c0a43/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Silent Dark: Remade" ng-non-bindable="">
+                Silent Dark: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">95%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="2">2</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="3" ng-class="{'shown': 3 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=12727491903&amp;Position=4&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/cff6402f8d9508ee32dd26040d4c6d02/352/352/Image/Png" alt="Avatar Creator" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/cff6402f8d9508ee32dd26040d4c6d02/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Avatar Creator" ng-non-bindable="">
+                Avatar Creator
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">78%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="1">1</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="4" ng-class="{'shown': 4 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=10072481381&amp;Position=5&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/ad12aad27547fb987e71bbb492b93d18/352/352/Image/Png" alt="Automatic Friend Checker" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/ad12aad27547fb987e71bbb492b93d18/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Automatic Friend Checker" ng-non-bindable="">
+                Automatic Friend Checker
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">68%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="5" ng-class="{'shown': 5 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=10731032466&amp;Position=6&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/13a7ede54b02aa8ae5e4ecb732c775e3/352/352/Image/Png" alt="Biplane Dogfight: Remade (READ DESC)" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/13a7ede54b02aa8ae5e4ecb732c775e3/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Biplane Dogfight: Remade (READ DESC)" ng-non-bindable="">
+                Biplane Dogfight: Remade (READ DESC)
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">100%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="6" ng-class="{'shown': 6 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=10697873090&amp;Position=7&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/5aaf0f7b1f4dff131eea00937757a054/352/352/Image/Png" alt="Right 2 Live: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/5aaf0f7b1f4dff131eea00937757a054/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Right 2 Live: Remade" ng-non-bindable="">
+                Right 2 Live: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">80%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="7" ng-class="{'shown': 7 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=6665995521&amp;Position=8&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/3d0085d40ce7032ad159ce623c1a443c/352/352/Image/Png" alt="Burger Aboard: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/3d0085d40ce7032ad159ce623c1a443c/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Burger Aboard: Remade" ng-non-bindable="">
+                Burger Aboard: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">88%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="8" ng-class="{'shown': 8 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=8543866712&amp;Position=9&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/4caebcd3789cc9605bb32b96697e02bb/352/352/Image/Png" alt="Doodle: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/4caebcd3789cc9605bb32b96697e02bb/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Doodle: Remade" ng-non-bindable="">
+                Doodle: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">79%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="9" ng-class="{'shown': 9 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=6363483246&amp;Position=10&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/e1b3c46cd3c0a199b0a101a8ba48321b/352/352/Image/Png" alt="Outfit Viewer" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/e1b3c46cd3c0a199b0a101a8ba48321b/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Outfit Viewer" ng-non-bindable="">
+                Outfit Viewer
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">86%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="10" ng-class="{'shown': 10 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=6447084755&amp;Position=11&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/93e6d99755f60826c9c40bfdc3b9ed97/352/352/Image/Png" alt="Mining Tycoon: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/93e6d99755f60826c9c40bfdc3b9ed97/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Mining Tycoon: Remade" ng-non-bindable="">
+                Mining Tycoon: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">86%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container shown" data-index="11" ng-class="{'shown': 11 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=2714311804&amp;Position=12&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/308397d8a090bbbfe2472072bd77cbfe/352/352/Image/Png" alt="Return to the Pizzeria: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/308397d8a090bbbfe2472072bd77cbfe/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Return to the Pizzeria: Remade" ng-non-bindable="">
+                Return to the Pizzeria: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">93%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container" data-index="12" ng-class="{'shown': 12 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=6339151437&amp;Position=13&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/ace930c685bc2f8eebec1a948070da3a/352/352/Image/Png" alt="Disaster Hotel: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/ace930c685bc2f8eebec1a948070da3a/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Disaster Hotel: Remade" ng-non-bindable="">
+                Disaster Hotel: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">73%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container" data-index="13" ng-class="{'shown': 13 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=6050254295&amp;Position=14&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/fcdbc6a7ceb6304a613c7e850a0bee31/352/352/Image/Png" alt="The Underground War: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/fcdbc6a7ceb6304a613c7e850a0bee31/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="The Underground War: Remade" ng-non-bindable="">
+                The Underground War: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">70%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container" data-index="14" ng-class="{'shown': 14 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=6026548676&amp;Position=15&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/b13a55252a90d29e0656c14279ca1b60/352/352/Image/Png" alt="Trucking Tycoon: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/b13a55252a90d29e0656c14279ca1b60/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Trucking Tycoon: Remade" ng-non-bindable="">
+                Trucking Tycoon: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">89%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+                        <div class="game-container" data-index="15" ng-class="{'shown': 15 < visibleItems}">
+
+
+<li class="list-item game-card game-tile">
+    <div class="game-card-container">
+        <a href="https://www.roblox.com/games/refer?PlaceId=6022157964&amp;Position=16&amp;PageType=Profile" class="game-card-link">
+            <div class="game-card-thumb-container">
+                    <img class="game-card-thumb ng-isolate-scope" data-="" src="https://tr.rbxcdn.com/1dec807589de63f6bb2e41c6d2911ec2/352/352/Image/Png" alt="Lumber Tycoon: Remade" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/1dec807589de63f6bb2e41c6d2911ec2/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+            </div>
+            <div class="game-card-name game-name-title" title="Lumber Tycoon: Remade" ng-non-bindable="">
+                Lumber Tycoon: Remade
+            </div>
+            <div class="game-card-info">
+                    <span class="info-label icon-votes-gray"></span>
+                    <span class="info-label vote-percentage-label ">89%</span>
+                    <span class="info-label no-vote hidden"></span>
+                    <span class="info-label icon-playing-counts-gray"></span>
+                    <span class="info-label playing-counts-label" title="0">0</span>
+            </div>
+        </a>
+    </div>
+</li>
+
+                        </div>
+
+            </ul>
+            <a ng-click="loadMore()" class="btn btn-control-xs load-more-button" ng-show="16 > 6 * NumberOfVisibleRows">Load More</a>
+        </div>
+        <div id="games-switcher" class="switcher slide-switcher games ng-isolate-scope" ng-hide="isGridOn" switcher="" itemscount="switcher.games.itemsCount" currpage="switcher.games.currPage">
+                        <ul class="slide-items-container switcher-items hlist">
+                    <li class="switcher-item slide-item-container active" ng-class="{'active': switcher.games.currPage == 0}" data-index="0">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=3579244394&amp;Position=1&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" src="https://tr.rbxcdn.com/45fdafff87591778482c69eb9a66a017/352/352/Image/Png" data-src="https://tr.rbxcdn.com/45fdafff87591778482c69eb9a66a017/352/352/Image/Png" data-emblem-id="3579244394" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/45fdafff87591778482c69eb9a66a017/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Lumber INC 3: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Welcome to Lumber INC 3 a team based game about cutting trees, big trucks, and robot saws.
+
+Original Game by Widgeon: https://www.roblox.com/games/172709009/-
+
+Post suggestions here (or in the social links below):
+https://www.roblox.com/groups/5177392/-
+
+Mining INC: Remade:
+https://www.roblox.com/games/3586082435/-
+
+Credits can be located ingame!</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">109</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">6M+</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 1}" data-index="1">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=3586082435&amp;Position=2&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/42e20ea93eff074f4b2291df1fdb24fd/352/352/Image/Png" data-emblem-id="3586082435" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/42e20ea93eff074f4b2291df1fdb24fd/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Mining INC: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Welcome to your new job at Mining INC. We hope you enjoy your employment here. A team based simulation game based around the real world mining industry. Mine minerals, refine them and ship them off for money in the newest of the INC Series, Mining INC.
+
+Original Game by Widgeon: https://www.roblox.com/games/225271905/-
+
+Post suggestions here (or in the dizzycor server):
+https://www.roblox.com/groups/5177392/-
+
+Lumber INC 3: Remade
+https://www.roblox.com/games/3579244394/-</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">10K+</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 2}" data-index="2">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=6551683582&amp;Position=3&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/ed3250a97f3661bdd070b1cdd06c0a43/352/352/Image/Png" data-emblem-id="6551683582" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/ed3250a97f3661bdd070b1cdd06c0a43/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Silent Dark: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Original Game by Zeekerss: https://www.roblox.com/games/359468425/-
+
+Silent Dark is a psychological thriller where in both your dreams and reality, you are never safe. It's out there. 
+
+Original was nominated for Best Single-player game of 2016.
+
+Inspired by waking up in the middle of the night from nightmares as a child.</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">2</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">192K+</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 3}" data-index="3">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=12727491903&amp;Position=4&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/cff6402f8d9508ee32dd26040d4c6d02/352/352/Image/Png" data-emblem-id="12727491903" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/cff6402f8d9508ee32dd26040d4c6d02/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Avatar Creator</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">✅ Items bought in-game will be available in your inventory and can be used in other games.
+🔥 Private servers can be bought for free!
+⭐ Please leave a like and favourite!
+⛅ You can save and view other player's outfits
+
+🔨 Map by @FloofyBaskin and @ShrubbyTheTree
+Uses modified version of Avatar Editor by @0_1195</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">1</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">8,167</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 4}" data-index="4">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=10072481381&amp;Position=5&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/ad12aad27547fb987e71bbb492b93d18/352/352/Image/Png" data-emblem-id="10072481381" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/ad12aad27547fb987e71bbb492b93d18/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Automatic Friend Checker</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Discontinued</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">10K+</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 5}" data-index="5">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=10731032466&amp;Position=6&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/13a7ede54b02aa8ae5e4ecb732c775e3/352/352/Image/Png" data-emblem-id="10731032466" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/13a7ede54b02aa8ae5e4ecb732c775e3/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Biplane Dogfight: Remade (READ DESC)</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Note: This is still really buggy, still working on it
+
+Original by igotbored44: https://www.roblox.com/games/13522384/
+
+Welcome to Biplane Dogfight by igotbored44!
+test your pilot skills with this game, by shooting others out of the sky! (Or bombing them, that works too...)
+
+Controls:
+Y - Start Engine
+X - Stop Engine
+F - Fire Gun
+B - Drop Bombs
+W - Increase Speed
+S - Decrease Speed
+Left Click to rotate plane</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">315</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 6}" data-index="6">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=10697873090&amp;Position=7&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/5aaf0f7b1f4dff131eea00937757a054/352/352/Image/Png" data-emblem-id="10697873090" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/5aaf0f7b1f4dff131eea00937757a054/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Right 2 Live: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">There are still heros left in man.
+
+Original game by GearTitan: https://www.roblox.com/games/1724691/</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">223</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 7}" data-index="7">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=6665995521&amp;Position=8&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/3d0085d40ce7032ad159ce623c1a443c/352/352/Image/Png" data-emblem-id="6665995521" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/3d0085d40ce7032ad159ce623c1a443c/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Burger Aboard: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Currently PC only (Mobile, console and vr semi-supported).
+
+Only the basics work so far.
+
+Original Game by zKevin: https://www.roblox.com/games/56003784/-</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">669</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 8}" data-index="8">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=8543866712&amp;Position=9&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/4caebcd3789cc9605bb32b96697e02bb/352/352/Image/Png" data-emblem-id="8543866712" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/4caebcd3789cc9605bb32b96697e02bb/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Doodle: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Original game by Zeekerss (Broken): https://www.roblox.com/games/192835008/Doodle
+
+An actual hand-drawn world.
+
+Basic fixes to make game playable.
+Cross-platform.</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">1,879</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 9}" data-index="9">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=6363483246&amp;Position=10&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/e1b3c46cd3c0a199b0a101a8ba48321b/352/352/Image/Png" data-emblem-id="6363483246" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/e1b3c46cd3c0a199b0a101a8ba48321b/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Outfit Viewer</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Load outfits using the top left + button or the bottom right.
+
+A fast and simple outfit viewer!
+Load anyone's outfits and wear them or buy them for your inventory!
+
+All the outfits are available via Roblox's API.
+(Free Private Servers)</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">144K+</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 10}" data-index="10">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=6447084755&amp;Position=11&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/93e6d99755f60826c9c40bfdc3b9ed97/352/352/Image/Png" data-emblem-id="6447084755" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/93e6d99755f60826c9c40bfdc3b9ed97/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Mining Tycoon: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Note: I am not longer working on this. This revival is also amazing. https://www.roblox.com/games/2158075212/Mining-Tycoon-Revival-BETA
+
+Original Game: https://www.roblox.com/games/5038394/-
+
+Game is in ALPHA
+Progress doesn't save for now</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">576</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 11}" data-index="11">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=2714311804&amp;Position=12&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/308397d8a090bbbfe2472072bd77cbfe/352/352/Image/Png" data-emblem-id="2714311804" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/308397d8a090bbbfe2472072bd77cbfe/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Return to the Pizzeria: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">(This game isn't really being maintained as I focus on other projects.)
+I managed to fix the box not appearing in Chapter 3. Maintaining this game is hard due to spaghetti code.
+
+Original Game by Helloburp:
+https://www.roblox.com/games/234894917/-
+
+Original Description:
+When Freddy Fazbear's closed down in 1994, some brave explorers ventured into the old, falling down establishment looking to scavenge, or just explore. You ride a bus to the abandoned establishment and set out to find some props for the Fazbear's Fright horror attraction.
+
+Full Walkthrough (Thanks to k9zeus934)
+https://www.youtube.com/watch?v=_bC8KQX_YaY</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">85K+</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 12}" data-index="12">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=6339151437&amp;Position=13&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/ace930c685bc2f8eebec1a948070da3a/352/352/Image/Png" data-emblem-id="6339151437" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/ace930c685bc2f8eebec1a948070da3a/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Disaster Hotel: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Supports all platforms!
+
+Spawn Prices are dynamic based on how the SpawnLocation has been affected
+
+Original Game: https://www.roblox.com/games/28603739</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">1,180</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 13}" data-index="13">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=6050254295&amp;Position=14&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/fcdbc6a7ceb6304a613c7e850a0bee31/352/352/Image/Png" data-emblem-id="6050254295" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/fcdbc6a7ceb6304a613c7e850a0bee31/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">The Underground War: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Original Game by Stickmasterluke: https://www.roblox.com/games/189632/-
+
+Work as a team to dig your way into the enemy base and steal the enemy flag!
+
+(No data saves) (Improved Mobile/Console Support)</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">227</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 14}" data-index="14">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=6026548676&amp;Position=15&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/b13a55252a90d29e0656c14279ca1b60/352/352/Image/Png" data-emblem-id="6026548676" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/b13a55252a90d29e0656c14279ca1b60/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Trucking Tycoon: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">(Planning to come back to this project later)
+I'm planning to fix truck tipping at fast speeds and cross-platform support.
+
+Original Game by Zephyred: https://www.roblox.com/games/26549061/-</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">851</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="switcher-item slide-item-container " ng-class="{'active': switcher.games.currPage == 15}" data-index="15">
+                        <div class="col-sm-6 slide-item-container-left">
+                            <div class="slide-item-emblem-container">
+                                <a href="https://www.roblox.com/games/refer?PlaceId=6022157964&amp;Position=16&amp;PageType=Profile">
+                            <img class="slide-item-image ng-isolate-scope" data-src="https://tr.rbxcdn.com/1dec807589de63f6bb2e41c6d2911ec2/352/352/Image/Png" data-emblem-id="6022157964" thumbnail="{&quot;Final&quot;:true,&quot;Url&quot;:&quot;https://tr.rbxcdn.com/1dec807589de63f6bb2e41c6d2911ec2/352/352/Image/Png&quot;,&quot;RetryUrl&quot;:null,&quot;UserId&quot;:0,&quot;EndpointType&quot;:&quot;Avatar&quot;}" image-retry="">
+
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 slide-item-container-right games">
+                            <div class="slide-item-info">
+                                <div class="text-overflow slide-item-name games font-title" ng-non-bindable="">Lumber Tycoon: Remade</div>
+                                <p class="text-description para-overflow slide-item-description games" ng-non-bindable="">Original Game by Defaultio: https://www.roblox.com/games/5038415/-
+Note: No data is saved</p>
+                            </div>
+                            <div class="slide-item-stats">
+                                <ul class="hlist">
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Playing' | translate">Active</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead slide-item-members-count">0</div>
+                                    </li>
+                                    <li class="list-item">
+                                        <!-- ngIf: appMeta.isI18nEnabled --><div class="text-label slide-item-stat-title ng-binding ng-scope" ng-if="appMeta.isI18nEnabled" ng-bind="'Label.Visits' | translate">Visits</div><!-- end ngIf: appMeta.isI18nEnabled -->
+                                        <!-- ngIf: !appMeta.isI18nEnabled -->
+                                        <div class="text-lead text-overflow slide-item-my-rank games">567</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                        </ul>
+
+                    <a class="carousel-control left" data-switch="prev"><span class="icon-carousel-left"></span></a>
+                    <a class="carousel-control right" data-switch="next"><span class="icon-carousel-right"></span></a>
+
+        </div>
+    </div>
+
+
+    <div class="section ng-scope" ng-controller="profileUtilitiesController" ng-init="getPlayerAssets('10')">
+        <!-- ngIf: assets.length > 0 --><!-- ngInclude: 'profile-player-assets' --><div ng-if="assets.length > 0" ng-include="'profile-player-assets'" class="ng-scope"><div class="container-header ng-scope"><h2 class="ng-binding">Models &amp; Packages</h2><a ng-href="https://www.roblox.com/users/%USERID%/inventory/#!/models" ng-show="layout.showSeeAllButton" ng-bind="'Action.SeeAll'|translate" class="btn-fixed-width btn-secondary-xs btn-more see-all-link-icon ng-binding" href="https://www.roblox.com/users/%USERID%/inventory/#!/models">See All</a></div><div class="section-content remove-panel ng-scope"><!-- ngIf: !isProfileAssetAttributionEnabled --><!-- ngIf: isProfileAssetAttributionEnabled --><ul class="hlist item-list player-assets ng-scope" ng-if="isProfileAssetAttributionEnabled"><!-- ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/library/13398949466/Axe" title="Axe" href="https://www.roblox.com/library/13398949466/Axe"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/415cd5d1e8722e69e7f80094fecd625c/140/140/Model/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/415cd5d1e8722e69e7f80094fecd625c/140/140/Model/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">Axe</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/library/13360787741/HoseLinesSplit" title="HoseLinesSplit" href="https://www.roblox.com/library/13360787741/HoseLinesSplit"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/699fb527593e73eb410c00fe0a3a28f5/140/140/Model/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/699fb527593e73eb410c00fe0a3a28f5/140/140/Model/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">HoseLinesSplit</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/library/13360642680/SideEngineFix" title="SideEngineFix" href="https://www.roblox.com/library/13360642680/SideEngineFix"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/917686fc4bc4dbd98c79a95e5eaf6aff/140/140/Model/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/917686fc4bc4dbd98c79a95e5eaf6aff/140/140/Model/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">SideEngineFix</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/library/13323731236/Hydrant-Adapter" title="Hydrant_Adapter" href="https://www.roblox.com/library/13323731236/Hydrant-Adapter"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/b22be5afa5d1965b14c7a4da88fb97f3/140/140/Model/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/b22be5afa5d1965b14c7a4da88fb97f3/140/140/Model/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">Hydrant_Adapter</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/library/13271396343/LoadIntro" title="LoadIntro" href="https://www.roblox.com/library/13271396343/LoadIntro"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/062d4d90c5c01e8f353b2ba04dadd103/140/140/Model/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/062d4d90c5c01e8f353b2ba04dadd103/140/140/Model/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">LoadIntro</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/library/13264851638/IntroGui" title="IntroGui" href="https://www.roblox.com/library/13264851638/IntroGui"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/062d4d90c5c01e8f353b2ba04dadd103/140/140/Model/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/062d4d90c5c01e8f353b2ba04dadd103/140/140/Model/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">IntroGui</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --></ul><!-- end ngIf: isProfileAssetAttributionEnabled --></div></div><!-- end ngIf: assets.length > 0 -->
+    </div>
+    <div class="section ng-scope" ng-controller="profileUtilitiesController" ng-init="getPlayerAssets('11')">
+        <!-- ngIf: assets.length > 0 --><!-- ngInclude: 'profile-player-assets' --><div ng-if="assets.length > 0" ng-include="'profile-player-assets'" class="ng-scope"><div class="container-header ng-scope"><h2 class="ng-binding">Clothing</h2><a ng-href="https://www.roblox.com/users/%USERID%/inventory/#!/clothing" ng-show="layout.showSeeAllButton" ng-bind="'Action.SeeAll'|translate" class="btn-fixed-width btn-secondary-xs btn-more see-all-link-icon ng-binding" href="https://www.roblox.com/users/%USERID%/inventory/#!/clothing">See All</a></div><div class="section-content remove-panel ng-scope"><!-- ngIf: !isProfileAssetAttributionEnabled --><!-- ngIf: isProfileAssetAttributionEnabled --><ul class="hlist item-list player-assets ng-scope" ng-if="isProfileAssetAttributionEnabled"><!-- ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/catalog/9090421077/tehshirt" title="tehshirt" href="https://www.roblox.com/catalog/9090421077/tehshirt"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/2996020222f4bca4451dac48ed26bbbf/140/140/Shirt/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/2996020222f4bca4451dac48ed26bbbf/140/140/Shirt/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">tehshirt</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/catalog/152686275/Owner-shirt" title="Owner shirt" href="https://www.roblox.com/catalog/152686275/Owner-shirt"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/56ba36d432782a14057592e29acc26ca/140/140/Shirt/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/56ba36d432782a14057592e29acc26ca/140/140/Shirt/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">Owner shirt</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/catalog/152583449/North-East-South-West-and-a-happy-face" title="North,East,South,West and a happy face" href="https://www.roblox.com/catalog/152583449/North-East-South-West-and-a-happy-face"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/29d757c2cbc16e3af50903b4dbf8791b/140/140/Shirt/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/29d757c2cbc16e3af50903b4dbf8791b/140/140/Shirt/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">North,East,South,West and a happy face</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/catalog/152582640/School-uniform" title="School uniform" href="https://www.roblox.com/catalog/152582640/School-uniform"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/ab3e4c52fa4837fdf787eb97df2d7ed2/140/140/Shirt/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/ab3e4c52fa4837fdf787eb97df2d7ed2/140/140/Shirt/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">School uniform</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/catalog/152581598/happy-face" title="happy face" href="https://www.roblox.com/catalog/152581598/happy-face"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/871dc0549612c833799de4405959781d/140/140/Shirt/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/871dc0549612c833799de4405959781d/140/140/Shirt/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">happy face</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --><li class="list-item asset-item ng-scope" ng-repeat="item in assets"><a ng-href="https://www.roblox.com/catalog/152581058/Happy-Shirt" title="Happy Shirt" href="https://www.roblox.com/catalog/152581058/Happy-Shirt"><img class="asset-thumb-container ng-isolate-scope" lazy-img="https://tr.rbxcdn.com/93628a98ce34d4a039fd6d9e7d7378d5/140/140/Shirt/Png" thumbnail="item.Thumbnail" reset-src="true" image-retry="" src="https://tr.rbxcdn.com/93628a98ce34d4a039fd6d9e7d7378d5/140/140/Shirt/Png"> <span class="font-header-2 text-overflow-2-lines item-name ng-binding">Happy Shirt</span> </a><!-- ngIf: item.AssetAttribution&&item.AssetAttribution.Url&&item.AssetAttribution.DisplayName --></li><!-- end ngRepeat: item in assets --></ul><!-- end ngIf: isProfileAssetAttributionEnabled --></div></div><!-- end ngIf: assets.length > 0 -->
+    </div>
+
+
+                    <!-- ngIf: profileLayout.userHasNoCreations -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="StyleGuide" data-bundle-source="Main" href="https://css.rbxcdn.com/f74ee1e07ed467ea0e60b654ad81ae7f13c442a6b2de519a685f51f651158851.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="Thumbnails" data-bundle-source="Main" href="https://css.rbxcdn.com/d8d1cfe6a81efdc0eaa7a64ddeec42230944f4e6330e5eafafcda10cf9e5286a.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="CaptchaCore" data-bundle-source="Main" href="https://css.rbxcdn.com/b8f8f15a57a66e73469ae72eea7d8905346afa78b9f2397627cd099f7dcc779a.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="Challenge" data-bundle-source="Main" href="https://css.rbxcdn.com/c92e5fc4564200cb9d84ba69bd53e4a4f86109709b8db691c1567dd257c1115b.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="VerificationUpsell" data-bundle-source="Main" href="https://css.rbxcdn.com/c78c8b19218c2758d3d8928b31bf66dc6557beb72ce73a77954e8caa38237c51.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="RobloxBadges" data-bundle-source="Main" href="https://css.rbxcdn.com/da45920fef8b22d35ee6cce0702d290241252fbfd99695e2abc0934d20de0974.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="AccountSwitcher" data-bundle-source="Main" href="https://css.rbxcdn.com/8f55fef5030e6e8f107be51f3320159f08682b053aee5e9f4bcdf7b9327cc957.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="PriceTag" data-bundle-source="Main" href="https://css.rbxcdn.com/9bfc48ea40a698035ea8cbe3d3e94bd06d3aac48969bedceb6d8ba5ff17ff84d.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="Navigation" data-bundle-source="Main" href="https://css.rbxcdn.com/0215f4ab43fd7f7774efcc8fc1be49e6d1f7599463d3d1db1275e344d5eb5f8b.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="CookieBannerV3" data-bundle-source="Main" href="https://css.rbxcdn.com/2c2a709240897ce382b7ff55be4347cd0994ab1e2d6ed3b56649e54b0e97e13a.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="Footer" data-bundle-source="Main" href="https://css.rbxcdn.com/6edb2191aa318f963253361b43d2657a04b3d16e9c28fe7b22d4a4d5686f1cb4.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="ConfigureWebApps" data-bundle-source="Main" href="https://css.rbxcdn.com/08def520152a575438e73a81aa9a310c2415c327df7b624a24aa6e794d24dba3.css">
+
+
+    <link rel="canonical" href="https://www.roblox.com/users/%USERID%/profile">
+    
+<link onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" rel="stylesheet" href="https://static.rbxcdn.com/css/leanbase___5e469c309d1eeddf42cc9d36a50f82e0_m.css/fetch">
+
+
+    
+<link onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" rel="stylesheet" href="https://static.rbxcdn.com/css/page___ef04c552c754fa4cbfee7a98391e06f6_m.css/fetch">
+
+
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="Captcha" data-bundle-source="Main" href="https://css.rbxcdn.com/4c3fec0ce872f94f2c2be18e6fd016e43fdc4ccecad591cdaa3a63116f512178.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="PeopleList" data-bundle-source="Main" href="https://css.rbxcdn.com/35a5a9eef5fd40915d097c419f204e9c6f15ba3ef589999f7430e38ef8f9ef72.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="Aliases" data-bundle-source="Main" href="https://css.rbxcdn.com/2bf6203effb94dc7909c75c6e890108aa5379f32d538d88eb1533a78cacf322d.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="GroupsList" data-bundle-source="Main" href="https://css.rbxcdn.com/cf2572e23ced613ef7f36a2b662ce99b41ff1ea7e316f0a759b38673e1e2e293.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="UserDescription" data-bundle-source="Main" href="https://css.rbxcdn.com/fdbc0173245f68440cbb311624eb6859d2e4024b89281763b7323e318a19c4c0.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="CurrentWearing" data-bundle-source="Main" href="https://css.rbxcdn.com/cc693776e7662b9afb39b185b252b4f5e8cfb19436bf079b0bc6e2e970112c9d.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="ProfileBadges" data-bundle-source="Main" href="https://css.rbxcdn.com/129861d1852d019164c5bf5998d0882e765bc89dd800e664420da05568ac5592.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="ProfileStatistics" data-bundle-source="Main" href="https://css.rbxcdn.com/b52536edd49882b6c7ffbb39e44d25c8f3a96eceb0bf94b4413e6ae9f6e2477b.css">
+
+    <link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="RobuxIcon" data-bundle-source="Main" href="https://css.rbxcdn.com/6fe55c3438539daf776774645e39e121d991246d6a38972b81e3f9550a585b5b.css">
+
+
+    <link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="ItemPurchaseUpsell" data-bundle-source="Main" href="https://css.rbxcdn.com/3c4bd9b17b9020d9ebc87d4542a68a949a9de6150a55a92f0e65514520ee777e.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="ItemPurchase" data-bundle-source="Main" href="https://css.rbxcdn.com/8efa79e576b0df3d4c51fb1eb4e13af137d5eb8f44aef51321f7d4abbf9c3a86.css">
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="IdVerification" data-bundle-source="Main" href="https://css.rbxcdn.com/3bca47a98d58fdf98a7063c4f3b390671e5326ed559813887f3945876c997da6.css">
+
+
+    
+
+    
+
+
+
+<link rel="stylesheet" onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-bundlename="UserAgreementsChecker" data-bundle-source="Main" href="https://css.rbxcdn.com/d5a3728b78be729b693aadf79a1f45f0fa49c15fe863a0d7dd631b75f9e82207.css">
