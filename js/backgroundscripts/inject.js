@@ -303,6 +303,15 @@ const ContentScripts = [{
         "js/pages/economy/summarycache.js"
     ],
     "run_at": "document_start"
+},
+{
+    "matches": [
+        "*://*.roblox.com/groups/*"
+    ],
+    "js": [
+       "js/pages/banned/group.js"
+    ],
+    "run_at": "document_start"
 }]
 
 function RemoveDuplicateFromArray(Array){

@@ -394,6 +394,10 @@ function GetTargetId(){
   return PageTargetId
 }
 
+function SanitizeString(Unsantizied){
+  return Unsantizied //TODO
+}
+
 function AbbreviateNumber(number, decPlaces, noPlus){
   decPlaces = Math.pow(10, decPlaces || 0)
 
