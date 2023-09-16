@@ -28,6 +28,7 @@ async function HookGroupController(){
                 LockedSVG.setAttribute("data-toggle", "tooltip")
                 LockedSVG.setAttribute("data-placement", "bottom")
                 LockedSVG.setAttribute("data-original-title", "Locked Group")
+                LockedSVG.className = "locked-group-icon"
 
                 $(LockedSVG).tooltip()
                 LockedSVG.style = "width: 30px; height: 30px; display: inline-block; margin-left: 10px;"

@@ -190,6 +190,10 @@ const Settings = {
             Title: "Follows You Indicator",
             Description: "Shows if a user is following you."
         },
+        ViewBannedGroup: {
+            Title: "View Locked Group",
+            Description: "Allows you to view locked groups."
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"

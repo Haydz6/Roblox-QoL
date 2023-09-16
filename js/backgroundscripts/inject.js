@@ -311,6 +311,9 @@ const ContentScripts = [{
     "js": [
        "js/pages/banned/group.js"
     ],
+    "css": [
+        "css/groups.css"
+    ],
     "run_at": "document_start"
 }]
 
