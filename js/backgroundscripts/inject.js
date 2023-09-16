@@ -51,7 +51,9 @@ const ContentScripts = [{
 
         "js/pages/playtime/createcards.js",
         "js/pages/playtime/createelements.js",
-        "js/pages/playtime/allgames.js"
+        "js/pages/playtime/allgames.js",
+
+        "js/pages/pinned/allgames.js"
     ],
     "run_at": "document_start"
 },
@@ -72,7 +74,8 @@ const ContentScripts = [{
         "*://*.roblox.com/games/*"
     ],
     "css": [
-        "css/playtime.css"
+        "css/playtime.css",
+        "css/games.css"
     ],
     "js": [
         "js/pages/liveexperience/api.js",
@@ -97,7 +100,9 @@ const ContentScripts = [{
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/game.js",
 
-        "js/pages/generalfixes/supportedplatforms.js"
+        "js/pages/generalfixes/supportedplatforms.js",
+
+        "js/pages/pinned/game.js"
     ],
     "run_at": "document_start"
 },
@@ -238,7 +243,9 @@ const ContentScripts = [{
 
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/createcards.js",
-        "js/pages/playtime/home.js"
+        "js/pages/playtime/home.js",
+
+        "js/pages/pinned/home.js"
     ],
     "run_at": "document_start"
 },

@@ -83,7 +83,24 @@ function CreateFeatureNotSupported(){
     return Container
 }
 
-function CreateSectionSettingsToggable(Option, Title, Description, Enabled, FeatureKilled, IsSupported){
+function CreateFeaturePaid(){
+    const Container = document.createElement("div")
+    Container.style = "display: flex;"
+
+    const Icon = document.createElement("span")
+    Icon.className = "icon-warning"
+    
+    const Text = document.createElement("a")
+    Text.style = "color: #e44950;"
+    Text.innerText = "This feature is paid"
+    Text.href = WebServerURL+"pages/pricing"
+
+    Container.append(Icon, Text)
+
+    return Container
+}
+
+function CreateSectionSettingsToggable(Option, Title, Description, Enabled, FeatureKilled, FeaturePaid, IsSupported){
     const [Section, Divider] = CreateSectionSettingsTemplate(Option, Title, Description)
 
     const Slider = document.createElement("button")
@@ -96,6 +113,9 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled, Feat
     } else if (!IsSupported){
         Slider.setAttribute("disabled", "disabled")
         Section.insertBefore(CreateFeatureNotSupported(), Divider)
+    } else if (!FeaturePaid){
+        Input.setAttribute("disabled", "disabled")
+        Section.insertBefore(CreateFeaturePaid(), Divider)
     }
 
     Slider.addEventListener("click", function(){
@@ -124,7 +144,7 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled, Feat
     return Section
 }
 
-function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, Value, FeatureKilled, IsSupported, Middleman){
+function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, Value, FeatureKilled, FeaturePaid, IsSupported, Middleman){
     const [Section, Divider] = CreateSectionSettingsTemplate(Option, Title, Description)
 
     const Input = document.createElement("input")
@@ -143,6 +163,9 @@ function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, 
     } else if (!IsSupported){
         Input.setAttribute("disabled", "disabled")
         Section.insertBefore(CreateFeatureNotSupported(), Divider)
+    } else if (!FeaturePaid){
+        Input.setAttribute("disabled", "disabled")
+        Section.insertBefore(CreateFeaturePaid(), Divider)
     }
 
     async function FocusLost(){
@@ -160,7 +183,7 @@ function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, 
     return Section
 }
 
-function CreateSectionSettingsDropdown(Option, Title, Description, Options, Value, FeatureKilled, IsSupported, Update){
+function CreateSectionSettingsDropdown(Option, Title, Description, Options, Value, FeatureKilled, FeaturePaid, IsSupported, Update){
     const [Section, Divider] = CreateSectionSettingsTemplate(Option, Title, Description)
 
     const Dropdown = document.createElement("div")
@@ -174,6 +197,9 @@ function CreateSectionSettingsDropdown(Option, Title, Description, Options, Valu
     } else if (!IsSupported){
         Selections.setAttribute("disabled", "disabled")
         Section.insertBefore(CreateFeatureNotSupported(), Divider)
+    } else if (!FeaturePaid){
+        Input.setAttribute("disabled", "disabled")
+        Section.insertBefore(CreateFeaturePaid(), Divider)
     }
 
     for (let i = 0; i < Options.length; i++){

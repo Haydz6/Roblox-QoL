@@ -52,7 +52,7 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
         LoadMoreButton.setAttribute("disabled", "disabled")
 
         const CacheFetchInt = FetchInt[0]
-        CreateGameCardsFromPlaytime(AllGames.slice(CurrentCursor, Math.min(AllGames.length, CurrentCursor+100)), GameGrid, CacheFetchInt, FetchInt, Fail, Spinner).then(function(){
+        CreateGameCardsFromUniverseIds(AllGames.slice(CurrentCursor, Math.min(AllGames.length, CurrentCursor+100)), GameGrid, CacheFetchInt, FetchInt, Fail, Spinner).then(function(){
             if (FetchInt[0] == CacheFetchInt) LoadMoreButton.removeAttribute("disabled")
             if (!Failed){
                 CurrentCursor += 100
@@ -94,7 +94,7 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
         AllGames = Games
 
         CurrentCursor = 100
-        await CreateGameCardsFromPlaytime(Games.slice(0, Math.min(Games.length, 100)), GameGrid, CacheFetchInt, FetchInt, Fail, Spinner)
+        await CreateGameCardsFromUniverseIds(Games.slice(0, Math.min(Games.length, 100)), GameGrid, CacheFetchInt, FetchInt, Fail, Spinner)
 
         if (Games.length > 100) LoadMoreButton.style = ""
     }

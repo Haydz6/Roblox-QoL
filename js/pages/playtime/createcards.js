@@ -1,7 +1,21 @@
-async function CreateGameCardsFromPlaytime(Games, CardsContainer, CacheFetchInt, FetchInt, Fail, Spinner){
+async function CreateGameCardsFromUniverseIds(Games, CardsContainer, CacheFetchInt, FetchInt, Fail, Spinner){
+    if (!Spinner){
+        Spinner = CreateSpinner()
+        CardsContainer.appendChild(Spinner)
+    }
+    if (!CacheFetchInt) CacheFetchInt = 0 //Bypass change rule
+    if (!FetchInt) FetchInt = [0]
+
     if (Games.length === 0){
         Spinner.remove()
         return
+    }
+    if (!Fail) Fail = function(Text){
+        const FailedText = document.createElement("p")
+        FailedText.innerText = Text
+        CardsContainer.appendChild(FailedText)
+
+        Spinner.remove()
     }
 
     const UniverseIds = []
@@ -9,6 +23,11 @@ async function CreateGameCardsFromPlaytime(Games, CardsContainer, CacheFetchInt,
 
     for (let i = 0; i < Games.length; i++){
         const Game = Games[i]
+        if (typeof(Game) == "number"){
+            UniverseIds.push(Game)
+            continue
+        }
+
         UniverseIds.push(Game.UniverseId)
         UniverseIdToPlaytime[Game.UniverseId] = Game.Playtime
     }
@@ -41,12 +60,16 @@ async function CreateGameCardsFromPlaytime(Games, CardsContainer, CacheFetchInt,
         const PlaytimeIcon = document.createElement("span")
         PlaytimeIcon.className = "info-label icon-playing-counts-gray icon-playtime"
 
-        const PlaytimeLabel = document.createElement("span")
-        PlaytimeLabel.className = "info-label playing-counts-label"
-        PlaytimeLabel.innerText = SecondsToLength(UniverseIdToPlaytime[Universe.id], true, true)
+        const Playtime = UniverseIdToPlaytime[Universe.id]
 
-        PlaytimeCardInfo.append(PlaytimeIcon, PlaytimeLabel)
-        CardInfo.parentElement.appendChild(PlaytimeCardInfo)
+        if (Playtime){
+            const PlaytimeLabel = document.createElement("span")
+            PlaytimeLabel.className = "info-label playing-counts-label"
+            PlaytimeLabel.innerText = SecondsToLength(Playtime, true, true)
+
+            PlaytimeCardInfo.append(PlaytimeIcon, PlaytimeLabel)
+            CardInfo.parentElement.appendChild(PlaytimeCardInfo)
+        }
     }
 
     async function GetRatings(){

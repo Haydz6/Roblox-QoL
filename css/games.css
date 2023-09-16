@@ -1,0 +1,24 @@
+.light-theme .info-icon-devices {
+    filter: brightness(0.5);
+}
+
+.light-theme .pin-icon.pinned {
+    filter: brightness(0.22);
+}
+
+.light-theme .pin-icon.unpinned {
+    filter: brightness(0.6);
+}
+
+.pin-icon {
+    height: 100%;
+    width: 100%;
+}
+
+.pin-button-icon {
+    height: 25px;
+    width: 25px;
+    right: 0px;
+    top: 6px;
+    position: absolute;
+}

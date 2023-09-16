@@ -82,7 +82,7 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
             return b.Playtime - a.Playtime
         })
 
-        CreateGameCardsFromPlaytime(Games.slice(0, Math.min(Games.length, 6)), GameCarousel, CacheFetchInt, FetchInt, Fail, Spinner)
+        CreateGameCardsFromUniverseIds(Games.slice(0, Math.min(Games.length, 6)), GameCarousel, CacheFetchInt, FetchInt, Fail, Spinner)
     }
 
     function CreateButton(Title, Params){

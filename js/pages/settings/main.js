@@ -220,6 +220,10 @@ const Settings = {
             Title: "Playtime",
             Description: "Tracks and shows how long you have played a game."
         },
+        PinnedGames: {
+            Title: "Pinned Games",
+            Description: "Allows you to pin games to your home page."
+        },
         QuickInvite: {
             Title: "Quick Invite",
             Description: "A link you can share with your friends to join a server."
@@ -464,12 +468,13 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
             let IsSupported = info.Supported == undefined || await info.Supported()
             const FeatureEnabled = await IsFeatureEnabled(feature)
             const FeatureKilled = await IsFeatureKilled(feature)
+            const FeaturePaid = await PaidForFeature(feature)
 
-            if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, FeatureKilled, IsSupported, info.Middleman)
-            else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, FeatureKilled, IsSupported, function(NewValue){
+            if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported, info.Middleman)
+            else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported, function(NewValue){
                 SetFeatureEnabled(feature, NewValue)
             })
-            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled, IsSupported)
+            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
 
             if (info.Run) info.Run(Section.getElementsByTagName("label")[0], Section.getElementsByClassName("text-description")[0])
 

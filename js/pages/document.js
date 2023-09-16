@@ -1,14 +1,19 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 const EnabledFeatures = {}
+const PaidFeatures = {}
 let AreEnabledFeaturesFetched = false
+let ArePaidFeaturesFetched = false
+
+let CurrentSubscription = undefined
 
 let UserId
 let CSRFToken = ""
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
-const WebServerEndpoints = {Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {Pinned: WebServerURL+"api/pinned/", Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const SubscriptionToName = ["Free", "Pro"]
 
 function FindFirstClass(ClassName){
   return document.getElementsByClassName(ClassName)[0]
@@ -430,6 +435,27 @@ function ChildRemoved(Node, Callback){
   }).observe(Node, {childList: true})
 }
 
+async function FetchSubscription(){
+  if (!CurrentSubscription){
+    CurrentSubscription = await chrome.runtime.sendMessage({type: "GetSubscription"})
+  }
+  return CurrentSubscription
+}
+
+async function FetchAllPaidFeatures(){
+  if (!ArePaidFeaturesFetched){
+    const NewPaidFeatures = await chrome.runtime.sendMessage({type: "PaidFeatures"})
+        
+        if (NewPaidFeatures){
+            for (const [key, value] of Object.entries(NewPaidFeatures)){
+                PaidFeatures[key] = value
+            }
+        }
+
+        AreEnabledFeaturesFetched = true
+  }
+}
+
 async function FetchAllFeaturesEnabled(){
     if (!AreEnabledFeaturesFetched){
         //const NewSettings = window.localStorage.getItem("robloxQOL-settings")
@@ -456,10 +482,18 @@ async function IsFeatureKilled(FeatureName){
   return KilledFeatures ? KilledFeatures.includes(FeatureName) : false
 }
 
+async function PaidForFeature(Feature){
+  await FetchAllPaidFeatures()
+  const SubscriptionNeeded = PaidFeatures[Feature]
+  if (!SubscriptionNeeded) return true
+  return await FetchSubscription() >= SubscriptionNeeded
+}
+
 async function IsFeatureEnabled(Feature){
     await FetchAllFeaturesEnabled()
     const IsKilled = await IsFeatureKilled(Feature)
     if (IsKilled) return false
+    if (!await PaidForFeature(Feature)) return false
 
     return EnabledFeatures[Feature]
 }
