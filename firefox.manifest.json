@@ -49,6 +49,9 @@
             "matches": [
                 "*://*.roblox.com/*"
             ],
+            "css": [
+                "css/streamermode.css"
+            ],
             "js": [
                 "js/modules/getNavigatorLanguage.js",
                 "js/authentication/main.js",

@@ -1,0 +1,75 @@
+body[StreamerMode = true] #nav-robux-amount {
+    display: none !important;
+}
+
+body[StreamerMode = true] .friend-name {
+    display: none !important;
+}
+
+body[StreamerMode = true] .age-bracket-label-age {
+    display: none !important;
+}
+
+body[StreamerMode = true] .dropdown-wallet-section {
+    display: none !important;
+}
+
+body[StreamerMode = true] .account-field-password {
+    display: none !important;
+}
+
+body[StreamerMode = true] .account-field-phone {
+    display: none !important;
+}
+
+body[StreamerMode = true] .account-field-email {
+    display: none !important;
+}
+
+body[StreamerMode = true] .birthday-container {
+    display: none !important;
+}
+
+body[StreamerMode = true] #security-tab {
+    display: none !important;
+}
+
+body[StreamerMode = true] .payment-method-image {
+    display: none !important;
+}
+
+body[StreamerMode = true] .cardContainer {
+    display: none !important;
+}
+
+body[StreamerMode = true] .saved-payment-method-header-container {
+    display: none !important;
+}
+
+body[StreamerMode = true] .other-payment-methods-container {
+    display: none !important;
+}
+
+body[StreamerMode = true] .cardExpiry, .cardIcon, .cardNumber, .roblox-credit-balance {
+    display: none !important;
+}
+
+body[StreamerMode = true] #social-networks {
+    display: none !important;
+}
+
+body[StreamerMode = true] .btr-payouts {
+    display: none !important;
+}
+
+body[StreamerMode = true] group-payouts {
+    display: none !important;
+}
+
+body[StreamerMode = true] .recurring-payout {
+    display: none !important;
+}
+
+body[StreamerMode = true] .icon-robux-container {
+    display: none !important;
+}

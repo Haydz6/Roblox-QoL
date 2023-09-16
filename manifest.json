@@ -65,6 +65,9 @@
             "run_at": "document_start"
         },
         {
+            "css": [
+                "css/streamermode.css"
+            ],
             "matches": [
                 "*://*.roblox.com/*"
             ],
