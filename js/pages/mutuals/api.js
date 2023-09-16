@@ -1,10 +1,3 @@
-let TargetId
-
-function GetTargetId(){
-    if (!TargetId) TargetId = parseInt(window.location.href.split("users/")[1].split("/")[0])
-    return TargetId
-}
-
 async function GetMutualFriends(TargetId){
     // const [Success, Result] = await RequestFunc("https://apis.roblox.com/profile-insights-api/v1/multiProfileInsights", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: [TargetId], count: 200}))
     

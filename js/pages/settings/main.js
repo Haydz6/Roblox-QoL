@@ -186,6 +186,10 @@ const Settings = {
             Title: "Appear offline (Website Only)",
             Description: "Makes you appear offline to other users while browsing the website. (This only works on the website, it is a limitation of roblox)"
         },
+        ShowFollowsYou: {
+            Title: "Follows You Indicator",
+            Description: "Shows if a user is following you."
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"

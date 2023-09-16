@@ -137,7 +137,9 @@ const ContentScripts = [{
         "js/pages/themes/createelements.js",
         "js/pages/themes/profile.js",
 
-        "js/pages/badges/profilecount.js"
+        "js/pages/badges/profilecount.js",
+
+        "js/pages/profile/followsyou.js"
     ],
     "run_at": "document_start"
 },

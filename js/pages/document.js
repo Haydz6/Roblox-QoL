@@ -388,6 +388,12 @@ async function RobuxToCurrency(Robux){
   return new Intl.NumberFormat(Language, {style: "currency", currency: ForceUSDCurrency && "USD" || await IsFeatureEnabled("Currency"), currencyDisplay: "narrowSymbol", maximumFractionDigits: 2}).format(RobuxToUSD(Robux) * Multiplier)
 }
 
+let PageTargetId
+function GetTargetId(){
+  if (!PageTargetId) PageTargetId = parseInt(window.location.href.split("users/")[1].split("/")[0])
+  return PageTargetId
+}
+
 function AbbreviateNumber(number, decPlaces, noPlus){
   decPlaces = Math.pow(10, decPlaces || 0)
 
