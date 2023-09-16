@@ -3,9 +3,11 @@ IsFeatureEnabled("PinnedGames").then(async function(Enabled){
 
     const PinButton = document.createElement("a")
     PinButton.className = "pin-button-icon"
+    PinButton.setAttribute("data-toggle", "tooltip")
+    PinButton.setAttribute("data-placement", "bottom")
+    PinButton.setAttribute("data-original-title", "")
 
     const PinImage = document.createElement("img")
-
     PinButton.appendChild(PinImage)
 
     const TooltipButtonContainer = document.createElement("li")
@@ -25,7 +27,7 @@ IsFeatureEnabled("PinnedGames").then(async function(Enabled){
         TooltipButton.innerText = IsPinned ? "Unpin" : "Pin"
         PinImage.src = chrome.runtime.getURL(`img/pinned/${IsPinned ? "" : "un"}pinned.png`)
         PinImage.className = `pin-icon ${IsPinned ? "" : "un"}pinned`
-        //Tooltip roblox
+        PinButton.setAttribute("data-original-title", IsPinned ? "Unpin" : "Pin")
     }
 
     async function TogglePin(){
@@ -62,6 +64,7 @@ IsFeatureEnabled("PinnedGames").then(async function(Enabled){
         if (ActionMenuInit) return
 
         ActionMenu.insertBefore(PinButton, ActionMenu.children[0])
+        InjectScript("TooltipPinnedButton")
     })
 
     PinButton.addEventListener("click", TogglePin)
