@@ -1,10 +1,10 @@
-let CurrentPage = 1
+let CurrentMutualsPage = 1
 let CurrentMutualsElements = []
 let MutualHeaderTab
 
-let OriginalFriendsCount
+let OriginalMutualsFriendsCount
 
-let OpenConnections = []
+let OpenMutualConnections = []
 
 let AllMutuals
 
@@ -35,7 +35,7 @@ async function LoadPage(Page){
     return [PageFriends, AllMutuals.length > Page * 18, AllMutuals.length]
 }
 
-function ModifyHeaderTab(Tab){
+function ModifyMutualHeaderTab(Tab){
     if (Tab.className.includes("rbx-tab")){
         Tab.style = "min-width: 25%;"
 
@@ -47,7 +47,7 @@ function RemoveOriginalFriendElement(Element){
     if (Element.className === "list-item avatar-card" && !Element.getAttribute("custom")) Element.style = "display:none;"
 }
 
-const FriendsListMutationObserver = new MutationObserver(function(Mutations){
+const MutualFriendsListMutationObserver = new MutationObserver(function(Mutations){
     Mutations.forEach(function(Mutation){
         if (Mutation.type == "childList"){
             const NewChildren = Mutation.addedNodes
@@ -60,14 +60,14 @@ const FriendsListMutationObserver = new MutationObserver(function(Mutations){
 })
 
 function AddConnection(Callback, Type, Element){
-    OpenConnections.push({Callback: Callback, Type: Type, Element: Element})
+    OpenMutualConnections.push({Callback: Callback, Type: Type, Element: Element})
     return Callback
 }
 
-async function HandleTabModification(){
+async function HandleMutualTabModification(){
     const NavTabs = await WaitForClass("nav nav-tabs")
 
-    ChildAdded(NavTabs, true, ModifyHeaderTab)
+    ChildAdded(NavTabs, true, ModifyMutualHeaderTab)
 
     const [Tab, Underline] = CreateHeaderTab("Mutuals", "mutuals", "#!/friends?tab=mutuals", IsMutualsTabOpen())
     NavTabs.appendChild(Tab)
@@ -165,7 +165,7 @@ async function HandleMutualsPage(){
         }
         CurrentMutualsElements = []
 
-        const [History, NextExists, Length] = await LoadPage(CurrentPage)
+        const [History, NextExists, Length] = await LoadPage(CurrentMutualsPage)
         await AddImagesToHistory(History)
 
         for (let i = 0; i < History.length; i++){
@@ -174,15 +174,15 @@ async function HandleMutualsPage(){
 
         await sleep(50)
 
-        SetButtonStatus(BackButton, CurrentPage > 1)
+        SetButtonStatus(BackButton, CurrentMutualsPage > 1)
         SetButtonStatus(NextButton, NextExists)
-        PageLabel.innerText = CurrentPage
+        PageLabel.innerText = CurrentMutualsPage
 
         WaitForClass("friends-subtitle").then(function(AllLabels){
             let FriendsAmountLabel = AllLabels.childNodes[2]
             let FriendsLabel = AllLabels.childNodes[0]
 
-            if (!OriginalFriendsCount) OriginalFriendsCount = FriendsAmountLabel.data
+            if (!OriginalMutualsFriendsCount) OriginalMutualsFriendsCount = FriendsAmountLabel.data
 
             FriendsLabel.data = "Mutuals"
             FriendsAmountLabel.data = `(${Length})`
@@ -190,18 +190,18 @@ async function HandleMutualsPage(){
     }
 
     NextButton.addEventListener("click", AddConnection(function(){
-        CurrentPage ++
+        CurrentMutualsPage ++
         Fetch()
     }, "click", NextButton))
 
     BackButton.addEventListener("click", AddConnection(function(){
-        CurrentPage --
+        CurrentMutualsPage --
         Fetch()
     }, "click", BackButton))
 
     Fetch()
 
-    FriendsListMutationObserver.observe(FriendsList, {childList: true})
+    MutualFriendsListMutationObserver.observe(FriendsList, {childList: true})
 
     const children = FriendsList.children
     for (let i = 0; i < children.length; i++){
@@ -222,19 +222,19 @@ function CheckIfMutualsTabOpened(){
     MutualHeaderTab.className = `rbx-tab-heading${Open && " active" || ""}`
 
     if (!Open){
-        FriendsListMutationObserver.disconnect()
+        MutualFriendsListMutationObserver.disconnect()
 
         for (let i = 0; i < CurrentMutualsElements.length; i++){
             CurrentMutualsElements[i].remove()
         }
         CurrentMutualsElements = []
 
-        for (let i = 0; i < OpenConnections.length; i++){
-            const Connection = OpenConnections[i]
+        for (let i = 0; i < OpenMutualConnections.length; i++){
+            const Connection = OpenMutualConnections[i]
 
             Connection.Element.removeEventListener(Connection.Type, Connection.Callback)
         }
-        OpenConnections = []
+        OpenMutualConnections = []
 
         WaitForClass("hlist avatar-cards").then(function(FriendsList){
             const children = FriendsList.children
@@ -248,7 +248,7 @@ function CheckIfMutualsTabOpened(){
             let FriendsLabel = AllLabels.childNodes[0]
 
             FriendsLabel.data = "Friends"
-            if (OriginalFriendsCount) FriendsAmountLabel.data = OriginalFriendsCount
+            if (OriginalMutualsFriendsCount) FriendsAmountLabel.data = OriginalMutualsFriendsCount
         })
 
         return
@@ -260,8 +260,9 @@ function CheckIfMutualsTabOpened(){
 window.addEventListener('popstate', CheckIfMutualsTabOpened)
 
 IsFeatureEnabled("Mutuals").then(async function(Enabled){
-    if (!Enabled || (await GetUserId() == GetTargetId())) return
+    if (!Enabled || (await GetUserId() == GetTargetId()) || !GetTargetId()) return
+    console.log("go")
 
-    await HandleTabModification()
+    await HandleMutualTabModification()
     CheckIfMutualsTabOpened()
 })

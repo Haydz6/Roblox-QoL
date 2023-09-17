@@ -50,12 +50,7 @@ function AddConnection(Callback, Type, Element){
 async function HandleTabModification(){
     const NavTabs = await WaitForClass("nav nav-tabs")
 
-    TabWidthMutationObserver.observe(NavTabs, {childList: true})
-
-    const Children = NavTabs.children
-    for (let i = 0; i < Children.length; i++){
-        ModifyHeaderTab(Children[i])
-    }
+    ChildAdded(NavTabs, true, ModifyHeaderTab)
 
     const [Tab, Underline] = CreateHeaderTab("History", "history", "#!/friends?tab=history", IsHistoryTabOpen())
     NavTabs.appendChild(Tab)
@@ -233,7 +228,7 @@ async function HandleHistoryPage(){
             if (!OriginalFriendsCount) OriginalFriendsCount = FriendsAmountLabel.data
 
             FriendsLabel.data = "All Friends"
-            FriendsAmountLabel.data = `(${Length})`
+            FriendsAmountLabel.data = `(${Length}${Length >= 200 ? "+" : ""})`
         })
     }
 

@@ -390,7 +390,10 @@ async function RobuxToCurrency(Robux){
 
 let PageTargetId
 function GetTargetId(){
-  if (!PageTargetId) PageTargetId = parseInt(window.location.href.split("users/")[1].split("/")[0])
+  if (!PageTargetId){
+    PageTargetId = parseInt(window.location.href.split("users/")[1].split("/")[0])
+    if (isNaN(PageTargetId)) PageTargetId = null  
+  }
   return PageTargetId
 }
 
