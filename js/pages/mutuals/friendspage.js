@@ -8,7 +8,7 @@ let OpenMutualConnections = []
 
 let AllMutuals
 
-async function LoadPage(Page){
+async function LoadMutualPage(Page){
     if (!AllMutuals){
         while (true){
             const [Success, Result] = await GetMutualFriends(GetTargetId())
@@ -78,7 +78,7 @@ function IsMutualsTabOpen(){
     return window.location.href.search("tab=mutuals") > -1
 }
 
-function CreateFromFriendHistory(Friend, FriendsList){
+function CreateFromFriendMutuals(Friend, FriendsList){
     const Element = CreateFriend(Friend.id, Friend.name, Friend.displayName, Friend.Image, undefined, undefined, undefined, Friend.hasVerifiedBadge)
 
     CurrentMutualsElements.push(Element)
@@ -86,7 +86,7 @@ function CreateFromFriendHistory(Friend, FriendsList){
     FriendsList.appendChild(Element)
 }
 
-async function AddImagesToHistory(AllHistory){
+async function AddImagesToMutuals(AllHistory){
     const Requests = []
     const IdToHistory = {}
 
@@ -165,11 +165,11 @@ async function HandleMutualsPage(){
         }
         CurrentMutualsElements = []
 
-        const [History, NextExists, Length] = await LoadPage(CurrentMutualsPage)
-        await AddImagesToHistory(History)
+        const [History, NextExists, Length] = await LoadMutualPage(CurrentMutualsPage)
+        await AddImagesToMutuals(History)
 
         for (let i = 0; i < History.length; i++){
-            CreateFromFriendHistory(History[i], FriendsList)
+            CreateFromFriendMutuals(History[i], FriendsList)
         }
 
         await sleep(50)
@@ -209,7 +209,7 @@ async function HandleMutualsPage(){
     }
 }
 
-function CheckIfMutualsTabOpened(){
+async function CheckIfMutualsTabOpened(){
     const Open = IsMutualsTabOpen()
 
     WaitForClass("friends-filter-status input-group-btn dropdown btn-group").then(function(Dropdown){
@@ -219,6 +219,7 @@ function CheckIfMutualsTabOpened(){
         Filter.style = Open && "display:none;" || ""
     })
 
+    while (!MutualHeaderTab) await sleep(100)
     MutualHeaderTab.className = `rbx-tab-heading${Open && " active" || ""}`
 
     if (!Open){
