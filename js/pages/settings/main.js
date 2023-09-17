@@ -194,6 +194,14 @@ const Settings = {
             Title: "View Locked Group",
             Description: "Allows you to view locked groups."
         },
+        ViewBannedUser: {
+            Title: "View Banned User",
+            Description: "Allows you to view a banned user."
+        },
+        AddRowToHomeFriends: {
+            Title: "Expand home friends list",
+            Description: "Adds another row to friends list on the home page."
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"

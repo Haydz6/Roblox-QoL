@@ -26,3 +26,10 @@ IsFeatureEnabled("NewMessagePing3").then(async function(Enabled){
 
 InjectScript("checkforinvite", "*://*.roblox.com/games/*")
 InjectScript("AvatarPage", "*://*.roblox.com/my/avatar")
+
+IsFeatureEnabled("AddRowToHomeFriends").then(function(Enabled){
+    if (Enabled) InjectScript("addrowtohomefriends", "*://*.roblox.com/home*")
+})
+IsFeatureEnabled("FriendsHomeLastOnline").then(function(Enabled){
+    if (Enabled) InjectScript("friendshomelastonline", "*://*.roblox.com/home*")
+})

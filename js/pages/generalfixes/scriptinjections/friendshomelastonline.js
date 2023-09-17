@@ -5,7 +5,7 @@ async function BatchGetLastOnline(UserId){
         PendingLastOnlineBatches.push({UserId: UserId, resolve: resolve, reject: reject})
 
         if (PendingLastOnlineBatches.length === 1){
-            await sleep(100)
+            await new Promise(r => setTimeout(r, 100))
             const Batch = PendingLastOnlineBatches
             PendingLastOnlineBatches = []
 
@@ -22,7 +22,16 @@ async function BatchGetLastOnline(UserId){
                 UserIdToResolve[Request.UserId].push(Request)
             }
 
-            const [Success, Result] = await RequestFunc("https://presence.roblox.com/v1/presence/last-online", "POST", {"Content-Type": "application-json"}, JSON.stringify({userIds: UserIds}), true)
+            const Response = await fetch("https://presence.roblox.com/v1/presence/last-online", {method: "POST", headers: {"Content-Type": "application-json"}, body: JSON.stringify({userIds: UserIds}), credentials: "include"})
+            const Success = Response.ok
+            let Result
+
+            if (Success){
+                try {
+                    Result = await Response.json()
+                } catch {}
+            }
+            
             if (!Success) {
                 for (const [_, Resolves] of Object.entries(object)) {
                     for (let i = 0; i < Resolves.length; i++){
@@ -44,8 +53,23 @@ async function BatchGetLastOnline(UserId){
     })
 }
 
-IsFeatureEnabled("FriendsHomeLastOnline").then(async function(Enabled){
-    if (!Enabled) return
+async function FriendsHomeLastOnline(){
+    function SecondsToLengthSingle(Seconds){
+        const d = Math.floor(Seconds / (3600*24))
+        const h = Math.floor(Seconds % (3600*24) / 3600)
+        const m = Math.floor(Seconds % 3600 / 60)
+        const s = Math.floor(Seconds % 60)
+      
+        if (d > 0){
+          return `${d} day${d == 1 ? "" : "s"}`
+        } else if (h > 0){
+          return `${h} hour${h == 1 ? "" : "s"}`
+        } else if (m > 0){
+          return `${m} minute${m == 1 ? "" : "s"}`
+        }
+      
+        return `${s} second${s == 1 ? "" : "s"}`
+      }
 
     function GetPlaceName(Child){
         const Existing = Child.getElementsByClassName("place-name")[0]
@@ -72,7 +96,7 @@ IsFeatureEnabled("FriendsHomeLastOnline").then(async function(Enabled){
 
         while (OfflineUsers[UserId]){
             PlaceName.innerText = SecondsToLengthSingle((Date.now()/1000) - (LastOnline.getTime()/1000)) + " ago"
-            await sleep(500)
+            await new Promise(r => setTimeout(r, 500))
         }
     }
 
@@ -91,12 +115,15 @@ IsFeatureEnabled("FriendsHomeLastOnline").then(async function(Enabled){
     while (true){
         PeopleList = document.querySelector('[ng-controller="peopleListContainerController"]')
         if (PeopleList) break
-        await sleep(100)
+        await new Promise(r => setTimeout(r, 100))
     }
 
     const PeopleController = angular.element(PeopleList).scope()
+    while (PeopleController.library?.numOfFriends === null) await new Promise(r => setTimeout(r, 100))
+
     for (const [_, User] of Object.entries(PeopleController.library.friendsDict)){
         if (User.presence.userPresenceType === 0) SetUserOffline(User)
         else SetUserOnline(User)
     }
-})
+}
+FriendsHomeLastOnline()

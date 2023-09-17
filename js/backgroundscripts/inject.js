@@ -243,7 +243,6 @@ const ContentScripts = [{
     ],
     "js": [
         "js/pages/generalfixes/movehomefavouritestothirdrow.js",
-        "js/pages/generalfixes/friendshomelastonline.js",
         "js/pages/fixfavouritespage/replacehomelink.js",
 
         "js/pages/playtime/createelements.js",
