@@ -17,3 +17,10 @@ if (PlaceId && JobId){
         Roblox.GameLauncher.joinGameInstance(parseInt(PlaceId, 10), JobId)
     })
 }
+
+document.addEventListener("joinGameInstance", function(Event){
+    WaitForRoblox(function(){
+        const Detail = Event.detail
+        Roblox.GameLauncher.joinGameInstance(Detail.PlaceId, Detail.JobId)
+    })
+})

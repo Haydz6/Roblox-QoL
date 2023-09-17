@@ -85,6 +85,7 @@ const ContentScripts = [{
         "js/pages/serverfilters/filterservers.js",
         "js/pages/serverfilters/addserverregion.js",
         "js/pages/serverfilters/filters.js",
+        "js/pages/serverfilters/preferredregion.js",
         "js/pages/serverfilters/main.js",
         
         "js/pages/quickserverinvite/createelements.js",

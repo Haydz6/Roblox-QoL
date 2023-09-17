@@ -236,6 +236,21 @@ const Settings = {
             Title: "Server Regions",
             Description: "Shows where a server is located."
         },
+        PreferredServerRegion: {
+            Title: "Preferred Server Region",
+            Description: "Adds a button that allows you to join a server from a certain region (if one exists, else it will look for the closest one)",
+            Type: "SelectionList",
+            GetList: async function(){
+                const [Success, Result] = await RequestFunc("https://qol.haydz6.com/api/servers/regions", "GET")
+                if (!Success) return ["None"]
+                const RegionList = []
+                for (let i = 0; i < Result.length; i++){
+                    RegionList.push(Result[i].Region)
+                }
+                RegionList.push("None")
+                return RegionList
+            }
+        },
         ServerFilters: {
             Title: "Server Filters",
             Description: "Allows you to filter servers by region, size and age."

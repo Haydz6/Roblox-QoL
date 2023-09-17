@@ -187,7 +187,7 @@ function CreateSectionSettingsDropdown(Option, Title, Description, Options, Valu
     const [Section, Divider] = CreateSectionSettingsTemplate(Option, Title, Description)
 
     const Dropdown = document.createElement("div")
-    Dropdown.style = "max-width: 250px; float: right; margin-top: -5px;"
+    Dropdown.style = "max-width: 255px; float: right; margin-top: -5px;"
     
     const Selections = document.createElement("select")
     Selections.className = "input-field select-option rbx-select"
