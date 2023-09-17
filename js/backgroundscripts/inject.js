@@ -310,7 +310,8 @@ const ContentScripts = [{
         "*://*.roblox.com/groups/*"
     ],
     "js": [
-       "js/pages/banned/group.js"
+       "js/pages/banned/group.js",
+       "js/pages/pinned/group.js"
     ],
     "css": [
         "css/groups.css"

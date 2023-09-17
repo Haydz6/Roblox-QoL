@@ -73,13 +73,13 @@ async function FriendsHomeLastOnline(){
 
     function GetPlaceName(Child){
         const Existing = Child.getElementsByClassName("place-name")[0]
-        if (Existing) return Existing
+        if (Existing) return [Existing, false]
 
         const PlaceName = document.createElement("div")
         PlaceName.className = "text-overflow xsmall text-label place-name"
         Child.getElementsByClassName("friend-link")[0].appendChild(PlaceName)
 
-        return PlaceName
+        return [PlaceName, true]
     }
 
     const OfflineUsers = {}
@@ -92,12 +92,13 @@ async function FriendsHomeLastOnline(){
         if (!FriendItem) return
 
         const LastOnline = new Date(await BatchGetLastOnline(UserId))
-        const PlaceName = GetPlaceName(FriendItem)
+        const [PlaceName, Created] = GetPlaceName(FriendItem)
 
         while (OfflineUsers[UserId]){
             PlaceName.innerText = SecondsToLengthSingle((Date.now()/1000) - (LastOnline.getTime()/1000)) + " ago"
             await new Promise(r => setTimeout(r, 500))
         }
+        if (Created) PlaceName.remove()
     }
 
     async function SetUserOnline(Presence){

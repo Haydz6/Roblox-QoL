@@ -248,6 +248,10 @@ const Settings = {
             Title: "Pinned Games",
             Description: "Allows you to pin games to your home page."
         },
+        PinnedGroups: {
+            Title: "Pinned Groups",
+            Description: "Allows you to pin groups you are in to the top of your groups list."
+        },
         QuickInvite: {
             Title: "Quick Invite",
             Description: "A link you can share with your friends to join a server."
