@@ -151,7 +151,9 @@ const ContentScripts = [{
         "js/pages/friendhistory/createelements.js",
         "js/pages/mutuals/createelements.js",
         "js/pages/mutuals/api.js",
-        "js/pages/mutuals/friendspage.js"
+        "js/pages/mutuals/friendspage.js",
+
+        "js/pages/banned/clickonterminatedprofile.js"
     ],
     "run_at": "document_start"
 },
