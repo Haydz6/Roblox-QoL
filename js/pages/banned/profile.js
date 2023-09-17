@@ -220,13 +220,9 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                             LikeRatio = Math.floor((Vote.upVotes / (Vote.upVotes+Vote.downVotes))*100)
                         }
                     }
-                    console.log(LikeRatio)
-
                     BadgeElement.getElementsByClassName("vote-percentage-label")[0].className = "info-label vote-percentage-label"
                     BadgeElement.getElementsByClassName("vote-percentage-label")[0].innerText = LikeRatio ? LikeRatio+"%" : "--"
                     BadgeElement.getElementsByClassName("info-label no-vote")[0].remove()
-
-                    console.log(LikeRatio ? LikeRatio+"%" : "--")
 
                     FavouritesList.appendChild(BadgeElement)
                 }
@@ -343,6 +339,30 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
 
             document.getElementsByClassName("abuse-report-link")[0].remove()
             Content.getElementsByClassName("enable-three-dee")[0].remove()
+
+            let PreviousPanel = document.getElementById("about")
+            let PreviousTab = document.getElementById("tab-about")
+
+            function HashChange(){
+                const Hash = window.location.hash.substring(1)
+                const NewPanel = document.getElementById(Hash)
+                const NewTab = this.document.getElementById("tab-"+Hash)
+
+                if (NewPanel){
+                    PreviousPanel.className = "tab-pane"
+                    NewPanel.className = "tab-pane active"
+                    PreviousPanel = NewPanel
+                }
+
+                if (NewTab){
+                    PreviousTab.parentElement.className = "rbx-tab"
+                    NewTab.parentElement.className = "rbx-tab active"
+                    PreviousTab = NewTab
+                }
+            }
+
+            window.addEventListener("hashchange", HashChange)
+            HashChange()
 
             InjectScript("TooltipBannedUserIcon")
         }
