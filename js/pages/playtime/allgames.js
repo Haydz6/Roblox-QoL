@@ -28,6 +28,8 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
     let FetchInt = [0]
     let AllGames
     let CurrentCursor = 0
+    let CurrentPage = 0
+    let CurrentParams
     
     const LoadMoreButton = CreateLoadMoreButton()
     LoadMoreButton.style = "display: none;"
@@ -37,41 +39,41 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
         while (GameGrid.firstChild) GameGrid.removeChild(GameGrid.lastChild)
     }
 
-    async function GetNextGames(){
-        if (!AllGames) return
+    // async function GetNextGames(){
+    //     if (!AllGames) return
 
-        const Spinner = CreateSpinner()
-        GameGrid.appendChild(Spinner)
+    //     const Spinner = CreateSpinner()
+    //     GameGrid.appendChild(Spinner)
 
-        let Failed = false
+    //     let Failed = false
 
-        function Fail(Text){
-            Failed = true
-        }
+    //     function Fail(Text){
+    //         Failed = true
+    //     }
 
-        LoadMoreButton.setAttribute("disabled", "disabled")
+    //     LoadMoreButton.setAttribute("disabled", "disabled")
 
-        const CacheFetchInt = FetchInt[0]
-        CreateGameCardsFromUniverseIds(AllGames.slice(CurrentCursor, Math.min(AllGames.length, CurrentCursor+100)), GameGrid, CacheFetchInt, FetchInt, Fail, Spinner).then(function(){
-            if (FetchInt[0] == CacheFetchInt) LoadMoreButton.removeAttribute("disabled")
-            if (!Failed){
-                CurrentCursor += 100
-                if (CurrentCursor >= AllGames.length) LoadMoreButton.style = "display: none;"
-            }
-        })
-    }
+    //     const CacheFetchInt = FetchInt[0]
+    //     CreateGameCardsFromUniverseIds(AllGames.slice(CurrentCursor, Math.min(AllGames.length, CurrentCursor+100)), GameGrid, CacheFetchInt, FetchInt, Fail, Spinner).then(function(){
+    //         if (FetchInt[0] == CacheFetchInt) LoadMoreButton.removeAttribute("disabled")
+    //         if (!Failed){
+    //             CurrentCursor += 100
+    //             if (CurrentCursor >= AllGames.length) LoadMoreButton.style = "display: none;"
+    //         }
+    //     })
+    // }
 
-    async function FetchGames(Params){
+    async function NextPage(){
         FetchInt[0]++
         const CacheFetchInt = FetchInt[0]
 
-        RemoveAllChildren()
-        LoadMoreButton.style = "display: none;"
-        
+        CurrentPage ++
+        LoadMoreButton.setAttribute("disabled", "disabled")
+
         const Spinner = CreateSpinner()
         GameGrid.appendChild(Spinner)
 
-        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}`, "GET")
+        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${CurrentParams}&type=${Type}&page=${CurrentPage}`, "GET")
         if (FetchInt[0] !== CacheFetchInt) return
 
         function Fail(Text){
@@ -91,12 +93,23 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
             return b.Playtime - a.Playtime
         })
 
-        AllGames = Games
+        if (!AllGames) AllGames = Games
+        else AllGames.concat(Games)
 
         CurrentCursor = 100
         await CreateGameCardsFromUniverseIds(Games.slice(0, Math.min(Games.length, 100)), GameGrid, CacheFetchInt, FetchInt, Fail, Spinner)
 
-        if (Games.length > 100) LoadMoreButton.style = ""
+        LoadMoreButton.removeAttribute("disabled")
+        if (Games.length == 100) LoadMoreButton.style = ""
+    }
+
+    async function FetchGames(Params){
+        RemoveAllChildren()
+        AllGames = undefined
+        CurrentParams = Params
+        LoadMoreButton.style = "display: none;"
+        
+        NextPage()
     }
 
     function CreateButton(Title, Params){
@@ -117,7 +130,7 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
     CreateButton("Past Year", "time=365")
     CreateButton("All Time", "time=all")
 
-    LoadMoreButton.addEventListener("click", GetNextGames)
+    LoadMoreButton.addEventListener("click", NextPage)
 
     FetchGames("time=all")
 })
