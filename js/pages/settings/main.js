@@ -398,6 +398,10 @@ const Settings = {
         FriendRequestNotifications: {
             Title: "Friend Request Notifications",
             Description: "Notifies you when someone sends you a friend request."
+        },
+        CancelFriendRequest: {
+            Title: "Cancel Friend Request",
+            Description: "Allows you to cancel an outgoing friend request on a users profile."
         }
     },
     Assets: {
