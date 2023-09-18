@@ -55,7 +55,7 @@ IsFeatureEnabled("PreferredServerRegion").then(async function(Region){
                 </div>
                 <div class="modal-btns">
                     <a id="decline-btn" class="btn-control-md" style="display: none;">No</a>
-                    <a id="confirm-btn" class="btn-secondary-md" style="display: none;">Yes</a>
+                    <a id="confirm-btn" class="btn-primary-md" style="display: none;">Yes</a>
                 </div>
                 <div class="loading modal-processing">
                     <img class="loading-default" src="https://images.rbxcdn.com/4bed93c91f909002b1f17f05c0ce13d1.gif" alt="Processing...">
@@ -75,7 +75,7 @@ IsFeatureEnabled("PreferredServerRegion").then(async function(Region){
 
         const [Modal, Backdrop] = CreateJoiningModal()
         const MessageLabel = Modal.getElementsByClassName("modal-message-label")[0]
-        const YesButton = Modal.getElementsByClassName("btn-secondary-md")[0]
+        const YesButton = Modal.getElementsByClassName("btn-primary-md")[0]
         const NoButton = Modal.getElementsByClassName("btn-control-md")[0]
         const Spinner = Modal.getElementsByClassName("spinner")[0]
 
@@ -108,13 +108,14 @@ IsFeatureEnabled("PreferredServerRegion").then(async function(Region){
 
         function CouldntFind(AlternativeJobId, AlternativeRegion){
             NoButton.style = ""
-            NoButton.innerText = "Close"
             RemoveSpinner()
 
             if (!AlternativeJobId){
                 MessageLabel.innerText = "We could not find a server!"
+                NoButton.innerText = "Close"
                 return
             }
+            NoButton.innerText = "Cancel"
             MessageLabel.innerText = `Would you like to join ${AlternativeRegion} instead?`
 
             YesButton.style = ""
