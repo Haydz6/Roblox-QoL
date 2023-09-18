@@ -135,9 +135,6 @@ const ContentScripts = [{
         "js/pages/trades/getuserinventory.js",
         "js/pages/rolimonsprofile/rolimons.js",
 
-        "js/pages/themes/createelements.js",
-        "js/pages/themes/profile.js",
-
         "js/pages/badges/profilecount.js",
 
         "js/pages/profile/followsyou.js"
