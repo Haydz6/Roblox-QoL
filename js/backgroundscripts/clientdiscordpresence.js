@@ -3,11 +3,11 @@ let ExternalDiscordLoggedIn = false
 let ExternalDiscordWS
 let ExternalDiscordInfo
 
-function UpdateExternalDiscordCookie(Cookie){
-    if (ExternalDiscordLoggedIn){
-        ExternalDiscordWS.send(JSON.stringify({Authentication: Cookie}))
-    }
-}
+// function UpdateExternalDiscordCookie(Cookie){
+//     if (ExternalDiscordLoggedIn){
+//         ExternalDiscordWS.send(JSON.stringify({Authentication: Cookie}))
+//     }
+// }
 
 //This does not collect user data. This just connects to an external program to talk to discord for game presence as discord does not allow websocket connections at all,
 //so an external program is used to convert the websocket to IPC which is what discord uses.

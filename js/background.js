@@ -14,7 +14,7 @@ let AreEnabledFeaturesFetched = false
 const PaidFeatures = {PinnedGames: 1, PinnedGroups: 1, FriendRequestNotifications: 1}
 let CurrentSubscription = undefined
 
-let ROBLOSECURITY
+//let ROBLOSECURITY
 let UserId
 
 let CSRFToken = ""
@@ -210,26 +210,27 @@ chrome.cookies.onChanged.addListener(function(Change){
             }
         })
 
-        ROBLOSECURITY = Cookie.value
-        UpdateExternalDiscordCookie(ROBLOSECURITY)
+        //ROBLOSECURITY = Cookie.value
+        //UpdateExternalDiscordCookie(ROBLOSECURITY)
         CallLogin()
     }
 })
 
-let CookieGetFunc
-if (ManifestVersion > 2) {
-    CookieGetFunc = chrome.cookies.get
-} else {
-    CookieGetFunc = browser.cookies.get
-}
+// let CookieGetFunc
+// if (ManifestVersion > 2) {
+//     CookieGetFunc = chrome.cookies.get
+// } else {
+//     CookieGetFunc = browser.cookies.get
+// }
 
-CookieGetFunc({name: ".ROBLOSECURITY", url: "https://roblox.com"}).then(function(Cookie){
-    if (!Cookie) return //Not logged in
+// CookieGetFunc({name: ".ROBLOSECURITY", url: "https://roblox.com"}).then(function(Cookie){
+//     if (!Cookie) return //Not logged in
 
-    ROBLOSECURITY = Cookie.value
-    UpdateExternalDiscordCookie(ROBLOSECURITY)
-    CallLogin()
-})
+//     //ROBLOSECURITY = Cookie.value
+//     //UpdateExternalDiscordCookie(ROBLOSECURITY)
+//     CallLogin()
+// })
+CallLogin()
 
 async function FetchAllFeaturesEnabled(){
     if (!AreEnabledFeaturesFetched){
