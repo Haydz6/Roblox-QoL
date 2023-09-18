@@ -205,7 +205,6 @@ chrome.cookies.onChanged.addListener(function(Change){
             CachedAuthKey = ""
 
             if (!Change.removed){
-                console.log("userid update")
                 GetCurrentUserId()
             }
         })
@@ -230,7 +229,6 @@ chrome.cookies.onChanged.addListener(function(Change){
 //     //UpdateExternalDiscordCookie(ROBLOSECURITY)
 //     CallLogin()
 // })
-CallLogin()
 
 async function FetchAllFeaturesEnabled(){
     if (!AreEnabledFeaturesFetched){
@@ -331,4 +329,5 @@ if (ManifestVersion > 2){
     }
 }
 
+CallLogin()
 GetSubscription()
