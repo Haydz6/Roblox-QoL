@@ -31,7 +31,7 @@ async function CheckForNewFriendRequests(){
 
     for (let i = 0; i < Data.length; i++){
         const Request = Data[i]
-        const Time = new Date(Request.friendRequest.sentAt).getTime()/1000
+        const Time = Math.floor((new Date(Request.friendRequest.sentAt)).getTime()/1000)
 
         if (Time > LastFriendRequestSent){
             NewRequests.push(Request)

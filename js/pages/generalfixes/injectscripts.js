@@ -33,3 +33,6 @@ IsFeatureEnabled("AddRowToHomeFriends").then(function(Enabled){
 IsFeatureEnabled("FriendsHomeLastOnline").then(function(Enabled){
     if (Enabled) InjectScript("friendshomelastonline", "*://*.roblox.com/home*")
 })
+IsFeatureEnabled("CancelFriendRequest").then(function(Enabled){
+    if (Enabled) InjectScript("CancelFriendRequest", "*://*.roblox.com/users/*/profile")
+})
