@@ -395,6 +395,10 @@ const Settings = {
             Title: "Friend Notifications",
             Description: "Notifies you when you make or lose a friend."
         },
+        FriendRequestNotifications: {
+            Title: "Friend Request Notifications",
+            Description: "Notifies you when someone sends you a friend request."
+        }
     },
     Assets: {
         AddSales: {

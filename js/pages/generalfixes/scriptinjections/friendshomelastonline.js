@@ -33,7 +33,7 @@ async function BatchGetLastOnline(UserId){
             }
             
             if (!Success) {
-                for (const [_, Resolves] of Object.entries(object)) {
+                for (const [_, Resolves] of Object.entries(UserIdToResolve)) {
                     for (let i = 0; i < Resolves.length; i++){
                         Resolves[i].reject()
                     }
