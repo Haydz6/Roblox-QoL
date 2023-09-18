@@ -36,3 +36,6 @@ IsFeatureEnabled("FriendsHomeLastOnline").then(function(Enabled){
 IsFeatureEnabled("CancelFriendRequest").then(function(Enabled){
     if (Enabled) InjectScript("CancelFriendRequest", "*://*.roblox.com/users/*/profile")
 })
+IsFeatureEnabled("RemoveAccessoryLimit").then(function(Enabled){
+    if (Enabled) InjectScript("RemoveAccessoryLimit", "*://*.roblox.com/my/avatar*")
+})

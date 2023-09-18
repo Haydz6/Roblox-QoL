@@ -126,6 +126,10 @@ const Settings = {
             Title: "Extra Outfits",
             Description: "Allows you to have more than 50 outfits."
         },
+        RemoveAccessoryLimit: {
+            Title: "Remove Accessory Limit",
+            Description: "Allows you to equip up to 10 accessories."
+        },
         ActivePrivateServers: {
             Title: "Active Private Servers",
             Description: "Allows you to see which private servers are billing you."
