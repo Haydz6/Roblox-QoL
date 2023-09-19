@@ -2,7 +2,7 @@ async function SetThemeToSystem(){ //If changed live
     if (!window.matchMedia) return
 
     function ReplaceClass(Element, Theme){
-        if (!IsFeatureEnabled("SetThemeToSystem")) return
+        if (!IsFeatureEnabled("SetThemeToSystem") || !Element.className.includes("theme")) return
         Element.className = Element.className.replace("dark-theme", "").replace("light-theme", "") + ` ${Theme}-theme`
     }
 
@@ -20,18 +20,19 @@ async function SetThemeToSystem(){ //If changed live
             Mutations.forEach(function(Mutation){
                 const [Theme, Opposite] = GetTheme()
                 const Target = Mutation.target
-                console.log(Target.className)
                 if (Target.className.includes(Opposite+"-theme")) Target.className = Target.className.replace(Opposite+"-theme", "") + " "+Theme+"-theme"
             })
         }).observe(Element, {attributeFilter: ["class"]})
     }
+
+    const ThemeElements = []
 
     async function UpdateTheme(){
         if (!IsFeatureEnabled("SetThemeToSystem")) return
         const [Theme, Opposite] = GetTheme()
         LastTheme = Theme
         
-        const ThemeElements = document.querySelectorAll("."+Opposite+"-theme")
+        //const ThemeElements = document.querySelectorAll("."+Opposite+"-theme")
         for (let i = 0; i < ThemeElements.length; i++){
             ReplaceClass(ThemeElements[i], Theme)
         }
@@ -45,12 +46,14 @@ async function SetThemeToSystem(){ //If changed live
     const Classes = ["notification-stream-base", "container-main"]
     for (let i = 0; i < Ids.length; i++){
         WaitForId(Ids[i]).then(async function(Element){
+            ThemeElements.push(Element)
             ReplaceClass(Element, LastTheme)
             //EnsureCorrectTheme(Element)
         })
     }
     for (let i = 0; i < Classes.length; i++){
         WaitForClass(Classes[i]).then(async function(Element){
+            ThemeElements.push(Element)
             ReplaceClass(Element, LastTheme)
             //EnsureCorrectTheme(Element)
         })
@@ -61,6 +64,7 @@ async function SetThemeToSystem(){ //If changed live
     })
 
     //EnsureCorrectTheme(document.body)
+    ThemeElements.push(document.body)
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", UpdateTheme)
     UpdateTheme()
 }
