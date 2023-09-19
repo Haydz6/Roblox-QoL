@@ -221,9 +221,11 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     Headers = {}
   }
 
+  const IsQOLAPI = URL.search(WebServerURL) > -1
+
   if (URL.search("roblox.com") > -1) {
     Headers["x-csrf-token"] = CSRFToken
-  } else if (URL.search(WebServerURL) > -1){
+  } else if (IsQOLAPI){
     if (URL.search("/auth") == -1){
       Headers.Authentication = await GetAuthKey()
     }
@@ -254,6 +256,10 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
       }
 
       return await RequestFunc(URL, Method, Headers, Body, CredientalsInclude)
+    }
+
+    if (IsQOLAPI && Response.status === 402){ //Payment required
+      CurrentSubscription = await chrome.runtime.sendMessage({type: "PaymentRequired", result: ResBody})
     }
 
     return [Response.ok, ResBody, Response]

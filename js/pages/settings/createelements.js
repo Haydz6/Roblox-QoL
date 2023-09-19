@@ -114,7 +114,7 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled, Feat
         Slider.setAttribute("disabled", "disabled")
         Section.insertBefore(CreateFeatureNotSupported(), Divider)
     } else if (!FeaturePaid){
-        Input.setAttribute("disabled", "disabled")
+        Slider.setAttribute("disabled", "disabled")
         Section.insertBefore(CreateFeaturePaid(), Divider)
     }
 
@@ -198,7 +198,7 @@ function CreateSectionSettingsDropdown(Option, Title, Description, Options, Valu
         Selections.setAttribute("disabled", "disabled")
         Section.insertBefore(CreateFeatureNotSupported(), Divider)
     } else if (!FeaturePaid){
-        Input.setAttribute("disabled", "disabled")
+        Selections.setAttribute("disabled", "disabled")
         Section.insertBefore(CreateFeaturePaid(), Divider)
     }
 

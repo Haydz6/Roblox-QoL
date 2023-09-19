@@ -35,6 +35,11 @@ function ListenForSettingChanged(Setting, Callback){
     OnSettingChanged[Setting] = Callback
 }
 
+function PaymentRequiredFailure(SubscriptionInfo){
+    CurrentSubscription = SubscriptionInfo.Current
+    return CurrentSubscription
+}
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     if (sender.id !== chrome.runtime.id){
         if (request.type === "installed"){
@@ -118,10 +123,12 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     if (!Headers){
       Headers = {}
     }
+
+    const IsQOLAPI = URL.search(WebServerURL) > -1
   
     if (URL.search("roblox.com") > -1) {
         Headers["x-csrf-token"] = CSRFToken
-    } else if (URL.search(WebServerURL) > -1){
+    } else if (IsQOLAPI){
         if (!URL.includes("/auth") || URL.includes("/reverify")){
             Headers.Authentication = await GetAuthKey()
         }
@@ -152,6 +159,10 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
             }
   
             return await RequestFunc(URL, Method, Headers, Body, CredientalsInclude)
+        }
+
+        if (IsQOLAPI && Response.status === 402){
+            PaymentRequiredFailure(ResBody)
         }
   
         return [Response.ok, ResBody, Response]
@@ -312,6 +323,10 @@ BindToOnMessage("PaidFeatures", false, function(){
 
 BindToOnMessage("GetSubscription", true, function(){
     return GetSubscription()
+})
+
+BindToOnMessage("PaymentRequired", false, function(request){
+    return PaymentRequiredFailure(request.result)
 })
 
 if (ManifestVersion > 2){
