@@ -68,4 +68,5 @@ async function SetThemeToSystem(){ //If changed live
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", UpdateTheme)
     UpdateTheme()
 }
-SetThemeToSystem()
+
+setTimeout(SetThemeToSystem, 0)

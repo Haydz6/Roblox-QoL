@@ -20,4 +20,4 @@ async function AddSystemThemeOption(){
     InjectScript("intercepttheme")
 }
 
-AddSystemThemeOption()
+setTimeout(AddSystemThemeOption, 0)
