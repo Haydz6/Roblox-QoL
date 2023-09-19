@@ -13,7 +13,7 @@ async function AddSystemThemeOption(){
     })
 
     if (IsFeatureEnabled("SetThemeToSystem")) {
-        while (InputField.value === "?") await sleep()
+        while (InputField.value === "?") await sleep(0)
         InputField.value = "string:System"
     }
 
