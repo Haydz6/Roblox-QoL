@@ -282,6 +282,10 @@ const Settings = {
         RecentServers: {
             Title: "Show Recent Servers",
             Description: "Shows recent servers you have joined for a game."
+        },
+        MinimizePrivateServers: {
+            Title: "Minimizable Private Servers",
+            Description: "Allows you to minimize private servers tab.Minimizable"
         }
     },
     Trades: {
