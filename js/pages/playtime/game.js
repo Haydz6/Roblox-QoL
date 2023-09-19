@@ -39,7 +39,7 @@ async function CreateTypeTime(UniverseId, Type, Name, Icon){
             const LastPlayed = Result.LastPlayed
             if (!LastPlayed) return
 
-            const [LastContainer, Value] = CreateGamePlaytime(undefined, "Last Played")
+            const [LastContainer, Value] = CreateGamePlaytime(undefined, "Last Played", chrome.runtime.getURL("/img/sandglass.png"))
             const CurrentDate = new Date()
             const LastDate = new Date(LastPlayed*1000) 
             const YearModifier = CurrentDate.getFullYear() !== LastDate.getFullYear() ? "numeric" : undefined
@@ -79,6 +79,6 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
 
     const [Success, EditInfo] = await RequestFunc(`https://develop.roblox.com/v1/universes/${UniverseId}/permissions`, "GET", undefined, undefined, true)
     if (Success && (EditInfo.canManage || EditInfo.canCloudEdit)){
-        CreateTypeTime(UniverseId, "Edit", "Edited")
+        CreateTypeTime(UniverseId, "Edit", "Edited", chrome.runtime.getURL("/img/hammer.png"))
     }
 })
