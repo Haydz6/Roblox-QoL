@@ -5,6 +5,22 @@ function CreateRecentServersList(){
 
     const ContainerHeader = document.createElement("div")
     ContainerHeader.className = "container-header"
+    ContainerHeader.style = "cursor: pointer;"
+
+    const Minimize = document.createElement("span")
+    Minimize.className = "icon-up-16x16"
+    Minimize.style = "margin-left: 3px;"
+
+    const ServerList = document.createElement("ul")
+    ServerList.className = "card-list rbx-friends-game-server-item-container"
+    ServerList.id = "rbx-recent-game-server-item-container"
+
+    let Opened = true
+    ContainerHeader.addEventListener("click", function(){
+        Opened = !Opened
+        Minimize.className = `icon-${Opened ? "up" : "down"}-16x16`
+        ServerList.style.display = Opened ? "" : "none"
+    })
 
     Container.appendChild(ContainerHeader)
 
@@ -17,7 +33,7 @@ function CreateRecentServersList(){
     Header.className = "server-list-header"
     Header.innerText = "Recent Servers"
 
-    ServerListContainerHeader.appendChild(Header)
+    ServerListContainerHeader.append(Header, Minimize)
 
     //////
 
@@ -32,10 +48,6 @@ function CreateRecentServersList(){
     NoServersMessage.innerText = "No Servers Found."
 
     NoServersContent.appendChild(NoServersMessage)
-
-    const ServerList = document.createElement("ul")
-    ServerList.className = "card-list rbx-friends-game-server-item-container"
-    ServerList.id = "rbx-recent-game-server-item-container"
 
     Container.appendChild(ServerList)
 
