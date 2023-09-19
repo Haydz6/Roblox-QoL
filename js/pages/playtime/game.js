@@ -24,6 +24,7 @@ async function CreateTypeTime(UniverseId, Type, Name, Icon){
     TitleContainer.appendChild(Container)
 
     let FetchInt = 0
+    let CreatedLastPlayed = false
 
     async function GetPlaytime(Time){
         FetchInt ++
@@ -33,6 +34,20 @@ async function CreateTypeTime(UniverseId, Type, Name, Icon){
         const [Success, Result] = await RequestFunc(`${WebServerEndpoints.Playtime}?time=${Time}&universeId=${UniverseId}&type=${Type}`)
 
         if (FetchInt === CacheFetchInt) PlaytimeValue.innerText = Success && SecondsToLengthShort(Result.Playtime, true, true) || "???"
+        if (!CreatedLastPlayed && Type === "Play" && Success && Time === "all"){
+            CreatedLastPlayed = true
+            const LastPlayed = Result.LastPlayed
+            if (!LastPlayed) return
+
+            const [LastContainer, Value] = CreateGamePlaytime(undefined, "Last Played")
+            const CurrentDate = new Date()
+            const LastDate = new Date(LastPlayed*1000) 
+            const YearModifier = CurrentDate.getFullYear() !== LastDate.getFullYear() ? "numeric" : undefined
+
+            Value.innerText = LastDate.toLocaleString(undefined, {month: "short", day: "numeric", year: YearModifier})
+
+            TitleContainer.insertBefore(LastContainer, Container)
+        }
     }
 
     function CreateButton(Title, Params){

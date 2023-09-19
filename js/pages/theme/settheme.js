@@ -32,9 +32,12 @@ async function SetThemeToSystem(){ //If changed live
         const [Theme, Opposite] = GetTheme()
         LastTheme = Theme
         
-        //const ThemeElements = document.querySelectorAll("."+Opposite+"-theme")
+        const OtherThemeElements = document.querySelectorAll("."+Opposite+"-theme")
         for (let i = 0; i < ThemeElements.length; i++){
             ReplaceClass(ThemeElements[i], Theme)
+        }
+        for (let i = 0; i < OtherThemeElements.length; i++){
+            ReplaceClass(OtherThemeElements[i], Theme)
         }
     }
 
