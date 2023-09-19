@@ -113,7 +113,8 @@ const ContentScripts = [{
     ],
     "js": [
         "js/pages/settings/createelements.js",
-        "js/pages/settings/main.js"
+        "js/pages/settings/main.js",
+        "js/pages/theme/addoption.js"
     ],
     "run_at": "document_start"
 },

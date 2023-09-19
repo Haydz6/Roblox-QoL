@@ -528,12 +528,20 @@ async function IsFeatureEnabled(Feature){
     return EnabledFeatures[Feature]
 }
 
+const OnSettingChanged = {}
+function ListenForFeatureChanged(Setting, Callback){
+  OnSettingChanged[Setting] = Callback
+}
+
 async function SetFeatureEnabled(Feature, Enabled){
     await FetchAllFeaturesEnabled()
 
     EnabledFeatures[Feature] = Enabled
     //window.localStorage.setItem("robloxQOL-settings", JSON.stringify(EnabledFeatures))
     chrome.runtime.sendMessage({type: "changesetting", feature: Feature, enabled: Enabled})
+
+    const Callback = OnSettingChanged[Feature]
+    if (Callback) Callback(Enabled)
 }
 
 setInterval(FetchAllFeaturesKilled, 20*1000, true)

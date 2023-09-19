@@ -70,7 +70,7 @@ IsFeatureEnabled("PreferredServerRegion").then(async function(Region){
         return [Modal, Backdrop]
     }
 
-    PlayButtonContainer.addEventListener("click", async function(){
+    PreferredButton.addEventListener("click", async function(){
         const PlaceId = await GetPlaceIdFromGamePage()
 
         const [Modal, Backdrop] = CreateJoiningModal()
