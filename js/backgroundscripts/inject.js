@@ -103,7 +103,9 @@ const ContentScripts = [{
 
         "js/pages/generalfixes/supportedplatforms.js",
 
-        "js/pages/pinned/game.js"
+        "js/pages/pinned/game.js",
+
+        "js/pages/generalfixes/minimizeprivateservers.js"
     ],
     "run_at": "document_start"
 },
