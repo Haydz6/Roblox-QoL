@@ -228,48 +228,49 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                 }
             })
 
-            const CollectiblesList = document.getElementsByClassName("collections-list")[0]
-            const CollectibleClone = CollectiblesList.getElementsByClassName("list-item")[0].cloneNode(true)
-            CollectiblesList.replaceChildren()
+            //const CollectiblesList = document.getElementsByClassName("collections-list")[0]
+            document.getElementsByClassName("profile-collections")[0].remove() //Roblox blocks requests to see collectibles
+            // const CollectibleClone = CollectiblesList.getElementsByClassName("list-item")[0].cloneNode(true)
+            // CollectiblesList.replaceChildren()
 
-            RequestFunc(`https://inventory.roblox.com/v1/users/${UserId}/assets/collectibles?limit=10&sortOrder=Asc`, "GET").then(async function([Success, Body]){
-                if (!Success) return
+            // RequestFunc(`https://inventory.roblox.com/v1/users/${UserId}/assets/collectibles?limit=10&sortOrder=Asc`, "GET").then(async function([Success, Body]){
+            //     if (!Success) return
 
-                const BadgeIcons = {}
-                const BadgeIds = []
+            //     const BadgeIcons = {}
+            //     const BadgeIds = []
 
-                const Badges = Body.data
-                if (Badges.length === 0){
-                    document.getElementsByClassName("profile-collections")[0].remove()
-                    return
-                }
+            //     const Badges = Body.data
+            //     if (Badges.length === 0){
+            //         document.getElementsByClassName("profile-collections")[0].remove()
+            //         return
+            //     }
 
-                Badges.length = Math.min(Badges.length, 6)
+            //     Badges.length = Math.min(Badges.length, 6)
 
-                for (let i = 0; i < Badges.length; i++){
-                    BadgeIds.push(Badges[i].assetId)
-                }
+            //     for (let i = 0; i < Badges.length; i++){
+            //         BadgeIds.push(Badges[i].assetId)
+            //     }
 
-                const [ThumbSuccess, Thumbnails] = await RequestFunc(`https://thumbnails.roblox.com/v1/assets?assetIds=${BadgeIds.join(",")}&size=150x150&format=Png&isCircular=false`, "GET")
-                if (ThumbSuccess){
-                    const Data = Thumbnails.data
-                    for (let i = 0; i < Data.length; i++){
-                        BadgeIcons[Data[i].targetId] = Data[i].imageUrl
-                    }
-                }
+            //     const [ThumbSuccess, Thumbnails] = await RequestFunc(`https://thumbnails.roblox.com/v1/assets?assetIds=${BadgeIds.join(",")}&size=150x150&format=Png&isCircular=false`, "GET")
+            //     if (ThumbSuccess){
+            //         const Data = Thumbnails.data
+            //         for (let i = 0; i < Data.length; i++){
+            //             BadgeIcons[Data[i].targetId] = Data[i].imageUrl
+            //         }
+            //     }
 
-                for (let i = 0; i < Badges.length; i++){
-                    const Badge = Badges[i]
-                    const BadgeElement = CollectibleClone.cloneNode(true)
+            //     for (let i = 0; i < Badges.length; i++){
+            //         const Badge = Badges[i]
+            //         const BadgeElement = CollectibleClone.cloneNode(true)
                     
-                    BadgeElement.children[0].href = `https://roblox.com/catalog/${Badge.assetId}`
-                    BadgeElement.children[0].title = Badge.name
-                    BadgeElement.getElementsByClassName("asset-thumb-container")[0].src = BadgeIcons[Badge.assetId] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"
-                    BadgeElement.getElementsByClassName("item-name")[0].innerText = Badge.name
+            //         BadgeElement.children[0].href = `https://roblox.com/catalog/${Badge.assetId}`
+            //         BadgeElement.children[0].title = Badge.name
+            //         BadgeElement.getElementsByClassName("asset-thumb-container")[0].src = BadgeIcons[Badge.assetId] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"
+            //         BadgeElement.getElementsByClassName("item-name")[0].innerText = Badge.name
 
-                    CollectiblesList.appendChild(BadgeElement)
-                }
-            })
+            //         CollectiblesList.appendChild(BadgeElement)
+            //     }
+            // })
 
             const WearingList = document.getElementsByClassName("accoutrement-items-container")[0]
             const WearingClone = WearingList.getElementsByClassName("accoutrement-item")[0].cloneNode(true)
@@ -316,6 +317,102 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     BadgeElement.getElementsByClassName("accoutrment-image")[0].title = AssetInfoLookup[AssetId]?.name || ""
 
                     WearingList.appendChild(BadgeElement)
+                }
+            })
+
+            const FriendsList = document.getElementById("friends-list")
+            document.getElementsByClassName("people-list-container")[0].getElementsByClassName("btn-more")[0].href = `https://roblox.com/users/${UserId}/friends`
+
+            const FriendClone = FriendsList.getElementsByClassName("list-item")[0].cloneNode(true)
+            FriendsList.replaceChildren()
+
+            RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/friends`, "GET").then(async function([Success, Body]){
+                const CountLabel = document.getElementById("friends-count")
+
+                if (!Success) return CountLabel.innerText = "(ERR)"
+
+                const FriendIcons = {}
+
+                const Friends = Body.data
+                CountLabel.innerText = `(${Friends.length})`
+                if (Friends.length === 0){
+                    return
+                }
+
+                const FriendIds = []
+                for (let i = 0; i < Friends.length; i++){
+                    FriendIds.push(Friends[i].id)
+                }
+
+                const [ThumbSuccess, Thumbnails] = await RequestFunc(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${FriendIds.join(",")}&size=150x150&format=Png&isCircular=false`, "GET")
+                if (ThumbSuccess){
+                    const Data = Thumbnails.data
+                    for (let i = 0; i < Data.length; i++){
+                        FriendIcons[Data[i].targetId] = Data[i].imageUrl
+                    }
+                }
+
+                for (let i = 0; i < Friends.length; i++){
+                    const Friend = Friends[i]
+                    const FriendElement = FriendClone.cloneNode(true)
+
+                    FriendElement.id = "people-"+Friend.id
+                    FriendElement.setAttribute("rbx-user-id", Friend.id)
+                    
+                    FriendElement.getElementsByClassName("friend-link")[0].href = `https://roblox.com/users/${Friend.id}/profile`
+                    FriendElement.getElementsByClassName("friend-thumbnail-image")[0].src = FriendIcons[Friend.id] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"
+                    FriendElement.getElementsByClassName("friend-name")[0].innerText = Friend.displayName
+                    FriendElement.getElementsByClassName("friend-name")[0].title = Friend.displayName
+
+                    FriendsList.appendChild(FriendElement)
+                }
+            })
+
+            const Packages = document.getElementById("ModelsAndPackagesList")
+            Packages.getElementsByClassName("btn-more")[0].remove()
+
+            const PackagesList = Packages.getElementsByClassName("hlist")[0]
+            const PackageClone = PackagesList.getElementsByClassName("list-item")[0].cloneNode(true)
+            PackagesList.replaceChildren()
+
+            RequestFunc(`https://www.roblox.com/users/profile/playerassets-json?assetTypeId=10&userId=${UserId}`, "GET").then(async function([Success, Body]){
+                if (!Success || Body.Assets.length === 0) return Packages.remove()
+
+                const Assets = Body.Assets
+                for (let i = 0; i < Assets.length; i++){
+                    const Asset = Assets[i]
+                    const AssetElement = PackageClone.cloneNode(true)
+
+                    AssetElement.children[0].href = `https://roblox.com/library/${Asset.Id}/`
+                    AssetElement.children[0].title = Asset.Name
+                    AssetElement.getElementsByClassName("asset-thumb-container")[0].src = Asset.Thumbnail.Url
+                    AssetElement.getElementsByClassName("item-name")[0].innerText = Asset.Name
+
+                    PackagesList.appendChild(AssetElement)
+                }
+            })
+
+            const Clothes = document.getElementById("ClothingList")
+            Clothes.getElementsByClassName("btn-more")[0].remove()
+
+            const ClothesList = Clothes.getElementsByClassName("hlist")[0]
+            const ClothesClone = ClothesList.getElementsByClassName("list-item")[0].cloneNode(true)
+            ClothesList.replaceChildren()
+
+            RequestFunc(`https://www.roblox.com/users/profile/playerassets-json?assetTypeId=11&userId=${UserId}`, "GET").then(async function([Success, Body]){
+                if (!Success || Body.Assets.length === 0) return Packages.remove()
+
+                const Assets = Body.Assets
+                for (let i = 0; i < Assets.length; i++){
+                    const Asset = Assets[i]
+                    const AssetElement = ClothesClone.cloneNode(true)
+
+                    AssetElement.children[0].href = `https://roblox.com/library/${Asset.Id}/`
+                    AssetElement.children[0].title = Asset.Name
+                    AssetElement.getElementsByClassName("asset-thumb-container")[0].src = Asset.Thumbnail.Url
+                    AssetElement.getElementsByClassName("item-name")[0].innerText = Asset.Name
+
+                    ClothesList.appendChild(AssetElement)
                 }
             })
 

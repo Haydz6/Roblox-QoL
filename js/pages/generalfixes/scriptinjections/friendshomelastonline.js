@@ -86,7 +86,8 @@ async function FriendsHomeLastOnline(){
 
     async function SetUserOffline(Presence){
         const UserId = Presence.userId || Presence.id
-        OfflineUsers[UserId] = true
+        const Time = Date.now()
+        OfflineUsers[UserId] = Time
 
         const FriendItem = document.getElementById("people-"+UserId)
         if (!FriendItem) return
@@ -94,7 +95,7 @@ async function FriendsHomeLastOnline(){
         const LastOnline = new Date(await BatchGetLastOnline(UserId))
         const [PlaceName, Created] = GetPlaceName(FriendItem)
 
-        while (OfflineUsers[UserId]){
+        while (OfflineUsers[UserId] === Time){
             PlaceName.innerText = SecondsToLengthSingle((Date.now()/1000) - (LastOnline.getTime()/1000)) + " ago"
             await new Promise(r => setTimeout(r, 500))
         }
