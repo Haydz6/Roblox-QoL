@@ -339,6 +339,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     return
                 }
 
+                Friends.length = 9
                 const FriendIds = []
                 for (let i = 0; i < Friends.length; i++){
                     FriendIds.push(Friends[i].id)
