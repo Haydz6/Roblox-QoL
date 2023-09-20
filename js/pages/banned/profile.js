@@ -394,7 +394,8 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
             })
 
             const Clothes = document.getElementById("ClothingList")
-            Clothes.getElementsByClassName("btn-more")[0].remove()
+            Clothes.getElementsByClassName("btn-more")[0].href = `https://www.roblox.com/catalog?Category=1&CreatorName=${Account.name}&salesTypeFilter=1&IncludeNotForSale`
+            //Clothes.getElementsByClassName("btn-more")[0].remove()
 
             const ClothesList = Clothes.getElementsByClassName("hlist")[0]
             const ClothesClone = ClothesList.getElementsByClassName("list-item")[0].cloneNode(true)
@@ -426,14 +427,227 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                 Label.innerText = SecondsToLengthSingle(Date.now()/1000 - LastOnline.getTime()/1000, true) + " ago"
             })
 
+            const Games = []
+            const GameSlideElements = []
+            let PriorSelectedSlideElement
+            let CurrentGameSelected = 1
+            let LoadingNextGames = false
+
+            const GameSwitcher = document.getElementById("games-switcher")
+            const Slide = GameSwitcher.getElementsByClassName("slide-items-container")[0]
+
+            const GameGrid = document.getElementsByClassName("game-grid")[0]
+            GameGrid.className = GameGrid.className.replace("ng-hide", "")
+            GameGrid.style.display = "none"
+            const GamesList = GameGrid.getElementsByClassName("hlist")[0]
+
+            const SlideTemplate = Slide.children[0].cloneNode(true)
+            SlideTemplate.className = SlideTemplate.className.replace(" active", "")
+            Slide.replaceChildren()
+
+            const GameCardTemplate = GamesList.children[0].cloneNode(true)
+            GamesList.replaceChildren()
+
+            const GameGridLoadMore = GameGrid.getElementsByClassName("load-more-button")[0]
+
+            function ReachedEndOfGamesList(){
+                GameGridLoadMore.style.display = "none"
+            }
+
+            async function GetNextGames(Total = 10, FromCurrent = true, Reverse = false){
+                if (LoadingNextGames) return
+                LoadingNextGames = true
+
+                const Start = FromCurrent ? CurrentGameSelected-1 : GameSlideElements.length
+                const End = Reverse ? Math.min(Start - Total, 0) : Math.min(Start + Total, Games.length-1)
+
+                console.log(Start, End)
+
+                if (Start >= Games.length){
+                    LoadingNextGames = false
+                    return ReachedEndOfGamesList()
+                }
+
+                const SelectedGames = []
+                const UniverseIdToGame = {}
+                const UniverseIdToThumbnail = {}
+                const UniverseIdToVotes = {}
+
+                console.log(Games)
+
+                if (Reverse){
+                    for (let i = Start; i > End; i--){
+                        SelectedGames.push(Games[i].id)
+                    }
+                } else {
+                    for (let i = Start; i <= End; i ++){
+                        SelectedGames.push(Games[i].id)
+                    }
+                }
+
+                const Promises = [
+                    RequestFunc("https://games.roblox.com/v1/games?universeIds="+SelectedGames.join(","), "GET", undefined, undefined, true).then(function([Success, Body]){
+                        if (!Success){
+                            for (let i = 0; i < SelectedGames.length; i++){
+                                const Game = SelectedGames[i]
+                                UniverseIdToGame[Game] = {}
+                            }
+                            return
+                        }
+
+                        const Data = Body.data
+                        for (let i = 0; i < Data.length; i++){
+                            const Game = Data[i]
+                            UniverseIdToGame[Game.id] = Game
+                        }
+                    }),
+                    RequestFunc("https://games.roblox.com/v1/games/votes?universeIds="+SelectedGames.join(","), "GET", undefined, undefined, true).then(function([Success, Body]){
+                        if (!Success){
+                            for (let i = 0; i < SelectedGames.length; i++){
+                                const Game = SelectedGames[i]
+                                UniverseIdToVotes[Game] = "--"
+                            }
+                            return
+                        }
+
+                        const Data = Body.data
+                        for (let i = 0; i < Data.length; i++){
+                            const Vote = Data[i]
+
+                            let LikeRatio
+                            if (Vote.downVotes == 0){
+                                if (Vote.upVotes == 0) {
+                                    LikeRatio = null
+                                } else {
+                                    LikeRatio = 100
+                                }
+                            } else {
+                                LikeRatio = Math.floor((Vote.upVotes / (Vote.upVotes+Vote.downVotes))*100)
+                            }
+
+                            UniverseIdToVotes[Vote.id] = LikeRatio ? LikeRatio+"%" : "--"
+                        }
+                    }),
+                    RequestFunc("https://thumbnails.roblox.com/v1/games/icons?size=256x256&format=Png&isCircular=false&returnPolicy=PlaceHolder&universeIds="+SelectedGames.join(","), "GET", undefined, undefined, true).then(function([Success, Body]){
+                        if (!Success){
+                            for (let i = 0; i < SelectedGames.length; i++){
+                                const Game = SelectedGames[i]
+                                UniverseIdToThumbnail[Game] = "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"
+                            }
+                            return
+                        }
+
+                        const Data = Body.data
+                        for (let i = 0; i < Data.length; i++){
+                            const Result = Data[i]
+                            UniverseIdToThumbnail[Result.targetId] = Result.imageUrl
+                        }
+                    })
+                ]
+                await Promise.all(Promises)
+
+                for (let i = 0; i < SelectedGames.length; i++){
+                    const Game = SelectedGames[i]
+                    const GameInfo = UniverseIdToGame[Game]
+                    const SlideElement = SlideTemplate.cloneNode(true)
+
+                    if (CurrentGameSelected === 1 && i === 0){
+                        PriorSelectedSlideElement = SlideElement
+                        SlideElement.className += " active"
+                    }
+
+                    SlideElement.getElementsByClassName("slide-item-emblem-container")[0].children[0].href = `https://roblox.com/games/${Game}/`
+                    SlideElement.getElementsByClassName("slide-item-image")[0].src = UniverseIdToThumbnail[Game]
+
+                    SlideElement.getElementsByClassName("slide-item-name")[0].innerText = GameInfo?.name !== undefined ? GameInfo.name : "???"
+                    SlideElement.getElementsByClassName("text-description")[0].innerText = GameInfo?.description !== undefined ? GameInfo.description : "???"
+
+                    SlideElement.getElementsByClassName("slide-item-members-count")[0].innerText = GameInfo?.players !== undefined ? AbbreviateNumber(GameInfo.players, 1, true) : "--"
+                    SlideElement.getElementsByClassName("slide-item-my-rank")[0].innerText = GameInfo?.visits !== undefined ? (GameInfo.visits >= 10000 ? AbbreviateNumber(GameInfo.visits, 0, false) : numberWithCommas(GameInfo.visits)) : "--"
+                
+                    GameSlideElements.push(SlideElement)
+                    Slide.appendChild(SlideElement)
+
+                    const CardElement = GameCardTemplate.cloneNode(true)
+
+                    CardElement.getElementsByClassName("game-card-link")[0].href = `https://roblox.com/games/${Game}/`
+                    CardElement.getElementsByClassName("game-card-thumb")[0].src = UniverseIdToThumbnail[Game]
+
+                    CardElement.getElementsByClassName("game-card-name")[0].innerText = GameInfo?.name !== undefined ? GameInfo.name : "???"
+                    CardElement.getElementsByClassName("game-card-name")[0].title = GameInfo?.name !== undefined ? GameInfo.name : "???"
+
+                    CardElement.getElementsByClassName("vote-percentage-label")[0].innerText = UniverseIdToVotes[Game] !== undefined ? UniverseIdToVotes[Game] : "--"
+                    CardElement.getElementsByClassName("playing-counts-label")[0].innerText = GameInfo?.players !== undefined ? AbbreviateNumber(GameInfo.players, 1, true) : "--"
+
+                    GamesList.appendChild(CardElement)
+                }
+
+                if (End+1 >= Games.length) ReachedEndOfGamesList()
+                LoadingNextGames = false
+            }
+
+            async function LoadGameSlideElement(Reverse = false){
+                if (!GameSlideElements[CurrentGameSelected-1]) await GetNextGames(undefined, undefined, Reverse)
+                console.log(CurrentGameSelected, GameSlideElements[CurrentGameSelected-1])
+                if (PriorSelectedSlideElement) PriorSelectedSlideElement.className = PriorSelectedSlideElement.className.replace(" active", "")
+                const Element = GameSlideElements[CurrentGameSelected-1]
+                PriorSelectedSlideElement = Element
+                Element.className += " active"
+            }
+
+            GameSwitcher.getElementsByClassName("carousel-control left")[0].addEventListener("click", function(){
+                if (LoadingNextGames) return
+
+                CurrentGameSelected--
+                if (CurrentGameSelected <= 0) CurrentGameSelected = Games.length
+                LoadGameSlideElement(true)
+            })
+
+            GameSwitcher.getElementsByClassName("carousel-control right")[0].addEventListener("click", function(){
+                if (LoadingNextGames) return
+
+                CurrentGameSelected++
+                if (CurrentGameSelected > Games.length) CurrentGameSelected = 1
+                LoadGameSlideElement()
+            })
+
+            const ProfileGame = document.getElementsByClassName("profile-game")[0]
+            const GameSlideButton = ProfileGame.getElementsByClassName("btn-generic-slideshow-xs")[0]
+            const GameGridButton = ProfileGame.getElementsByClassName("btn-generic-grid-xs")[0]
+
+            GameSlideButton.addEventListener("click", function(){
+                GameSlideButton.className = GameSlideButton.className.replace("btn-secondary-xs", "btn-control-xs")
+                GameGridButton.className = GameSlideButton.className.replace("btn-control-xs", "btn-secondary-xs")
+
+                GameSwitcher.style.display = ""
+                GameGrid.style.display = "none"
+            })
+
+            GameGridButton.addEventListener("click", function(){
+                GameGridButton.className = GameGridButton.className.replace("btn-secondary-xs", "btn-control-xs")
+                GameSlideButton.className = GameSlideButton.className.replace("btn-control-xs", "btn-secondary-xs")
+
+                GameGrid.style.display = ""
+                GameSwitcher.style.display = "none"
+            })
+
+            GameGridLoadMore.addEventListener("click", async function(){
+                GameGridLoadMore.setAttribute("disabled", "disabled")
+                await GetNextGames(10, false)
+                GameGridLoadMore.removeAttribute("disabled")
+            })
+
             async function CalcuatePlaceVisits(PlaceVisits = 0, Cursor = ""){
                 const [Success, Result] = await RequestFunc(`https://games.roblox.com/v2/users/${UserId}/games?accessFilter=Public&cursor=${Cursor}&limit=50`, "GET")
                 if (!Success) return
+
+                if (Cursor === "") setTimeout(GetNextGames, 0) //Defer
 
                 Cursor = Result.nextPageCursor
                 const Data = Result.data
                 for (let i = 0; i < Data.length; i++){
                     PlaceVisits += Data[i].placeVisits
+                    Games.push(Data[i])
                 }
 
                 if (!Cursor){
