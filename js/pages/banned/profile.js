@@ -375,7 +375,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
             const PackageClone = PackagesList.getElementsByClassName("list-item")[0].cloneNode(true)
             PackagesList.replaceChildren()
 
-            RequestFunc(`https://www.roblox.com/users/profile/playerassets-json?assetTypeId=10&userId=${UserId}`, "GET").then(async function([Success, Body]){
+            RequestFunc(`https://www.roblox.com/users/profile/playerassets-json?assetTypeId=10&userId=${UserId}`, "GET").then(function([Success, Body]){
                 if (!Success || Body.Assets.length === 0) return Packages.remove()
 
                 const Assets = Body.Assets
@@ -399,7 +399,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
             const ClothesClone = ClothesList.getElementsByClassName("list-item")[0].cloneNode(true)
             ClothesList.replaceChildren()
 
-            RequestFunc(`https://www.roblox.com/users/profile/playerassets-json?assetTypeId=11&userId=${UserId}`, "GET").then(async function([Success, Body]){
+            RequestFunc(`https://www.roblox.com/users/profile/playerassets-json?assetTypeId=11&userId=${UserId}`, "GET").then(function([Success, Body]){
                 if (!Success || Body.Assets.length === 0) return Packages.remove()
 
                 const Assets = Body.Assets
@@ -414,6 +414,15 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
 
                     ClothesList.appendChild(AssetElement)
                 }
+            })
+
+            RequestFunc("https://presence.roblox.com/v1/presence/last-online", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: [UserId]}), true).then(function([Success, Body]){
+                const Label = document.getElementById("last-online")
+                if (!Success) return Label.innerText = "Failed"
+                const LastOnline = new Date(Body.lastOnlineTimestamps[0].lastOnline)
+
+                Label.title = LastOnline.toLocaleDateString(undefined, {hour: "numeric", minute: "numeric", second: "numeric", hour12: true})
+                Label.innerText = SecondsToLengthSingle(Date.now()/1000 - LastOnline.getTime()/1000, true) + " ago"
             })
 
             async function CalcuatePlaceVisits(PlaceVisits = 0, Cursor = ""){
