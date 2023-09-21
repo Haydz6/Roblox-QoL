@@ -475,8 +475,6 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                 const UniverseIdToThumbnail = {}
                 const UniverseIdToVotes = {}
 
-                console.log(Games)
-
                 if (Reverse){
                     for (let i = Start; i > End; i--){
                         SelectedGames.push(Games[i].id)
@@ -558,13 +556,13 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                         SlideElement.className += " active"
                     }
 
-                    SlideElement.getElementsByClassName("slide-item-emblem-container")[0].children[0].href = `https://roblox.com/games/${Game}/`
+                    SlideElement.getElementsByClassName("slide-item-emblem-container")[0].children[0].href = `https://roblox.com/games/${GameInfo.rootPlaceId}/`
                     SlideElement.getElementsByClassName("slide-item-image")[0].src = UniverseIdToThumbnail[Game]
 
                     SlideElement.getElementsByClassName("slide-item-name")[0].innerText = GameInfo?.name !== undefined ? GameInfo.name : "???"
                     SlideElement.getElementsByClassName("text-description")[0].innerText = GameInfo?.description !== undefined ? GameInfo.description : "???"
 
-                    SlideElement.getElementsByClassName("slide-item-members-count")[0].innerText = GameInfo?.players !== undefined ? AbbreviateNumber(GameInfo.players, 1, true) : "--"
+                    SlideElement.getElementsByClassName("slide-item-members-count")[0].innerText = GameInfo?.playing !== undefined ? AbbreviateNumber(GameInfo.playing, 1, true) : "--"
                     SlideElement.getElementsByClassName("slide-item-my-rank")[0].innerText = GameInfo?.visits !== undefined ? (GameInfo.visits >= 10000 ? AbbreviateNumber(GameInfo.visits, 0, false) : numberWithCommas(GameInfo.visits)) : "--"
                 
                     GameSlideElements.push(SlideElement)
@@ -572,14 +570,14 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
 
                     const CardElement = GameCardTemplate.cloneNode(true)
 
-                    CardElement.getElementsByClassName("game-card-link")[0].href = `https://roblox.com/games/${Game}/`
+                    CardElement.getElementsByClassName("game-card-link")[0].href = `https://roblox.com/games/${GameInfo.rootPlaceId}/`
                     CardElement.getElementsByClassName("game-card-thumb")[0].src = UniverseIdToThumbnail[Game]
 
                     CardElement.getElementsByClassName("game-card-name")[0].innerText = GameInfo?.name !== undefined ? GameInfo.name : "???"
                     CardElement.getElementsByClassName("game-card-name")[0].title = GameInfo?.name !== undefined ? GameInfo.name : "???"
 
                     CardElement.getElementsByClassName("vote-percentage-label")[0].innerText = UniverseIdToVotes[Game] !== undefined ? UniverseIdToVotes[Game] : "--"
-                    CardElement.getElementsByClassName("playing-counts-label")[0].innerText = GameInfo?.players !== undefined ? AbbreviateNumber(GameInfo.players, 1, true) : "--"
+                    CardElement.getElementsByClassName("playing-counts-label")[0].innerText = GameInfo?.playing !== undefined ? AbbreviateNumber(GameInfo.playing, 1, true) : "--"
 
                     GamesList.appendChild(CardElement)
                 }
