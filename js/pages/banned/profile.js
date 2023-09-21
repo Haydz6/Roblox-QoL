@@ -620,6 +620,8 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
             GameSlideButton.addEventListener("click", function(){
                 GameSlideButton.className = GameSlideButton.className.replace("btn-secondary-xs", "btn-control-xs")
                 GameGridButton.className = GameSlideButton.className.replace("btn-control-xs", "btn-secondary-xs")
+                GameSlideButton.getElementsByClassName("icon-slideshow")[0].className += " selected"
+                GameGridButton.getElementsByClassName("icon-grid")[0].className = GameGridButton.getElementsByClassName("icon-grid")[0].className.replace(" selected", "")
 
                 GameSwitcher.style.display = ""
                 GameGrid.style.display = "none"
@@ -628,6 +630,8 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
             GameGridButton.addEventListener("click", function(){
                 GameGridButton.className = GameGridButton.className.replace("btn-secondary-xs", "btn-control-xs")
                 GameSlideButton.className = GameSlideButton.className.replace("btn-control-xs", "btn-secondary-xs")
+                GameGridButton.getElementsByClassName("icon-grid")[0].className += " selected"
+                GameSlideButton.getElementsByClassName("icon-slideshow")[0].className = GameSlideButton.getElementsByClassName("icon-slideshow")[0].className.replace(" selected", "")
 
                 GameGrid.style.display = ""
                 GameSwitcher.style.display = "none"
@@ -758,20 +762,28 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
 
             GroupSlideButton.addEventListener("click", function(){
                 GroupSlideButton.className = GroupSlideButton.className.replace("btn-secondary-xs", "btn-control-xs")
-                GameGridButton.className = GroupSlideButton.className.replace("btn-control-xs", "btn-secondary-xs")
+                GroupSlideButton.getElementsByClassName("icon-slideshow")[0].className += " selected"
+                GroupGridButton.className = GroupGridButton.className.replace("btn-control-xs", "btn-secondary-xs")
+                GroupGridButton.getElementsByClassName("icon-grid")[0].className = GroupGridButton.getElementsByClassName("icon-grid")[0].className.replace(" selected", "")
 
                 GroupSlider.style.display = ""
                 GroupGrid.style.display = "none"
             })
 
             GroupGridButton.addEventListener("click", function(){
-                GroupGridButton.className = GroupGridButton.className.replace("btn-secondary-xs", "btn-control-xs")
-                GameSlideButton.className = GroupGridButton.className.replace("btn-control-xs", "btn-secondary-xs")
+                GroupGridButton.className = GroupSlideButton.className.replace("btn-secondary-xs", "btn-control-xs")
+                GroupGridButton.getElementsByClassName("icon-grid")[0].className += " selected"
+                GroupSlideButton.className = GroupGridButton.className.replace("btn-control-xs", "btn-secondary-xs")
+                GroupSlideButton.getElementsByClassName("icon-slideshow")[0].className = GroupSlideButton.getElementsByClassName("icon-slideshow")[0].className.replace(" selected", "")
 
                 GroupGrid.style.display = ""
                 GroupSlider.style.display = "none"
             })
 
+            GroupSlideButton.className = GroupSlideButton.className.replace("btn-secondary-xs", "btn-control-xs")
+            GroupSlideButton.getElementsByClassName("icon-slideshow")[0].className += " selected"
+            GroupGridButton.className = GroupGridButton.className.replace("btn-control-xs", "btn-secondary-xs")
+            GroupGridButton.getElementsByClassName("icon-grid")[0].className = GroupGridButton.getElementsByClassName("icon-grid")[0].className.replace(" selected", "")
             GroupSlider.style.display = ""
             GroupGrid.style.display = "none"
 
