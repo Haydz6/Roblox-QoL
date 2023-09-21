@@ -56,6 +56,14 @@ async function CreateChart(Type){
 
     function UpdateChart(){
         if (!CSVFile){
+            const Data = {
+                labels: [],
+                datasets: []
+            }
+    
+            NewChart.data = Data
+            NewChart.update()
+
             return
         }
 
@@ -173,4 +181,6 @@ async function CreateChart(Type){
     PageContainer.appendChild(Container)
 }
 
-CreateChart("Sales Of Goods")
+IsFeatureEnabled("CSVChart").then(function(Enabled){
+    if (Enabled) CreateChart("Sales Of Goods")
+})

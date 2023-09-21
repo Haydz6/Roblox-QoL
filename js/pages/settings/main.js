@@ -166,6 +166,10 @@ const Settings = {
             Title: "Transaction Summary Source",
             Description: "Shows source of income on transaction and group summary page."
         },
+        CSVChart: {
+            Title: "CSV Chart",
+            Description: "Allows you to upload a CSV file and display it in a chart (User and Group transactions page)."
+        },
         OutfitSearchbar: {
             Title: "Outfit Searchbar",
             Description: "Adds a search bar to your avatar outfits."
