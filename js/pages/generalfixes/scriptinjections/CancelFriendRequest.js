@@ -7,18 +7,16 @@ async function MakeFriendRequestCancellable(){
         await new Promise(r => setTimeout(r, 100))
     }
 
-    while (!angular) await new Promise(r => setTimeout(r, 100))
-    
-    const ControllerWrap = angular.element(ControllerElement)
-    while (!ControllerWrap.scope()) await new Promise(r => setTimeout(r, 100))
-    const Controller = ControllerWrap.scope()
-
     let FriendRequestButton
     while (true){
         FriendRequestButton = document.getElementsByClassName("btn-friends")[0]?.getElementsByClassName("btn-control-md")[0]
         if (FriendRequestButton) break
         await new Promise(r => setTimeout(r, 100))
     }
+    
+    const ControllerWrap = angular.element(ControllerElement)
+    while (!ControllerWrap.scope()) await new Promise(r => setTimeout(r, 100))
+    const Controller = ControllerWrap.scope()
 
     let IsCancellable = false
 
