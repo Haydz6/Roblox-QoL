@@ -463,8 +463,6 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                 const Start = FromCurrent ? CurrentGameSelected-1 : GameSlideElements.length
                 const End = Reverse ? Math.min(Start - Total, 0) : Math.min(Start + Total, Games.length-1)
 
-                console.log(Start, End)
-
                 if (Start >= Games.length){
                     LoadingNextGames = false
                     return ReachedEndOfGamesList()
@@ -588,7 +586,6 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
 
             async function LoadGameSlideElement(Reverse = false){
                 if (!GameSlideElements[CurrentGameSelected-1]) await GetNextGames(undefined, undefined, Reverse)
-                console.log(CurrentGameSelected, GameSlideElements[CurrentGameSelected-1])
                 if (PriorSelectedSlideElement) PriorSelectedSlideElement.className = PriorSelectedSlideElement.className.replace(" active", "")
                 const Element = GameSlideElements[CurrentGameSelected-1]
                 PriorSelectedSlideElement = Element
