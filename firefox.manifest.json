@@ -26,7 +26,7 @@
         "html/*",
         "sounds/*",
         "css/*",
-        "js/modules/globe.js",
+        "js/modules/*",
         "js/pages/serverfilters/getserverprops.js",
         "js/pages/quickserverinvite/checkforinvite.js",
         "js/pages/trades/injecttrade.js",

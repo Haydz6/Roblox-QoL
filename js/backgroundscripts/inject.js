@@ -287,7 +287,8 @@ const ContentScripts = [{
         "js/pages/economy/csvtypeparser.js",
         "js/pages/economy/csvtojson.js",
         "js/pages/economy/summarycache.js",
-        "js/pages/economy/summary.js"
+        "js/pages/economy/summary.js",
+        "js/pages/economy/chartcsv.js"
     ],
     "run_at": "document_start"
 },
@@ -303,7 +304,8 @@ const ContentScripts = [{
         "js/pages/economy/csvtypeparser.js",
         "js/pages/economy/csvtojson.js",
         "js/pages/economy/summarycache.js",
-        "js/pages/economy/summary.js"
+        "js/pages/economy/summary.js",
+        "js/pages/economy/chartcsv.js"
     ],
     "run_at": "document_start"
 },
