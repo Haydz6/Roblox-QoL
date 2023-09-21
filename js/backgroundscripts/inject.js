@@ -302,8 +302,8 @@ const ContentScripts = [{
         "js/pages/playtime/createelements.js",
         "js/pages/economy/csvtypeparser.js",
         "js/pages/economy/csvtojson.js",
-        "js/pages/economy/summary.js",
-        "js/pages/economy/summarycache.js"
+        "js/pages/economy/summarycache.js",
+        "js/pages/economy/summary.js"
     ],
     "run_at": "document_start"
 },
