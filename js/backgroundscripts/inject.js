@@ -252,6 +252,8 @@ const ContentScripts = [{
         "js/pages/playtime/home.js",
 
         "js/pages/pinned/home.js",
+        
+        "js/pages/bestfriend/home.js"
     ],
     "run_at": "document_start"
 },

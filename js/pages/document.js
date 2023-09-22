@@ -12,7 +12,7 @@ let CSRFToken = ""
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://qol.haydz6.com/" || "http://localhost:8192/"
-const WebServerEndpoints = {Pinned: WebServerURL+"api/pinned/", Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {BestFriends: WebServerURL+"api/bestfriends/", Pinned: WebServerURL+"api/pinned/", Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 const SubscriptionToName = ["Free", "Pro"]
 
 function FindFirstClass(ClassName){

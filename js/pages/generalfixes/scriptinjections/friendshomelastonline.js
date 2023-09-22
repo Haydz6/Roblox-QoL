@@ -84,14 +84,7 @@ async function FriendsHomeLastOnline(){
 
     const OfflineUsers = {}
 
-    async function SetUserOffline(Presence){
-        const UserId = Presence.userId || Presence.id
-        const Time = Date.now()
-        OfflineUsers[UserId] = Time
-
-        const FriendItem = document.getElementById("people-"+UserId)
-        if (!FriendItem) return
-
+    async function UpdateItem(UserId, FriendItem, Time){
         const LastOnline = new Date(await BatchGetLastOnline(UserId))
         const [PlaceName, Created] = GetPlaceName(FriendItem)
 
@@ -100,6 +93,18 @@ async function FriendsHomeLastOnline(){
             await new Promise(r => setTimeout(r, 500))
         }
         if (Created) PlaceName.remove()
+    }
+
+    async function SetUserOffline(Presence){
+        const UserId = Presence.userId || Presence.id
+        const Time = Date.now()
+        OfflineUsers[UserId] = Time
+
+        const FriendItem = document.getElementById("people-"+UserId)
+        const BestFriendItem = document.getElementById("best-friend-"+UserId)
+
+        if (FriendItem) UpdateItem(UserId, FriendItem, Time)
+        if (BestFriendItem) UpdateItem(UserId, BestFriendItem, Time)
     }
 
     async function SetUserOnline(Presence){
