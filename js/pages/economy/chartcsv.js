@@ -175,12 +175,23 @@ async function CreateChart(Type){
 
     Container.append(Title, PerformanceLabel, UploadCSVButton, ChartContainer)
 
-    let PageContainer
-    if (window.location.href.includes("group")) PageContainer = await WaitForTag("revenue-summary")
-    else PageContainer = await WaitForClass("user-transactions-container")
-    PageContainer.appendChild(Container)
+    return Container
 }
 
-IsFeatureEnabled("CSVChart").then(function(Enabled){
-    if (Enabled) CreateChart("Sales Of Goods")
+IsFeatureEnabled("CSVChart").then(async function(Enabled){
+    if (!Enabled) return
+
+    const Chart = await CreateChart("Sales Of Goods")
+
+    if (window.location.href.includes("group")){
+        const Container = await WaitForClass("configure-group-details")
+        ChildAdded(Container, true, function(Child){
+            if (Child.tagName && Child.tagName.toLowerCase() === "revenue-summary") Child.appendChild(Chart)
+        })
+    } else {
+        const Container = await WaitForClass("user-transactions-container")
+        ChildAdded(Container, true, function(Child){
+            if (Child.className && Child.className === "summary") Child.appendChild(Chart)
+        })
+    }
 })
