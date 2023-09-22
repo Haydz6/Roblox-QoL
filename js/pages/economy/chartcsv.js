@@ -473,7 +473,7 @@ async function CreateChart(Title){
 
     const GameDropdownContainer = document.createElement("div")
     GameDropdownContainer.className = "input-group-btn group-dropdown trade-list-dropdown"
-    GameDropdownContainer.style = "width: 150px; display: inline-block; margin-right: 20px; display: none;"
+    GameDropdownContainer.style = "width: 150px; display: inline-block; margin-right: 20px; display: none; float: right;"
     GameDropdownContainer.innerHTML = `<button class="input-dropdown-btn" data-toggle="dropdown" aria-expanded="false" style="height: 30px;"><span class="rbx-selection-label ng-binding" title="All" style="font-size: 14px; line-height: 20px;">All</span><span class="icon-down-16x16" style="margin-top: 2px;"></span></button><ul data-toggle="dropdown-menu" class="dropdown-menu" role="menu"></ul>`
     
     const GameDropdownLabel = GameDropdownContainer.getElementsByClassName("rbx-selection-label")[0]
@@ -545,6 +545,7 @@ async function CreateChart(Title){
                     const Dropdown = document.createElement("li")
                     Dropdown.innerHTML = `<a><span class="ng-scope"></span></a>`
                     Dropdown.getElementsByTagName("span")[0].innerText = Choice.name
+                    Dropdown.getElementsByTagName("span")[0].title = Choice.name
                     GameDropdownList.appendChild(Dropdown)
 
                     Dropdown.addEventListener("click", function(){
@@ -604,7 +605,7 @@ async function CreateChart(Title){
     //Create dropdown
     const DropdownContainer = document.createElement("div")
     DropdownContainer.className = "input-group-btn group-dropdown trade-list-dropdown"
-    DropdownContainer.style = "width: 150px; display: inline-block; margin-right: 20px;"
+    DropdownContainer.style = "width: 150px; display: inline-block; margin-right: 20px; float: right;"
     DropdownContainer.innerHTML = `<button class="input-dropdown-btn" data-toggle="dropdown" aria-expanded="false" style="height: 30px;"><span class="rbx-selection-label ng-binding" title="Asset" style="font-size: 14px; line-height: 20px;">Asset</span><span class="icon-down-16x16" style="margin-top: 2px;"></span></button><ul data-toggle="dropdown-menu" class="dropdown-menu" role="menu"><li class="ng-scope"><a><span class="ng-scope">Asset</span></a></li><li class="ng-scope"><a><span class="ng-scope">Place</span></a></li><li class="ng-scope"><a><span class="ng-scope">Affiliate Place</span></a></li><li class="ng-scope"><a><span class="ng-scope">User</span></a></li></ul>`
 
     const SelectedLabel = DropdownContainer.getElementsByClassName("rbx-selection-label")[0]

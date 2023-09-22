@@ -10,6 +10,8 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
     Title.innerText = "Fetching user info"
 
     const UserId = parseInt(window.location.href.split("banned-user/")[1])
+    if (!UserId || isNaN(UserId)) return Error("UserId is not valid")
+
     const [Success, Account] = await RequestFunc("https://users.roblox.com/v1/users/"+UserId, "GET")
     if (!Success){
         if (Account?.errors?.[0]?.code === 3){
@@ -54,16 +56,21 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
             const formattedToday = dd + '/' + mm + '/' + yyyy
 
             const html = xmlhttp.responseText.replaceAll("%USERID%", UserId)
-            .replaceAll("%USERNAME%", SanitizeString(Account.name))
-            .replaceAll("%DISPLAYNAME%", SanitizeString(Account.displayName))
-            .replaceAll("%JOINDATE%", formattedToday)
-            .replaceAll("%DESCRIPTION%", SanitizeString(Account.description))
             .replaceAll("%FRIENDSCOUNT%", FriendsCount.count >= 10000 && AbbreviateNumber(FriendsCount.count) || numberWithCommas(FriendsCount.count))
             .replaceAll("%FOLLOWERSCOUNTABBREV%", FollowersCount.count >= 10000 && AbbreviateNumber(FollowersCount.count) || numberWithCommas(FollowersCount.count))
             .replaceAll("%FOLLOWINGSCOUNTABBREV%", FollowingCount.count >= 10000 && AbbreviateNumber(FollowingCount.count) || numberWithCommas(FollowingCount.count))
 
             const Content = await WaitForClass("content")
             Content.innerHTML = html
+
+            Content.getElementsByClassName("profile-display-name")[0].innerText = Account.name
+            const DisplayNames = Content.getElementsByClassName("profile-name")
+            for (let i = 0; i < DisplayNames.length; i++){
+                DisplayNames[i].innerText = Account.displayName
+            }
+
+            Content.getElementsByClassName("join-date-profile-stat")[0].innerText = formattedToday
+            Content.getElementsByClassName("profile-description")[0].innerText = Account.description
 
             RequestFunc(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${UserId}&size=420x420&format=Png&isCircular=false`, "GET").then(function([Success, Body]){
                 Content.getElementsByClassName("main-body-thumbnail-image")[0].src = Body?.data?.[0]?.imageUrl || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"

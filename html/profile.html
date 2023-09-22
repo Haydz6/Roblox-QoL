@@ -8,7 +8,7 @@
 <script type="text/javascript">
 
     var Roblox = Roblox || {};
-    Roblox.ProfileHeaderData = {"profileusername":"%USERNAME%","previoususernames":""};
+    Roblox.ProfileHeaderData = {"profileusername":"","previoususernames":""};
 </script>
 
 <div data-profileuserid="%USERID%" data-friendscount="%FRIENDSCOUNT%" data-followerscount="%FOLLOWERSCOUNT%" data-followingscount="%FOLLOWINGSCOUNT%" data-arefriends="false" data-friendurl="https://www.roblox.com/users/%USERID%/friends#!/friends" data-incomingfriendrequestpending="false" data-maysendfriendinvitation="false" data-friendrequestpending="false" data-mayfollow="false" data-isfollowing="false" data-canmessage="true" data-messagesdisabled="false" data-messageurl="/messages/compose?recipientId=%USERID%" data-canbefollowed="false" data-cantrade="false" data-isblockbuttonvisible="false" data-getfollowscript="" data-ismorebtnvisible="false" data-isvieweeblocked="false" data-mayimpersonate="false" data-mayupdatestatus="false" data-updatestatusurl="" data-statustext="" data-statusdate="1/1/0001 12:00:00 AM" data-editstatusmaxlength="254" data-ischatdisabledbyprivacysetting="false" data-angularpresencestatusenabled="false" profile-header-data="" set-message-btn-display="setMessageBtnDisplay(layout)" profile-header-layout="profileHeaderLayout" class="hidden ng-isolate-scope"></div>
@@ -30,10 +30,10 @@
             <div class="header-names">
                 <div class="header-title">
                     <h1 ng-non-bindable="" class="profile-name text-overflow">
-                        %DISPLAYNAME%
+                        
                     </h1>
                     <h1 ng-non-bindable="" class="profile-name text-overflow font-header-1">
-                        %DISPLAYNAME%
+                        
                     </h1>
                     <div data-toggle="tooltip" data-placement="bottom" data-original-title="Banned User" class="banned-user-icon" style="width: 30px; height: 30px; display: inline-block; margin-left: 10px;"><svg fill="#ffffff" height="100%" width="100%" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve">
                         <g id="XMLID_509_">
@@ -45,7 +45,7 @@
                         </svg></div>
                 </div>
                     <div class="profile-display-name font-caption-body text text-overflow" ng-non-bindable="">
-                        @%USERNAME%
+                        @
                     </div>
                 
             </div>
@@ -235,8 +235,8 @@
         <div class="container-header">
             <h2>About</h2>
         </div>
-        <div class="section-content remove-panel">
-            %DESCRIPTION%
+        <div class="section-content remove-panel profile-description">
+            
         </div>
 
     <div class="section-content remove-panel">
@@ -405,7 +405,7 @@ Developed by High Voltage Studio.</p> </div> <div class="slide-item-stats"> <ul 
 " title="There's no 'I' in Team, BUT there is in WIN.
 "></span><span class="font-header-2 text-overflow item-name">1 Gem</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2142462390/Welcome" title="Welcome to Teamwork Obby!"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/2607d34421d744a659e986f166d6fc85/150/150/Image/Png" alt="Welcome to Teamwork Obby!" title="Welcome to Teamwork Obby!"></span><span class="font-header-2 text-overflow item-name">Welcome!</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2124920932/Welcome-to-the-Party" title="Earned for joining &quot;Building Simulator X&quot; for the 1st time!"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/5e04def304b4b0e39a519858f8ecc2d6/150/150/Image/Png" alt="Earned for joining &quot;Building Simulator X&quot; for the 1st time!" title="Earned for joining &quot;Building Simulator X&quot; for the 1st time!"></span><span class="font-header-2 text-overflow item-name">Welcome to the Party!</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2145863551/Welcome" title="How far will you float?"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/906d1d14c6da148983ba155f8f460b44/150/150/Image/Png" alt="How far will you float?" title="How far will you float?"></span><span class="font-header-2 text-overflow item-name">Welcome!</span></a></li><li class="list-item asset-item"><a class="" href="https://www.roblox.com/badges/2149852302/You-Played-Admin-Roulette" title="Test your luck with Admin Roulette!"><span class="thumbnail-2d-container"><img class="asset-thumb-container" src="https://tr.rbxcdn.com/e1e0a818979c0e755e2095cc58c8d510/150/150/Image/Png" alt="Test your luck with Admin Roulette!" title="Test your luck with Admin Roulette!"></span><span class="font-header-2 text-overflow item-name">You Played Admin Roulette!</span></a></li></ul></div></div>
 
-    <div class="section profile-statistics" id="profile-statistics-container"><div class="section profile-statistics"><div class="container-header"><h2>Statistics</h2></div><div class="section-content"><ul class="profile-stats-container"><li class="profile-stat"><p class="text-label">Join Date</p><p class="text-lead">%JOINDATE%</p></li><li class="profile-stat"><p class="text-label">Last Online</p><p class="text-lead" id="last-online">...</p></li><li class="profile-stat"><p class="text-label">Place Visits</p><p class="text-lead" id="place-visits-label">...</p></li></ul></div></div></div>
+    <div class="section profile-statistics" id="profile-statistics-container"><div class="section profile-statistics"><div class="container-header"><h2>Statistics</h2></div><div class="section-content"><ul class="profile-stats-container"><li class="profile-stat"><p class="text-label">Join Date</p><p class="text-lead join-date-profile-stat"></p></li><li class="profile-stat"><p class="text-label">Last Online</p><p class="text-lead" id="last-online">...</p></li><li class="profile-stat"><p class="text-label">Place Visits</p><p class="text-lead" id="place-visits-label">...</p></li></ul></div></div></div>
 
                 </div>
                 <div class="tab-pane" id="creations" profile-empty-tab="">
