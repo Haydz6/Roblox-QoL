@@ -374,6 +374,8 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     FriendElement.getElementsByClassName("friend-name")[0].innerText = Friend.displayName
                     FriendElement.getElementsByClassName("friend-name")[0].title = Friend.displayName
 
+                    if (!Friend.hasVerifiedBadge) FriendElement.getElementsByClassName("verification-badge")[0].remove()
+
                     FriendsList.appendChild(FriendElement)
                 }
             })
