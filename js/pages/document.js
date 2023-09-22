@@ -430,6 +430,17 @@ function SanitizeString(Unsantizied){
   return Unsantizied //TODO
 }
 
+function GetDaysInMonth(Time){
+  if (!Time) return []
+
+  const DaysInMonth = []
+  const SaleDate = new Date(Time)
+  for (let i = 1; i <= new Date(SaleDate.getUTCFullYear(), SaleDate.getUTCMonth(), 0).getDate(); i++){
+      DaysInMonth.push(i)
+  }
+  return DaysInMonth
+}
+
 function AbbreviateNumber(number, decPlaces, noPlus){
   decPlaces = Math.pow(10, decPlaces || 0)
 
