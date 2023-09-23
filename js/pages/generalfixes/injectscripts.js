@@ -21,7 +21,8 @@ IsFeatureEnabled("NewMessagePing3").then(async function(Enabled){
         }
     })
 
-    InjectScript("newmessageping")
+    InjectScript("newmessageping", "*://www.roblox.com/*") //Stop trying to inject into api pages
+    InjectScript("newmessageping", "*://web.roblox.com/*") //Stop trying to inject into api pages
 })
 
 InjectScript("checkforinvite", "*://*.roblox.com/games/*")
