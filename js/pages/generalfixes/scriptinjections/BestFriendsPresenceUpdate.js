@@ -7,7 +7,7 @@ async function BestFriendsPresenceUpdate(){
     }
 
     const PeopleController = angular.element(PeopleList).scope()
-    while (PeopleController.library?.numOfFriends === null) await new Promise(r => setTimeout(r, 100))
+    while (PeopleController.library?.numOfFriends === null) await new Promise(r => setTimeout(r, 0)) //Wait for friends to load
 
     const Users = Object.values(PeopleController.library.friendsDict)
     if (Users.length > 0) document.dispatchEvent(new CustomEvent("RobloxQoL.BestFriendsPresenceUpdate", {detail: Users}))

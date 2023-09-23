@@ -1,4 +1,5 @@
-async function CreateBestFriends(){
+IsFeatureEnabled("BestFriends").then(async function(Enabled){
+    if (!Enabled) return
     const [Success, BestFriends] = await RequestFunc(WebServerEndpoints.BestFriends+"all", "GET")
     if (!Success || BestFriends.length === 0) return
 
@@ -6,14 +7,23 @@ async function CreateBestFriends(){
     PeopleList.id = "best-friend-list-container"
     PeopleList.setAttribute("people-list-container", "")
     PeopleList.innerHTML = `<div class="col-xs-12 people-list-container" ng-show="layout.isAllFriendsDataLoaded &amp;&amp; library.numOfFriends > 0 || layout.friendsError"> <div class="section home-friends"> <div class="container-header people-list-header"> <h2 class="ng-binding"> Best Friends<span ng-show="library.numOfFriends !== null" class="friends-count ng-binding">(...)</span> </h2> <span ng-show="layout.invalidPresenceData" class="presence-error ng-hide"> <span class="icon-warning"></span> <span class="text-error ng-binding" ng-bind="'Label.PresenceError' | translate">User status may not be up to date</span> </span> <a class="btn-secondary-xs btn-more see-all-link-icon ng-binding">Expand</a> </div> <div class="section-content remove-panel people-list"> <p ng-show="layout.friendsError" class="section-content-off ng-binding ng-hide" ng-bind="'Label.FriendsError' | translate">Unable to load friends</p> <ul class="hlist" ng-controller="friendsListController" people-list="" ng-class="{'invisible': !layout.isAllFriendsDataLoaded}">  </ul> <span class="spinner spinner-default ng-hide" ng-show="!layout.isAllFriendsDataLoaded"></span> </div> </div> </div> <div class="col-xs-12 people-list-container ng-hide" ng-hide="layout.isAllFriendsDataLoaded"> <div class="section home-friends"> <div class="container-header people-list-header"> <h2 class="ng-binding">Friends</h2> </div> <div class="section-content remove-panel people-list"> <span class="spinner spinner-default"></span> </div> </div> </div>`
-    PeopleList.getElementsByClassName("friends-count")[0].innerText = `(${BestFriends.length}/18)`
+    
+    function UpdateBestFriendsList(){
+        PeopleList.getElementsByClassName("friends-count")[0].innerText = `(${BestFriends.length}/18)`
 
-    if (BestFriends.length <= 9){
-        PeopleList.style = "height: 190px !important;"
-        PeopleList.getElementsByClassName("people-list-container")[0].style = "height: 190px !important;"
-        PeopleList.getElementsByClassName("people-list")[0].style = "height: 163px !important; max-height: 163px !important;"
-        PeopleList.getElementsByClassName("btn-more")[0].remove()
+        if (BestFriends.length <= 9){
+            PeopleList.style = "height: 190px !important;"
+            PeopleList.getElementsByClassName("people-list-container")[0].style = "height: 190px !important;"
+            PeopleList.getElementsByClassName("people-list")[0].style = "height: 163px !important; max-height: 163px !important;"
+            PeopleList.getElementsByClassName("btn-more")[0].style.display = "none"
+        } else {
+            PeopleList.style = ""
+            PeopleList.getElementsByClassName("people-list-container")[0].style = ""
+            PeopleList.getElementsByClassName("people-list")[0].style = ""
+            PeopleList.getElementsByClassName("btn-more")[0].style.display = ""
+        }
     }
+    UpdateBestFriendsList()
 
     const List = PeopleList.getElementsByClassName("hlist")[0]
 
@@ -214,7 +224,7 @@ async function CreateBestFriends(){
             TryToKillPopover()
         })
 
-        List.appendChild(Friend)
+        //List.appendChild(Friend)
         return Friend
     }
 
@@ -278,17 +288,31 @@ async function CreateBestFriends(){
 
     document.addEventListener("RobloxQoL.BestFriendsPresenceUpdate", function(Event){
         const Detail = Event.detail
+        const Friends = {}
+
         for (let i = 0; i < Detail.length; i++){
             const User = Detail[i]
+            const UserId = User.userId || User.id
             UpdateUserPresence(User)
 
             //Update order
-            const Element = IdToElement[User.userId || User.id]
+            const Element = IdToElement[UserId]
             if (Element) List.appendChild(Element)
+
+            Friends[UserId] = true
         }
+
+        for (let i = 0; i < BestFriends.length; i++){
+            const UserId = BestFriends[i]
+            if (!Friends[UserId]){
+                BestFriends.splice(i, 1)
+                i--
+                RequestFunc(WebServerEndpoints.BestFriends+"pin", "POST", {"Content-Type": "application/json"}, JSON.stringify({Pinned: false, UserId: UserId}))
+            }
+        }
+        console.log(BestFriends)
+        UpdateBestFriendsList()
     })
 
     InjectScript("BestFriendsPresenceUpdate")
-}
-
-CreateBestFriends()
+})

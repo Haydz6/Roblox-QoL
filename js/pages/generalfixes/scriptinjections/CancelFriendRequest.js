@@ -13,6 +13,15 @@ async function MakeFriendRequestCancellable(){
         if (FriendRequestButton) break
         await new Promise(r => setTimeout(r, 100))
     }
+
+    while (true){
+        let canbreak = false
+        try {
+            if (angular) canbreak = true
+        } catch {}
+        if (canbreak) break
+        await new Promise(r => setTimeout(r, 0))
+    }
     
     const ControllerWrap = angular.element(ControllerElement)
     while (!ControllerWrap.scope()) await new Promise(r => setTimeout(r, 100))
@@ -20,7 +29,7 @@ async function MakeFriendRequestCancellable(){
 
     let IsCancellable = false
 
-    function SetFriendRequestPending(){
+    async function SetFriendRequestPending(){
         FriendRequestButton.className = FriendRequestButton.className.replace("disabled", "")
         FriendRequestButton.innerText = "Cancel Request"
         IsCancellable = true
