@@ -24,6 +24,12 @@ async function BestFriendsPresenceUpdate(){
     document.addEventListener("RobloxQoL.OpenFriendChatConversation", function(Event){
         ChatController.openConversation(Event.detail, true)
     })
+
+    document.addEventListener("RobloxQoL.launchGame", function(Event){
+        const Presence = Event.detail
+        Roblox.PlayButton.launchGame(Presence.placeId, Presence.rootPlaceId, undefined, Presence.gameId)
+    })
+    console.log(Roblox.PlayButton.launchGame)
 }
 
 BestFriendsPresenceUpdate()

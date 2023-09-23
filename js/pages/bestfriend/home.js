@@ -25,6 +25,7 @@ async function CreateBestFriends(){
 
     const CachedPresences = {}
     const CachedUser = {}
+    const CachedGame = {}
     const CachedGameIcons = {}
 
     async function GetGameIcon(UniverseId){
@@ -37,6 +38,52 @@ async function CreateBestFriends(){
         else CachedGameIcons[UniverseId] = Body.data[0].imageUrl
         
         return CachedGameIcons[UniverseId]
+    }
+
+    let GameInfoQueue = []
+    function GetGameInfo(UniverseId){
+        return new Promise(async(resolve, reject) => {
+            if (CachedGame[UniverseId]) return resolve(CachedGame[UniverseId])
+            GameInfoQueue.push({resolve: resolve, reject: reject, universeId: UniverseId})
+            if (GameInfoQueue.length !== 1) return
+            if (GameInfoQueue.length > 50) GameInfoQueue = []
+            const Queue = GameInfoQueue
+
+            await sleep(50) //Wait for it to batch up
+
+            GameInfoQueue = []
+
+            const UniverseIds = []
+            const Lookup = {}
+            for (let i = 0; i < Queue.length; i++){
+                const Info = Queue[i]
+                if (!Lookup[Info.universeId]){
+                    UniverseIds.push(Info.universeId)
+                    Lookup[Info.universeId] = []
+                }
+
+                Lookup[Info.universeId].push(Info)
+            }
+
+            const [Success, Body] = await RequestFunc(`https://games.roblox.com/v1/games/multiget-place-details?placeIds=${UniverseIds.join("&placeIds=")}`, "GET", undefined, undefined, true)
+            if (!Success){
+                for (i = 0; i < Queue.length; i++){
+                    Queue[i].resolve()
+                }
+                return
+            }
+
+            const Data = Body
+            for (let i = 0; i < Data.length; i++){
+                const Game = Data[i]
+                CachedGame[Game.placeId] = Game
+
+                const Lookups = Lookup[Game.placeId]
+                for (let o = 0; o < Lookups.length; o++){
+                    Lookups[o].resolve(Game)
+                }
+            }
+        })
     }
 
     function CreatePopover(UserId){
@@ -58,7 +105,7 @@ async function CreateBestFriends(){
         </div>`
 
         //Add space at end of name
-        if (Presence.userPresenceType === 2){
+        if (Presence.userPresenceType === 2 && Presence.lastLocation){
             Popover.getElementsByClassName("game-link")[0].href = `https://www.roblox.com/games/${Presence.rootPlaceId}/`
             Popover.getElementsByClassName("place-title")[0].href = `https://www.roblox.com/games/${Presence.rootPlaceId}/`
             Popover.getElementsByClassName("place-title")[0].innerText = Presence.lastLocation
@@ -66,6 +113,30 @@ async function CreateBestFriends(){
             GetGameIcon(Presence.universeId).then(function(Url){
                 Popover.getElementsByClassName("game-image")[0].src = Url
             })
+
+            GetGameInfo(Presence.rootPlaceId).then(function(Game){ //place api returns playability, not universe :/
+                Popover.getElementsByClassName("icon-text-wrapper")[0].className = "icon-text-wrapper ng-hide"
+
+                const JoinButton = Popover.getElementsByClassName("place-btn")[0]
+                if (Game && Game.isPlayable){
+                    JoinButton.addEventListener("click", function(){
+                        document.dispatchEvent(new CustomEvent("RobloxQoL.launchGame", {detail: CachedPresences[UserId]}))
+                    })
+                } else {
+                    JoinButton.className = "btn-full-width place-btn btn-control-sm"
+                    JoinButton.innerText = "View Details"
+    
+                    JoinButton.addEventListener("click", function(){
+                        window.location.href = `https://www.roblox.com/games/${Presence.rootPlaceId}/`
+                    })
+
+                    if (Game.reasonProhibited === "PurchaseRequired" && Game.price){
+                        Popover.getElementsByClassName("text-robux")[0].innerText = Game.price
+                        Popover.getElementsByClassName("icon-text-wrapper")[0].className = "icon-text-wrapper"
+                    }
+                }
+            })
+
         } else {
             Popover.getElementsByClassName("place-container")[0].remove()
         }
