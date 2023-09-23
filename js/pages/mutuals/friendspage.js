@@ -262,7 +262,6 @@ window.addEventListener('popstate', CheckIfMutualsTabOpened)
 
 IsFeatureEnabled("Mutuals").then(async function(Enabled){
     if (!Enabled || (await GetUserId() == GetTargetId()) || !GetTargetId()) return
-    console.log("go")
 
     await HandleMutualTabModification()
     CheckIfMutualsTabOpened()

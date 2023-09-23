@@ -29,7 +29,6 @@ async function BestFriendsPresenceUpdate(){
         const Presence = Event.detail
         Roblox.PlayButton.launchGame(Presence.placeId, Presence.rootPlaceId, undefined, Presence.gameId)
     })
-    console.log(Roblox.PlayButton.launchGame)
 }
 
 BestFriendsPresenceUpdate()

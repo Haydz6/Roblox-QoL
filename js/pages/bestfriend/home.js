@@ -310,7 +310,6 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
                 RequestFunc(WebServerEndpoints.BestFriends+"pin", "POST", {"Content-Type": "application/json"}, JSON.stringify({Pinned: false, UserId: UserId}))
             }
         }
-        console.log(BestFriends)
         UpdateBestFriendsList()
     })
 
