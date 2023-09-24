@@ -178,6 +178,10 @@ const Settings = {
             Title: "Friend Mutuals",
             Description: "Shows mutuals on a users page."
         },
+        BestFriends: {
+            Title: "Best Friends",
+            Description: "Adds a new friends row to your home page."
+        },
         ResizableChatBoxes: {
             Title: "Resizable chat boxes",
             Description: "Allows you to resize the chat boxes on the roblox site. (Drag top left)"

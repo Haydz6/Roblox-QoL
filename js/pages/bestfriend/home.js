@@ -311,6 +311,7 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
             }
         }
         UpdateBestFriendsList()
+        document.dispatchEvent(new CustomEvent("RobloxQoL.BestFriendsLoaded"))
     })
 
     InjectScript("BestFriendsPresenceUpdate")

@@ -83,6 +83,7 @@ async function FriendsHomeLastOnline(){
     }
 
     const OfflineUsers = {}
+    const CachedPresence = {}
 
     async function UpdateItem(UserId, FriendItem, Time){
         const LastOnline = new Date(await BatchGetLastOnline(UserId))
@@ -99,6 +100,7 @@ async function FriendsHomeLastOnline(){
         const UserId = Presence.userId || Presence.id
         const Time = Date.now()
         OfflineUsers[UserId] = Time
+        CachedPresence[UserId] = Presence
 
         const FriendItem = document.getElementById("people-"+UserId)
         const BestFriendItem = document.getElementById("best-friend-"+UserId)
@@ -109,8 +111,22 @@ async function FriendsHomeLastOnline(){
 
     async function SetUserOnline(Presence){
         const UserId = Presence.userId || Presence.id
+        CachedPresence[UserId] = Presence
         delete OfflineUsers[UserId]
     }
+
+    document.addEventListener("RobloxQoL.BestFriendsLoaded", function(){
+        const Container = document.getElementById("best-friend-list-container")
+        const List = Container.getElementsByClassName("hlist")[0]
+        const Children = List.children
+
+        for (let i = 0; i < Children.length; i++){
+            const Element = Children[i]
+            const UserId = parseInt(Element.getAttribute("rbx-user-id"))
+            const Presence = CachedPresence[UserId]
+            if (Presence && Presence.userPresenceType === 0) SetUserOffline(Presence)
+        }
+    })
 
     document.addEventListener("Roblox.Presence.Update", async function(Event){
         const Presence = Event.detail[0]
@@ -128,9 +144,13 @@ async function FriendsHomeLastOnline(){
     const PeopleController = angular.element(PeopleList).scope()
     while (PeopleController.library?.numOfFriends === null) await new Promise(r => setTimeout(r, 100))
 
-    for (const [_, User] of Object.entries(PeopleController.library.friendsDict)){
-        if (User.presence.userPresenceType === 0) SetUserOffline(User)
-        else SetUserOnline(User)
+    function UpdateAllPresences(){
+        for (const [_, User] of Object.entries(PeopleController.library.friendsDict)){
+            if (User.presence.userPresenceType === 0) SetUserOffline(User)
+            else SetUserOnline(User)
+        }
     }
+
+    UpdateAllPresences()
 }
 FriendsHomeLastOnline()
