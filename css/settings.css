@@ -1,0 +1,38 @@
+.search-dropdown .search-results-dropdown-menu .search-result .search-result-format .search-result-icon .thumbnail-2d-container {
+    width: 32px;
+    height: 32px;
+}
+
+.search-dropdown .search-results-dropdown-menu .search-result .search-result-format .search-result-icon {
+    flex-shrink: 0;
+}
+
+.search-dropdown .search-results-dropdown-menu .search-result .search-result-format {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+}
+
+.player-avatar-cards .avatar-card .avatar-card-container {
+    display: flex;
+    align-items: center;
+}
+
+.player-avatar-cards .avatar-card {
+    height: 44px;
+}
+
+.player-avatar-cards {
+    height: 250px;
+    margin-top: 15px;
+}
+
+.player-avatar-cards .avatar-card .avatar-card-container .avatar-card-caption {
+    width: calc(100% - 82px);
+    padding: 6px;
+}
+
+.player-avatar-cards .avatar-card .avatar-card-container .avatar-headshot {
+    float: left;
+    margin: 6px;
+}

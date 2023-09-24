@@ -113,6 +113,9 @@ const ContentScripts = [{
     "matches": [
         "*://*.roblox.com/my/account*"
     ],
+    "css": [
+        "css/settings.css"
+    ],
     "js": [
         "js/pages/settings/createelements.js",
         "js/pages/settings/main.js",

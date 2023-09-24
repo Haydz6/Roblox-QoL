@@ -183,6 +183,205 @@ function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, 
     return Section
 }
 
+function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get, Update, State, Search, GetIcon, ItemType, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported){
+    const Section = document.createElement("div")
+    Section.className = "section-content"
+
+    Section.innerHTML = `<div class="form-group"> <label for="${Title}-access-toggle" ng-bind="'Label.FriendsAllowed' | translate" class="ng-binding title-label">Group Shout Notifications</label> <button id="${Title}-access-toggle" role="switch" aria-checked="false" class="pull-right btn-toggle" ng-class="{'on': server.permissions.friendsAllowed}" ng-click="toggleFriendsAccess()" ng-disabled="!server.active"> <span class="toggle-flip"></span> <span class="toggle-on"></span> <span class="toggle-off"></span> </button> </div> <div class="rbx-divider"></div> <div class="form-group"> <span ng-bind="'Label.ServerMembers' | translate" class="ng-binding description-label">Groups</span> <button id="add-${Title}-button" type="button" class="add-button btn-control-xs pull-right ng-binding" ng-disabled="!server.active" ng-click="openAddPlayersDialog()" ng-bind="'Action.AddPlayers' | translate">Add</button> </div> <div class="form-group"> <div class="select-players-container border"> <div class="selected-players"> <!-- ngRepeat: player in server.permissions.users | orderBy: 'name' --> </div> </div> </div>`
+    Section.getElementsByClassName("title-label")[0].innerText = Title
+    Section.getElementsByClassName("description-label")[0].innerText = Description
+
+    const Toggle = Section.getElementsByClassName("btn-toggle")[0]
+    const AddButton = Section.getElementsByClassName("add-button")[0]
+    const SelectedList = Section.getElementsByClassName("selected-players")[0]
+
+    const NameLookup = {}
+
+    let IsEnabled = false
+
+    if (FeatureKilled){
+        Toggle.setAttribute("disabled", "disabled")
+        Section.insertBefore(CreateFeatureDisabled(), Divider)
+        return
+    } else if (!IsSupported){
+        Toggle.setAttribute("disabled", "disabled")
+        Section.insertBefore(CreateFeatureNotSupported(), Divider)
+        return
+    } else if (!FeaturePaid){
+        Toggle.setAttribute("disabled", "disabled")
+        Section.insertBefore(CreateFeaturePaid(), Divider)
+        return
+    }
+
+    function UpdateEnabled(){
+        Toggle.className = `pull-right btn-toggle ${IsEnabled ? "on" : ""}`
+    }
+
+    async function GetGroupName(GroupId){
+        if (NameLookup[GroupId]) return NameLookup[GroupId]
+
+
+    }
+
+    function CreateItem(GroupId){
+        const Button = document.createElement("button")
+        Button.className = "selected-player btn-secondary-sm"
+        Button.innerHTML = `<thumbnail-2d class="avatar-headshot avatar-headshot-xs ng-isolate-scope" thumbnail-type="thumbnailTypes.avatarHeadshot" thumbnail-target-id="player.id"><span ng-class="$ctrl.getCssClasses()" class="thumbnail-2d-container" thumbnail-type="AvatarHeadshot" thumbnail-target-id="293963514"> <!-- ngIf: $ctrl.thumbnailUrl && !$ctrl.isLazyLoadingEnabled() --><img ng-if="$ctrl.thumbnailUrl &amp;&amp; !$ctrl.isLazyLoadingEnabled()" thumbnail-error="$ctrl.setThumbnailLoadFailed" ng-class="{'loading': $ctrl.thumbnailUrl &amp;&amp; !isLoaded }" image-load="" alt="" title="" class="ng-scope ng-isolate-scope image-thumbnail-icon"><!-- end ngIf: $ctrl.thumbnailUrl && !$ctrl.isLazyLoadingEnabled() --> <!-- ngIf: $ctrl.thumbnailUrl && $ctrl.isLazyLoadingEnabled() --> </span> </thumbnail-2d> <span ng-bind="layout.isDisplayNamesEnabled ? player.displayName : player.name" class="ng-binding item-name"></span> <span class="icon-close-16x16 player-select-cancel"></span>`
+        Button.getElementsByClassName("item-name")[0].innerText = "..."
+
+        GetGroupName(GroupId).then(function(Name){
+            Button.getElementsByClassName("item-name")[0].innerText = Name
+        })
+
+        Button.addEventListener("click", function(){
+            Update(FeatureEnabled, GroupId, false)
+            Button.remove()
+        })
+
+        GetIcon(ItemType, [GroupId]).then(function(Icons){
+            Button.getElementsByClassName("image-thumbnail-icon")[0].src = Icons[GroupId] || ""
+        })
+
+        SelectedList.appendChild(Button)
+    }
+
+    Toggle.addEventListener("click", function(){
+        IsEnabled = !IsEnabled
+        UpdateEnabled()
+        State(FeatureEnabled, IsEnabled)
+    })
+
+    function CreateSearchItem(Info){
+        const Item = document.createElement("li")
+        Item.className = "search-result"
+        Item.innerHTML = `<a id="search-dropdown-result" class="search-result-format" ng-click="$ctrl.selectOption(searchResult)"> <thumbnail-2d thumbnail-type="$ctrl.thumbnailType" thumbnail-target-id="searchResult.id" class="search-result-icon ng-isolate-scope avatar-headshot" ng-class="{'avatar-headshot': $ctrl.thumbnailType === $ctrl.thumbnailTypes.avatarHeadshot}"><span ng-class="$ctrl.getCssClasses()" class="thumbnail-2d-container" thumbnail-type="AvatarHeadshot" thumbnail-target-id="1264827"> <!-- ngIf: $ctrl.thumbnailUrl && !$ctrl.isLazyLoadingEnabled() --><img ng-if="$ctrl.thumbnailUrl &amp;&amp; !$ctrl.isLazyLoadingEnabled()" thumbnail-error="$ctrl.setThumbnailLoadFailed" ng-class="{'loading': $ctrl.thumbnailUrl &amp;&amp; !isLoaded }" image-load="" alt="" title="" class="ng-scope ng-isolate-scope image-thumbnail-icon"><!-- end ngIf: $ctrl.thumbnailUrl && !$ctrl.isLazyLoadingEnabled() --> <!-- ngIf: $ctrl.thumbnailUrl && $ctrl.isLazyLoadingEnabled() --> </span> </thumbnail-2d> <!-- ngIf: !searchResult.displayName || !$ctrl.layout.isDisplayNamesEnabled --> <!-- ngIf: searchResult.displayName && $ctrl.layout.isDisplayNamesEnabled --><div class="search-result-name text-overflow ng-scope ng-isolate-scope" paired-name="" display-name="DWDW " user-name="DWDW " ng-if="searchResult.displayName &amp;&amp; $ctrl.layout.isDisplayNamesEnabled"><span class="paired-name"> <span class="element ng-binding" ng-bind="displayName"></span> <span class="connector"></span> <span class="element name-container ng-binding" ng-bind="userName"></span> </span></div><!-- end ngIf: searchResult.displayName && $ctrl.layout.isDisplayNamesEnabled --> </a>`
+    
+        Item.addEventListener("mouseenter", function(){
+            Item.className = "search-result active"
+        })
+
+        Item.addEventListener("mouseleave", function(){
+            Item.className = "search-result"
+        })
+
+        Item.getElementsByClassName("name-container")[0].innerText = Info.name+" "
+
+        GetIcon(ItemType, [Info.id]).then(function(Icons){
+            Item.getElementsByClassName("image-thumbnail-icon")[0].src = Icons[Info.id] || ""
+        })
+
+        return Item
+    }
+
+    function CreatePendingItem(Info){
+        const Item = document.createElement("div")
+        Item.className = "avatar-card-container"
+        Item.innerHTML = `<div class="avatar avatar-headshot avatar-headshot-xs"> <a class="avatar-card-link" ng-href="" target="_blank"> <thumbnail-2d class="avatar-card-image ng-isolate-scope" thumbnail-type="thumbnailTypes.avatarHeadshot" thumbnail-target-id="player.id"><span ng-class="$ctrl.getCssClasses()" class="thumbnail-2d-container" thumbnail-type="AvatarHeadshot" thumbnail-target-id="32688155"> <!-- ngIf: $ctrl.thumbnailUrl && !$ctrl.isLazyLoadingEnabled() --><img ng-if="$ctrl.thumbnailUrl &amp;&amp; !$ctrl.isLazyLoadingEnabled()" thumbnail-error="$ctrl.setThumbnailLoadFailed" ng-class="{'loading': $ctrl.thumbnailUrl &amp;&amp; !isLoaded }" image-load="" alt="" title="" class="ng-scope ng-isolate-scope image-thumbnail-icon"><!-- end ngIf: $ctrl.thumbnailUrl && !$ctrl.isLazyLoadingEnabled() --> <!-- ngIf: $ctrl.thumbnailUrl && $ctrl.isLazyLoadingEnabled() --> </span> </thumbnail-2d> </a> </div> <div class="avatar-card-caption"> <div class="avatar-name text-overflow ng-binding" ng-bind="layout.isDisplayNamesEnabled ? player.displayName : player.name"></div> </div> <span ng-click="removeUser($index)" class="delete-btn icon-trash-bin"></span>`
+    
+        Item.getElementsByClassName("avatar-name")[0].innerText = Info.name
+
+        GetIcon(ItemType, [Info.id]).then(function(Icons){
+            Item.getElementsByClassName("image-thumbnail-icon")[0].src = Icons[Info.id] || ""
+        })
+
+        return Item
+    }
+
+    AddButton.addEventListener("click", function(){
+        const Modal = document.createElement("div")
+        Modal.className = "modal ng-scope ng-isolate-scope in"
+        Modal.style = "z-index: 1050; display: block;"
+        Modal.innerHTML = `<div class="modal-dialog"><div class="modal-content" uib-modal-transclude=""><div id="add-players" class="ng-scope"> <div class="modal-header"> <button type="button" class="close" ng-click="$dismiss()"> <span aria-hidden="true"><span class="icon-close"></span></span> </button> <h4 ng-bind="'Action.AddPlayers' | translate" class="ng-binding">Add</h4> </div> <div class="modal-body"> <search-dropdown target-type="User" select="selectUser" class="ng-isolate-scope"><div class="form-has-feedback search-dropdown dropdown" uib-dropdown="" is-open="$ctrl.layout.isOpen" keyboard-nav="" ng-class="{'form-has-error': $ctrl.layout.errorMessage}"> <input id="add-users-textbox" class="input-field form-control ng-pristine ng-valid ng-isolate-scope dropdown-toggle ng-empty ng-touched" uib-dropdown-toggle="" ng-model="$ctrl.data.searchTerm" focus-me="true" placeholder="Name" ng-keyup="$ctrl.search($event)" ng-keydown="$ctrl.onKeyDown($event)" ng-disabled="$ctrl.layout.isLoading" aria-haspopup="true" aria-expanded="false"> <ul class="dropdown-menu search-results-dropdown-menu" uib-dropdown-menu="" role="menu"> <li ng-show="$ctrl.layout.isSearchRequestSending" class="search-result"></li> <!-- ngRepeat: searchResult in $ctrl.data.searchResults --> </ul> <!-- ngIf: $ctrl.layout.errorMessage --> </div></search-dropdown> <div class="player-avatar-cards rbx-scrollbar"> <!-- ngRepeat: player in players --> <div class="avatar-card" ng-show="layout.isLoadingUser"> </div> </div> </div> <div class="modal-buttons"> <button id="whitelist-players-button" class="modal-button btn-primary-md ng-binding" ng-click="addPlayers()" ng-bind="'Action.Add' | translate">Add</button> <button id="cancel-whitelist-players-button" class="modal-button btn-control-md ng-binding" ng-click="close()" ng-bind="'Action.Cancel' | translate">Cancel</button> </div> </div></div></div>`
+    
+        const Backdrop = document.createElement("div")
+        Backdrop.className = "modal-backdrop ng-scope in"
+        Backdrop.style = "z-index: 1040;"
+
+        function RemoveModal(){
+            Modal.remove()
+            Backdrop.remove()
+        }
+
+        Modal.getElementsByClassName("close")[0].addEventListener("click", RemoveModal)
+
+        const DropdownMenu = Modal.getElementsByClassName("search-results-dropdown-menu")[0]
+        const SearchList = Modal.getElementsByClassName("search-result")[0]
+        const InputField = Modal.getElementsByClassName("input-field")[0]
+        const PendingList = Modal.getElementsByClassName("avatar-card")[0]
+        let PendingItems = []
+        let SearchUpdate = 0
+        
+        InputField.addEventListener("input", async function(){
+            SearchUpdate++
+            let Cache = SearchUpdate
+            const Text = InputField.value
+            SearchList.replaceChildren()
+            DropdownMenu.style.display = "none"
+
+            if (Text.replaceAll(" ", "") === "") return
+            DropdownMenu.style.display = "block"
+            const Spinner = document.createElement("span")
+            Spinner.className = "spinner spinner-default"
+            SearchList.appendChild(Spinner)
+
+            await sleep(500) //wait for typing to finish
+            if (SearchUpdate !== Cache) return
+            const Result = await Search(ItemType ,Text)
+            if (SearchUpdate !== Cache) return
+
+            Spinner.remove()
+
+            for (let i = 0; i < Result.length; i++){
+                const SearchItem = CreateSearchItem(Result[i])
+                SearchItem.addEventListener("click", function(){
+                    PendingItems.push(Result[i].id)
+                    NameLookup[Result[i].id] = Result[i].name
+
+                    const PendingItem = CreatePendingItem(Result[i])
+                    PendingList.appendChild(PendingItem)
+                    PendingItem.getElementsByClassName("delete-btn")[0].addEventListener("click", function(){
+                        PendingItem.remove()
+                        PendingItems.splice(PendingItems.indexOf(Result[i].id), 1)
+                    })
+
+                    InputField.value = ""
+
+                    SearchList.replaceChildren()
+                    DropdownMenu.style.display = "none"
+                })
+
+                SearchList.appendChild(SearchItem)
+            }
+        })
+
+        const Buttons = Modal.getElementsByClassName("modal-buttons")[0]
+        Buttons.getElementsByClassName("btn-control-md")[0].addEventListener("click", RemoveModal)
+
+        Buttons.getElementsByClassName("btn-primary-md")[0].addEventListener("click", function(){
+            console.log(PendingItems)
+            for (let i = 0; i < PendingItems.length; i++){
+                CreateItem(PendingItems[i])
+                Update(FeatureEnabled, PendingItems[i], true)
+            }
+            RemoveModal()
+        })
+
+        document.body.append(Modal, Backdrop)
+    })
+
+    const [Enabled, Items] = Get(FeatureEnabled)
+    IsEnabled = Enabled
+    UpdateEnabled()
+
+    for (let i = 0; i < Items.length; i++){
+        CreateItem(Items[i])
+    }
+    
+    //Call Update when one is added
+    
+    return Section
+}
+
 function CreateSectionSettingsDropdown(Option, Title, Description, Options, Value, FeatureKilled, FeaturePaid, IsSupported, Update){
     const [Section, Divider] = CreateSectionSettingsTemplate(Option, Title, Description)
 

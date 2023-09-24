@@ -214,6 +214,69 @@ const Settings = {
             Title: "Expand home friends list",
             Description: "Adds another row to friends list on the home page."
         },
+        GroupShoutNotifications: {
+            //CreateSectionSettingsWithListAndSearch
+            Title: "Group Shout Notifications",
+            Description: "Groups",
+            ItemType: "Group",
+            Type: "ListAndSearch",
+            Get: function(Feature){
+                //[Enabled, Items]
+                return [Feature.Enabled, Feature.Groups]
+            },
+            Update: function(Feature, GroupId, Added){
+                const Index = Feature.Groups.indexOf(GroupId)
+
+                if (Added){
+                    if (!Index) Feature.Groups.push(GroupId)
+                }
+                else {
+                    if (Index) Feature.Groups.splice(Index, 1)
+                }
+                SetFeatureEnabled("GroupShoutNotifications", Feature)
+            },
+            State: function(Feature, Enabled){
+                Feature.Enabled = Enabled
+                SetFeatureEnabled("GroupShoutNotifications", Feature)
+            },
+            Search: async function(Type, Text){
+                let URL
+                if (Type === "Group"){
+                    URL = `https://groups.roblox.com/v1/groups/search/lookup?groupName=${encodeURI(Text)}`
+                } else {
+                    URL = `https://users.roblox.com/v1/users/search?keyword=${encodeURI(Text)}&limit=10`
+                }
+
+                if (!URL) return []
+                const [Success, Result] = await RequestFunc(URL, "GET", undefined, undefined, true)
+                if (!Success) return []
+
+                Result.data.length = Math.min(Result.data.length, 5)
+
+                return Result.data
+            },
+            Icon: async function(Type, Ids){
+                let URL
+                if (Type === "Group"){
+                    URL = `https://thumbnails.roblox.com/v1/groups/icons?groupIds=${Ids.join(",")}&size=150x150&format=Png&isCircular=false`
+                } else {
+                    URL = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${Ids.join(",")}&size=150x150&format=Png&isCircular=false`
+                }
+
+                if (!URL) return {}
+                const [Success, Result] = await RequestFunc(URL, "GET", undefined, undefined, true)
+                if (!Success) return {}
+
+                const Lookup = {}
+                const Data = Result.data
+                for (let i = 0; i < Data.length; i++){
+                    const Image = Data[i]
+                    Lookup[Image.targetId] = Image.imageUrl
+                }
+
+                return Lookup
+            }
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"
@@ -538,9 +601,10 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
             const FeaturePaid = await PaidForFeature(feature)
 
             if (info.Type === "InputBox") Section = CreateSectionSettingsInputBox(feature, info.Title, info.Description, info.Placeholder, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported, info.Middleman)
-            else if (info.Type == "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported, function(NewValue){
+            else if (info.Type === "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported, function(NewValue){
                 SetFeatureEnabled(feature, NewValue)
             })
+            else if (info.Type === "ListAndSearch") Section = CreateSectionSettingsWithListAndSearch(feature, info.Title, info.Description, info.Get, info.Update, info.State, info.Search, info.Icon, info.ItemType, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
             else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
 
             if (info.Run) info.Run(Section.getElementsByTagName("label")[0], Section.getElementsByClassName("text-description")[0])
