@@ -187,7 +187,7 @@ function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get
     const Section = document.createElement("div")
     Section.className = "section-content"
 
-    Section.innerHTML = `<div class="form-group"> <label for="${Title}-access-toggle" ng-bind="'Label.FriendsAllowed' | translate" class="ng-binding title-label">Group Shout Notifications</label> <button id="${Title}-access-toggle" role="switch" aria-checked="false" class="pull-right btn-toggle" ng-class="{'on': server.permissions.friendsAllowed}" ng-click="toggleFriendsAccess()" ng-disabled="!server.active"> <span class="toggle-flip"></span> <span class="toggle-on"></span> <span class="toggle-off"></span> </button> </div> <div class="rbx-divider"></div> <div class="form-group"> <span ng-bind="'Label.ServerMembers' | translate" class="ng-binding description-label">Groups</span> <button id="add-${Title}-button" type="button" class="add-button btn-control-xs pull-right ng-binding" ng-disabled="!server.active" ng-click="openAddPlayersDialog()" ng-bind="'Action.AddPlayers' | translate">Add</button> </div> <div class="form-group"> <div class="select-players-container border"> <div class="selected-players"> <!-- ngRepeat: player in server.permissions.users | orderBy: 'name' --> </div> </div> </div>`
+    Section.innerHTML = `<div class="form-group"> <label ng-bind="'Label.FriendsAllowed' | translate" class="ng-binding title-label">Group Shout Notifications</label> <button id="${Title}-access-toggle" role="switch" aria-checked="false" class="pull-right btn-toggle" ng-class="{'on': server.permissions.friendsAllowed}" ng-click="toggleFriendsAccess()" ng-disabled="!server.active"> <span class="toggle-flip"></span> <span class="toggle-on"></span> <span class="toggle-off"></span> </button> </div> <div class="rbx-divider"></div> <div class="form-group"> <span ng-bind="'Label.ServerMembers' | translate" class="ng-binding description-label">Groups</span> <button id="add-${Title}-button" type="button" class="add-button btn-control-xs pull-right ng-binding" ng-disabled="!server.active" ng-click="openAddPlayersDialog()" ng-bind="'Action.AddPlayers' | translate">Add</button> </div> <div class="form-group"> <div class="select-players-container border"> <div class="selected-players"> <!-- ngRepeat: player in server.permissions.users | orderBy: 'name' --> </div> </div> </div>`
     Section.getElementsByClassName("title-label")[0].innerText = Title
     Section.getElementsByClassName("description-label")[0].innerText = Description
 
@@ -217,10 +217,63 @@ function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get
         Toggle.className = `pull-right btn-toggle ${IsEnabled ? "on" : ""}`
     }
 
+    const BatchCache = {}
+    const Batch = {}
+    function BatchCalls(GroupId, Callback){
+        return new Promise(async(resolve) => {
+            if (BatchCache[Callback]?.[GroupId]) return BatchCache[Callback]?.[GroupId]
+
+            if (!Batch[Callback]) Batch[Callback] = []
+
+            Batch[Callback].push({id: GroupId, resolve: resolve})
+            if (Batch[Callback].length !== 1) return
+            const Queue = Batch[Callback]
+            delete Batch[Callback]
+
+            const Ids = []
+            for (let i = 0; i < Queue.length; i++){
+                if (Ids.indexOf(Queue[i].id) === -1) Ids.push(Queue[i].id)
+            }
+
+            const Lookup = await Callback(ItemType, Ids)
+            for (let i = 0; i < Queue.length; i++){
+                const Result = Lookup[Queue[i].id]
+
+                if (Result){
+                    if (!BatchCache[Callback]) BatchCache[Callback] = {}
+                    BatchCache[Callback][GroupId] = Result
+                }
+                Queue[i].resolve(Result|| "")
+            }
+        })
+    }
+
     async function GetGroupName(GroupId){
+        if (ItemType === "User"){
+            return BatchCalls(GroupId, async function(Ids){
+                const [Success, Result] = await RequestFunc("https://users.roblox.com/v1/users", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: Ids, excludeBannedUsers: false}))
+                if (!Success) return {}
+
+                const Data = Result.data
+                const Lookup = {}
+
+                for (let i = 0; i < Data.length; i++){
+                    const User = Data[i]
+                    Lookup[User.id] = User
+                }
+
+                return Lookup
+            })
+        }
+
         if (NameLookup[GroupId]) return NameLookup[GroupId]
 
+        const [Success, Body] = await RequestFunc(`https://groups.roblox.com/v1/groups/${GroupId}`, "GET", undefined, undefined, true)
+        if (!Success) return "???"
 
+        const Name = Body.name
+        NameLookup[GroupId] = Name
+        return Name
     }
 
     function CreateItem(GroupId){
@@ -230,6 +283,11 @@ function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get
         Button.getElementsByClassName("item-name")[0].innerText = "..."
 
         GetGroupName(GroupId).then(function(Name){
+            if (typeof(Icon) === "object"){
+                Button.getElementsByClassName("item-name")[0].innerText = Name.name
+                return
+            }
+
             Button.getElementsByClassName("item-name")[0].innerText = Name
         })
 
@@ -238,8 +296,8 @@ function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get
             Button.remove()
         })
 
-        GetIcon(ItemType, [GroupId]).then(function(Icons){
-            Button.getElementsByClassName("image-thumbnail-icon")[0].src = Icons[GroupId] || ""
+        BatchCalls(GroupId, GetIcon).then(function(Icon){
+            Button.getElementsByClassName("image-thumbnail-icon")[0].src = Icon
         })
 
         SelectedList.appendChild(Button)

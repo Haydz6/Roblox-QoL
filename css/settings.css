@@ -23,7 +23,7 @@
 }
 
 .player-avatar-cards {
-    height: 250px;
+    height: 250px !important;
     margin-top: 15px;
 }
 
@@ -35,4 +35,33 @@
 .player-avatar-cards .avatar-card .avatar-card-container .avatar-headshot {
     float: left;
     margin: 6px;
+}
+
+.select-players-container .selected-player {
+    margin: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.select-players-container .avatar-headshot {
+    margin-right: 6px;
+}
+
+.select-players-container .player-select-cancel {
+    margin-left: 6px;
+}
+
+.select-players-container {
+    min-height: 16px;
+    padding: 12px;
+    margin-top: 3px;
+}
+
+.section-content .rbx-divider {
+    margin: 12px 0;
+}
+
+.select-players-container .selected-players {
+    display: flex;
+    flex-wrap: wrap;
 }
