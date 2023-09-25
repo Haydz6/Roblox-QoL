@@ -14,12 +14,15 @@ IsFeatureEnabled("MinimizePrivateServers").then(function(Enabled){
         Minimize.style = "margin-left: 3px;"
 
         let Opened = true
-        Header.addEventListener("click", function(){
+        function Click(){
             Opened = !Opened
             Minimize.className = `icon-${Opened ? "up" : "down"}-16x16`
             Banner.style.display = Opened ? "" : "none"
             Section.style.display = Opened ? "" : "none"
-        })
+        }
+
+        Header.getElementsByTagName("h2")[0].addEventListener("click", Click)
+        Minimize.addEventListener("click", Click)
 
         const Tooltip = Header.getElementsByClassName("tooltip-container")[0]
         if (Tooltip) Header.insertBefore(Minimize, Tooltip)
