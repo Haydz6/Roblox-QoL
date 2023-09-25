@@ -227,6 +227,8 @@ function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get
 
             Batch[Callback].push({id: GroupId, resolve: resolve})
             if (Batch[Callback].length !== 1) return
+            await sleep(100)
+
             const Queue = Batch[Callback]
             delete Batch[Callback]
 
@@ -243,7 +245,7 @@ function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get
                     if (!BatchCache[Callback]) BatchCache[Callback] = {}
                     BatchCache[Callback][GroupId] = Result
                 }
-                Queue[i].resolve(Result|| "")
+                Queue[i].resolve(Result || "")
             }
         })
     }

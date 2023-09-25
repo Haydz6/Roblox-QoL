@@ -125,6 +125,16 @@ const ContentScripts = [{
 },
 {
     "matches": [
+        "*://*.roblox.com/feeds"
+    ],
+    "js": [
+        "js/pages/feed/dynamicfeed.js",
+        "js/pages/feed/feedpage.js"
+    ],
+    "run_at": "document_start"
+},
+{
+    "matches": [
         "*://*.roblox.com/users/*/profile*"
     ],
     "css": [
