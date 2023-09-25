@@ -6,6 +6,8 @@ async function GetScannedInboxMessages(){
     const SavedInbox = await LocalStorage.get("ScannedInboxMessages")
     if (SavedInbox) ScannedInboxMessages = JSON.parse(SavedInbox)
     else ScannedInboxMessages = []
+
+    return SavedInbox == null
 }
 
 function SaveScannedInboxMessages(){
@@ -13,16 +15,9 @@ function SaveScannedInboxMessages(){
     LocalStorage.set("ScannedInboxMessages", JSON.stringify(ScannedInboxMessages))
 }
 
-async function GetHeadshotThumbnailFromUserId(UserId){
-    const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserId}&size=420x420&format=Png&isCircular=false`, "GET", undefined, undefined, true)
-
-    if (!Success) return "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/150/150/Image/Png"
-    return Result.data[0].imageUrl
-}
-
 async function CheckForNewMessages(){
     if (!await IsFeatureEnabled("InboxNotifications")) return
-    await GetScannedInboxMessages()
+    const FirstLoad = await GetScannedInboxMessages()
 
     const [Success, Result] = await RequestFunc("https://privatemessages.roblox.com/v1/messages?pageNumber=0&pageSize=20&messageTab=Inbox", "GET", undefined, undefined, true)
 
@@ -50,14 +45,14 @@ async function CheckForNewMessages(){
 
     SaveScannedInboxMessages()
 
-    if (!FirstMessage) return
+    if (!FirstMessage || FirstLoad) return
 
     QueueNotifications(null, {type: "basic",
-    iconUrl: await GetHeadshotThumbnailFromUserId(FirstMessage.sender.id),
+    iconUrl: await GetHeadshotBlobFromUserId(FirstMessage.sender.id),
     title: FirstMessage.subject,
     message: FirstMessage.body,
     eventTime: new Date(FirstMessage.created).getTime(),
-    contextMessage: `From ${FirstMessage.sender.name}` + (TotalNewMessages > 1 ? ` (${TotalNewMessages} new messages)` : "")})
+    contextMessage: `Message from ${FirstMessage.sender.name}` + (TotalNewMessages > 1 ? ` (${TotalNewMessages}${TotalNewMessages >= 20 ? "+" : ""} new messages)` : "")})
 }
 
 setInterval(CheckForNewMessages, 60*1000)

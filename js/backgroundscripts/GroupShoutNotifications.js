@@ -67,7 +67,7 @@ async function CheckForNewGroupShouts(){
             const Shout = Body.shout
             const Prior = GroupShouts[Body.id]
 
-            const Updated = new Date(Shout.updated).getTime()
+            const Updated = Math.floor(new Date(Shout.updated).getTime()/1000)
 
             if (Shout && Prior !== Updated){
                 GroupShouts[Body.id] = Updated
