@@ -357,6 +357,7 @@ chrome.notifications.onClosed.addListener(function(NotificationId, byUser){
         delete NewSessionButtonNotifications[NotificationId]
         delete TradeNotifications[NotificationId]
         delete UsedNotificationIds[NotificationId]
+        delete GroupShoutNotifications[NotificationId]
     }
 })
 

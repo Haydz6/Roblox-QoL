@@ -330,7 +330,7 @@ BindToOnMessage("PaymentRequired", false, function(request){
 })
 
 if (ManifestVersion > 2){
-    const Scripts = ["js/backgroundscripts/inject.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/hideoffline.js", "js/backgroundscripts/bannedprofile.js", "js/backgroundscripts/friendrequest.js"]
+    const Scripts = ["js/backgroundscripts/inject.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/backgroundscripts/playtimeconversion.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/hideoffline.js", "js/backgroundscripts/bannedprofile.js", "js/backgroundscripts/friendrequest.js", "js/backgroundscripts/GroupShoutNotifications.js"]
     const FullScriptURLs = []
 
     for (let i = 0; i < Scripts.length; i++){

@@ -228,11 +228,12 @@ const Settings = {
                 const Index = Feature.Groups.indexOf(GroupId)
 
                 if (Added){
-                    if (!Index) Feature.Groups.push(GroupId)
+                    if (Index === -1) Feature.Groups.push(GroupId)
                 }
                 else {
-                    if (Index) Feature.Groups.splice(Index, 1)
+                    if (Index !== -1) Feature.Groups.splice(Index, 1)
                 }
+
                 SetFeatureEnabled("GroupShoutNotifications", Feature)
             },
             State: function(Feature, Enabled){

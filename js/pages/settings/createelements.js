@@ -332,16 +332,18 @@ function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get
             Spinner.remove()
 
             for (let i = 0; i < Result.length; i++){
-                const SearchItem = CreateSearchItem(Result[i])
-                SearchItem.addEventListener("click", function(){
-                    PendingItems.push(Result[i].id)
-                    NameLookup[Result[i].id] = Result[i].name
+                const Group = Result[i]
 
-                    const PendingItem = CreatePendingItem(Result[i])
+                const SearchItem = CreateSearchItem(Group)
+                SearchItem.addEventListener("click", function(){
+                    PendingItems.push(Group.id)
+                    NameLookup[Group.id] = Group.name
+
+                    const PendingItem = CreatePendingItem(Group)
                     PendingList.appendChild(PendingItem)
                     PendingItem.getElementsByClassName("delete-btn")[0].addEventListener("click", function(){
                         PendingItem.remove()
-                        PendingItems.splice(PendingItems.indexOf(Result[i].id), 1)
+                        PendingItems.splice(PendingItems.indexOf(Group.id), 1)
                     })
 
                     InputField.value = ""
@@ -358,7 +360,6 @@ function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get
         Buttons.getElementsByClassName("btn-control-md")[0].addEventListener("click", RemoveModal)
 
         Buttons.getElementsByClassName("btn-primary-md")[0].addEventListener("click", function(){
-            console.log(PendingItems)
             for (let i = 0; i < PendingItems.length; i++){
                 CreateItem(PendingItems[i])
                 Update(FeatureEnabled, PendingItems[i], true)

@@ -1,21 +1,83 @@
 let HaveFetchedGroupShouts = false
 let GroupShouts = {}
 
-async function GetGroupShouts(){
+const GroupShoutNotifications = {}
 
+async function GetGroupShouts(){
+    if (HaveFetchedGroupShouts) return true
+
+    const Item = await LocalStorage.get("GroupShouts")
+    if (Item){
+        GroupShouts = JSON.parse(Item)
+    }
+    HaveFetchedGroupShouts = true
+
+    return true
 }
 
 function SaveGroupShouts(){
-
+    LocalStorage.set("GroupShouts", JSON.stringify(GroupShouts))
 }
+
+function ClearOldGroupShouts(Groups){
+    const CurrentGroupLookup = {}
+
+    for (let i = 0; i < Groups.length; i++){
+        CurrentGroupLookup[Groups[i]] = true
+    }
+
+    const SavedGroups = Object.keys(GroupShouts)
+    for (let i = 0; i < SavedGroups.length; i++){
+        const Id = SavedGroups[i]
+        if (!CurrentGroupLookup[Id]) delete GroupShouts[Id]
+    }
+}
+
+async function CreateGroupShoutNotification(Group){
+    chrome.notifications.create(null, {type: "basic", priority: 0, eventTime: new Date(Group.shout.updated).getTime(), iconUrl: await GetHeadshotBlobFromURL(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${Group.id}&size=150x150&format=Png&isCircular=false`), title: `Group shout from ${Group.name}`, message: Group.shout.body, contextMessage: `By ${Group.shout.poster.username}`}, function(NotificationId){
+        GroupShoutNotifications[NotificationId] = Group.id
+    })
+}
+
+chrome.notifications.onClicked.addListener(function(NotificationId){
+    const Notification = GroupShoutNotifications[NotificationId]
+    if (!Notification) return
+
+    chrome.tabs.create({url: `https://roblox.com/groups/${Notification}/group#!/about`})
+})
 
 async function CheckForNewGroupShouts(){
     const WatchingGroups = await IsFeatureEnabled("GroupShoutNotifications")
-    if (WatchingGroups.length === 0) return
-    await GetGroupShouts()
+    const Groups = WatchingGroups.Groups
+    ClearOldGroupShouts(Groups)
 
     const UserId = await GetCurrentUserId()
-    if (!UserId) return
+    if (!UserId){
+        setTimeout(CheckForNewGroupShouts, 60*1000)
+        return
+    }
+    if (!WatchingGroups.Enabled || Groups.length === 0 || !await GetGroupShouts()){
+        setTimeout(CheckForNewGroupShouts, 60*1000)
+        return
+    }
     
-    
+    for (let i = 0; i < Groups.length; i++){
+        const [Success, Body] = await RequestFunc(`https://groups.roblox.com/v1/groups/${Groups[i]}`)
+        if (Success){
+            const Shout = Body.shout
+            const Prior = GroupShouts[Body.id]
+
+            const Updated = new Date(Shout.updated).getTime()
+
+            if (Shout && Prior !== Updated){
+                GroupShouts[Body.id] = Updated
+                SaveGroupShouts()
+                if (Prior) CreateGroupShoutNotification(Body)
+            }
+        }
+        await sleep(5000)
+    }
+    setTimeout(CheckForNewGroupShouts, 60*1000)
 }
+
+CheckForNewGroupShouts()

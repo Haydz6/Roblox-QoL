@@ -3,8 +3,8 @@ const TradeNotifications = {}
 
 let FirstTradeScans = {Inbound: false, Outbound: false, Completed: false, Inactive: false}
 
-async function GetHeadshotBlobFromUserId(UserId){
-    const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserId}&size=60x60&format=Png&isCircular=true`, "GET", undefined, undefined, true)
+async function GetHeadshotBlobFromURL(Url){
+    const [Success, Result] = await RequestFunc(Url, "GET", undefined, undefined, true)
     const FailURL = ""
 
     if (!Success) return FailURL
@@ -21,6 +21,10 @@ async function GetHeadshotBlobFromUserId(UserId){
     });
 
     return DataURL
+}
+
+async function GetHeadshotBlobFromUserId(UserId){
+    return GetHeadshotBlobFromURL(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserId}&size=60x60&format=Png&isCircular=true`)
 }
 
 async function ClearOldScannedTrades(){
