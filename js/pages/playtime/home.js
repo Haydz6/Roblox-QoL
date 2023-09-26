@@ -108,7 +108,9 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
 IsFeatureEnabled("Playtime").then(async function(Enabled){
     if (!Enabled) return
 
-    const GamesList = await WaitForClass("game-home-page-container")
+    let GamesList = await WaitForClass("game-home-page-container")
+    if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
+
     CreateHomeRow(GamesList, "Studio Sessions", "Edit", false)
     CreateHomeRow(GamesList, "Playtime", "Play", true)
 })

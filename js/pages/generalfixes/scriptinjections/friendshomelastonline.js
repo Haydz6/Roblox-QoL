@@ -153,4 +153,4 @@ async function FriendsHomeLastOnline(){
 
     UpdateAllPresences()
 }
-setTimeout(FriendsHomeLastOnline, 0)
+FriendsHomeLastOnline()

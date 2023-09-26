@@ -78,7 +78,7 @@ function CreateContainerHeader(Title, href){
 
     ContainerHeader.append(Header, SeeAllButton)
 
-    return [ContainerHeader, SeeAllButton]
+    return [ContainerHeader, SeeAllButton, HeaderButton]
 }
 
 function CreateGameCarousel(){
