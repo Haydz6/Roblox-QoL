@@ -15,8 +15,10 @@ IsFeatureEnabled("FixFavouritesPage").then(async function(Enabled){
     //     await sleep(20)
     // }
 
-    const Container = await WaitForClass("game-home-page-container")
-    const [Title] = await SearchForRow(Container, 100000001)
-    const SeeAll = await WaitForClassPath(Title, "see-all-link-icon")
-    SeeAll.href = "https://roblox.com/discover#/sortName?sort=Favorites"
+    setTimeout(async function(){
+        const Container = await WaitForClass("game-home-page-container")
+        const [Title] = await SearchForRow(Container, 100000001)
+        const SeeAll = await WaitForClassPath(Title, "see-all-link-icon")
+        SeeAll.href = "https://roblox.com/discover#/sortName?sort=Favorites"
+    }, 0)
 })

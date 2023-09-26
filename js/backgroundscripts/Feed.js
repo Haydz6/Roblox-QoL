@@ -31,15 +31,19 @@ async function FeedGroupShoutChanged(Group){
 }
 
 async function UpdateFeed(){
-    console.log("feed on?")
-    if (!await IsFeatureEnabled("Feed")) return
+    const FeedEnabled = await IsFeatureEnabled("Feed")
+    const GroupShoutNotifications = await IsFeatureEnabled("GroupShoutNotifications")
+    const AllShoutNotificationsEnabled = GroupShoutNotifications.Enabled && GroupShoutNotifications.Joined
+
+    if (!FeedEnabled && !AllShoutNotificationsEnabled) return
 
     const UserId = await GetCurrentUserId()
     if (!UserId){
         setTimeout(UpdateFeed, 60*1000)
         return
     }
-    if (!await GetFeed()) return
+    if (FeedEnabled) if (!await GetFeed()) return
+    console.log("go!")
 
     const [Success, Groups] = await RequestFunc(`https://groups.roblox.com/v1/users/${UserId}/groups/roles`, "GET", undefined, undefined, true)
     if (!Success) return
@@ -51,12 +55,15 @@ async function UpdateFeed(){
             const Shout = Body.shout
             const Prior = Feed[Body.id]?.Date
 
+            if (AllShoutNotificationsEnabled) CheckForNewGroupShoutNotification(Body)
             if (!Shout) continue
             const Updated = Math.floor(new Date(Shout.updated).getTime()/1000)
 
             if (Shout && Shout.body !== "" && Prior !== Updated){
-                const [Success, Result] = await FeedGroupShoutChanged(Body)
-                if (Success) Feed[Body.id] = Result
+                if (Feed){
+                    const [Success, Result] = await FeedGroupShoutChanged(Body)
+                    if (Success) Feed[Body.id] = Result
+                }
             }
         }
         await sleep(5000)

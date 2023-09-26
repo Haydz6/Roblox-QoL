@@ -16,16 +16,18 @@ async function SearchForRow(Container, SortId){
 
         await sleep(50)
     }
-}
+}   
 
-IsFeatureEnabled("MoveHomeFavouritesToThirdRow").then(async function(Enabled){
-    if (!Enabled) return
+IsFeatureEnabled("MoveHomeFavouritesToThirdRow").then(function(Enabled){
+    if (Enabled) return
 
-    const Container = await WaitForClass("game-home-page-container")
-    const [FavTitle, FavRow] = await SearchForRow(Container, 100000001)
-    //const [RecommendedTitle, _] = await SearchForRow(Container, "Recommended")
-    const ThirdTitle = Container.children[4]
-
-    Container.insertBefore(FavRow, ThirdTitle)
-    Container.insertBefore(FavTitle, FavRow)
+    setTimeout(async function(){
+        const Container = await WaitForClass("game-home-page-container")
+        const [FavTitle, FavRow] = await SearchForRow(Container, 100000001)
+        //const [RecommendedTitle, _] = await SearchForRow(Container, "Recommended")
+        const ThirdTitle = Container.children[4]
+    
+        Container.insertBefore(FavRow, ThirdTitle)
+        Container.insertBefore(FavTitle, FavRow)
+    }, 0)
 })

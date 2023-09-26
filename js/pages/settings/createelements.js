@@ -183,7 +183,7 @@ function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, 
     return Section
 }
 
-function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get, Update, State, Search, GetIcon, ItemType, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported){
+function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get, Update, State, Search, GetIcon, Toggles, ItemType, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported){
     const Section = document.createElement("div")
     Section.className = "section-content"
 
@@ -191,24 +191,66 @@ function CreateSectionSettingsWithListAndSearch(Feature, Title, Description, Get
     Section.getElementsByClassName("title-label")[0].innerText = Title
     Section.getElementsByClassName("description-label")[0].innerText = Description
 
+    const AllToggles = []
+    function DisableAllToggles(){
+        for (let i = 0;i < AllToggles.length; i++){
+            AllToggles[i].setAttribute("disabled", "disabled")
+        }
+    }
+
     const Toggle = Section.getElementsByClassName("btn-toggle")[0]
     const AddButton = Section.getElementsByClassName("add-button")[0]
     const SelectedList = Section.getElementsByClassName("selected-players")[0]
+
+    function CreateToggle(Title){
+        const Divider = document.createElement("div")
+        Divider.className = "rbx-divider"
+
+        const Container = document.createElement("div")
+        Container.className = "form-group"
+        Container.innerHTML = `<span ng-bind="'Label.ServerMembers' | translate" class="ng-binding description-label"></span>`
+        Container.getElementsByClassName("description-label")[0].innerText = Title
+
+        const NewToggle = Toggle.cloneNode(true)
+        Container.appendChild(NewToggle)
+        AddButton.parentNode.parentNode.insertBefore(Container, AddButton.parentNode)
+        AddButton.parentNode.parentNode.insertBefore(Divider, Container.nextSibling)
+
+        AllToggles.push(NewToggle)
+        return NewToggle
+    }
+    if (Toggles){
+        for ([Name, Callback] of Object.entries(Toggles)){
+            const CustomToggle = CreateToggle(Name)
+            let Enabled = Callback(FeatureEnabled)
+
+            function UpdateToggle(){
+                CustomToggle.className = `pull-right btn-toggle ${Enabled ? "on" : ""}`
+            }
+
+            CustomToggle.addEventListener("click", function(){
+                Enabled = !Enabled
+                UpdateToggle()
+                Callback(FeatureEnabled, Enabled)
+            })
+            UpdateToggle()
+        }
+    }
 
     const NameLookup = {}
 
     let IsEnabled = false
 
     if (FeatureKilled){
-        Toggle.setAttribute("disabled", "disabled")
+        DisableAllToggles()
         Section.insertBefore(CreateFeatureDisabled(), Divider)
         return
     } else if (!IsSupported){
-        Toggle.setAttribute("disabled", "disabled")
+        DisableAllToggles()
         Section.insertBefore(CreateFeatureNotSupported(), Divider)
         return
     } else if (!FeaturePaid){
-        Toggle.setAttribute("disabled", "disabled")
+        DisableAllToggles()
         Section.insertBefore(CreateFeaturePaid(), Divider)
         return
     }

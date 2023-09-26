@@ -453,6 +453,16 @@ const Settings = {
             Description: "Groups",
             ItemType: "Group",
             Type: "ListAndSearch",
+            Toggles: {
+                "Joined Groups": function(Feature, Enabled){
+                    if (Enabled === undefined){
+                        return Feature.Joined
+                    }
+
+                    Feature.Joined = Enabled
+                    SetFeatureEnabled("GroupShoutNotifications", Feature)
+                }
+            },
             Get: function(Feature){
                 //[Enabled, Items]
                 return [Feature.Enabled, Feature.Groups]
@@ -615,7 +625,7 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
             else if (info.Type === "SelectionList") Section = CreateSectionSettingsDropdown(feature, info.Title, info.Description, await info.GetList(), FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported, function(NewValue){
                 SetFeatureEnabled(feature, NewValue)
             })
-            else if (info.Type === "ListAndSearch") Section = CreateSectionSettingsWithListAndSearch(feature, info.Title, info.Description, info.Get, info.Update, info.State, info.Search, info.Icon, info.ItemType, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
+            else if (info.Type === "ListAndSearch") Section = CreateSectionSettingsWithListAndSearch(feature, info.Title, info.Description, info.Get, info.Update, info.State, info.Search, info.Icon, info.Toggles, info.ItemType, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
             else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
 
             if (info.Run) info.Run(Section.getElementsByTagName("label")[0], Section.getElementsByClassName("text-description")[0])

@@ -46,6 +46,23 @@ chrome.notifications.onClicked.addListener(function(NotificationId){
     chrome.tabs.create({url: `https://roblox.com/groups/${Notification}/group#!/about`})
 })
 
+async function CheckForNewGroupShoutNotification(Body){
+    if (!await GetGroupShouts()) return
+
+    const Shout = Body.shout
+    const Prior = GroupShouts[Body.id]
+
+    if (!Shout) return
+    const Updated = Math.floor(new Date(Shout.updated).getTime()/1000)
+
+    if (Shout && Prior !== Updated){
+        console.log("update")
+        GroupShouts[Body.id] = Updated
+        SaveGroupShouts()
+        if (Prior) CreateGroupShoutNotification(Body)
+    }
+}
+
 async function CheckForNewGroupShouts(){
     const WatchingGroups = await IsFeatureEnabled("GroupShoutNotifications")
     const Groups = WatchingGroups.Groups
@@ -64,17 +81,7 @@ async function CheckForNewGroupShouts(){
     for (let i = 0; i < Groups.length; i++){
         const [Success, Body] = await RequestFunc(`https://groups.roblox.com/v1/groups/${Groups[i]}`)
         if (Success){
-            const Shout = Body.shout
-            const Prior = GroupShouts[Body.id]
-
-            if (!Shout) continue
-            const Updated = Math.floor(new Date(Shout.updated).getTime()/1000)
-
-            if (Shout && Prior !== Updated){
-                GroupShouts[Body.id] = Updated
-                SaveGroupShouts()
-                if (Prior) CreateGroupShoutNotification(Body)
-            }
+            CheckForNewGroupShoutNotification(Body)
         }
         await sleep(5000)
     }
