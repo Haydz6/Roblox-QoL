@@ -1,4 +1,74 @@
 const Settings = {
+    General: {
+        NewMessagePing3: {
+            Title: "New Message Ping",
+            Description: "Creates a ping sound whenever you receive a new chat message."
+        },
+        ExploreAsset: {
+            Title: "Asset Download/View",
+            Description: "Allows you to download or view an asset. Also allows you to go to the image of a decal."
+        },
+        HideDesktopAppBanner: {
+            Title: "Hide Desktop App Banner",
+            Description: "Hides the roblox desktop app banner from appearing."
+        },
+        MoveHomeFavouritesToThirdRow: {
+            Title: "Move Favorites Row Up",
+            Description: "Move the favorites category on the games page above the recommended rows."
+        },
+        HideRobloxAds: {
+            Title: "Hide Roblox Ads",
+            Description: "Hides roblox advertisements from appearing."
+        },
+        HideFooter: {
+            Title: "Hide Footer",
+            Description: "Hides the footer at the bottom of the page."
+        },
+        AddDownloadButtonToNewVersionHistory: {
+            Title: "Add Download Button to version history",
+            Description: "Adds a download button to place version history."
+        },
+        Mutuals2: {
+            Title: "Friend Mutuals",
+            Description: "Shows mutuals on a users page."
+        },
+        BestFriends: {
+            Title: "Best Friends",
+            Description: "Adds a new friends row to your home page."
+        },
+        ResizableChatBoxes: {
+            Title: "Resizable chat boxes",
+            Description: "Allows you to resize the chat boxes on the roblox site. (Drag top left)"
+        },
+        FriendsHomeLastOnline: {
+            Title: "Last Online on Home",
+            Description: "Shows last online if friend is offline on home page."
+        },
+        HideOffline: {
+            Title: "Appear offline (Website Only)",
+            Description: "Makes you appear offline to other users while browsing the website. (This only works on the website, it is a limitation of roblox)"
+        },
+        ShowFollowsYou: {
+            Title: "Follows You Indicator",
+            Description: "Shows if a user is following you."
+        },
+        ViewBannedGroup: {
+            Title: "View Locked Group",
+            Description: "Allows you to view locked groups."
+        },
+        ViewBannedUser: {
+            Title: "View Banned User",
+            Description: "Allows you to view a banned user."
+        },
+        AddRowToHomeFriends: {
+            Title: "Expand home friends list",
+            Description: "Adds another row to friends list on the home page."
+        },
+        // Mutuals: {
+        //     Title: "Mutuals",
+        //     Description: "Allows you to see mutuals friends!"
+        // }
+    },
     Discord: {
         DiscordPresence: {
             Title: "Discord Presence",
@@ -121,124 +191,6 @@ const Settings = {
             Description: "Adds join button to presence to allow other users to join you."
         }
     },
-    Features: {
-        ExtraOutfits: {
-            Title: "Extra Outfits",
-            Description: "Allows you to have more than 50 outfits."
-        },
-        RemoveAccessoryLimit: {
-            Title: "Remove Accessory Limit",
-            Description: "Allows you to equip up to 10 accessories."
-        },
-        ActivePrivateServers: {
-            Title: "Active Private Servers",
-            Description: "Allows you to see which private servers are billing you."
-        },
-        NewMessagePing3: {
-            Title: "New Message Ping",
-            Description: "Creates a ping sound whenever you receive a new chat message."
-        },
-        ExploreAsset: {
-            Title: "Asset Download/View",
-            Description: "Allows you to download or view an asset. Also allows you to go to the image of a decal."
-        },
-        HideDesktopAppBanner: {
-            Title: "Hide Desktop App Banner",
-            Description: "Hides the roblox desktop app banner from appearing."
-        },
-        MoveHomeFavouritesToThirdRow: {
-            Title: "Move Favorites Row Up",
-            Description: "Move the favorites category on the games page above the recommended rows."
-        },
-        HideRobloxAds: {
-            Title: "Hide Roblox Ads",
-            Description: "Hides roblox advertisements from appearing."
-        },
-        HideFooter: {
-            Title: "Hide Footer",
-            Description: "Hides the footer at the bottom of the page."
-        },
-        AddDownloadButtonToNewVersionHistory: {
-            Title: "Add Download Button to version history",
-            Description: "Adds a download button to place version history."
-        },
-        DetailedGroupTranscationSummary: {
-            Title: "Transaction Summary Source",
-            Description: "Shows source of income on transaction and group summary page."
-        },
-        CSVChart: {
-            Title: "CSV Chart",
-            Description: "Allows you to upload a CSV file and display it in a chart (User and Group transactions page)."
-        },
-        OutfitSearchbar: {
-            Title: "Outfit Searchbar",
-            Description: "Adds a search bar to your avatar outfits."
-        },
-        Mutuals2: {
-            Title: "Friend Mutuals",
-            Description: "Shows mutuals on a users page."
-        },
-        BestFriends: {
-            Title: "Best Friends",
-            Description: "Adds a new friends row to your home page."
-        },
-        ResizableChatBoxes: {
-            Title: "Resizable chat boxes",
-            Description: "Allows you to resize the chat boxes on the roblox site. (Drag top left)"
-        },
-        SupportedPlatforms: {
-            Title: "Show Supported Devices",
-            Description: "Shows what devices a game supports. (Replaces allowed gears)"
-        },
-        FriendsHomeLastOnline: {
-            Title: "Last Online on Home",
-            Description: "Shows last online if friend is offline on home page."
-        },
-        HideOffline: {
-            Title: "Appear offline (Website Only)",
-            Description: "Makes you appear offline to other users while browsing the website. (This only works on the website, it is a limitation of roblox)"
-        },
-        ShowFollowsYou: {
-            Title: "Follows You Indicator",
-            Description: "Shows if a user is following you."
-        },
-        ViewBannedGroup: {
-            Title: "View Locked Group",
-            Description: "Allows you to view locked groups."
-        },
-        ViewBannedUser: {
-            Title: "View Banned User",
-            Description: "Allows you to view a banned user."
-        },
-        AddRowToHomeFriends: {
-            Title: "Expand home friends list",
-            Description: "Adds another row to friends list on the home page."
-        },
-        AddUSDToRobux: {
-            Title: "Show currency on Robux",
-            Description: "Shows amount of robux in currency selected (Devex Rate)"
-        },
-        Currency: {
-            Title: "Currency",
-            Description: "Shows amount of robux in currency you selected (Devex Rate)",
-            Type: "SelectionList",
-            GetList: async function(){
-                const [Success, Result] = await RequestFunc("https://qol.haydz6.com/api/currency/rates", "GET")
-                if (!Success) return []
-
-                const List = []
-
-                for (const [Currency, Rate] of Object.entries(Result)){
-                    List.push(Currency)
-                }
-                return List
-            }
-        }
-        // Mutuals: {
-        //     Title: "Mutuals",
-        //     Description: "Allows you to see mutuals friends!"
-        // }
-    },
     Games: {
         LiveExperienceStats: {
             Title: "Live Experience Statistics",
@@ -293,8 +245,12 @@ const Settings = {
         },
         MinimizePrivateServers: {
             Title: "Minimizable Private Servers",
-            Description: "Allows you to minimize private servers tab.Minimizable"
-        }
+            Description: "Allows you to minimize private servers tab."
+        },
+        SupportedPlatforms: {
+            Title: "Show Supported Devices",
+            Description: "Shows what devices a game supports. (Replaces allowed gears)"
+        },
     },
     Trades: {
         TradeNotifier: {
@@ -420,7 +376,21 @@ const Settings = {
             Description: "Allows you to cancel an outgoing friend request on a users profile."
         }
     },
-    Assets: {
+    Avatar: {
+        ExtraOutfits: {
+            Title: "Extra Outfits",
+            Description: "Allows you to have more than 50 outfits."
+        },
+        RemoveAccessoryLimit: {
+            Title: "Remove Accessory Limit",
+            Description: "Allows you to equip up to 10 accessories."
+        },
+        OutfitSearchbar: {
+            Title: "Outfit Searchbar",
+            Description: "Adds a search bar to your avatar outfits."
+        },
+    },
+    Economy: {
         AddSales: {
             Title: "Show Sales",
             Description: "Shows the amount of sales on assets you manage/created."
@@ -429,14 +399,42 @@ const Settings = {
             Title: "Show Created/Updated Date",
             Description: "Shows the created and updated date of asset."
         },
+        ActivePrivateServers: {
+            Title: "Active Private Servers",
+            Description: "Allows you to see which private servers are billing you."
+        },
+        DetailedGroupTranscationSummary: {
+            Title: "Transaction Summary Source",
+            Description: "Shows source of income on transaction and group summary page."
+        },
+        CSVChart: {
+            Title: "CSV Chart",
+            Description: "Allows you to upload a CSV file and display it in a chart (User and Group transactions page)."
+        },
         ShowUSDOnAsset: {
             Title: "Show currency price",
             Description: "Shows price of asset in currency selected (Devex Rate)"
+        },
+        AddUSDToRobux: {
+            Title: "Show currency on Robux",
+            Description: "Shows amount of robux in currency selected (Devex Rate)"
+        },
+        Currency: {
+            Title: "Currency",
+            Description: "Shows amount of robux in currency you selected (Devex Rate)",
+            Type: "SelectionList",
+            GetList: async function(){
+                const [Success, Result] = await RequestFunc("https://qol.haydz6.com/api/currency/rates", "GET")
+                if (!Success) return []
+
+                const List = []
+
+                for (const [Currency, Rate] of Object.entries(Result)){
+                    List.push(Currency)
+                }
+                return List
+            }
         }
-        // ShowSimilarUGCItems: {
-        //     Title: "Show recolors of UGC accessory",
-        //     Description: "Shows UGC accessories recolors"
-        // }
     },
     GeneralNotifications: {
         InboxNotifications: {
@@ -760,4 +758,5 @@ async function StartQOLSettings(){
     if (IsOpen) OpenQOLSettings(SettingsButtonList, NavigateContainer)
 }
 
-StartQOLSettings()
+//StartQOLSettings()
+//CreateSettingsList()

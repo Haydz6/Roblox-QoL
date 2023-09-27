@@ -657,7 +657,7 @@ function CreateSectionButtonSetting(Name, ButtonText){
 
 function CreateSectionTitle(Title){
     const H4 = document.createElement("h4")
-    H4.innerText = Title
+    H4.innerText = Title.replace(/([A-Z])/g, ' $1').trim()
 
     return H4
 }
