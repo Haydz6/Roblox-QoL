@@ -101,11 +101,14 @@ async function CreateSettingsList(){
         CreateSpecificSettingsSection(TitleToContainer[title], title, settings)
     }
 
+    //Security index
+    const AllTitleIndexes = Object.keys(Settings)
+
     const SecurityList = CreateMenuList()
     const Button = CreateMenuOption("Security")
 
     CreateSecuritySection(SecurityList)
-    VerticalMenu.appendChild(Button)
+    VerticalMenu.insertBefore(Button, TitleToButton[AllTitleIndexes[AllTitleIndexes.indexOf("Security")+1]])
     TabContent.appendChild(SecurityList)
 
     Button.addEventListener("click", function(){
@@ -115,20 +118,16 @@ async function CreateSettingsList(){
     TitleToButton["Security"] = Button
     TitleToContainer["Security"] = SecurityList
 
-    HideAllContainers()
-    OpenContainer(Object.keys(Settings)[0])
-
     const [ReturnContainer, ReturnButton] = CreateStandaloneButton("Return")
     VerticalMenu.parentNode.appendChild(ReturnContainer)
 
     ReturnButton.addEventListener("click", function(){
         SettingsContainer.style.display = "none"
         RobloxContainer.style.display = ""
-        window.history.pushState(null, "Settings", "/my/account")
+        window.history.pushState(null, "Settings", "/my/account?")
     })
 
     const Params = new URLSearchParams(window.location.search)
-    console.log(window.location.search)
     if (Params.get("tab") === "robloxqol"){
         OpenQoLSettings()
         const CurrentOption = Params.get("option")
@@ -136,6 +135,9 @@ async function CreateSettingsList(){
             console.log(CurrentOption)
             HideAllContainers()
             OpenContainer(CurrentOption)
+        } else {
+            HideAllContainers()
+            OpenContainer(Object.keys(Settings)[0])
         }
     }
 }
