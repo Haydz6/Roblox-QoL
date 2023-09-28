@@ -20,6 +20,24 @@ function CreateMenuList(){
     return Container
 }
 
+function CreateMobileSettingsDropdown(){
+    const Container = document.createElement("div")
+    Container.className = "tab-dropdown"
+    Container.innerHTML = `<div class="input-group-btn dropdown" uib-dropdown=""> <button type="button" uib-dropdown-toggle="" class="input-dropdown-btn dropdown-toggle" aria-haspopup="true" aria-expanded="false"> <span class="rbx-selection-label">General</span> <span class="icon-down-16x16"></span> </button> <ul class="dropdown-menu"></ul> </div>`
+    return Container
+}
+
+function CreateMobileMenuOption(Text, NoSpace){
+    const Button = document.createElement("li")
+
+    const Content = document.createElement("a")
+    Content.innerText = NoSpace ? Text : Text.replace(/([A-Z])/g, ' $1').trim()
+
+    Button.appendChild(Content)
+
+    return Button
+}
+
 function CreateStandaloneButton(Text){
     const Container = document.createElement("div")
     Container.style = "display: flex; justify-content: center;"
@@ -33,9 +51,13 @@ async function CreateSettingsList(){
     const RobloxContainer = await WaitForId("settings-container")
     const FullContainer = RobloxContainer.parentNode
     const RobloxVerticalMenu = await WaitForId("vertical-menu")
+    const RobloxMobileVerticalMenu = await WaitForClassPath(await WaitForQuerySelector(`[ng-controller="accountsController"]`), "section", "tab-dropdown")
 
     const OpenOption = CreateMenuOption("Roblox QoL", true)
     RobloxVerticalMenu.appendChild(OpenOption)
+
+    const MobileOpenOption = CreateMobileMenuOption("Roblox QoL", true)
+    RobloxMobileVerticalMenu.getElementsByClassName("dropdown-menu")[0].appendChild(MobileOpenOption)
 
     const SettingsContainer = document.createElement("div")
     SettingsContainer.style.display = "none"
@@ -44,23 +66,61 @@ async function CreateSettingsList(){
     FullContainer.appendChild(SettingsContainer)
 
     const VerticalMenu = SettingsContainer.getElementsByClassName("menu-vertical")[0]
+    const MobileVerticalMenu = CreateMobileSettingsDropdown()
+    const OpenMobileVerticalMenu = MobileVerticalMenu.getElementsByClassName("input-group-btn dropdown")[0]
+    MobileVerticalMenu.style.display = "none"
+    const MobileVerticalMenuList = MobileVerticalMenu.getElementsByClassName("dropdown-menu")[0]
+    RobloxMobileVerticalMenu.parentNode.appendChild(MobileVerticalMenu)
+
+    const MobileVerticalMenuButton = MobileVerticalMenu.getElementsByClassName("input-dropdown-btn dropdown-toggle")[0]
+    const MobileVerticalMenuButtonLabel = MobileVerticalMenuButton.getElementsByClassName("rbx-selection-label")[0]
+
+    const [MobileReturnContainer, MobileReturnButton] = CreateStandaloneButton("Return")
+    MobileVerticalMenu.appendChild(MobileReturnContainer)
 
     let LastActiveButton
     let CurrentOption
 
+    function UpdateMobileVerticalMenuName(title){
+        MobileVerticalMenuButtonLabel.innerText = title
+    }
+
+    let MobileVerticalMenuOpen = false
+    function CloseMobileVerticalMenu(){
+        if (MobileVerticalMenuOpen){
+            OpenMobileVerticalMenu.className = OpenMobileVerticalMenu.className.replace("open", "")
+            MobileVerticalMenuOpen = false
+        }
+    }
+
+    MobileVerticalMenuButton.addEventListener("click", function(e){
+        e.stopPropagation()
+        if (!MobileVerticalMenuOpen) {
+            OpenMobileVerticalMenu.className += " open"
+            MobileVerticalMenuOpen = true
+        } else CloseMobileVerticalMenu()
+    })
+
+    document.addEventListener("click", CloseMobileVerticalMenu)
+
     function OpenQoLSettings(){
         SettingsContainer.style.display = ""
         RobloxContainer.style.display = "none"
+
+        RobloxMobileVerticalMenu.style.display = "none"
+        MobileVerticalMenu.style.display = ""
         window.history.pushState(null, "Settings", `/my/account?tab=robloxqol${CurrentOption ? "&option="+CurrentOption : ""}`)
     }
 
     OpenOption.addEventListener("click", OpenQoLSettings)
+    MobileOpenOption.addEventListener("click", OpenQoLSettings)
 
     const TabContent = SettingsContainer.getElementsByClassName("tab-content rbx-tab-content")[0]
     SettingsContainer.appendChild(TabContent)
 
     const TitleToContainer = {}
     const TitleToButton = {}
+    const TitleToMobileButton = {}
 
     function HideAllContainers(){
         for (const [_, Container] of Object.entries(TitleToContainer)){
@@ -77,6 +137,7 @@ async function CreateSettingsList(){
         TitleToContainer[Title].style.display = ""
 
         CurrentOption = Title
+        UpdateMobileVerticalMenuName(Title)
         window.history.pushState(null, "Settings", "/my/account?tab=robloxqol&option="+Title)
     }
 
@@ -91,8 +152,16 @@ async function CreateSettingsList(){
         Button.addEventListener("click", function(){
             OpenContainer(title)
         })
+
+        const MobileButton = CreateMobileMenuOption(title)
+        MobileVerticalMenuList.appendChild(MobileButton)
+
+        MobileButton.addEventListener("click", function(){
+            OpenContainer(title)
+        })
         
         TitleToButton[title] = Button
+        TitleToMobileButton[title] = MobileButton
         TitleToContainer[title] = List
     }
 
@@ -106,12 +175,18 @@ async function CreateSettingsList(){
 
     const SecurityList = CreateMenuList()
     const Button = CreateMenuOption("Security")
+    const MobileButton = CreateMobileMenuOption("Security")
 
     CreateSecuritySection(SecurityList)
     VerticalMenu.insertBefore(Button, TitleToButton[AllTitleIndexes[AllTitleIndexes.indexOf("Security")+1]])
+    MobileVerticalMenuList.insertBefore(MobileButton, TitleToMobileButton[AllTitleIndexes[AllTitleIndexes.indexOf("Security")+1]])
     TabContent.appendChild(SecurityList)
 
     Button.addEventListener("click", function(){
+        OpenContainer("Security")
+    })
+
+    MobileButton.addEventListener("click", function(){
         OpenContainer("Security")
     })
         
@@ -121,11 +196,19 @@ async function CreateSettingsList(){
     const [ReturnContainer, ReturnButton] = CreateStandaloneButton("Return")
     VerticalMenu.parentNode.appendChild(ReturnContainer)
 
-    ReturnButton.addEventListener("click", function(){
+    function CloseRobloxQoL(){
         SettingsContainer.style.display = "none"
         RobloxContainer.style.display = ""
+
+        RobloxMobileVerticalMenu.style.display = ""
+        MobileVerticalMenu.style.display = "none"
+
         window.history.pushState(null, "Settings", "/my/account?")
-    })
+    }
+
+    ReturnButton.addEventListener("click", CloseRobloxQoL)
+
+    MobileReturnButton.addEventListener("click", CloseRobloxQoL)
 
     const Params = new URLSearchParams(window.location.search)
     if (Params.get("tab") === "robloxqol"){

@@ -81,6 +81,24 @@ function WaitForId(Id){
   })
 }
 
+function WaitForQuerySelector(Query){
+  function Look(resolve){
+    let Element = null
+  
+    Element = document.querySelector(Query)
+    if (Element == null){
+      setTimeout(Look, 50, resolve)
+      return
+    }
+  
+    resolve(Element)
+  }
+
+  return new Promise((resolve) => {
+    Look(resolve)
+  })
+}
+
 function WaitForTag(Tag){
   function Look(resolve){
     let Element = null
