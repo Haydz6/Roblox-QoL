@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
-    "name": "Roblox QoL",
-    "short_name": "Roblox QoL",
+    "name": "RoQoL (Roblox QoL)",
+    "short_name": "RoQoL",
     "description": "Multiple changes to the roblox site for a better user experience.",
     "author": "Haydz6",
     "version": "2.16.0",
