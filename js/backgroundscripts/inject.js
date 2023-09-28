@@ -156,6 +156,7 @@ const ContentScripts = [{
 
         "js/pages/profile/followsyou.js",
         "js/pages/profile/discord.js",
+        "js/pages/profile/lastonline.js",
 
         "js/pages/bestfriend/profile.js"
     ],
