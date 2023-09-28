@@ -95,14 +95,14 @@ function CreateFeed(){
     "><!-- end ngIf: $ctrl.thumbnailUrl && !$ctrl.isLazyLoadingEnabled() --> <!-- ngIf: $ctrl.thumbnailUrl && $ctrl.isLazyLoadingEnabled() --> </span> </thumbnail-2d> </a> </div> <div class="list-body"> <div class="group-comments-container"> <!-- ngIf: $ctrl.isDisplayNamesEnabled --><a ng-if="$ctrl.isDisplayNamesEnabled" ng-href="https://www.roblox.com/users/2308943429/profile" class="group-name text-name ng-binding ng-scope" ng-bind="post.poster.displayName" href="https://www.roblox.com/users/2308943429/profile">The epic group!</a><!-- end ngIf: $ctrl.isDisplayNamesEnabled --> <!-- ngIf: !$ctrl.isDisplayNamesEnabled --> <!-- ngIf: post.poster.hasVerifiedBadge --> </div> <p class="comment-label list-content ng-binding" ng-bind-html="post.body | linkify" style="
         margin-bottom: 2px;
         margin-top: 12px;
-    ">"Please attend the military meeting at sample text here!"</p> <p class="posted-by-label list-content ng-binding" ng-bind-html="post.body | linkify">(posted by Haydz6)</p><div class="date-label text-date-hint ng-binding" ng-bind="post.poster.role.name | appendDate: post.posted">Sep 24, 2023 | 9:18 AM</div> </div> <div class="group-menu" style="
+    ">"Please attend the military meeting at sample text here!"</p> <p style="margin-top: 10px;" class="posted-by-label list-content ng-binding" ng-bind-html="post.body | linkify">(Posted by <a class="posted-by-label-profile"></a>)</p><div class="date-label text-date-hint ng-binding" ng-bind="post.poster.role.name | appendDate: post.posted">Sep 24, 2023 | 9:18 AM</div> </div> <div class="group-menu" style="
         display: none;
     "> <button class="btn-generic-more-sm" popover-placement="bottom-right" popover-trigger="'outsideClick'" uib-popover-template="'group-comments-menu-popover'" title="More"> <span class="icon-more"></span> </button> </div>`
     
         const IconLabel = Comment.getElementsByClassName("post-icon-image")[0]
         const GroupNameLabel = Comment.getElementsByClassName("group-name")[0]
         const CommentLabel = Comment.getElementsByClassName("comment-label")[0]
-        const PostedByLabel = Comment.getElementsByClassName("posted-by-label")[0]
+        const PostedByLabel = Comment.getElementsByClassName("posted-by-label-profile")[0]
         const DateLabel = Comment.getElementsByClassName("date-label")[0]
 
         const GroupURL = `https://www.roblox.com/groups/${FeedPost.Group}/group#!/about`
@@ -116,7 +116,8 @@ function CreateFeed(){
             GroupNameLabel.innerText = Name
         })
         BatchCalls(FeedPost.Poster, GetUserNames).then(function(Name){
-            PostedByLabel.innerText = `Posted by ${Name}`
+            PostedByLabel.innerText = Name
+            PostedByLabel.href = `https://www.roblox.com/users/${FeedPost.Poster}/profile`
         })
 
         CommentLabel.innerText = FeedPost.Comment
