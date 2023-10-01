@@ -56,7 +56,6 @@ async function CheckForNewGroupShoutNotification(Body){
     const Updated = Math.floor(new Date(Shout.updated).getTime()/1000)
 
     if (Shout && Prior !== Updated){
-        console.log("update")
         GroupShouts[Body.id] = Updated
         SaveGroupShouts()
         if (Prior) CreateGroupShoutNotification(Body)

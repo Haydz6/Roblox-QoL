@@ -43,7 +43,6 @@ async function UpdateFeed(){
         return
     }
     if (FeedEnabled) if (!await GetFeed()) return
-    console.log("go!")
 
     const [Success, Groups] = await RequestFunc(`https://groups.roblox.com/v1/users/${UserId}/groups/roles`, "GET", undefined, undefined, true)
     if (!Success) return

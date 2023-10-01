@@ -45,6 +45,8 @@ async function CreateGameCardsFromUniverseIds(Games, CardsContainer, CacheFetchI
     const UniverseIdToVotePercent = {}
     const UniverseIdToImageElement = {}
 
+    const Cards = {}
+
     for (let i = 0; i < Data.length; i++){
         const Universe = Data[i]
         const [GameCard, GameImage, CardInfo, VotePercent] = CreateGameCard(Universe.name, `https://roblox.com/games/${Universe.rootPlaceId}`, Universe.playing)
@@ -70,6 +72,8 @@ async function CreateGameCardsFromUniverseIds(Games, CardsContainer, CacheFetchI
             PlaytimeCardInfo.append(PlaytimeIcon, PlaytimeLabel)
             CardInfo.parentElement.appendChild(PlaytimeCardInfo)
         }
+
+        Cards[Universe.id] = GameCard
     }
 
     async function GetRatings(){
@@ -136,4 +140,6 @@ async function CreateGameCardsFromUniverseIds(Games, CardsContainer, CacheFetchI
     }
     GetRatings()
     GetGameIcons()
+
+    return Cards
 }

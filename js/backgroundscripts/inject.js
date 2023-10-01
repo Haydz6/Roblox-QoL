@@ -53,7 +53,9 @@ const ContentScripts = [{
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/allgames.js",
 
-        "js/pages/pinned/allgames.js"
+        "js/pages/pinned/allgames.js",
+
+        "js/pages/friendsactivity/allgames.js"
     ],
     "run_at": "document_start"
 },
@@ -269,6 +271,8 @@ const ContentScripts = [{
         "js/pages/playtime/home.js",
 
         "js/pages/pinned/home.js",
+        
+        "js/pages/friendsactivity/home.js",
         
         "js/pages/bestfriend/home.js"
     ],

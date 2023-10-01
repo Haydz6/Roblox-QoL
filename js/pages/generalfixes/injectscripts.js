@@ -1,11 +1,11 @@
-async function InjectScript(Path, URLMatch){
+async function InjectScript(Path, URLMatch, FullPath){
     if (URLMatch){
         const Regexp = new RegExp(URLMatch.replace(/\*/g, "[^ ]*"))
         if (!Regexp.test(window.location.href)) return
     }
 
     const Script = document.createElement("script")
-    Script.src = chrome.runtime.getURL("js/pages/generalfixes/scriptinjections/"+Path+".js")
+    Script.src = chrome.runtime.getURL(FullPath ? Path : "js/pages/generalfixes/scriptinjections/"+Path+".js")
 
     while (!document.head) await new Promise(r => setTimeout(r, 20))
 

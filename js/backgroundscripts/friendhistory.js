@@ -176,6 +176,7 @@ async function UpdateHistory(){
     CachedFriends = Friends
     SaveFriends()
 
+    UpdateFriendsActivity(Friends)
     if (!HasFriendsChanged(Friends)) return
     LastFriends = Friends
 
