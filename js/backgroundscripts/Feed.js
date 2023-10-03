@@ -1,5 +1,6 @@
 let HaveFetchedFeed = false
 const Feed = {}
+let FeedList = []
 
 async function GetFeed(){
     if (HaveFetchedFeed) return true
@@ -12,6 +13,7 @@ async function GetFeed(){
         if (Feed[Group.Group]) continue
         Feed[Group.Group] = Group
     }
+    FeedList = Result
     HaveFetchedFeed = true
 
     return true
@@ -24,8 +26,10 @@ async function FeedGroupShoutChanged(Group){
         Poster: Group.shout.poster.userId,
         Date: Math.floor(new Date(Group.shout.updated).getTime()/1000),
     }
+
     const [Success] = await RequestFunc(WebServerEndpoints.Feed+"add", "POST", {"Content-Type": "application/json"}, JSON.stringify(Feed))
     if (!Success) return [false]
+    if (FeedList.unshift(Feed) > 200) FeedList.length = 200
 
     return [true, Feed]
 }
@@ -60,6 +64,13 @@ async function UpdateFeed(){
 
             if (Shout && Shout.body !== "" && Prior !== Updated){
                 if (Feed){
+                    if (!Prior){ //Check if we have no room for this since its too old
+                        const Timestamp = FeedList[FeedList.length-1]?.Date
+                        if (Timestamp && Timestamp > Updated){
+                            continue //Too old
+                        }
+                    }
+
                     const [Success, Result] = await FeedGroupShoutChanged(Body)
                     if (Success) Feed[Body.id] = Result
                 }
