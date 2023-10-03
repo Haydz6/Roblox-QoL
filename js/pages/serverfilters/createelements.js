@@ -18,7 +18,7 @@ function CreateHeaderAndValueForHover(HoverElement, HeaderText, ValueText){
 
 function CreateInfoDiv(){
     const HoverElement = document.createElement("li")
-    HoverElement.className = "width: 150px; height: 150px; position:absolute; z-index: 5; background-color: #191919; bottom: 82px; display: block; border-radius: 12px;"
+    HoverElement.className = "width: 150px; height: 150px; position :absolute; z-index: 5; background-color: #191919; bottom: 82px; display: block; border-radius: 12px; box-shadow: 0 0 8px 0 rgba(0,0,0,.3);"
 
     return HoverElement
 }
@@ -66,7 +66,7 @@ function CreateServerInfo(Element, Server){
     const HoverElement = document.createElement("li")
 
     function SetVisibility(Visible){
-        HoverElement.style = `width: 150px; height: 150px; position:absolute; z-index: 5; background-color: #191919; bottom: 24px; display: block; border-radius: 12px;${!Visible && " display:none;" || ""}`
+        HoverElement.style = `width: 150px; height: 150px; position:absolute; z-index: 5; background-color: #191919; bottom: 24px; display: block; border-radius: 12px;${!Visible && " display:none;" || ""} box-shadow: 0 0 8px 0 rgba(0,0,0,.3);`
     }
 
     CreateHeaderAndValueForHover(HoverElement, "Server Region", Server.Region)
