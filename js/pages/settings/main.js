@@ -45,7 +45,7 @@ const Settings = {
             Description: "Shows last online if friend is offline on home page."
         },
         LastOnline: {
-            Title: "Show last onoine on Profile",
+            Title: "Show last online on Profile",
             Description: "Shows last online of user on their profile"
         },
         HideOffline: {
