@@ -19,7 +19,7 @@ IsFeatureEnabled("PinnedGames").then(async function(Enabled){
     const Spinner = CreateSpinner()
     GameGrid.appendChild(Spinner)
 
-    const [Success, Games] = await RequestFunc(WebServerEndpoints.Pinned+"all?type=All", "GET")
+    const [Success, Games, Result] = await RequestFunc(WebServerEndpoints.Pinned+"all?type=All", "GET")
 
     function Fail(Text){
         const FailedText = document.createElement("p")
@@ -30,7 +30,7 @@ IsFeatureEnabled("PinnedGames").then(async function(Enabled){
     }
 
     if (!Success) {
-        Fail("Failed to load pinned games")
+        Fail(`Failed to load pinned games (${Result?.statusText || "HTTP Failed"}. ${Games?.Result || ""})`)
         return
     }
 

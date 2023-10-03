@@ -47,12 +47,12 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
         const Spinner = CreateSpinner()
         GameCarousel.appendChild(Spinner)
 
-        let Success, Games
+        let Success, Games, Result
         if (FirstRequest){
             FirstRequest = false
-            ;([Success, Games] = await RequestPlaytimeBatchFetch(Type))
+            ;([Success, Games, Result] = await RequestPlaytimeBatchFetch(Type))
         } else [
-            ([Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}&show=Some`, "GET"))
+            ([Success, Games, Result] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${Params}&type=${Type}&show=Some`, "GET"))
         ]
 
         if (Params === "time=all" && !ShowIfEmpty && Games.length === 0){
@@ -74,7 +74,7 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
         }
 
         if (!Success) {
-            Fail("Failed to load playtime")
+            Fail(`Failed to load playtime (${Result?.statusText || "HTTP Failed"}. ${Games?.Result || ""})`)
             return
         }
 

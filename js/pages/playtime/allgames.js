@@ -73,7 +73,7 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
         const Spinner = CreateSpinner()
         GameGrid.appendChild(Spinner)
 
-        const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${CurrentParams}&type=${Type}&page=${CurrentPage}`, "GET")
+        const [Success, Games, Result] = await RequestFunc(`${WebServerEndpoints.Playtime}all?${CurrentParams}&type=${Type}&page=${CurrentPage}`, "GET")
         if (FetchInt[0] !== CacheFetchInt) return
 
         function Fail(Text){
@@ -85,7 +85,7 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
         }
 
         if (!Success) {
-            Fail("Failed to load playtime")
+            Fail(`Failed to load playtime (${Result?.statusText || "HTTP Failed"}. ${Games?.Result || ""})`)
             return
         }
 
