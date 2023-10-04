@@ -306,7 +306,7 @@ async function HandleFilterClick(Container, FilterButton){
         }
 
         new MutationObserver(function(){
-            if (!Button.style.right === "220px") Reset()
+            if (Button.style.right !== "220px") Reset()
         }).observe(Button, {attributeFilter: ["style"]})
         Reset()
     })
