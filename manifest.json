@@ -23,8 +23,7 @@
     "host_permissions": [
         "*://*.roqol.io/",
         "*://*.roblox.com/",
-        "*://*.rbxcdn.com/",
-        "*://*.ropro.io/"
+        "*://*.rbxcdn.com/"
     ],
     "web_accessible_resources": [
         {
