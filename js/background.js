@@ -305,6 +305,8 @@ function numberWithCommas(x) {
 BindToOnMessage("FeatureSupported", false, function(Result){
     if (Result.name === "hideoffine"){
         return ManifestVersion >= 3
+    } else if (Result.name === "viewbanneduser"){
+        return BannedUsersSupported
     }
 
     return chrome[Result.name] != undefined

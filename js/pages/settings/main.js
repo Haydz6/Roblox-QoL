@@ -65,7 +65,10 @@ const Settings = {
         },
         ViewBannedUser: {
             Title: "View Banned User",
-            Description: "Allows you to view a banned user."
+            Description: "Allows you to view a banned user.",
+            Supported: async function(){
+                return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "viewbanneduser"})
+            }
         },
         AddRowToHomeFriends: {
             Title: "Expand home friends list",
