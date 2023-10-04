@@ -3,7 +3,7 @@ let UserHasInteractedWithPage = false
 
 function PlayPingSound(){
     if (!PingAudio){
-        PingAudio = new Audio("https://qol.haydz6.com/assets/newmessageping.mp3")
+        PingAudio = new Audio("https://roqol.io/assets/newmessageping.mp3")
     }
 
     PingAudio.play()

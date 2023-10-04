@@ -149,7 +149,7 @@ const Settings = {
                 Title.append(Avatar, Label)
 
                 const DownloadLink = document.createElement("a")
-                DownloadLink.href = "https://qol.haydz6.com/discord-presence-client"
+                DownloadLink.href = "https://roqol.io/discord-presence-client"
                 DownloadLink.innerText = "Requires external program"
                 DownloadLink.style = "text-decoration: underline; cursor: pointer;"
                 DownloadLink.target = "_blank"
@@ -209,7 +209,7 @@ const Settings = {
             Description: "Adds a button that allows you to join a server from a certain region (if one exists, else it will look for the closest one)",
             Type: "SelectionList",
             GetList: async function(){
-                const [Success, Result] = await RequestFunc("https://qol.haydz6.com/api/servers/regions", "GET")
+                const [Success, Result] = await RequestFunc("https://roqol.io/api/servers/regions", "GET")
                 if (!Success) return ["None"]
                 const RegionList = []
                 for (let i = 0; i < Result.length; i++){
@@ -428,7 +428,7 @@ const Settings = {
             Description: "Shows amount of robux in currency you selected (Devex Rate)",
             Type: "SelectionList",
             GetList: async function(){
-                const [Success, Result] = await RequestFunc("https://qol.haydz6.com/api/currency/rates", "GET")
+                const [Success, Result] = await RequestFunc("https://roqol.io/api/currency/rates", "GET")
                 if (!Success) return []
 
                 const List = []

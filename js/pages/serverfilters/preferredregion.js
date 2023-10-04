@@ -136,7 +136,7 @@ IsFeatureEnabled("PreferredServerRegion").then(async function(Region){
 
         const CoordinateLookup = {}
 
-        const [Success, Regions] = await RequestFunc("https://qol.haydz6.com/api/servers/regions", "GET")
+        const [Success, Regions] = await RequestFunc("https://roqol.io/api/servers/regions", "GET")
         if (Success){
             for (let i = 0; i < Regions.length; i++){
                 const Region = Regions[i]
