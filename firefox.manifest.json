@@ -10,9 +10,10 @@
         "128": "img/icons/icon128x128.png",
         "48": "img/icons/icon48x48.png"
     },
+    "browser_action": {},
     "permissions": [
         "*://*.roblox.com/*",
-        "*://*.haydz6.com/*",
+        "*://*.roqol.io/*",
         "*://*.rbxcdn.com/",
         "*://*.ropro.io/",
         "storage",
@@ -71,7 +72,8 @@
         },
         {
             "matches": [
-                "*://qol.haydz6.com/i/*"
+                "*://qol.haydz6.com/i/*",
+                "*://roqol.io/i/*"
             ],
             "js": [
                 "js/pages/quickserverinvite/setinstalledidentifier.js"

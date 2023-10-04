@@ -10,9 +10,7 @@
         "128": "img/icons/icon128x128.png",
         "48": "img/icons/icon48x48.png"
     },
-    "action": {
-        "default_icon": {"48": "img/icons/icon48x48.png", "128": "img/icons/icon128x128.png"}
-    },
+    "action": {},
     "permissions": [
         "storage",
         "notifications",
@@ -93,7 +91,8 @@
         },
         {
             "matches": [
-                "*://qol.haydz6.com/i/*"
+                "*://qol.haydz6.com/i/*",
+                "*://roqol.io/i/*"
             ],
             "js": [
                 "js/pages/quickserverinvite/setinstalledidentifier.js"
