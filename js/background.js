@@ -334,7 +334,7 @@ BindToOnMessage("PaymentRequired", false, function(request){
 })
 
 const BrowserAction = chrome.action || chrome.browserAction
-BrowserAction.onClicked.addListener(() => {
+if (BrowserAction?.onClicked) BrowserAction.onClicked.addListener(() => {
     chrome.tabs.create({url: "https://www.roblox.com/my/account?tab=robloxqol"})
 })
 
