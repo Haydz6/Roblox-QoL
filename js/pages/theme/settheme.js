@@ -2,7 +2,7 @@ async function SetThemeToSystem(){ //If changed live
     if (!window.matchMedia) return
 
     function ReplaceClass(Element, Theme){
-        if (!IsFeatureEnabled("SetThemeToSystem") || !Element.className.includes("theme")) return
+        if (!IsFeatureEnabled("SetThemeToSystem2") || !Element.className.includes("theme")) return
         Element.className = Element.className.replace("dark-theme", "").replace("light-theme", "") + ` ${Theme}-theme`
     }
 
@@ -28,7 +28,7 @@ async function SetThemeToSystem(){ //If changed live
     const ThemeElements = []
 
     async function UpdateTheme(){
-        if (!IsFeatureEnabled("SetThemeToSystem")) return
+        if (!IsFeatureEnabled("SetThemeToSystem2")) return
         const [Theme, Opposite] = GetTheme()
         LastTheme = Theme
         
@@ -41,7 +41,7 @@ async function SetThemeToSystem(){ //If changed live
         }
     }
 
-    while (!document.body || !IsFeatureEnabled("SetThemeToSystem")) await sleep(0)
+    while (!document.body || !IsFeatureEnabled("SetThemeToSystem2")) await sleep(0)
     const Args = GetTheme()
     LastTheme = Args[0] //thanks js
 
@@ -62,7 +62,7 @@ async function SetThemeToSystem(){ //If changed live
         })
     }
 
-    ListenForFeatureChanged("SetThemeToSystem", function(Enabled){
+    ListenForFeatureChanged("SetThemeToSystem2", function(Enabled){
         if (Enabled) UpdateTheme()
     })
 
