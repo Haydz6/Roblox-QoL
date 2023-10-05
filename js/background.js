@@ -156,6 +156,8 @@ function generateBaseHeaders(URL, Body){
     })
 }
 
+let HBAclient
+
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){
     if (!Headers){
       Headers = {}
@@ -166,7 +168,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     if (URL.search("roblox.com") > -1) {
         Headers["x-csrf-token"] = CSRFToken
 
-        if (await IsFeatureKilled("NoHBA")){
+        if ((await IsFeatureKilled("NoHBA") || true) && await HBAclient.isUrlIncludedInWhitelist(URL)){
             const Generated = await generateBaseHeaders(URL, Body)
             if (Generated === false){
                 if (await IsFeatureKilled("DontTryBypassHBA")){
@@ -386,7 +388,7 @@ if (BrowserAction?.onClicked) BrowserAction.onClicked.addListener(() => {
 })
 
 if (ManifestVersion > 2){
-    const Scripts = ["js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/inject.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendsactivity.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/hideoffline.js", "js/backgroundscripts/bannedprofile.js", "js/backgroundscripts/friendrequest.js", "js/backgroundscripts/GroupShoutNotifications.js", "js/backgroundscripts/inboxnotifications.js", "js/backgroundscripts/Feed.js"]
+    const Scripts = ["js/modules/hbaClient.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/inject.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendsactivity.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/hideoffline.js", "js/backgroundscripts/bannedprofile.js", "js/backgroundscripts/friendrequest.js", "js/backgroundscripts/GroupShoutNotifications.js", "js/backgroundscripts/inboxnotifications.js", "js/backgroundscripts/Feed.js"]
     const FullScriptURLs = []
 
     for (let i = 0; i < Scripts.length; i++){
@@ -399,6 +401,8 @@ if (ManifestVersion > 2){
         console.error(err.message)
     }
 }
+
+HBAclient = new HBAClient({onSite: false}) //init after imported
 
 CallLogin()
 GetSubscription()
