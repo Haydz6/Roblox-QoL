@@ -110,6 +110,7 @@ class HBAClient {
     cookie;
     targetId = "";
     cachedTokenMetadata;
+    tokenMetadataFetched;
     headers = {};
     cryptoKeyPair;
     onSite = false;
@@ -147,9 +148,9 @@ class HBAClient {
         };
     }
     async clearTokenMetadataifEligible(SecondsElapsed) {
-        if ((Date.now() - this.TokenMetadataFetched)/1000 >= SecondsElapsed){
+        if (this.tokenMetadataFetched && (Date.now() - this.tokenMetadataFetched)/1000 >= SecondsElapsed){
             this.cachedTokenMetadata = undefined
-            this.TokenMetadataFetched = undefined
+            this.tokenMetadataFetched = undefined
         }
     }
     async getTokenMetadata(uncached) {
@@ -222,7 +223,7 @@ class HBAClient {
                 hbaIndexedDbObjStoreName: hbaIndexedDbObjStoreName
             };
             this.cachedTokenMetadata = tokenMetadata;
-            this.TokenMetadataFetched = Date.now()
+            this.tokenMetadataFetched = Date.now()
             return tokenMetadata;
         })();
         this.cachedTokenMetadata = promise;
