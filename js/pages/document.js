@@ -256,7 +256,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
 
   if (URL.search("roblox.com") > -1) {
     Headers["x-csrf-token"] = CSRFToken
-    if (await IsFeatureKilled("NoHBA")) Headers = {...(await hbaClient.generateBaseHeaders(URL, Body)), ...Headers}
+    Headers = {...(await hbaClient.generateBaseHeaders(URL, Body)), ...Headers}
   } else if (IsQOLAPI){
     if (URL.search("/auth") == -1){
       Headers.Authentication = await GetAuthKey()
