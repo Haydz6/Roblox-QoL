@@ -50,10 +50,10 @@ const Settings = {
         },
         HideOffline: {
             Title: "Appear offline (Website Only)",
-            Description: "Makes you appear offline to other users while browsing the website. (This only works on the website, it is a limitation of roblox)",
-            Supported: async function(){
-                return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "hideoffine"})
-            }
+            Description: "Makes you appear offline to other users while browsing the website. (This only works on the website, it is a limitation of roblox)"
+            // Supported: async function(){
+            //     return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "hideoffine"})
+            // }
         },
         ShowFollowsYou: {
             Title: "Follows You Indicator",

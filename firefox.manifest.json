@@ -19,7 +19,8 @@
         "notifications",
         "cookies",
         "scripting",
-        "webRequest"
+        "webRequest",
+        "webRequestBlocking"
     ],
     "web_accessible_resources": [
         "img/*",
