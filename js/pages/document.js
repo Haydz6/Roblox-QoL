@@ -234,6 +234,19 @@ function RequestFuncCORSBypass(URL, Method, Headers, Body, CredientalsInclude, B
   return chrome.runtime.sendMessage({type: "fetch", URL: URL, Method: Method, Headers: Headers, Body: Body, CredientalsInclude: CredientalsInclude, BypassResJSON: BypassResJSON})
 }
 
+const hbaClient = new HBAClient({
+  onSite: true,
+})
+
+chrome.runtime.onMessage.addListener(function(Message, _, sendResponse){
+  if (Message.type === "HBA"){
+    hbaClient.generateBaseHeaders(Message.URL, Message.Body).then(function(Headers){
+      sendResponse(Headers)
+    })
+    return true
+  }
+})
+
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){
   if (!Headers){
     Headers = {}
@@ -243,6 +256,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
 
   if (URL.search("roblox.com") > -1) {
     Headers["x-csrf-token"] = CSRFToken
+    if (await IsFeatureKilled("NoHBA")) Headers = {...(await hbaClient.generateBaseHeaders(URL, Body)), ...Headers}
   } else if (IsQOLAPI){
     if (URL.search("/auth") == -1){
       Headers.Authentication = await GetAuthKey()

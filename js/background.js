@@ -8,7 +8,7 @@ const Manifest = chrome.runtime.getManifest()
 const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
-const EnabledFeatures = {FriendsActivity: true, LastOnline: true, TemporaryHomePageContainerFix: true, Feed: true, IgnoreSystemInboxNofitications: false, InboxNotifications: false, GroupShoutNotifications: {Enabled: false, Joined: true, Groups: []}, BestFriends: true, CSVChart: true, MinimizePrivateServers: true, SetThemeToSystem2: false, DiscordSocialLink: true, RemoveAccessoryLimit: true, CancelFriendRequest: true, AddRowToHomeFriends: false, ViewBannedUser: true, ViewBannedGroup: true, ShowFollowsYou: true, HideOffline: false, FriendsHomeLastOnline: true, PinnedGroups: true, PinnedGames: true, SupportedPlatforms: true, DiscordPresenceJoin: true, ExternalDiscordPresence: false, DiscordPresence: false, GameFolders: false, OnlyReadNewLoginNotifierTitle: true, NewLoginNotifierTTSVolume: 0.6, ResizableChatBoxes: true, ShowStateAndCountryOnNewSessionOnly: true, ShowIPOnNewSession: false, StrictlyDisallowOtherIPs2: false, IgnoreSessionsFromSameIP2: true, DisallowOtherIPs2: false, NewLoginNotifierTTS4: false, NewLoginNotifier3: true, FixContinueCuration: true, OutfitSearchbar: true, DetailedGroupTranscationSummary: true, ValueAndCategoriesOnOffer: true, AutodeclineLowTradeValue: false, AutodeclineLowTradeValueThreshold: 0, ShowSimilarUGCItems: false, Currency: "USD", AddUSDToRobux: true, ShowUSDOnAsset: true, AddSales: true, AddCreationDate: true, CountBadges: true, ShowValueOnTrade: true, ShowDemandOnTrade: true, ShowSummaryOnTrade: true, AddDownloadButtonToNewVersionHistory: true, AutodeclineOutboundTradeValue: false, AutodeclineOutboundTradeValueThreshold: 50, AutodeclineTradeValue: false, AutodeclineTradeValueThreshold: 50, Playtime: true, TradeNotifier: true, QuickDecline: true, QuickCancel: true, ProfileThemes: false, HideFooter: false, HideRobloxAds: false, MoveHomeFavouritesToThirdRow: true, HideDesktopAppBanner: true, RapOnProfile: true, ValueOnProfile: true, ValueDemandOnItem: true, ValuesOnOverview: true, RecentServers: true, TradeFilters: true, Mutuals2: true, ExploreAsset: false, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing3: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, FriendRequestNotifications: false, LiveExperienceStats: true, ServerRegions: true, PreferredServerRegion: "None"}
+const EnabledFeatures = {NoHBA: true, FriendsActivity: true, LastOnline: true, TemporaryHomePageContainerFix: true, Feed: true, IgnoreSystemInboxNofitications: false, InboxNotifications: false, GroupShoutNotifications: {Enabled: false, Joined: true, Groups: []}, BestFriends: true, CSVChart: true, MinimizePrivateServers: true, SetThemeToSystem2: false, DiscordSocialLink: true, RemoveAccessoryLimit: true, CancelFriendRequest: true, AddRowToHomeFriends: false, ViewBannedUser: true, ViewBannedGroup: true, ShowFollowsYou: true, HideOffline: false, FriendsHomeLastOnline: true, PinnedGroups: true, PinnedGames: true, SupportedPlatforms: true, DiscordPresenceJoin: true, ExternalDiscordPresence: false, DiscordPresence: false, GameFolders: false, OnlyReadNewLoginNotifierTitle: true, NewLoginNotifierTTSVolume: 0.6, ResizableChatBoxes: true, ShowStateAndCountryOnNewSessionOnly: true, ShowIPOnNewSession: false, StrictlyDisallowOtherIPs2: false, IgnoreSessionsFromSameIP2: true, DisallowOtherIPs2: false, NewLoginNotifierTTS4: false, NewLoginNotifier3: true, FixContinueCuration: true, OutfitSearchbar: true, DetailedGroupTranscationSummary: true, ValueAndCategoriesOnOffer: true, AutodeclineLowTradeValue: false, AutodeclineLowTradeValueThreshold: 0, ShowSimilarUGCItems: false, Currency: "USD", AddUSDToRobux: true, ShowUSDOnAsset: true, AddSales: true, AddCreationDate: true, CountBadges: true, ShowValueOnTrade: true, ShowDemandOnTrade: true, ShowSummaryOnTrade: true, AddDownloadButtonToNewVersionHistory: true, AutodeclineOutboundTradeValue: false, AutodeclineOutboundTradeValueThreshold: 50, AutodeclineTradeValue: false, AutodeclineTradeValueThreshold: 50, Playtime: true, TradeNotifier: true, QuickDecline: true, QuickCancel: true, ProfileThemes: false, HideFooter: false, HideRobloxAds: false, MoveHomeFavouritesToThirdRow: true, HideDesktopAppBanner: true, RapOnProfile: true, ValueOnProfile: true, ValueDemandOnItem: true, ValuesOnOverview: true, RecentServers: true, TradeFilters: true, Mutuals2: true, ExploreAsset: false, QuickInvite: true, AwardedBadgeDates: true, ServerFilters: true, ExtraOutfits: true, FixFavouritesPage: true, ActivePrivateServers: true, NewMessagePing3: true, PurchasedGamesFix: true, FriendHistory: true, FriendNotifications: true, FriendRequestNotifications: false, LiveExperienceStats: true, ServerRegions: true, PreferredServerRegion: "None"}
 let AreEnabledFeaturesFetched = false
 
 const PaidFeatures = {FriendsActivity: 1, PinnedGames: 1, PinnedGroups: 1, FriendRequestNotifications: 1, BestFriends: 1, Feed: 1}
@@ -119,6 +119,43 @@ async function SetFavouriteGame(UniverseId, Favourited){
     return RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "POST", undefined, JSON.stringify({isFavorited: Favourited}), true)
 }
 
+let ActiveRobloxPages = []
+
+function TabUpdated(Tab){
+    const URL = Tab.url
+    if (URL && (URL.includes("web.roblox.com") || URL.includes("www.roblox.com"))){
+        if (!ActiveRobloxPages.includes(Tab.id)) ActiveRobloxPages.push(Tab.id)
+    } else {
+        const Index = ActiveRobloxPages.indexOf(Tab.id)
+        if (Index !== -1) ActiveRobloxPages.splice(Index, 1)
+    }
+}
+
+chrome.tabs.onUpdated.addListener(TabUpdated)
+
+chrome.tabs.onRemoved.addListener(function(Tab){
+    const Index = ActiveRobloxPages.indexOf(Tab.id)
+    if (Index !== -1) ActiveRobloxPages.splice(Index, 1)
+})
+
+chrome.tabs.query({}, function(tabs){
+    for (let i = 0; i < tabs.length; i++){
+        TabUpdated(tabs[i])
+    }
+})
+
+
+function generateBaseHeaders(URL, Body){
+    const Page = ActiveRobloxPages[0]
+    if (!Page) return false
+
+    return new Promise((resolve) => {
+        chrome.tabs.sendMessage(Page, {type: "HBA", URL: URL, Body: Body}, undefined, function(headers){
+            resolve(headers || {}) //null if failed :(
+        })
+    })
+}
+
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){
     if (!Headers){
       Headers = {}
@@ -128,7 +165,17 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
   
     if (URL.search("roblox.com") > -1) {
         Headers["x-csrf-token"] = CSRFToken
-    } else if (IsQOLAPI){
+
+        if (await IsFeatureKilled("NoHBA")){
+            const Generated = await generateBaseHeaders(URL, Body)
+            if (Generated === false){
+                if (await IsFeatureKilled("DontTryBypassHBA")){
+                    return [false, {Success: false, Result: "Open a roblox page"}]
+                }
+            }
+            Headers = {...Generated, ...Headers}
+        }
+    } else if (IsQOLAPI && !URL.includes("disabled_features")){
         if (!URL.includes("/auth") || URL.includes("/reverify")){
             Headers.Authentication = await GetAuthKey()
         }
