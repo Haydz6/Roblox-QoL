@@ -159,6 +159,9 @@ function generateBaseHeaders(URL, Body){
 let HBAclient
 
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){
+    if (!HBAclient){
+        HBAclient = new HBAClient({onSite: false}) //init after imported
+    }
     if (!Headers){
       Headers = {}
     }
@@ -401,8 +404,6 @@ if (ManifestVersion > 2){
         console.error(err.message)
     }
 }
-
-HBAclient = new HBAClient({onSite: false}) //init after imported
 
 CallLogin()
 GetSubscription()
