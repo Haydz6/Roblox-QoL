@@ -59,7 +59,10 @@ async function UpdateFeed(){
             const Prior = Feed[Body.id]?.Date
 
             if (AllShoutNotificationsEnabled) CheckForNewGroupShoutNotification(Body)
-            if (!Shout) continue
+            if (!Shout){
+                await sleep(5000)
+                continue
+            }
             const Updated = Math.floor(new Date(Shout.updated).getTime()/1000)
 
             if (Shout && Shout.body !== "" && Prior !== Updated){
@@ -67,6 +70,7 @@ async function UpdateFeed(){
                     if (!Prior){ //Check if we have no room for this since its too old
                         const Timestamp = FeedList[FeedList.length-1]?.Date
                         if (Timestamp && Timestamp > Updated){
+                            await sleep(5000)
                             continue //Too old
                         }
                     }
