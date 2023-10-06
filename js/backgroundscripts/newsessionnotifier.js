@@ -334,7 +334,7 @@ chrome.notifications.onButtonClicked.addListener(async function(NotificationId, 
     }
 })
 
-chrome.notifications.onButtonClicked.addListener(async function(NotificationId, ButtonIndex){
+if (chrome.notifications?.onButtonClicked) chrome.notifications.onButtonClicked.addListener(async function(NotificationId, ButtonIndex){
     const Notification = SessionButtonNotifications[NotificationId]
     if (!Notification) return
 
@@ -344,14 +344,14 @@ chrome.notifications.onButtonClicked.addListener(async function(NotificationId, 
     }
 })
 
-chrome.notifications.onClicked.addListener(function(NotificationId){
+if (chrome.notifications?.onButtonClicked) chrome.notifications.onClicked.addListener(function(NotificationId){
     const Notification = SessionButtonNotifications[NotificationId]
     if (!Notification) return
 
     chrome.tabs.create({url: "https://www.roblox.com/my/account#!/security"})
 })
 
-chrome.notifications.onClosed.addListener(function(NotificationId, byUser){
+if (chrome.notifications?.onButtonClicked) chrome.notifications.onClosed.addListener(function(NotificationId, byUser){
     if (byUser){
         delete SessionButtonNotifications[NotificationId]
         delete NewSessionButtonNotifications[NotificationId]
