@@ -386,11 +386,9 @@ BindToOnMessage("PaymentRequired", false, function(request){
 })
 
 const BrowserAction = chrome.action || chrome.browserAction
-if (BrowserAction && BrowserAction?.onClicked?.addListener){
-    BrowserAction.onClicked.addListener(() => {
-        chrome.tabs.create({url: "https://www.roblox.com/my/account?tab=robloxqol"})
-    })
-}
+if (BrowserAction?.onClicked) BrowserAction.onClicked.addListener(() => {
+    chrome.tabs.create({url: "https://www.roblox.com/my/account?tab=robloxqol"})
+})
 
 if (ManifestVersion > 2){
     const Scripts = ["js/modules/hbaClient.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/inject.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendsactivity.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/hideoffline.js", "js/backgroundscripts/bannedprofile.js", "js/backgroundscripts/friendrequest.js", "js/backgroundscripts/GroupShoutNotifications.js", "js/backgroundscripts/inboxnotifications.js", "js/backgroundscripts/Feed.js"]
