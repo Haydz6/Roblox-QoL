@@ -144,7 +144,7 @@ async function NotifyNewTrades(Trades, Type){
             const NotificationId = GenerateNotificationId(50)
             TradeNotifications[NotificationId] = {type: Type, tradeid: Trade.id, buttons: Buttons}
 
-            chrome.notifications.create(NotificationId, {type: "basic", buttons: Buttons, priority: 2, eventTime: Date.now(), iconUrl: await GetHeadshotBlobFromUserId(Trade.user.id), title: Title, contextMessage: ContextMessage, message: `Trader: ${Trade.user.name}\nYour Value: ${Offers.Ours.Valid && numberWithCommas(Offers.Ours.Value) || "???"}\nTheir Value: ${Offers.Other.Valid && numberWithCommas(Offers.Other.Value) || "???"}`})
+            if (chrome.notifications?.create) chrome.notifications.create(NotificationId, {type: "basic", buttons: Buttons, priority: 2, eventTime: Date.now(), iconUrl: await GetHeadshotBlobFromUserId(Trade.user.id), title: Title, contextMessage: ContextMessage, message: `Trader: ${Trade.user.name}\nYour Value: ${Offers.Ours.Valid && numberWithCommas(Offers.Ours.Value) || "???"}\nTheir Value: ${Offers.Other.Valid && numberWithCommas(Offers.Other.Value) || "???"}`})
         }
     }
 }

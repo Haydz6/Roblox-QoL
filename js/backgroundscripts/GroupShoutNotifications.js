@@ -34,7 +34,7 @@ function ClearOldGroupShouts(Groups){
 }
 
 async function CreateGroupShoutNotification(Group){
-    chrome.notifications.create(null, {type: "basic", priority: 0, eventTime: new Date(Group.shout.updated).getTime(), iconUrl: await GetHeadshotBlobFromURL(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${Group.id}&size=150x150&format=Png&isCircular=false`), title: `Group shout from ${Group.name}`, message: Group.shout.body, contextMessage: `By ${Group.shout.poster.username}`}, function(NotificationId){
+    if (chrome.notifications?.create) chrome.notifications.create(null, {type: "basic", priority: 0, eventTime: new Date(Group.shout.updated).getTime(), iconUrl: await GetHeadshotBlobFromURL(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${Group.id}&size=150x150&format=Png&isCircular=false`), title: `Group shout from ${Group.name}`, message: Group.shout.body, contextMessage: `By ${Group.shout.poster.username}`}, function(NotificationId){
         GroupShoutNotifications[NotificationId] = Group.id
     })
 }

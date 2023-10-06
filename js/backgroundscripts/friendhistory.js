@@ -133,7 +133,7 @@ function CreateNotification(Friends, NewFriends, LostFriends){
         }
     }
 
-    chrome.notifications.create("", {
+    if (chrome.notifications?.create) chrome.notifications.create("", {
         type: "basic",
         iconUrl: Friend.Image,
         title: "Roblox",

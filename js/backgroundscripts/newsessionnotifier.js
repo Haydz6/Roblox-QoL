@@ -41,7 +41,7 @@ async function QueueNotifications(Id, Notification, TTS){
 
         while (QueuedNotifications.length > 0){
             const Queue = QueuedNotifications.splice(0, 1)[0]
-            if (Queue.Notification) chrome.notifications.create(Queue.Id, Queue.Notification)
+            if (Queue.Notification && chrome.notifications?.create) chrome.notifications.create(Queue.Id, Queue.Notification)
             if (Queue.TTS){
                 const Volume = await IsFeatureEnabled("NewLoginNotifierTTSVolume") || 1
                 chrome.tts.speak(Queue.TTS, {volume: Volume})

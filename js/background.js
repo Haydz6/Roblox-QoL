@@ -49,7 +49,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     }
 
     if (request.type === "notification"){
-        chrome.notifications.create("", request.notification)
+        if (chrome.notifications?.create) chrome.notifications.create("", request.notification)
     } else if (request.type === "authentication"){
         GetAuthKey().then(function(Key){
             sendResponse(Key)
