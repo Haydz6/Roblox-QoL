@@ -305,7 +305,7 @@ async function CheckForNewSessions(){
     }
 }
 
-chrome.notifications.onButtonClicked.addListener(async function(NotificationId, ButtonIndex){
+if (chrome.notifications?.onButtonClicked) chrome.notifications.onButtonClicked.addListener(async function(NotificationId, ButtonIndex){
     const Notification = NewSessionButtonNotifications[NotificationId]
     if (!Notification) return
 

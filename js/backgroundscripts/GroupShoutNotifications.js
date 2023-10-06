@@ -39,7 +39,7 @@ async function CreateGroupShoutNotification(Group){
     })
 }
 
-chrome.notifications.onClicked.addListener(function(NotificationId){
+if (chrome.notifications?.onClicked) chrome.notifications.onClicked.addListener(function(NotificationId){
     const Notification = GroupShoutNotifications[NotificationId]
     if (!Notification) return
 

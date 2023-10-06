@@ -195,7 +195,7 @@ async function CheckForNewTrades(){
     ClearOldScannedTrades()
 }
 
-chrome.notifications.onButtonClicked.addListener(function(NotificationId, ButtonIndex){
+if (chrome.notifications?.onButtonClicked) chrome.notifications.onButtonClicked.addListener(function(NotificationId, ButtonIndex){
     const Notification = TradeNotifications[NotificationId]
     if (!Notification) return
 
@@ -204,7 +204,7 @@ chrome.notifications.onButtonClicked.addListener(function(NotificationId, Button
     else if (Button.title === "Decline" || Button.title === "Cancel") DeclineTrade(Notification.tradeid)
 })
 
-chrome.notifications.onClicked.addListener(function(NotificationId){
+if (chrome.notifications?.onClicked) chrome.notifications.onClicked.addListener(function(NotificationId){
     const Notification = TradeNotifications[NotificationId]
     if (!Notification) return
 
