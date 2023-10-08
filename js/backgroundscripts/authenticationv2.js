@@ -1,3 +1,5 @@
+let LastAuthKeyAttempt = 0
+
 async function HasGameFavourited(UniverseId){
     const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "GET", undefined, undefined, true)
 
@@ -20,6 +22,10 @@ async function ReauthenticateV2(){
 }
 
 async function GetAuthKey(){
+    if ((Date.now()/1000) - LastAuthKeyAttempt < 3){
+        await sleep(3000)
+    }
+
     while (FetchingAuthKey){
         await sleep(100)
     }
@@ -29,6 +35,7 @@ async function GetAuthKey(){
     }
 
     FetchingAuthKey = true
+    LastAuthKeyAttempt = Date.now()/1000
     StoredKey = await LocalStorage.get("AuthKey")
     
     if (StoredKey){
@@ -60,7 +67,13 @@ async function GetAuthKeyV2(){
         return CachedAuthKey
     }
     
-    const [GetFavoriteSuccess, FavoriteResult] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"fetch", "POST", undefined, JSON.stringify({UserId: parseInt(await GetCurrentUserId())}))
+    const UserId = await GetCurrentUserId()
+    if (!UserId){
+        FetchingAuthKey = false
+        return CachedAuthKey //No userid, so we cannot validate
+    }
+
+    const [GetFavoriteSuccess, FavoriteResult] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"fetch", "POST", undefined, JSON.stringify({UserId: UserId}))
     
     if (!GetFavoriteSuccess){
         FetchingAuthKey = false
