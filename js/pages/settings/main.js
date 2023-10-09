@@ -395,9 +395,9 @@ const Settings = {
             Title: "Remove Accessory Limit",
             Description: "Allows you to equip up to 10 accessories."
         },
-        OutfitSearchbar: {
-            Title: "Outfit Searchbar",
-            Description: "Adds a search bar to your avatar outfits."
+        AvatarSearchbar: {
+            Title: "Item Searchbar",
+            Description: "Adds a search bar to your avatar page."
         },
     },
     Economy: {

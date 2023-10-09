@@ -21,20 +21,48 @@ function AddOutfitSearchBar(){
     return Searchbar
 }
 
-IsFeatureEnabled("OutfitSearchbar").then(async function(Enabled){
+// IsFeatureEnabled("OutfitSearchbar").then(async function(Enabled){
+//     if (!Enabled) return
+
+//     const OutfitsContainer = await FindFromAttribute("ng-controller", "outfitsController")
+//     const ItemCards = await WaitForClassPath(OutfitsContainer, "hlist item-cards-stackable")
+
+//     const Searchbar = AddOutfitSearchBar()
+//     OutfitsContainer.insertBefore(Searchbar, OutfitsContainer.children[1])
+
+//     Searchbar.addEventListener("input", function(){
+//         OutfitSearch(ItemCards, Searchbar.value)
+//     })
+
+//     ChildAdded(ItemCards, true, function(Card){
+//         UpdateOutfitSearchCard(Card, Searchbar.value)
+//     })
+// })
+
+IsFeatureEnabled("AvatarSearchbar").then(async function(Enabled){
     if (!Enabled) return
 
-    const OutfitsContainer = await FindFromAttribute("ng-controller", "outfitsController")
-    const ItemCards = await WaitForClassPath(OutfitsContainer, "hlist item-cards-stackable")
+    const Tabs = await WaitForQuerySelector(`[avatar-tab-content=""]`)
+    ChildAdded(Tabs, true, async function(Tab){
+        if (!Tab.className) return
 
-    const Searchbar = AddOutfitSearchBar()
-    OutfitsContainer.insertBefore(Searchbar, OutfitsContainer.children[1])
+        const ItemCards = await WaitForClassPath(Tab, "hlist")
 
-    Searchbar.addEventListener("input", function(){
-        OutfitSearch(ItemCards, Searchbar.value)
-    })
+        const Searchbar = AddOutfitSearchBar()
+        //Tab.insertBefore(Searchbar, Tab.children[Tab.children.length-1])
+        //avatar-items
+        Tab.insertBefore(Searchbar, Tab.querySelector(`[avatar-items=""]`))
 
-    ChildAdded(ItemCards, true, function(Card){
-        UpdateOutfitSearchCard(Card, Searchbar.value)
+        Searchbar.addEventListener("input", function(){
+            OutfitSearch(ItemCards, Searchbar.value)
+        })
+
+        ChildAdded(ItemCards, true, function(Card){
+            UpdateOutfitSearchCard(Card, Searchbar.value)
+        })
+
+        new MutationObserver(function(){
+            if (!Tab.className.includes("active")) Searchbar.value = ""
+        }).observe(Tab, {attributeFilter: ["class"]})
     })
 })
