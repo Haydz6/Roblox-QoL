@@ -30,21 +30,6 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
     WaitForTag("title").then(function(Title){
         Title.innerText = `${Account.displayName} - Roblox`
     })
-
-    let [FriendCountSuccess, FriendsCount] = await RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/friends/count`)
-    if (!FriendCountSuccess){
-        FriendsCount = {count: "???"}
-    }
-
-    let [FollowersCountSuccess, FollowersCount] = await RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/followers/count`)
-    if (!FollowersCountSuccess){
-        FollowersCount = {count: "???"}
-    }
-
-    let [FollowingCountSuccess, FollowingCount] = await RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/followings/count`)
-    if (!FollowingCountSuccess){
-        FollowingCount = {count: "???"}
-    }
     
     let xmlhttp = new XMLHttpRequest()
     xmlhttp.onreadystatechange = async function(){
@@ -59,10 +44,43 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
 
             const formattedToday = dd + '/' + mm + '/' + yyyy
 
+            RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/friends/count`).then(function([FriendCountSuccess, FriendsCount]){
+                if (!FriendCountSuccess){
+                    FriendsCount = {count: "???"}
+                }
+
+                const Element = document.getElementsByClassName("friendscount")[0]
+                const Text = FriendsCount.count >= 10000 && AbbreviateNumber(FriendsCount.count) || numberWithCommas(FriendsCount.count)
+
+                Element.title = Text
+                Element.innerText = Text
+            })
+
+            RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/followers/count`).then(function([FollowersCountSuccess, FollowersCount]){
+                if (!FollowersCountSuccess){
+                    FollowersCount = {count: "???"}
+                }
+
+                const Element = document.getElementsByClassName("followerscountabbrev")[0]
+                const Text = FollowersCount.count >= 10000 && AbbreviateNumber(FollowersCount.count) || numberWithCommas(FollowersCount.count)
+
+                Element.title = Text
+                Element.innerText = Text
+            })
+
+            RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/followings/count`).then(function([FollowingCountSuccess, FollowingCount]){
+                if (!FollowingCountSuccess){
+                    FollowingCount = {count: "???"}
+                }
+
+                const Element = document.getElementsByClassName("followingscountabbrev")[0]
+                const Text = FollowingCount.count >= 10000 && AbbreviateNumber(FollowingCount.count) || numberWithCommas(FollowingCount.count)
+
+                Element.title = Text
+                Element.innerText = Text
+            })
+
             const html = xmlhttp.responseText.replaceAll("%USERID%", UserId)
-            .replaceAll("%FRIENDSCOUNT%", FriendsCount.count >= 10000 && AbbreviateNumber(FriendsCount.count) || numberWithCommas(FriendsCount.count))
-            .replaceAll("%FOLLOWERSCOUNTABBREV%", FollowersCount.count >= 10000 && AbbreviateNumber(FollowersCount.count) || numberWithCommas(FollowersCount.count))
-            .replaceAll("%FOLLOWINGSCOUNTABBREV%", FollowingCount.count >= 10000 && AbbreviateNumber(FollowingCount.count) || numberWithCommas(FollowingCount.count))
 
             const Content = await WaitForClass("content")
             Content.innerHTML = html

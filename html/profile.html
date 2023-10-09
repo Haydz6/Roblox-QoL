@@ -11,7 +11,7 @@
     Roblox.ProfileHeaderData = {"profileusername":"","previoususernames":""};
 </script>
 
-<div data-profileuserid="%USERID%" data-friendscount="%FRIENDSCOUNT%" data-followerscount="%FOLLOWERSCOUNT%" data-followingscount="%FOLLOWINGSCOUNT%" data-arefriends="false" data-friendurl="https://www.roblox.com/users/%USERID%/friends#!/friends" data-incomingfriendrequestpending="false" data-maysendfriendinvitation="false" data-friendrequestpending="false" data-mayfollow="false" data-isfollowing="false" data-canmessage="true" data-messagesdisabled="false" data-messageurl="/messages/compose?recipientId=%USERID%" data-canbefollowed="false" data-cantrade="false" data-isblockbuttonvisible="false" data-getfollowscript="" data-ismorebtnvisible="false" data-isvieweeblocked="false" data-mayimpersonate="false" data-mayupdatestatus="false" data-updatestatusurl="" data-statustext="" data-statusdate="1/1/0001 12:00:00 AM" data-editstatusmaxlength="254" data-ischatdisabledbyprivacysetting="false" data-angularpresencestatusenabled="false" profile-header-data="" set-message-btn-display="setMessageBtnDisplay(layout)" profile-header-layout="profileHeaderLayout" class="hidden ng-isolate-scope"></div>
+<div data-arefriends="false" data-friendurl="https://www.roblox.com/users/%USERID%/friends#!/friends" data-incomingfriendrequestpending="false" data-maysendfriendinvitation="false" data-friendrequestpending="false" data-mayfollow="false" data-isfollowing="false" data-canmessage="true" data-messagesdisabled="false" data-messageurl="/messages/compose?recipientId=%USERID%" data-canbefollowed="false" data-cantrade="false" data-isblockbuttonvisible="false" data-getfollowscript="" data-ismorebtnvisible="false" data-isvieweeblocked="false" data-mayimpersonate="false" data-mayupdatestatus="false" data-updatestatusurl="" data-statustext="" data-statusdate="1/1/0001 12:00:00 AM" data-editstatusmaxlength="254" data-ischatdisabledbyprivacysetting="false" data-angularpresencestatusenabled="false" profile-header-data="" set-message-btn-display="setMessageBtnDisplay(layout)" profile-header-layout="profileHeaderLayout" class="hidden ng-isolate-scope"></div>
 
         <div class="profile-header-top">
         <div class="avatar avatar-headshot-lg card-plain profile-avatar-image">
@@ -54,19 +54,19 @@
                     <li>
                         <div class="text-label font-caption-header ng-binding" ng-bind="'Label.Friends' | translate">Friends</div>
                         <a class="text-name" href="https://www.roblox.com/users/%USERID%/friends#!/friends">
-                            <span class="font-header-2 ng-binding" title="%FRIENDSCOUNT%" ng-bind="profileHeaderLayout.friendsCount | abbreviate">%FRIENDSCOUNT%</span>
+                            <span class="font-header-2 ng-binding friendscount" title="..." ng-bind="profileHeaderLayout.friendsCount | abbreviate">...</span>
                         </a>
                     </li>
                     <li>
                         <div class="text-label font-caption-header ng-binding" ng-bind="'Label.Followers' | translate">Followers</div>
                         <a class="text-name" href="https://www.roblox.com/users/%USERID%/friends#!/followers">
-                            <span class="font-header-2 ng-binding" title="3747" ng-bind="getAbbreviatedStringFromCountValue(profileHeaderLayout.followersCount)">%FOLLOWERSCOUNTABBREV%</span>
+                            <span class="font-header-2 ng-binding followerscountabbrev" title="..." ng-bind="getAbbreviatedStringFromCountValue(profileHeaderLayout.followersCount)">...</span>
                         </a>
                     </li>
                     <li>
                         <div class="text-label font-caption-header ng-binding" ng-bind="'Label.Following' | translate">Following</div>
                         <a class="text-name" href="https://www.roblox.com/users/%USERID%/friends#!/following">
-                            <span class="font-header-2 ng-binding" title="1178" ng-bind="getAbbreviatedStringFromCountValue(profileHeaderLayout.followingsCount)">%FOLLOWINGSCOUNTABBREV%</span>
+                            <span class="font-header-2 ng-binding followingscountabbrev" title="..." ng-bind="getAbbreviatedStringFromCountValue(profileHeaderLayout.followingsCount)">...</span>
                         </a>
                     </li>
                 </ul>
