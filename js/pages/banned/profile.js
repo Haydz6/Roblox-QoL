@@ -27,6 +27,10 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
         return
     }
 
+    WaitForTag("title").then(function(Title){
+        Title.innerText = `${Account.displayName} - Roblox`
+    })
+
     let [FriendCountSuccess, FriendsCount] = await RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/friends/count`)
     if (!FriendCountSuccess){
         FriendsCount = {count: "???"}
@@ -63,7 +67,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
             const Content = await WaitForClass("content")
             Content.innerHTML = html
 
-            Content.getElementsByClassName("profile-display-name")[0].innerText = Account.name
+            Content.getElementsByClassName("profile-display-name")[0].innerText = `@${Account.name}`
             const DisplayNames = Content.getElementsByClassName("profile-name")
             for (let i = 0; i < DisplayNames.length; i++){
                 DisplayNames[i].innerText = Account.displayName
