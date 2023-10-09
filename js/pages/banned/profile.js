@@ -207,7 +207,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     let Playing = UniverseLookup[Badge.Item.UniverseId]?.playing
                     if (Playing === undefined) Playing = "???"
 
-                    BadgeElement.getElementsByClassName("game-card-link")[0].href = `https://roblox.com/games/${Badge.Item.UniverseId}`
+                    BadgeElement.getElementsByClassName("game-card-link")[0].href = `https://roblox.com/games/${Badge.Item.AssetId}`
                     BadgeElement.getElementsByClassName("game-card-thumb")[0].src = Badge.Thumbnail.Url
                     BadgeElement.getElementsByClassName("game-card-name")[0].innerText = UniverseLookup[Badge.Item.UniverseId]?.name || "???"
                     BadgeElement.getElementsByClassName("game-card-name")[0].title = UniverseLookup[Badge.Item.UniverseId]?.name || "???"
