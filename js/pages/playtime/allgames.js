@@ -101,6 +101,7 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
 
         LoadMoreButton.removeAttribute("disabled")
         if (Games.length == 100) LoadMoreButton.style = ""
+        else LoadMoreButton.style = "display: none;"
     }
 
     async function FetchGames(Params){
