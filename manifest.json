@@ -85,7 +85,6 @@
                 "js/pages/generalfixes/disablefooter.js",
                 "js/pages/generalfixes/addusdtorobux.js",
                 "js/pages/generalfixes/resizablechatboxes.js",
-                "js/pages/theme/settheme.js",
                 "js/pages/feed/navfeedbutton.js"
             ],
             "run_at": "document_start"
