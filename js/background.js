@@ -158,8 +158,6 @@ function generateBaseHeaders(URL, Body){
     if (!Page) return false
 
     return new Promise((resolve) => {
-        console.log(Page)
-        console.log(ActiveRobloxPages)
         chrome.tabs.sendMessage(Page, {type: "HBA", URL: URL, Body: Body}, undefined, function(headers){
             resolve(headers || {}) //null if failed :(
         })
