@@ -121,18 +121,20 @@ async function SetFavouriteGame(UniverseId, Favourited){
 
 let ActiveRobloxPages = []
 
-function TabUpdated(Tab){
-    let URL = Tab.url
-    if (!URL) chrome.tabs.get(Tab.id, function(tab){
-        URL = tab.url
-    })
-
+function CheckUpdatedTab(URL, Id){
     if (URL && (URL.includes("web.roblox.com") || URL.includes("www.roblox.com"))){
-        if (!ActiveRobloxPages.includes(Tab.id)) ActiveRobloxPages.push(Tab.id)
+        if (!ActiveRobloxPages.includes(Id)) ActiveRobloxPages.push(Id)
     } else {
-        const Index = ActiveRobloxPages.indexOf(Tab.id)
+        const Index = ActiveRobloxPages.indexOf(Id)
         if (Index !== -1) ActiveRobloxPages.splice(Index, 1)
     }
+}
+
+function TabUpdated(Tab){
+    if (!Tab.url) chrome.tabs.get(Tab.id, function(tab){
+        CheckUpdatedTab(tab.url, Tab.id)
+    })
+    else CheckUpdatedTab(Tab.url, Tab.id)
 }
 
 chrome.tabs.onUpdated.addListener(function(TabId, changeInfo){
