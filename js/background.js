@@ -141,8 +141,8 @@ chrome.tabs.onUpdated.addListener(function(TabId, changeInfo){
     TabUpdated({id: TabId, url: changeInfo.url})
 })
 
-chrome.tabs.onRemoved.addListener(function(Tab){
-    const Index = ActiveRobloxPages.indexOf(Tab.id)
+chrome.tabs.onRemoved.addListener(function(TabId){
+    const Index = ActiveRobloxPages.indexOf(TabId)
     if (Index !== -1) ActiveRobloxPages.splice(Index, 1)
 })
 
@@ -158,6 +158,8 @@ function generateBaseHeaders(URL, Body){
     if (!Page) return false
 
     return new Promise((resolve) => {
+        console.log(Page)
+        console.log(ActiveRobloxPages)
         chrome.tabs.sendMessage(Page, {type: "HBA", URL: URL, Body: Body}, undefined, function(headers){
             resolve(headers || {}) //null if failed :(
         })
