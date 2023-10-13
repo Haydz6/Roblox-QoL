@@ -215,7 +215,6 @@ async function CreateSettingsList(){
         OpenQoLSettings()
         const CurrentOption = Params.get("option")
         if (CurrentOption){
-            console.log(CurrentOption)
             HideAllContainers()
             OpenContainer(CurrentOption)
         } else {

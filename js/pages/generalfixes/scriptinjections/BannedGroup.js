@@ -16,8 +16,6 @@ async function HookGroupController(){
     const isLockedGroup = Controller.isLockedGroup
     const canViewWall = Controller.canViewWall
 
-    console.log(Controller)
-
     Controller.canViewWall = function(...args){
         if (isLockedGroup()) return false
         return canViewWall(...args)
