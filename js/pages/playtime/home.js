@@ -112,5 +112,5 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
     if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
 
     CreateHomeRow(GamesList, "Studio Sessions", "Edit", false)
-    CreateHomeRow(GamesList, "Playtime", "Play", true)
+    CreateHomeRow(GamesList, "Playtime", "Play", false)
 })
