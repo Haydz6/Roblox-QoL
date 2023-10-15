@@ -122,11 +122,11 @@ async function SetFavouriteGame(UniverseId, Favourited){
 let ActiveRobloxPages = []
 
 function CheckUpdatedTab(URL, Id){
+    const Index = ActiveRobloxPages.indexOf(TabId)
+    if (Index !== -1) ActiveRobloxPages.splice(Index, 1) //We need to do this to re-append the tab back to the front of the list
+
     if (URL && (URL.includes("web.roblox.com") || URL.includes("www.roblox.com"))){
-        if (!ActiveRobloxPages.includes(Id)) ActiveRobloxPages.push(Id)
-    } else {
-        const Index = ActiveRobloxPages.indexOf(Id)
-        if (Index !== -1) ActiveRobloxPages.splice(Index, 1)
+        ActiveRobloxPages.push(Id)
     }
 }
 
