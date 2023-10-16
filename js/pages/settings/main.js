@@ -44,6 +44,10 @@ const Settings = {
             Title: "Last Online on Home",
             Description: "Shows last online if friend is offline on home page."
         },
+        FriendsPageLastOnline: {
+            Title: "Last Online on Friends",
+            Description: "Shows last online if friend is offline on friends page."
+        },
         LastOnline: {
             Title: "Show last online on Profile",
             Description: "Shows last online of user on their profile"
@@ -79,6 +83,7 @@ const Settings = {
         //     Description: "Allows you to see mutuals friends!"
         // }
     },
+    Themes: {},
     Discord: {
         DiscordPresence: {
             Title: "Discord Presence",

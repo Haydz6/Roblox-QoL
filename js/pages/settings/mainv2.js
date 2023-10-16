@@ -141,8 +141,44 @@ async function CreateSettingsList(){
         window.history.pushState(null, "Settings", "/my/account?tab=robloxqol&option="+Title)
     }
 
+    const CustomTabNames = []
+    let TabConstructors = []
+
+    async function CreateCustomTab(Name, Callback){
+        CustomTabNames.push(Name)
+
+        await new Promise((resolve) => {
+            TabConstructors.push(resolve)
+        })
+
+        const AllTitleIndexes = Object.keys(Settings)
+
+        const SecurityList = CreateMenuList()
+        const Button = CreateMenuOption(Name)
+        const MobileButton = CreateMobileMenuOption(Name)
+
+        Callback(SecurityList)
+        VerticalMenu.insertBefore(Button, TitleToButton[AllTitleIndexes[AllTitleIndexes.indexOf(Name)+1]])
+        MobileVerticalMenuList.insertBefore(MobileButton, TitleToMobileButton[AllTitleIndexes[AllTitleIndexes.indexOf(Name)+1]])
+        TabContent.appendChild(SecurityList)
+
+        Button.addEventListener("click", function(){
+            OpenContainer(Name)
+        })
+
+        MobileButton.addEventListener("click", function(){
+            OpenContainer(Name)
+        })
+            
+        TitleToButton[Name] = Button
+        TitleToContainer[Name] = SecurityList
+    }
+
+    CreateCustomTab("Themes", CreateThemesSection)
+    CreateCustomTab("Security", CreateSecuritySection)
+
     for (const [title, _] of Object.entries(Settings)){
-        if (title == "Security") continue
+        if (CustomTabNames.includes(title)) continue
         const List = CreateMenuList()
         TabContent.appendChild(List)
 
@@ -166,32 +202,13 @@ async function CreateSettingsList(){
     }
 
     for (const [title, settings] of Object.entries(Settings)){
-        if (title == "Security") continue
+        if (CustomTabNames.includes(title)) continue
         CreateSpecificSettingsSection(TitleToContainer[title], title, settings)
     }
 
-    //Security index
-    const AllTitleIndexes = Object.keys(Settings)
-
-    const SecurityList = CreateMenuList()
-    const Button = CreateMenuOption("Security")
-    const MobileButton = CreateMobileMenuOption("Security")
-
-    CreateSecuritySection(SecurityList)
-    VerticalMenu.insertBefore(Button, TitleToButton[AllTitleIndexes[AllTitleIndexes.indexOf("Security")+1]])
-    MobileVerticalMenuList.insertBefore(MobileButton, TitleToMobileButton[AllTitleIndexes[AllTitleIndexes.indexOf("Security")+1]])
-    TabContent.appendChild(SecurityList)
-
-    Button.addEventListener("click", function(){
-        OpenContainer("Security")
-    })
-
-    MobileButton.addEventListener("click", function(){
-        OpenContainer("Security")
-    })
-        
-    TitleToButton["Security"] = Button
-    TitleToContainer["Security"] = SecurityList
+    for (let i = 0; i < TabConstructors.length; i++){
+        TabConstructors[i]()
+    }
 
     const [ReturnContainer, ReturnButton] = CreateStandaloneButton("Return")
     VerticalMenu.parentNode.appendChild(ReturnContainer)

@@ -18,7 +18,8 @@ const ContentScripts = [{
     "js": [
         "js/pages/friendhistory/createelements.js",
         "js/pages/friendhistory/loadpages.js",
-        "js/pages/friendhistory/main.js"
+        "js/pages/friendhistory/main.js",
+       "js/pages/generalfixes/lastonlineforfriendspage.js"
     ],
     "run_at": "document_start"
 },
@@ -121,6 +122,7 @@ const ContentScripts = [{
     "js": [
         "js/pages/settings/createelements.js",
         "js/pages/settings/main.js",
+        "js/pages/settings/themes.js",
         "js/pages/settings/mainv2.js"
     ],
     "run_at": "document_start"
@@ -350,7 +352,8 @@ const ContentScripts = [{
     ],
     "js": [
        "js/pages/banned/profile.js",
-       "js/pages/banned/friends.js"
+       "js/pages/banned/friends.js",
+       "js/pages/generalfixes/lastonlineforfriendspage.js"
     ],
     "run_at": "document_start"
 }]

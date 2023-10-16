@@ -65,7 +65,10 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     Element.getElementsByClassName("name-label")[0].innerText = `@${User.name}`
                     Element.getElementsByClassName("avatar-name")[0].innerText = User.displayName
                     Element.getElementsByClassName("presence-status")[0].innerText = PresenceString
-                    Element.getElementsByClassName("icon-game")[0].className = `${PresenceString.toLowerCase()} icon-${PresenceString.toLowerCase()}`
+
+                    const PresenceIcon = Element.getElementsByClassName("icon-game")[0]
+                    if (Presence === 0 || !Presence) PresenceIcon.remove()
+                    else PresenceIcon.className = `${PresenceString.toLowerCase()} icon-${PresenceString.toLowerCase()}`
 
                     const URL = `/users/${User.id}/profile`
                     Element.getElementsByClassName("avatar-card-link")[0].href = URL
