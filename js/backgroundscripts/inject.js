@@ -349,7 +349,8 @@ const ContentScripts = [{
         "*://*.roblox.com/banned-user/*"
     ],
     "js": [
-       "js/pages/banned/profile.js"
+       "js/pages/banned/profile.js",
+       "js/pages/banned/friends.js"
     ],
     "run_at": "document_start"
 }]

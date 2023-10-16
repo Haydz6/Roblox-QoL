@@ -319,7 +319,7 @@ async function GetSubscription(){ //Replace with fetch call
         await sleep(20)
     }
 
-    if (!CurrentSubscription){
+    if (CurrentSubscription === undefined){
         CurrentSubscription = true
         const [Success, Body] = await RequestFunc(WebServerEndpoints.User+"subscription", "GET")
         if (!Success){

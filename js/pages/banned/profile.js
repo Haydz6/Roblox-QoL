@@ -1,5 +1,6 @@
 IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
     if (!Enabled) return
+    if (!window.location.href.includes("profile")) return
 
     const Title = await WaitForClass("error-title")
 
