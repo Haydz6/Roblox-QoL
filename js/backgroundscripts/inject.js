@@ -117,7 +117,8 @@ const ContentScripts = [{
         "*://*.roblox.com/my/account*"
     ],
     "css": [
-        "css/settings.css"
+        "css/settings.css",
+        "css/themes.css"
     ],
     "js": [
         "js/pages/settings/createelements.js",

@@ -172,10 +172,13 @@ async function CreateSettingsList(){
             
         TitleToButton[Name] = Button
         TitleToContainer[Name] = SecurityList
+        SecurityList.style.display = "none"
     }
 
-    CreateCustomTab("Themes", CreateThemesSection)
-    CreateCustomTab("Security", CreateSecuritySection)
+    const CustomTabPromises = [
+        CreateCustomTab("Themes", CreateThemesSection),
+        CreateCustomTab("Security", CreateSecuritySection)
+    ]
 
     for (const [title, _] of Object.entries(Settings)){
         if (CustomTabNames.includes(title)) continue
@@ -209,6 +212,7 @@ async function CreateSettingsList(){
     for (let i = 0; i < TabConstructors.length; i++){
         TabConstructors[i]()
     }
+    await Promise.all(CustomTabPromises)
 
     const [ReturnContainer, ReturnButton] = CreateStandaloneButton("Return")
     VerticalMenu.parentNode.appendChild(ReturnContainer)

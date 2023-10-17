@@ -238,6 +238,11 @@ const hbaClient = new HBAClient({
   onSite: true,
 })
 
+const BackgroundEventListeners = {}
+function ListenToEventFromBackground(Type, Callback){
+  BackgroundEventListeners[Type] = Callback
+}
+
 chrome.runtime.onMessage.addListener(function(Message, _, sendResponse){
   if (Message.type === "HBA"){
     hbaClient.generateBaseHeaders(Message.URL, Message.Body).then(function(Headers){
@@ -245,6 +250,9 @@ chrome.runtime.onMessage.addListener(function(Message, _, sendResponse){
     })
     return true
   }
+
+  const Listener = BackgroundEventListeners[Message.type]
+  if (Listener) Listener(Message)
 })
 
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){

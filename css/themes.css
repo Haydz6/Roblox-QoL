@@ -1,0 +1,17 @@
+.themes-list {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.theme {
+    margin: 6px;
+    width: 150px;
+    height: 200px;
+}
+
+.theme-frame {
+    border-radius: 12px;
+    cursor: pointer;
+    pointer-events: none;
+}
