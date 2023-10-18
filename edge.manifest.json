@@ -77,6 +77,7 @@
                 "js/modules/getNavigatorLanguage.js",
                 "js/authentication/main.js",
                 "js/pages/document.js",
+                "js/pages/paymentprompt.js",
                 "js/pages/settings/settingsdropdown.js",
                 "js/pages/generalfixes/injectscripts.js",
                 "js/pages/generalfixes/hidedesktopbanner.js",
