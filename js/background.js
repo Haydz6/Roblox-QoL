@@ -2,7 +2,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 const Debugging = false
 const WebServerURL = !Debugging && "https://roqol.io/" || "http://localhost:8192/"
-const WebServerEndpoints = {Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", Game: WebServerURL+"api/game/", User: WebServerURL+"api/user/", Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {Themes: WebServerURL+"api/themes/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", Game: WebServerURL+"api/game/", User: WebServerURL+"api/user/", Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 
 const Manifest = chrome.runtime.getManifest()
 const ExtensionVersion = Manifest.version
@@ -420,3 +420,11 @@ if (ManifestVersion > 2){
 
 CallLogin()
 GetSubscription()
+
+PaidForFeature("CurrentTheme").then(function(Paid){
+    if (!Paid) return
+    RequestFunc(WebServerEndpoints.Themes+"current", "GET").then(function([Success, Body]){
+        if (!Success) return
+        SetFeatureEnabled("CurrentTheme", Body?.Theme)
+    })
+})

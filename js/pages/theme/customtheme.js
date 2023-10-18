@@ -1,4 +1,5 @@
 let CurrentIFrame
+const StyleFixes = []
 
 async function GetSRCAuthenticated(Url){
     const [Success, _, Response] = await RequestFunc(Url, "GET", undefined, undefined, undefined, true)
@@ -9,8 +10,10 @@ async function GetSRCAuthenticated(Url){
 }
 
 async function UpdateTheme(Theme){
-    if (CurrentIFrame) CurrentIFrame.remove()
     const URL = window.location.href
+    if (!Theme || (!URL.includes("web.roblox.com") && !URL.includes("www.roblox.com"))) return
+
+    if (CurrentIFrame) CurrentIFrame.remove()
 
     if (!Theme){
         WaitForClass("content").then(function(Content){
@@ -22,9 +25,22 @@ async function UpdateTheme(Theme){
             }
         })
 
+        WaitForId("Skyscraper-Abp-Right").then(function(Ad){
+            Ad.style.marginRight = ""
+        })
+
+        WaitForId("Skyscraper-Abp-Left").then(function(Ad){
+            Ad.style.marginLeft = ""
+        })
+
         const Container = await WaitForId("container-main")
         Container.style.padding = ""
         Container.style.borderRadius = ""
+
+        for (let i = 0; i < StyleFixes.length; i++){
+            StyleFixes[i].remove()
+        }
+        StyleFixes.length = 0
     } else {
         WaitForClass("content").then(function(Content){
             Content.style.padding = "20px"
@@ -33,6 +49,36 @@ async function UpdateTheme(Theme){
             if (URL.includes("/home") || URL.match("/games/[0-9]+/") && URL.match("/games/[0-9]+/").length != 0) {
                 Content.style.maxWidth = "1000px"
             }
+        })
+
+        WaitForId("Skyscraper-Abp-Right").then(function(Ad){
+            Ad.style.marginRight = "-200px"
+        })
+
+        WaitForId("Skyscraper-Abp-Left").then(function(Ad){
+            Ad.style.marginLeft = "-185px"
+        })
+
+        if (URL.includes("/users/")) {
+            WaitForClass("profile-ads-container").then(function(Ad){
+                const Container = FindFirstClass("content")
+                Container.parentElement.insertBefore(Ad, Container.nextSibling)
+
+                Ad.style.marginTop = "20px"
+            })
+        }
+        if (URL.match("/groups/[0-9]+/")) {
+            const MaxWidthFix = document.createElement("style")
+            MaxWidthFix.innerHTML = `@media (min-width: 1850px) { .content {max-width: 1335px !important;} }`
+            document.head.appendChild(MaxWidthFix)
+            console.log(MaxWidthFix)
+            StyleFixes.push(MaxWidthFix)
+        }
+
+        WaitForId("Leaderboard-Abp").then(function(Ad){
+            const Container = FindFirstClass("content")
+            Container.parentElement.insertBefore(Ad, Container)
+            Ad.style.marginBottom = "20px"
         })
 
         const Container = await WaitForId("container-main")
@@ -49,9 +95,6 @@ async function UpdateTheme(Theme){
 }
 
 IsFeatureEnabled("CurrentTheme").then(async function(Theme){
-    const URL = window.location.href
-    if (!Theme || (!URL.includes("web.roblox.com") && !URL.includes("www.roblox.com"))) return
-
     UpdateTheme(Theme)
 })
 

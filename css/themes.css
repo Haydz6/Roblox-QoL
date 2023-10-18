@@ -4,6 +4,13 @@
     justify-content: center;
 }
 
+.theme-button {
+    height: 200px;
+    width: 150px;
+    cursor: pointer;
+    position: absolute;
+}
+
 .theme {
     margin: 6px;
     width: 150px;
@@ -12,6 +19,16 @@
 
 .theme-frame {
     border-radius: 12px;
-    cursor: pointer;
+    border-color: white;
+    border-style: solid;
     pointer-events: none;
+}
+
+.clear-button {
+    height: 65px;
+}
+
+.clear-button > img {
+    height: 100%;
+    width: 100%;
 }
