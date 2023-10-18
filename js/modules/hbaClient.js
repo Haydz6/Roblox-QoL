@@ -5,9 +5,10 @@
 const TOKEN_HEADER_NAME = "x-bound-auth-token";
 const FETCH_TOKEN_METADATA_URL = "https://www.roblox.com/reference/blank";
 const FETCH_TOKEN_METADATA_SELECTOR = 'meta[name="hardware-backed-authentication-data"]';
-const FETCH_TOKEN_METADATA_REGEX = /name="hardware-backed-authentication-data"(\s|.)+?data-is-secure-authentication-intent-enabled="(.+?)"(\s|.)+?data-is-bound-auth-token-enabled="(.+?)"(\s|.)+?data-bound-auth-token-whitelist="(.+?)"(\s|.)+?data-bound-auth-token-exemptlist="(.+?)"(\s|.)+?data-hba-indexed-db-name="(.+?)"(\s|.)+?data-hba-indexed-db-obj-store-name="(.+?)"/;
+const FETCH_TOKEN_METADATA_REGEX = /name="hardware-backed-authentication-data"(\s|.)+?data-is-secure-authentication-intent-enabled="(.+?)"(\s|.)+?data-is-bound-auth-token-enabled="(.+?)"(\s|.)+?data-bound-auth-token-whitelist="(.+?)"(\s|.)+?data-bound-auth-token-exemptlist="(.+?)"(\s|.)+?data-hba-indexed-db-name="(.+?)"(\s|.)+?data-hba-indexed-db-obj-store-name="(.+?)"(\s|.)+?data-hba-indexed-db-key-name="(.+?)"(\s|.)+?data-hba-indexed-db-version="(.+?)"/;
 const AUTH_TOKEN_SEPARATOR = "|";
 const MATCH_ROBLOX_URL_BASE = ".roblox.com";
+const DEFAULT_INDEXED_DB_VERSION = 1;
 const TOKEN_SIGNATURE_ALGORITHM = {
     name: "ECDSA",
     hash: {
@@ -107,10 +108,7 @@ function filterObject(obj) {
 }
 class HBAClient {
     _fetchFn;
-    cookie;
-    targetId = "";
     cachedTokenMetadata;
-    tokenMetadataFetched;
     headers = {};
     cryptoKeyPair;
     onSite = false;
@@ -130,8 +128,6 @@ class HBAClient {
         };
         if (this.onSite) {
             init.credentials = "include";
-        } else if (this.cookie) {
-            headers.set("cookie", this.cookie);
         }
         return (this._fetchFn ?? fetch)(url, init);
     }
@@ -147,15 +143,8 @@ class HBAClient {
             [TOKEN_HEADER_NAME]: token
         };
     }
-    async clearTokenMetadataifEligible(SecondsElapsed) {
-        if (this.tokenMetadataFetched && (Date.now() - this.tokenMetadataFetched)/1000 >= SecondsElapsed){
-            this.cachedTokenMetadata = undefined
-            this.tokenMetadataFetched = undefined
-        }
-    }
     async getTokenMetadata(uncached) {
         if (!uncached && await this.cachedTokenMetadata) {
-            this.clearTokenMetadataifEligible(60*10)
             return this.cachedTokenMetadata;
         }
         const promise = (async ()=>{
@@ -165,6 +154,8 @@ class HBAClient {
             let boundAuthTokenExemptlist;
             let hbaIndexedDbName;
             let hbaIndexedDbObjStoreName;
+            let hbaIndexedDbKeyName;
+            let hbaIndexedDbVersion;
             let doc;
             const canUseDoc = "DOMParser" in globalThis && "document" in globalThis;
             if (uncached || !canUseDoc || !document.querySelector?.(FETCH_TOKEN_METADATA_SELECTOR)) {
@@ -177,13 +168,23 @@ class HBAClient {
                     try {
                         isSecureAuthenticationIntentEnabled = match[2] === "true";
                         isBoundAuthTokenEnabledForAllUrls = match[4] === "true";
-                        boundAuthTokenWhitelist = JSON.parse(decodeEntities(match[6]))?.Whitelist?.map((item)=>({
-                                ...item,
-                                sampleRate: Number(item.sampleRate)
-                            }));
-                        boundAuthTokenExemptlist = JSON.parse(decodeEntities(match[8]))?.Exemptlist;
+                        try {
+                            boundAuthTokenWhitelist = JSON.parse(decodeEntities(match[6]))?.Whitelist?.map((item)=>({
+                                    ...item,
+                                    sampleRate: Number(item.sampleRate)
+                                }));
+                        } catch  {
+                            boundAuthTokenWhitelist = [];
+                        }
+                        try {
+                            boundAuthTokenExemptlist = JSON.parse(decodeEntities(match[8]))?.Exemptlist;
+                        } catch  {
+                            boundAuthTokenExemptlist = [];
+                        }
                         hbaIndexedDbName = match[10];
                         hbaIndexedDbObjStoreName = match[12];
+                        hbaIndexedDbKeyName = match[14];
+                        hbaIndexedDbVersion = parseInt(match[16], 10) || DEFAULT_INDEXED_DB_VERSION;
                     } catch  {
                         this.cachedTokenMetadata = undefined;
                         return null;
@@ -202,13 +203,23 @@ class HBAClient {
                 try {
                     isSecureAuthenticationIntentEnabled = el.getAttribute("data-is-secure-authentication-intent-enabled") === "true";
                     isBoundAuthTokenEnabledForAllUrls = el.getAttribute("data-is-bound-auth-token-enabled") === "true";
-                    boundAuthTokenWhitelist = JSON.parse(el.getAttribute("data-bound-auth-token-whitelist"))?.Whitelist?.map((item)=>({
-                            ...item,
-                            sampleRate: Number(item.sampleRate)
-                        }));
-                    boundAuthTokenExemptlist = JSON.parse(el.getAttribute("data-bound-auth-token-exemptlist"))?.Exemptlist;
+                    try {
+                        boundAuthTokenWhitelist = JSON.parse(el.getAttribute("data-bound-auth-token-whitelist"))?.Whitelist?.map((item)=>({
+                                ...item,
+                                sampleRate: Number(item.sampleRate)
+                            }));
+                    } catch  {
+                        boundAuthTokenWhitelist = [];
+                    }
+                    try {
+                        boundAuthTokenExemptlist = JSON.parse(el.getAttribute("data-bound-auth-token-exemptlist"))?.Exemptlist;
+                    } catch  {
+                        boundAuthTokenExemptlist = [];
+                    }
                     hbaIndexedDbName = el.getAttribute("data-hba-indexed-db-name");
                     hbaIndexedDbObjStoreName = el.getAttribute("data-hba-indexed-db-obj-store-name");
+                    hbaIndexedDbKeyName = el.getAttribute("data-hba-indexed-db-key-name");
+                    hbaIndexedDbVersion = parseInt(el.getAttribute("data-hba-indexed-db-version"), 10) || DEFAULT_INDEXED_DB_VERSION;
                 } catch  {
                     this.cachedTokenMetadata = undefined;
                     return null;
@@ -220,10 +231,11 @@ class HBAClient {
                 boundAuthTokenWhitelist: boundAuthTokenWhitelist,
                 boundAuthTokenExemptlist: boundAuthTokenExemptlist,
                 hbaIndexedDbName: hbaIndexedDbName,
-                hbaIndexedDbObjStoreName: hbaIndexedDbObjStoreName
+                hbaIndexedDbObjStoreName: hbaIndexedDbObjStoreName,
+                hbaIndexedDbKeyName: hbaIndexedDbKeyName,
+                hbaIndexedDbVersion: hbaIndexedDbVersion
             };
             this.cachedTokenMetadata = tokenMetadata;
-            this.tokenMetadataFetched = Date.now()
             return tokenMetadata;
         })();
         this.cachedTokenMetadata = promise;
@@ -236,7 +248,7 @@ class HBAClient {
         if (!uncached && await this.cryptoKeyPair) {
             return this.cryptoKeyPair;
         }
-        if (!("indexedDB" in globalThis) || !this.targetId) {
+        if (!("indexedDB" in globalThis)) {
             return null;
         }
         const promise = (async ()=>{
@@ -245,7 +257,7 @@ class HBAClient {
                 return null;
             }
             try {
-                const pair = await getCryptoKeyPairFromDB(metadata.hbaIndexedDbName, metadata.hbaIndexedDbObjStoreName, this.targetId);
+                const pair = await getCryptoKeyPairFromDB(metadata.hbaIndexedDbName, metadata.hbaIndexedDbObjStoreName, metadata.hbaIndexedDbKeyName);
                 this.cryptoKeyPair = pair ?? undefined;
                 return pair;
             } catch  {
@@ -296,15 +308,12 @@ class HBAClient {
         const metadata = await this.getTokenMetadata();
         return !!metadata && (metadata.isBoundAuthTokenEnabledForAllUrls || metadata.boundAuthTokenWhitelist?.some((item)=>url.includes(item.apiSite) && Math.floor(Math.random() * 100) < item.sampleRate)) && !metadata.boundAuthTokenExemptlist?.some((item)=>url.includes(item.apiSite));
     }
-    constructor({ fetch: fetch1, headers, cookie, targetId, onSite, keys, baseUrl } = {}){
+    constructor({ fetch: fetch1, headers, onSite, keys, baseUrl } = {}){
         if (fetch1) {
             this._fetchFn = fetch1;
         }
         if (headers) {
             this.headers = headers instanceof Headers ? Object.fromEntries(headers.entries()) : headers;
-        }
-        if (cookie) {
-            this.cookie = cookie;
         }
         if (baseUrl) {
             this.baseUrl = baseUrl;
@@ -318,14 +327,7 @@ class HBAClient {
         if (keys) {
             this.suppliedCryptoKeyPair = keys;
         }
-        const setCookie = cookie ?? globalThis?.document?.cookie;
-        if (targetId) {
-            this.targetId = targetId;
-        } else if (setCookie) {
-            const btid = setCookie.match(/browserid=(\d+)/i)?.[1];
-            if (btid) {
-                this.targetId = btid;
-            }
-        }
     }
 }
+export { TOKEN_HEADER_NAME as TOKEN_HEADER_NAME, FETCH_TOKEN_METADATA_SELECTOR as FETCH_TOKEN_METADATA_SELECTOR };
+export { HBAClient as HBAClient };
