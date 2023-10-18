@@ -11,7 +11,7 @@ async function GetSRCAuthenticated(Url){
 
 async function UpdateTheme(Theme){
     const URL = window.location.href
-    if (!Theme || (!URL.includes("web.roblox.com") && !URL.includes("www.roblox.com"))) return
+    if (!URL.includes("web.roblox.com") && !URL.includes("www.roblox.com")) return
 
     if (CurrentIFrame) CurrentIFrame.remove()
 

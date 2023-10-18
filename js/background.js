@@ -394,7 +394,9 @@ BindToOnMessage("PaymentRequired", false, function(request){
 
 ListenForSettingChanged("CurrentTheme", function(Theme){
     for (let i = 0; i < ActiveRobloxPages.length; i++){
-        chrome.tabs.sendMessage(ActiveRobloxPages[i], {type: "ThemeChange", Theme: Theme}, undefined)
+        try {
+            chrome.tabs.sendMessage(ActiveRobloxPages[i], {type: "ThemeChange", Theme: Theme}, undefined)
+        } catch {}
     }
 })
 
