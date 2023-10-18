@@ -18,6 +18,7 @@ async function CreateThemesSection(List){
         ThemesList.appendChild(Theme)
 
         Button.addEventListener("click", async function(){
+            if (!await PaidForFeature("CurrentTheme")) return CreatePaymentPrompt()
             if (await IsFeatureEnabled("CurrentTheme") === Name) return
 
             SetFeatureEnabled("CurrentTheme", Name)

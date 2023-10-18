@@ -71,7 +71,6 @@ async function UpdateTheme(Theme){
             const MaxWidthFix = document.createElement("style")
             MaxWidthFix.innerHTML = `@media (min-width: 1850px) { .content {max-width: 1335px !important;} }`
             document.head.appendChild(MaxWidthFix)
-            console.log(MaxWidthFix)
             StyleFixes.push(MaxWidthFix)
         }
 
