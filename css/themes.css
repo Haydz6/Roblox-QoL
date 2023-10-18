@@ -25,10 +25,14 @@
 }
 
 .clear-button {
-    height: 65px;
+    /* height: 65px; */
+    display: flex;
+    align-items: center;
 }
 
 .clear-button > img {
-    height: 100%;
+    /* height: 100%;
+    width: 100%; */
+    height: 65px;
     width: 100%;
 }

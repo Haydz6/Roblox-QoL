@@ -41,9 +41,6 @@ async function CreateThemesSection(List){
     })
 
     ThemesList.appendChild(Clear)
-
-    CreateTheme("Winterness.webp")
-    CreateTheme("boykisser.gif")
     
     RequestFunc(WebServerEndpoints.Themes, "GET").then(function([Success, Body]){
         if (!Success){

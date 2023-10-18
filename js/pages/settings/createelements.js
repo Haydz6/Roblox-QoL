@@ -94,6 +94,7 @@ function CreateFeaturePaid(){
     Text.style = "color: #e44950;"
     Text.innerText = "This feature is paid"
     Text.href = WebServerURL+"pages/pricing"
+    Text.target = "_blank"
 
     Container.append(Icon, Text)
 
