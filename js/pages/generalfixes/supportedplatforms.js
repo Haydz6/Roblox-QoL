@@ -33,6 +33,10 @@ IsFeatureEnabled("SupportedPlatforms").then(async function(Enabled){
     let className = GlobalContainer.children[0].className
 
     if (AllowedGears) AllowedGears.parentElement.parentElement.remove()
+    else {
+        AllowedGears = FindFirstClass("stat-gears")
+        if (AllowedGears) AllowedGears.parentElement.remove()
+    }
 
     const [Container, List] = CreateAllowedDevicesContainer(className)
     GlobalContainer.appendChild(Container)
