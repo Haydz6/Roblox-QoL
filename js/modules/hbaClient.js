@@ -7,7 +7,7 @@ const FETCH_TOKEN_METADATA_URL = "https://www.roblox.com/reference/blank";
 const FETCH_TOKEN_METADATA_SELECTOR = 'meta[name="hardware-backed-authentication-data"]';
 const FETCH_USER_DATA_SELECTOR = 'meta[name="user-data"]';
 const FETCH_TOKEN_METADATA_REGEX = /name="hardware-backed-authentication-data"(\s|.)+?data-is-secure-authentication-intent-enabled="(.+?)"(\s|.)+?data-is-bound-auth-token-enabled="(.+?)"(\s|.)+?data-bound-auth-token-whitelist="(.+?)"(\s|.)+?data-bound-auth-token-exemptlist="(.+?)"(\s|.)+?data-hba-indexed-db-name="(.+?)"(\s|.)+?data-hba-indexed-db-obj-store-name="(.+?)"(\s|.)+?data-hba-indexed-db-key-name="(.+?)"(\s|.)+?data-hba-indexed-db-version="(.+?)"/;
-const FETCH_USER_DATA_REGEX = /<meta(\s|.)+?name="user-data"/;
+const FETCH_USER_DATA_REGEX = /<meta[^name=]name="user-data"/;
 const AUTH_TOKEN_SEPARATOR = "|";
 const MATCH_ROBLOX_URL_BASE = ".roblox.com";
 const DEFAULT_INDEXED_DB_VERSION = 1;
