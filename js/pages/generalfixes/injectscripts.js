@@ -40,3 +40,6 @@ IsFeatureEnabled("CancelFriendRequest").then(function(Enabled){
 IsFeatureEnabled("RemoveAccessoryLimit").then(function(Enabled){
     if (Enabled) InjectScript("RemoveAccessoryLimit", "*://*.roblox.com/my/avatar*")
 })
+IsFeatureEnabled("TradeAge").then(function(Enabled){
+    if (Enabled) InjectScript("TradeAge", "*://*.roblox.com/trades*")
+})
