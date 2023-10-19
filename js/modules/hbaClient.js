@@ -143,15 +143,8 @@ class HBAClient {
             [TOKEN_HEADER_NAME]: token
         };
     }
-    async clearTokenMetadataifEligible(SecondsElapsed) {
-        if (this.tokenMetadataFetched && (Date.now() - this.tokenMetadataFetched)/1000 >= SecondsElapsed){
-            this.cachedTokenMetadata = undefined
-            this.tokenMetadataFetched = undefined
-        }
-    }
     async getTokenMetadata(uncached) {
         if (!uncached && await this.cachedTokenMetadata) {
-            this.clearTokenMetadataifEligible(60*10)
             return this.cachedTokenMetadata;
         }
         const promise = (async ()=>{
@@ -242,10 +235,7 @@ class HBAClient {
                 hbaIndexedDbKeyName: hbaIndexedDbKeyName,
                 hbaIndexedDbVersion: hbaIndexedDbVersion
             };
-
             this.cachedTokenMetadata = tokenMetadata;
-            this.tokenMetadataFetched = Date.now()
-
             return tokenMetadata;
         })();
         this.cachedTokenMetadata = promise;
