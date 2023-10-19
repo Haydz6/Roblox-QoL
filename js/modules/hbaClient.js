@@ -5,10 +5,15 @@
 const TOKEN_HEADER_NAME = "x-bound-auth-token";
 const FETCH_TOKEN_METADATA_URL = "https://www.roblox.com/reference/blank";
 const FETCH_TOKEN_METADATA_SELECTOR = 'meta[name="hardware-backed-authentication-data"]';
+const FETCH_USER_DATA_SELECTOR = 'meta[name="user-data"]';
 const FETCH_TOKEN_METADATA_REGEX = /name="hardware-backed-authentication-data"(\s|.)+?data-is-secure-authentication-intent-enabled="(.+?)"(\s|.)+?data-is-bound-auth-token-enabled="(.+?)"(\s|.)+?data-bound-auth-token-whitelist="(.+?)"(\s|.)+?data-bound-auth-token-exemptlist="(.+?)"(\s|.)+?data-hba-indexed-db-name="(.+?)"(\s|.)+?data-hba-indexed-db-obj-store-name="(.+?)"(\s|.)+?data-hba-indexed-db-key-name="(.+?)"(\s|.)+?data-hba-indexed-db-version="(.+?)"/;
+const FETCH_USER_DATA_REGEX = /<meta(\s|.)+?name="user-data"/;
 const AUTH_TOKEN_SEPARATOR = "|";
 const MATCH_ROBLOX_URL_BASE = ".roblox.com";
 const DEFAULT_INDEXED_DB_VERSION = 1;
+const FORCE_BAT_URLS = [
+    "/account-switcher/v1/switch"
+];
 const TOKEN_SIGNATURE_ALGORITHM = {
     name: "ECDSA",
     hash: {
@@ -114,6 +119,8 @@ class HBAClient {
     onSite = false;
     suppliedCryptoKeyPair;
     baseUrl;
+    cookie;
+    isAuthenticated;
     fetch(url, params) {
         const headers = new Headers(filterObject(this.headers));
         if (params?.headers) {
@@ -121,6 +128,9 @@ class HBAClient {
             headerParams.forEach((value, key)=>{
                 headers.set(key, value);
             });
+        }
+        if (this.cookie) {
+            headers.set("cookie", this.cookie);
         }
         const init = {
             ...params,
@@ -131,8 +141,8 @@ class HBAClient {
         }
         return (this._fetchFn ?? fetch)(url, init);
     }
-    async generateBaseHeaders(requestUrl, body) {
-        if (!await this.isUrlIncludedInWhitelist(requestUrl)) {
+    async generateBaseHeaders(requestUrl, includeCredentials, body) {
+        if (!await this.isUrlIncludedInWhitelist(requestUrl, includeCredentials)) {
             return {};
         }
         const token = await this.generateBAT(body);
@@ -156,9 +166,10 @@ class HBAClient {
             let hbaIndexedDbObjStoreName;
             let hbaIndexedDbKeyName;
             let hbaIndexedDbVersion;
+            let isAuthenticated;
             let doc;
             const canUseDoc = "DOMParser" in globalThis && "document" in globalThis;
-            if (uncached || !canUseDoc || !document.querySelector?.(FETCH_TOKEN_METADATA_SELECTOR)) {
+            if (uncached || !canUseDoc || !document.querySelector?.(FETCH_TOKEN_METADATA_SELECTOR) || !document.querySelector?.(FETCH_USER_DATA_SELECTOR)) {
                 const text = await this.fetch(FETCH_TOKEN_METADATA_URL).then((res)=>res.text());
                 if (!canUseDoc) {
                     const match = text.match(FETCH_TOKEN_METADATA_REGEX);
@@ -166,6 +177,7 @@ class HBAClient {
                         return null;
                     }
                     try {
+                        isAuthenticated = FETCH_USER_DATA_REGEX.test(text);
                         isSecureAuthenticationIntentEnabled = match[2] === "true";
                         isBoundAuthTokenEnabledForAllUrls = match[4] === "true";
                         try {
@@ -201,6 +213,7 @@ class HBAClient {
                     return null;
                 }
                 try {
+                    isAuthenticated = !!doc.querySelector?.(FETCH_USER_DATA_SELECTOR);
                     isSecureAuthenticationIntentEnabled = el.getAttribute("data-is-secure-authentication-intent-enabled") === "true";
                     isBoundAuthTokenEnabledForAllUrls = el.getAttribute("data-is-bound-auth-token-enabled") === "true";
                     try {
@@ -233,7 +246,8 @@ class HBAClient {
                 hbaIndexedDbName: hbaIndexedDbName,
                 hbaIndexedDbObjStoreName: hbaIndexedDbObjStoreName,
                 hbaIndexedDbKeyName: hbaIndexedDbKeyName,
-                hbaIndexedDbVersion: hbaIndexedDbVersion
+                hbaIndexedDbVersion: hbaIndexedDbVersion,
+                isAuthenticated: isAuthenticated
             };
             this.cachedTokenMetadata = tokenMetadata;
             return tokenMetadata;
@@ -292,7 +306,7 @@ class HBAClient {
             signature
         ].join(AUTH_TOKEN_SEPARATOR);
     }
-    async isUrlIncludedInWhitelist(tryUrl) {
+    async isUrlIncludedInWhitelist(tryUrl, includeCredentials) {
         const url = tryUrl.toString();
         if (!url.toString().includes(MATCH_ROBLOX_URL_BASE)) {
             return false;
@@ -305,10 +319,16 @@ class HBAClient {
                 }
             } catch  {}
         }
+        if (FORCE_BAT_URLS.some((url2)=>url.includes(url2))) {
+            return true;
+        }
         const metadata = await this.getTokenMetadata();
+        if (!includeCredentials || !metadata?.isAuthenticated) {
+            return false;
+        }
         return !!metadata && (metadata.isBoundAuthTokenEnabledForAllUrls || metadata.boundAuthTokenWhitelist?.some((item)=>url.includes(item.apiSite) && Math.floor(Math.random() * 100) < item.sampleRate)) && !metadata.boundAuthTokenExemptlist?.some((item)=>url.includes(item.apiSite));
     }
-    constructor({ fetch: fetch1, headers, onSite, keys, baseUrl } = {}){
+    constructor({ fetch: fetch1, headers, onSite, keys, baseUrl, cookie } = {}){
         if (fetch1) {
             this._fetchFn = fetch1;
         }
@@ -326,6 +346,9 @@ class HBAClient {
         }
         if (keys) {
             this.suppliedCryptoKeyPair = keys;
+        }
+        if (cookie) {
+            this.cookie = cookie;
         }
     }
 }

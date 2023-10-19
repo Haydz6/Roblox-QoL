@@ -152,12 +152,12 @@ chrome.tabs.query({}, function(tabs){
     }
 })
 
-function generateBaseHeaders(URL, Body){
+function generateBaseHeaders(URL, CredientalsInclude, Body){
     const Page = ActiveRobloxPages[0]
     if (!Page) return false
 
     return new Promise((resolve) => {
-        chrome.tabs.sendMessage(Page, {type: "HBA", URL: URL, Body: Body}, undefined, function(headers){
+        chrome.tabs.sendMessage(Page, {type: "HBA", URL: URL, CredientalsInclude: CredientalsInclude, Body: Body}, undefined, function(headers){
             resolve(headers || {}) //null if failed :(
         })
     })
@@ -178,8 +178,8 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     if (URL.search("roblox.com") > -1) {
         Headers["x-csrf-token"] = CSRFToken
 
-        if (await HBAclient.isUrlIncludedInWhitelist(URL)){
-            const Generated = await generateBaseHeaders(URL, Body)
+        if (await HBAclient.isUrlIncludedInWhitelist(URL, CredientalsInclude || false)){
+            const Generated = await generateBaseHeaders(URL, CredientalsInclude, Body)
             if (Generated === false){
                 if (await IsFeatureKilled("DontTryBypassHBA")){
                     return [false, {Success: false, Result: "Open a roblox page"}]

@@ -245,7 +245,7 @@ function ListenToEventFromBackground(Type, Callback){
 
 chrome.runtime.onMessage.addListener(function(Message, _, sendResponse){
   if (Message.type === "HBA"){
-    hbaClient.generateBaseHeaders(Message.URL, Message.Body).then(function(Headers){
+    hbaClient.generateBaseHeaders(Message.URL, Message.CredientalsInclude, Message.Body).then(function(Headers){
       sendResponse(Headers)
     })
     return true
@@ -264,7 +264,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
 
   if (URL.search("roblox.com") > -1) {
     Headers["x-csrf-token"] = CSRFToken
-    Headers = {...(await hbaClient.generateBaseHeaders(URL, Body)), ...Headers}
+    Headers = {...(await hbaClient.generateBaseHeaders(URL, CredientalsInclude || false, Body)), ...Headers}
   } else if (IsQOLAPI){
     if (URL.search("/auth") == -1){
       Headers.Authentication = await GetAuthKey()
