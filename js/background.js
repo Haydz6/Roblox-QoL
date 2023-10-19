@@ -392,7 +392,26 @@ BindToOnMessage("PaymentRequired", false, function(request){
     return PaymentRequiredFailure(request.result)
 })
 
+let LastThemeChange = 0
+let ThemeChangePending = false
+
+async function SaveThemeToServer(){
+    RequestFunc(WebServerEndpoints.Themes+"set", "POST", {"Content-Type": "application/json"}, JSON.stringify({Theme: await IsFeatureEnabled("CurrentTheme") || ""}))
+}
+
 ListenForSettingChanged("CurrentTheme", function(Theme){
+    if (!ThemeChangePending){
+        if (Date.now()/1000 - LastThemeChange >= 5){
+            SaveThemeToServer()
+        }
+        ThemeChangePending = true
+        sleep(5000).then(function(){
+            ThemeChangePending = false
+            SaveThemeToServer()
+        })
+    }
+    LastThemeChange = Date.now()/1000
+
     for (let i = 0; i < ActiveRobloxPages.length; i++){
         try {
             chrome.tabs.sendMessage(ActiveRobloxPages[i], {type: "ThemeChange", Theme: Theme}, undefined)

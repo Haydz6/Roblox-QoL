@@ -22,7 +22,6 @@ async function CreateThemesSection(List){
             if (await IsFeatureEnabled("CurrentTheme") === Name) return
 
             SetFeatureEnabled("CurrentTheme", Name)
-            RequestFunc(WebServerEndpoints.Themes+"set", "POST", {"Content-Type": "application/json"}, JSON.stringify({Theme: Name}))
         })
 
         return Theme
@@ -37,7 +36,6 @@ async function CreateThemesSection(List){
 
     Clear.addEventListener("click", function(){
         SetFeatureEnabled("CurrentTheme", undefined)
-        RequestFunc(WebServerEndpoints.Themes+"set", "POST", {"Content-Type": "application/json"}, JSON.stringify({Theme: ""}))
     })
 
     ThemesList.appendChild(Clear)
