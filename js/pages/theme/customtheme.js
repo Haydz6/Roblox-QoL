@@ -42,7 +42,7 @@ async function UpdateTheme(Theme){
         }
         StyleFixes.length = 0
     } else {
-        WaitForClass("content").then(function(Content){
+        if (!URL.match("/users/[0-9]+/profile")) WaitForClass("content").then(function(Content){
             Content.style.padding = "20px"
             Content.style.borderRadius = "10px"
     
