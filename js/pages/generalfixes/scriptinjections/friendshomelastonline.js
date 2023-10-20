@@ -22,31 +22,36 @@ async function BatchGetLastOnline(UserId){
                 UserIdToResolve[Request.UserId].push(Request)
             }
 
-            const Response = await fetch("https://presence.roblox.com/v1/presence/last-online", {method: "POST", headers: {"Content-Type": "application-json"}, body: JSON.stringify({userIds: UserIds}), credentials: "include"})
-            const Success = Response.ok
-            let Result
+            for (let i = 0; i < 3; i++){
+                const Response = await fetch("https://presence.roblox.com/v1/presence/last-online", {method: "POST", headers: {"Content-Type": "application-json"}, body: JSON.stringify({userIds: UserIds}), credentials: "include"})
+                const Success = Response.ok
+                let Result
 
-            if (Success){
-                try {
-                    Result = await Response.json()
-                } catch {}
-            }
-            
-            if (!Success) {
-                for (const [_, Resolves] of Object.entries(UserIdToResolve)) {
+                if (Success){
+                    try {
+                        Result = await Response.json()
+                    } catch {}
+                }
+                
+                if (!Success) {
+                    await new Promise(r => setTimeout(r, 1500))
+                    continue
+                }
+
+                const Timestamps = Result.lastOnlineTimestamps
+                for (let i = 0; i < Timestamps.length; i++){
+                    const User = Timestamps[i]
+                    const Resolves = UserIdToResolve[User.userId]
                     for (let i = 0; i < Resolves.length; i++){
-                        Resolves[i].reject()
+                        Resolves[i].resolve(User.lastOnline)
                     }
                 }
                 return
             }
 
-            const Timestamps = Result.lastOnlineTimestamps
-            for (let i = 0; i < Timestamps.length; i++){
-                const User = Timestamps[i]
-                const Resolves = UserIdToResolve[User.userId]
+            for (const [_, Resolves] of Object.entries(UserIdToResolve)) {
                 for (let i = 0; i < Resolves.length; i++){
-                    Resolves[i].resolve(User.lastOnline)
+                    Resolves[i].reject()
                 }
             }
         }
