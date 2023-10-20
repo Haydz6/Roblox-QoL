@@ -284,6 +284,10 @@ const Settings = {
             Title: "Shows earnings on trade",
             Description: "Shows how much you earnt/loss in value and rap on a trade."
         },
+        TradeAge: {
+            Title: "Trade Age",
+            Description: "Shows how long ago a trade was created rather than a date."
+        },
         ShowValueOnTrade: {
             Title: "Show value on trade",
             Description: "Shows total value of trade (rolimons)"
