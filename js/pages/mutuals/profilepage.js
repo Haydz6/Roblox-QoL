@@ -1,8 +1,7 @@
 IsFeatureEnabled("Mutuals2").then(async function(Enabled){
     if (!Enabled || (await GetUserId() == GetTargetId())) return
 
-    const HeaderContainer = await WaitForId("profile-header-container")
-    const HeadersList = await WaitForClassPath(HeaderContainer, "details-info")
+    const HeadersList = await WaitForClass("details-info")
     const TargetId = GetTargetId()
 
     const [List, Count] = CreateMututalHeader(TargetId)

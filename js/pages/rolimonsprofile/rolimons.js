@@ -1,6 +1,5 @@
 async function RunRolimonsProfile(){
-    const HeaderContainer = await WaitForId("profile-header-container")
-    const TopHeader = await WaitForClassPath(HeaderContainer, "details-info")
+    const TopHeader = await WaitForClass("details-info")
     const DisplayRap = await IsFeatureEnabled("RapOnProfile")
     const DisplayValue = await IsFeatureEnabled("ValueOnProfile")
 
