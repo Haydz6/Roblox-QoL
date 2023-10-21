@@ -61,6 +61,8 @@ async function UpdateTheme(Theme){
 
         if (URL.includes("/users/")) {
             WaitForClass("profile-ads-container").then(function(Ad){
+                if (!Ad.parentElement) return
+
                 const Container = FindFirstClass("content")
                 Container.parentElement.insertBefore(Ad, Container.nextSibling)
 
@@ -75,6 +77,8 @@ async function UpdateTheme(Theme){
         }
 
         WaitForId("Leaderboard-Abp").then(function(Ad){
+            if (!Ad.parentElement) return
+
             const Container = FindFirstClass("content")
             Container.parentElement.insertBefore(Ad, Container)
             Ad.style.marginBottom = "20px"
