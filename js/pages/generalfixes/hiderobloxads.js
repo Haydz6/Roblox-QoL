@@ -1,5 +1,5 @@
 function NewAd(Ad){
-    if (Ad.nodeType === Node.ELEMENT_NODE && Ad.className.search("abp") > -1) Ad.remove()
+    if (Ad.nodeType === Node.ELEMENT_NODE && Ad.className.includes("abp")) Ad.remove()
 }
 
 IsFeatureEnabled("HideRobloxAds").then(async function(Enabled){

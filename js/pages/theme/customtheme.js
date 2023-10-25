@@ -10,17 +10,17 @@ async function GetSRCAuthenticated(Url){
 }
 
 async function UpdateTheme(Theme){
-    const URL = window.location.href
-    if (!URL.includes("web.roblox.com") && !URL.includes("www.roblox.com")) return
+    const DocURL = window.location.href
+    if (!DocURL.includes("web.roblox.com") && !DocURL.includes("www.roblox.com")) return
 
     if (CurrentIFrame) CurrentIFrame.remove()
 
-    if (!Theme){
+    if (!Theme?.Theme){
         WaitForClass("content").then(function(Content){
             Content.style.padding = ""
             Content.style.borderRadius = ""
     
-            if (URL.includes("/home") || URL.match("/games/[0-9]+/") && URL.match("/games/[0-9]+/").length != 0) {
+            if (DocURL.includes("/home") || DocURL.match("/games/[0-9]+/") && DocURL.match("/games/[0-9]+/").length != 0) {
                 Content.style.maxWidth = ""
             }
         })
@@ -42,11 +42,12 @@ async function UpdateTheme(Theme){
         }
         StyleFixes.length = 0
     } else {
-        if (!URL.match("/users/[0-9]+/profile")) WaitForClass("content").then(function(Content){
+        //if (!DocURL.match("/users/[0-9]+/profile"))
+        WaitForClass("content").then(function(Content){
             Content.style.padding = "20px"
             Content.style.borderRadius = "10px"
     
-            if (URL.includes("/home") || URL.match("/games/[0-9]+/") && URL.match("/games/[0-9]+/").length != 0) {
+            if (DocURL.includes("/home") || DocURL.match("/games/[0-9]+/") && DocURL.match("/games/[0-9]+/").length != 0) {
                 Content.style.maxWidth = "1000px"
             }
         })
@@ -59,7 +60,7 @@ async function UpdateTheme(Theme){
             Ad.style.marginLeft = "-185px"
         })
 
-        if (URL.includes("/users/")) {
+        if (DocURL.includes("/users/")) {
             WaitForClass("profile-ads-container").then(function(Ad){
                 if (!Ad.parentElement) return
 
@@ -69,7 +70,7 @@ async function UpdateTheme(Theme){
                 Ad.style.marginTop = "20px"
             })
         }
-        if (URL.match("/groups/[0-9]+/")) {
+        if (DocURL.match("/groups/[0-9]+/")) {
             const MaxWidthFix = document.createElement("style")
             MaxWidthFix.innerHTML = `@media (min-width: 1850px) { .content {max-width: 1335px !important;} }`
             document.head.appendChild(MaxWidthFix)
@@ -88,7 +89,8 @@ async function UpdateTheme(Theme){
 
         const IFrame = document.createElement("iframe")
         IFrame.style = "position: absolute; width: 100%; height: 100%; border: 0; z-index: -2; top: 0; left: 0;"
-        IFrame.src = `${WebServerEndpoints.Themes}theme?theme=${Theme}`
+        if (Theme.Theme != "custom") IFrame.src = `${WebServerEndpoints.Themes}theme?theme=${Theme.Theme}`
+        else IFrame.src = Theme.Access
         CurrentIFrame = IFrame
 
         Container.style = "border-radius: 20px; padding: 20px;"
