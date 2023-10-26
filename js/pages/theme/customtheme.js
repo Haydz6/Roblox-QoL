@@ -1,4 +1,5 @@
 let CurrentIFrame
+const DefaultIFrameStyle = "position: absolute; width: 100%; height: 100%; border: 0; z-index: -2; top: 0; left: 0;"
 const StyleFixes = []
 
 async function GetSRCAuthenticated(Url){
@@ -8,6 +9,43 @@ async function GetSRCAuthenticated(Url){
     const Object = URL.createObjectURL(Blob)
     return Object
 }
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null
+}
+
+function UpdateThemeSettings(Theme){
+    const Settings = Theme?.Settings
+    if (!Settings) return
+    if (!CurrentIFrame) return
+
+    CurrentIFrame.style = `${DefaultIFrameStyle} filter: blur(${Settings.Blur || 0}px) brightness(${Settings.Brightness || 1}%) saturation(${Settings.Saturation || 1}%);`
+
+    if (Settings.Opacity && Settings.Opacity < 1){
+        WaitForClass("content").then(function(Content){
+            const Style = window.getComputedStyle(Content)
+            console.log(Style.backgroundColor)
+
+            if (Style.backgroundColor.startsWith("rgb")){
+                const Regex = new RegExp("[0-9]+", "g")
+                const Numbers = []
+
+                while (result = Regex.exec(Style.backgroundColor)) Numbers.push(result)
+                if (Numbers.length < 3) return
+                Content.style["background-color"] = `rgba(${Numbers[0]},${Numbers[1]},${Numbers[2]},${Settings.Opacity})`
+            } else if (Style.backgroundColor.startsWith("#")) {
+                const Color = hexToRgb(Style.backgroundColor)
+                Content.style["background-color"] = `rgba(${Color.r},${Color.g},${Color.b},${Settings.Opacity})`
+            }
+        })
+    }
+}
+
 
 async function UpdateTheme(Theme){
     const DocURL = window.location.href
@@ -88,11 +126,12 @@ async function UpdateTheme(Theme){
         const Container = await WaitForId("container-main")
 
         const IFrame = document.createElement("iframe")
-        IFrame.style = "position: absolute; width: 100%; height: 100%; border: 0; z-index: -2; top: 0; left: 0;"
+        IFrame.style = DefaultIFrameStyle
         if (Theme.Theme != "custom") IFrame.src = `${WebServerEndpoints.Themes}theme?theme=${Theme.Theme}`
         else IFrame.src = Theme.Access
         CurrentIFrame = IFrame
 
+        UpdateThemeSettings(Theme)
         Container.style = "border-radius: 20px; padding: 20px;"
 
         Container.appendChild(IFrame)
@@ -105,4 +144,8 @@ IsFeatureEnabled("CurrentTheme").then(async function(Theme){
 
 ListenToEventFromBackground("ThemeChange", function(Message){
     UpdateTheme(Message.Theme)
+})
+
+ListenToEventFromBackground("ThemeSettingsChange", function(Message){
+    UpdateThemeSettings(Message.Theme)
 })

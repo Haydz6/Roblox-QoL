@@ -396,12 +396,20 @@ BindToOnMessage("PaymentRequired", false, function(request){
 
 let LastThemeChange = 0
 let ThemeChangePending = false
+let ThemePendingChanges = {}
 
 async function SaveThemeToServer(){
-    RequestFunc(WebServerEndpoints.Themes+"set", "POST", {"Content-Type": "application/json"}, JSON.stringify({Theme: (await IsFeatureEnabled("CurrentTheme"))?.Theme || ""}))
+    const Update = {Theme: (await IsFeatureEnabled("CurrentTheme"))?.Theme || ""}
+    if (Object.keys(ThemePendingChanges).length > 0){
+        const Settings = {}
+        Object.assign(Settings, ThemePendingChanges)
+        Update.Settings = Settings
+    }
+
+    RequestFunc(WebServerEndpoints.Themes+"set", "POST", {"Content-Type": "application/json"}, JSON.stringify(Update))
 }
 
-ListenForSettingChanged("CurrentTheme", function(Theme){
+async function BulkThemeChange(Type){
     if (!ThemeChangePending){
         if (Date.now()/1000 - LastThemeChange >= 5){
             SaveThemeToServer()
@@ -416,9 +424,25 @@ ListenForSettingChanged("CurrentTheme", function(Theme){
 
     for (let i = 0; i < ActiveRobloxPages.length; i++){
         try {
-            chrome.tabs.sendMessage(ActiveRobloxPages[i], {type: "ThemeChange", Theme: Theme}, undefined)
+            chrome.tabs.sendMessage(ActiveRobloxPages[i], {type: Type, Theme: await IsFeatureEnabled("CurrentTheme")}, undefined)
         } catch {}
     }
+}
+
+BindToOnMessage("ThemeSettings", true, async function(Message){
+    const Theme = await IsFeatureEnabled("CurrentTheme")
+
+    if (!Theme.Settings){
+        Theme.Settings = {}
+    }
+
+    Theme.Settings[Message.key] = Message.value
+    ThemePendingChanges[Message.key] = Message.value.toString()
+    BulkThemeChange("ThemeSettingsChange")
+})
+
+ListenForSettingChanged("CurrentTheme", function(Theme){
+    BulkThemeChange("ThemeChange")
 })
 
 const BrowserAction = chrome.action || chrome.browserAction
@@ -448,6 +472,10 @@ PaidForFeature("CurrentTheme").then(function(Paid){
     if (!Paid) return
     RequestFunc(WebServerEndpoints.Themes+"current", "GET").then(function([Success, Body]){
         if (!Success) return
+        if (Body.Settings) for ([k, v] of Object.entries(Body.Settings)){
+            if (!isNaN(v) && !isNaN(parseFloat(v))) Body[k] = parseFloat(v)
+        }
+
         SetFeatureEnabled("CurrentTheme", Body, false)
     })
 })
