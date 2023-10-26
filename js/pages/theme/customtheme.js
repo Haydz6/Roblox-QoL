@@ -24,7 +24,7 @@ function UpdateThemeSettings(Theme){
     if (!Settings) return
     if (!CurrentIFrame) return
 
-    CurrentIFrame.style = `${DefaultIFrameStyle} filter: blur(${Settings.Blur || 0}px) brightness(${Settings.Brightness || 1}%) saturation(${Settings.Saturation || 1}%);`
+    CurrentIFrame.style = `${DefaultIFrameStyle} filter: blur(${Settings.Blur || 0}px) brightness(${Settings.Brightness !== undefined ? Settings.Brightness : 1}) saturate(${Settings.Saturation !== undefined ? Settings.Saturation : 1});`
 
     if (Settings.Opacity && Settings.Opacity < 1){
         WaitForClass("content").then(function(Content){
