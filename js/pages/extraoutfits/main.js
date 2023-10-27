@@ -358,7 +358,8 @@ function CreateExtraOutfitButton(ExtraOutfit){
   //Update thumbnail if needed
   Thumbnail2DImage.onerror = async function(e){
     Thumbnail2DImage.onerror = null
-    Thumbnail2DImage.src = await RegenerateExtraOutfitThumbnail(ExtraOutfit.Id)
+    const [Success, _, Response] = await RequestFunc(Thumbnail2DImage.src, "GET", undefined, undefined, true, true)
+    if (!Success && (Response.status === 400 || Response.status === 404)) Thumbnail2DImage.src = await RegenerateExtraOutfitThumbnail(ExtraOutfit.Id)
   }
 
   ItemCardsList.insertBefore(OutfitElement, ItemCardsList.firstChild)
