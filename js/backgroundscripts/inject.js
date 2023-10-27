@@ -6,6 +6,7 @@ const ContentScripts = [{
         "js/pages/extraoutfits/createelements.js",
         "js/pages/extraoutfits/handleconversion.js",
         "js/pages/extraoutfits/createnormaloutfitelement.js",
+        "js/pages/extraoutfits/regeneratethumb.js",
         "js/pages/extraoutfits/main.js",
         "js/pages/extraoutfits/outfitsearch.js"
     ],

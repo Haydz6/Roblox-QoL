@@ -355,6 +355,12 @@ function CreateExtraOutfitButton(ExtraOutfit){
     UpdateSettingsListVisibility()
   })
 
+  //Update thumbnail if needed
+  Thumbnail2DImage.onerror = async function(e){
+    Thumbnail2DImage.onerror = null
+    Thumbnail2DImage.src = await RegenerateExtraOutfitThumbnail(ExtraOutfit.Id)
+  }
+
   ItemCardsList.insertBefore(OutfitElement, ItemCardsList.firstChild)
 }
 
