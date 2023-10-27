@@ -1,11 +1,95 @@
-.opacity-theme #game-detail-page .nav.nav-tabs {
-    border-radius: 6px;
-}
+.opacity-theme {
+    /*Global*/
+    .section-content-off {
+        background-color: transparent!important;
+    }
 
-.opacity-theme #game-detail-page .nav.nav-tabs .rbx-tab-heading {
-    background-color: transparent!important;
-}
+    .nav.nav-tabs {
+        border-radius: 6px;
+    }
+    
+    .nav.nav-tabs .rbx-tab-heading {
+        background-color: transparent!important;
+    }
 
-.opacity-theme #game-detail-page .section-content-off {
-    background-color: transparent!important;
+    /*Game Page*/
+    #game-detail-page .nav.nav-tabs {
+        border-radius: 6px;
+    }
+    
+    #game-detail-page .nav.nav-tabs .rbx-tab-heading {
+        background-color: transparent!important;
+    }
+    
+    #game-detail-page .section-content-off {
+        background-color: transparent!important;
+    }
+
+    /*Settings Page*/
+    .menu-vertical {
+        border-radius: 6px;
+    }
+    .section-content {
+        border-radius: 6px;
+    }
+    .remove-panel {
+        border-radius: 6px;
+    }
+
+    /*Avatar Shop Page*/
+    .search-bars {
+        background-color: transparent!important;
+    }
+    .topic-container {
+        background-color: transparent!important;
+    }
+    .btr-item-card-more {
+        /*background-color: transparent!important;*/
+        border-radius: 4px;
+    }
+
+    /*Private Messages Page*/
+    #private-message .nav.nav-tabs {
+        border-radius: 6px;
+    }
+    #private-message .section-content-off {
+        background-color: transparent!important;
+    }
+
+    /*Friends Page*/
+    #friends-container .nav.nav-tabs {
+        border-radius: 6px;
+    }
+    #friends-container .avatar-card-container {
+        border-radius: 8px;
+    }
+    #friends-container .avatar-card-container .avatar-card-content {
+        background-color: transparent!important;
+    }
+    #friends-container .avatar-card-container .avatar-card-btns {
+        background-color: transparent!important;
+    }
+    #friends-container .section-content-off {
+        background-color: transparent!important;
+    }
+
+    /*Avatar Page*/
+    #avatar-container .section-content-off {
+        background-color: transparent!important;
+    }
+    #avatar-container .nav.nav-tabs {
+        border-radius: 6px;
+    }
+    #avatar-container .nav.nav-tabs .rbx-tab-heading {
+        background-color: transparent!important;
+    }
+
+    /*Trade Page*/
+    #trades-container .container-empty {
+        background-color: transparent!important;
+    }
+    #trades-container .trade-row {
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
 }
