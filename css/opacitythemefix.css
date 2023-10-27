@@ -1,0 +1,11 @@
+.opacity-theme #game-detail-page .nav.nav-tabs {
+    border-radius: 6px;
+}
+
+.opacity-theme #game-detail-page .nav.nav-tabs .rbx-tab-heading {
+    background-color: transparent!important;
+}
+
+.opacity-theme #game-detail-page .section-content-off {
+    background-color: transparent!important;
+}

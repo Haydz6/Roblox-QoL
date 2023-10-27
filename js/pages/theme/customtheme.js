@@ -1,5 +1,5 @@
 let CurrentIFrame
-const DefaultIFrameStyle = "position: absolute; width: 100%; height: 100%; border: 0; z-index: -2; top: 0; left: 0;"
+const DefaultIFrameStyle = "position: absolute; width: 100%; height: 100%; border: 0; z-index: -2; top: 0; left: 0; user-select: none;"
 const StyleFixes = []
 
 async function GetSRCAuthenticated(Url){
@@ -27,9 +27,10 @@ function UpdateThemeSettings(Theme){
     CurrentIFrame.style = `${DefaultIFrameStyle} filter: blur(${Settings.Blur || 0}px) brightness(${Settings.Brightness !== undefined ? Settings.Brightness : 1}) saturate(${Settings.Saturation !== undefined ? Settings.Saturation : 1});`
 
     if (Settings.Opacity && Settings.Opacity < 1){
+        if (!document.body.className.includes("opacity-theme")) document.body.className += " opacity-theme"
+
         WaitForClass("content").then(function(Content){
             const Style = window.getComputedStyle(Content)
-            console.log(Style.backgroundColor)
 
             if (Style.backgroundColor.startsWith("rgb")){
                 const Regex = new RegExp("[0-9]+", "g")
@@ -43,6 +44,8 @@ function UpdateThemeSettings(Theme){
                 Content.style["background-color"] = `rgba(${Color.r},${Color.g},${Color.b},${Settings.Opacity})`
             }
         })
+    } else {
+        document.body.className = document.body.className.replace(" opacity-theme", "")
     }
 }
 

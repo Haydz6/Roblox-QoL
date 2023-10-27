@@ -67,7 +67,8 @@
         },
         {
             "css": [
-                "css/streamermode.css"
+                "css/streamermode.css",
+                "css/opacitythemefix.css"
             ],
             "matches": [
                 "*://*.roblox.com/*"

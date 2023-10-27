@@ -171,7 +171,7 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
     function UpdatePopoverPosition(Friend){
         if (!LastPopover) return
         const Rect = Friend.getBoundingClientRect()
-        LastPopover.style = `top: ${(Rect.top+84*1.5)+4}px; left: ${Rect.left-320/3}px;`
+        LastPopover.style = `top: ${((Rect.top+84*1.5)+4) + window.scrollY}px; left: ${Rect.left-320/3}px;`
     }
 
     async function KillPopover(){

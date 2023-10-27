@@ -403,6 +403,7 @@ async function SaveThemeToServer(){
     if (Object.keys(ThemePendingChanges).length > 0){
         const Settings = {}
         Object.assign(Settings, ThemePendingChanges)
+        ThemePendingChanges = {}
         Update.Settings = Settings
     }
 
