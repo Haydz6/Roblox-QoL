@@ -397,12 +397,11 @@ async function CustomesOpened(){
       }
     })
 
-    Input.addEventListener('input', function() {
+    Input.addEventListener("input", function() {
       let Bool = IsInputValid(Input, Input.value) && "enabled" || "disabled"
-      let Status = Bool && "enabled" || "disabled"
-      let OppositeStatus = !Bool && "enabled" || "disabled"
+      let OppositeStatus = Bool === "disabled" && "enabled" || "disabled"
 
-      CreateOutfitButton.setAttribute(Status, Status)
+      CreateOutfitButton.setAttribute(Bool, Bool)
       CreateOutfitButton.removeAttribute(OppositeStatus)
     })
 
