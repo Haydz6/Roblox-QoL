@@ -8,6 +8,14 @@
     margin-left: 20px;
 }
 
+.home-header .icon-premium {
+    margin-left: 12px;
+}
+
+.home-header .icon-verified-badge {
+    margin-left: 12px;
+}
+
 .home-header thumbnail-2d {
     height: 100%;
     width: 100%;
@@ -29,6 +37,6 @@
     border-radius: 50%;
 }
 
-.home-header img {
+.home-header .user-headshot {
     background-color: #d4d4d4;
 }
