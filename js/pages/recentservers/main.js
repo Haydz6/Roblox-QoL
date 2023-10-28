@@ -1,5 +1,5 @@
 async function GetHeadshotsFromUserIds(UserIds){
-    const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserIds.join(",")}&size=60x60&format=Png&isCircular=true`, "GET", undefined, undefined, true)
+    const [Success, Result] = await RequestFunc(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserIds.join(",")}&size=150x150&format=Png&isCircular=true`, "GET", undefined, undefined, true)
 
     if (!Success) return [false]
 

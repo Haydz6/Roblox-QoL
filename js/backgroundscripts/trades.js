@@ -24,7 +24,7 @@ async function GetHeadshotBlobFromURL(Url){
 }
 
 async function GetHeadshotBlobFromUserId(UserId){
-    return GetHeadshotBlobFromURL(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserId}&size=60x60&format=Png&isCircular=true`)
+    return GetHeadshotBlobFromURL(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${UserId}&size=150x150&format=Png&isCircular=true`)
 }
 
 async function ClearOldScannedTrades(){
