@@ -28,6 +28,10 @@ const Settings = {
             Title: "Add Download Button to version history",
             Description: "Adds a download button to place version history."
         },
+        UserHeader: {
+            Title: "Home Welcome Header",
+            Description: "Adds back the old home welcome header."
+        },
         Mutuals2: {
             Title: "Friend Mutuals",
             Description: "Shows mutuals on a users page."

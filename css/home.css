@@ -1,0 +1,34 @@
+.home-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.home-header .name {
+    margin-left: 20px;
+}
+
+.home-header thumbnail-2d {
+    height: 100%;
+    width: 100%;
+}
+
+.home-header .thumbnail-2d-container {
+    height: 100%;
+    width: 100%;
+}
+
+.home-header .avatar-card-link {
+    height: 125px;
+    width: 125px;
+
+    border-radius: 50%;
+}
+
+.home-header .avatar-card-image {
+    border-radius: 50%;
+}
+
+.home-header img {
+    background-color: #d4d4d4;
+}

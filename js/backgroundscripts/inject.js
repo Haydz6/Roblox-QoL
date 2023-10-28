@@ -263,7 +263,8 @@ const ContentScripts = [{
         "*://*.roblox.com/home?*"
     ],
     "css": [
-        "css/playtime.css"
+        "css/playtime.css",
+        "css/home.css"
     ],
     "js": [
         "js/pages/generalfixes/movehomefavouritestothirdrow.js",
@@ -277,7 +278,9 @@ const ContentScripts = [{
         
         "js/pages/friendsactivity/home.js",
         
-        "js/pages/bestfriend/home.js"
+        "js/pages/bestfriend/home.js",
+
+        "js/pages/home/userheader.js"
     ],
     "run_at": "document_start"
 },
