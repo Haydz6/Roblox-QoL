@@ -12,6 +12,10 @@
         background-color: transparent!important;
     }
 
+    .card-item {
+        border-radius: 6px;
+    }
+
     /*Game Page*/
     #game-detail-page .nav.nav-tabs {
         border-radius: 6px;

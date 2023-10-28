@@ -49,7 +49,6 @@ function UpdateThemeSettings(Theme){
     }
 }
 
-
 async function UpdateTheme(Theme){
     const DocURL = window.location.href
     if (!DocURL.includes("web.roblox.com") && !DocURL.includes("www.roblox.com")) return
