@@ -169,7 +169,7 @@ class HBAClient {
             let isAuthenticated;
             let doc;
             const canUseDoc = "DOMParser" in globalThis && "document" in globalThis;
-            if (uncached || !canUseDoc || !document.querySelector?.(FETCH_TOKEN_METADATA_SELECTOR) || !document.querySelector?.(FETCH_USER_DATA_SELECTOR)) {
+            if (uncached || !canUseDoc || !document.querySelector?.(FETCH_TOKEN_METADATA_SELECTOR) || !document.querySelector?.(FETCH_USER_DATA_SELECTOR) && document?.readyState === "loading") {
                 const text = await this.fetch(FETCH_TOKEN_METADATA_URL).then((res)=>res.text());
                 if (!canUseDoc) {
                     const match = text.match(FETCH_TOKEN_METADATA_REGEX);
@@ -323,7 +323,7 @@ class HBAClient {
             return true;
         }
         const metadata = await this.getTokenMetadata();
-        if (!includeCredentials || !metadata?.isAuthenticated) {
+        if (!includeCredentials || !(metadata?.isAuthenticated || this.isAuthenticated)) {
             return false;
         }
         return !!metadata && (metadata.isBoundAuthTokenEnabledForAllUrls || metadata.boundAuthTokenWhitelist?.some((item)=>url.includes(item.apiSite) && Math.floor(Math.random() * 100) < item.sampleRate)) && !metadata.boundAuthTokenExemptlist?.some((item)=>url.includes(item.apiSite));
