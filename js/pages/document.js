@@ -516,7 +516,7 @@ function ChildAdded(Node, SendInitial, Callback){
     }
   }
 
-  return new MutationObserver(function(Mutations, Observer){
+  const Observer = new MutationObserver(function(Mutations, Observer){
     Mutations.forEach(function(Mutation) {
       if (Mutation.type !== "childList") return
 
@@ -527,7 +527,10 @@ function ChildAdded(Node, SendInitial, Callback){
         })
       }
     })
-  }).observe(Node, {childList: true})
+  })
+  Observer.observe(Node, {childList: true})
+
+  return Observer
 }
 
 function ChildRemoved(Node, Callback){

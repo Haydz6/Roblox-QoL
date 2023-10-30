@@ -1,8 +1,7 @@
 IsFeatureEnabled("MinimizePrivateServers").then(function(Enabled){
     if (!Enabled) return
 
-    setTimeout(async function(){
-        const PrivateServers = await WaitForId("rbx-private-servers")
+    async function ModifyPrivateServersList(PrivateServers){
         const Header = await WaitForClassPath(PrivateServers, "container-header")
         const Banner = await WaitForClassPath(PrivateServers, "create-server-banner")
         const Section = await WaitForClassPath(PrivateServers, "section")
@@ -27,5 +26,25 @@ IsFeatureEnabled("MinimizePrivateServers").then(function(Enabled){
         const Tooltip = Header.getElementsByClassName("tooltip-container")[0]
         if (Tooltip) Header.insertBefore(Minimize, Tooltip)
         else Header.appendChild(Minimize)
+    }
+
+    setTimeout(async function(){
+        WaitForId("running-game-instances-container").then(function(Container){
+            const Observer = ChildAdded(Container, true, function(Item){
+                if (Item.id === "rbx-private-servers"){
+                    ModifyPrivateServersList(Item)
+                    Observer.disconnect()
+                }
+            })
+        })
+
+        WaitForId("private-server-container-about-tab").then(function(Container){
+            const Observer = ChildAdded(Container, true, function(Item){
+                if (Item.id === "rbx-private-servers"){
+                    ModifyPrivateServersList(Item)
+                    Observer.disconnect()
+                }
+            })
+        })
     }, 0)
 })
