@@ -96,4 +96,22 @@
         border-radius: 8px;
         margin-bottom: 8px;
     }
+
+    /*Transaction Page*/
+    #transactions-page-container .table {
+        background-color: transparent!important;
+    }
+
+    /*Configure Group Page*/
+    #configure-group .table {
+        background-color: transparent!important;
+    }
+
+    #configure-group .avatar-card-container {
+        border-radius: 8px;
+    }
+
+    #configure-group .input-group-btn.group-dropdown.avatar-card-btns {
+        border-radius: 8px;
+    }
 }
