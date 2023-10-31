@@ -28,47 +28,56 @@ async function HandleMapRegion(){
 
     await import(chrome.runtime.getURL("js/modules/globe.js"))
 
-    const World = Globe()
-    .globeImageUrl(chrome.runtime.getURL("img/filters/world.png"))
-    //.ringsData(gData)
-    .ringColor(() => colorInterpolator)
-    .ringMaxRadius('maxR')
-    .ringPropagationSpeed('propagationSpeed')
-    .ringRepeatPeriod('repeatPeriod')
-    .width(575)
-    .height(450)
-    .backgroundColor('rgba(255, 165, 0, 0)')
-    .showAtmosphere(false)
-    (GlobeDiv)
-
+    let World
+    let WorldContainer
+    let WorldElements
+    let WorldCanvas
+    let Controls
     let IsHovering = false
 
-    const WorldContainer = GlobeDiv.getElementsByTagName("div")[0].getElementsByTagName("div")[0].getElementsByTagName("div")[0]
-    const WorldElements = WorldContainer.getElementsByTagName("div")[2]
-    const WorldCanvas = WorldContainer.getElementsByTagName("canvas")[0]
+    function CreateGlobe(){
+        if (World) return
 
-    const Controls = World.controls()
+        World = Globe()
+        .globeImageUrl(chrome.runtime.getURL("img/filters/world.png"))
+        //.ringsData(gData)
+        .ringColor(() => colorInterpolator)
+        .ringMaxRadius('maxR')
+        .ringPropagationSpeed('propagationSpeed')
+        .ringRepeatPeriod('repeatPeriod')
+        .width(575)
+        .height(450)
+        .backgroundColor('rgba(255, 165, 0, 0)')
+        .showAtmosphere(false)
+        (GlobeDiv)
 
-    Controls.zoomSpeed = 3
-    Controls.minZoom = 0.25
-    Controls.maxZoom = 0.4
-    Controls.minDistance = 0.25
-    Controls.miaxDistance = 0.4
-    Controls.autoRotate = true
-    Controls.autoRotateSpeed = 1
-    Controls.update()
-
-    GlobeDiv.addEventListener("mouseenter", function(){
-        IsHovering = true
-        Controls.autoRotate = false
-     })
-
-    GlobeDiv.addEventListener("mouseleave", function(){
-        IsHovering = false
+        WorldContainer = GlobeDiv.getElementsByTagName("div")[0].getElementsByTagName("div")[0].getElementsByTagName("div")[0]
+        WorldElements = WorldContainer.getElementsByTagName("div")[2]
+        WorldCanvas = WorldContainer.getElementsByTagName("canvas")[0]
+    
+        Controls = World.controls()
+    
+        Controls.zoomSpeed = 3
+        Controls.minZoom = 0.25
+        Controls.maxZoom = 0.4
+        Controls.minDistance = 0.25
+        Controls.miaxDistance = 0.4
         Controls.autoRotate = true
-    })
+        Controls.autoRotateSpeed = 1
+        Controls.update()
+    
+        GlobeDiv.addEventListener("mouseenter", function(){
+            IsHovering = true
+            Controls.autoRotate = false
+         })
+    
+        GlobeDiv.addEventListener("mouseleave", function(){
+            IsHovering = false
+            Controls.autoRotate = true
+        })
 
-    WorldCanvas.style["border-radius"] = "12px"
+        WorldCanvas.style["border-radius"] = "12px"
+    }
 
     let Fetched = false
     let IsFetching = false
@@ -93,7 +102,8 @@ async function HandleMapRegion(){
         Fetched = true
 
         const GlobeData = []
-
+        CreateGlobe()
+        
         for (let i = 0; i < Result.length; i++){
             const Region = Result[i]
 
