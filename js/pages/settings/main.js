@@ -32,6 +32,29 @@ const Settings = {
             Title: "Home Welcome Header",
             Description: "Adds back the old home welcome header."
         },
+        UserHeaderGreeting: {
+            Title: "Home Welcome Greeting",
+            Description: "Customise your home greeting message!\n{displayname}/{name} - Replaces with display/name. {period} - Replaces with morning/afternoon/evening based on current time.",
+            Type: "InputBox",
+            Run: function(_, Description, Section){
+                const Input = Section.getElementsByTagName("input")[0]
+                Input.style.width = "400px"
+                Input.maxLength = 999
+
+                async function UpdateText(){
+                    Description.innerText = `${await GenerateUserHeaderText(Input.value)}\n${Settings.General.UserHeaderGreeting.Description}`
+                }
+
+                Input.addEventListener("input", UpdateText)
+                IsFeatureEnabled("UserHeaderGreeting").then(function(Value){
+                    Input.value = Value
+                    UpdateText()
+                })
+            },
+            Middleman: function(Name, _, Value){
+                SetFeatureEnabled(Name, Value)
+            }
+        },
         Mutuals2: {
             Title: "Friend Mutuals",
             Description: "Shows mutuals on a users page."
@@ -649,7 +672,7 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
             else if (info.Type === "ListAndSearch") Section = CreateSectionSettingsWithListAndSearch(feature, info.Title, info.Description, info.Get, info.Update, info.State, info.Search, info.Icon, info.Toggles, info.ItemType, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
             else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
 
-            if (info.Run) info.Run(Section.getElementsByTagName("label")[0], Section.getElementsByClassName("text-description")[0])
+            if (info.Run) info.Run(Section.getElementsByTagName("label")[0], Section.getElementsByClassName("text-description")[0], Section)
 
             let TitleIndex = 0
             let OptionsChildren = OptionsList.children

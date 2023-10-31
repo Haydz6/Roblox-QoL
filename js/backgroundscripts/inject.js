@@ -122,6 +122,7 @@ const ContentScripts = [{
         "css/themes.css"
     ],
     "js": [
+        "js/pages/home/generateuserheadertext.js",
         "js/pages/settings/createelements.js",
         "js/pages/settings/main.js",
         "js/pages/settings/themes.js",
@@ -280,6 +281,7 @@ const ContentScripts = [{
         
         "js/pages/bestfriend/home.js",
 
+        "js/pages/home/generateuserheadertext.js",
         "js/pages/home/userheader.js"
     ],
     "run_at": "document_start"
