@@ -210,12 +210,23 @@ async function HandleMapRegion(){
             return [ClosestDistance, ClosestRegion]
         }
 
-        d3.select("#region-globe").on("click.log", function(){
+        let MouseDownRegion
+        d3.select("#region-globe").on("mousedown.log", function(){
             const Mouse = d3.mouse(this)
             const Vector = globe.projection.invert(Mouse)
             const [Distance, Region] = GetClosestRegion(Vector[1], Vector[0])
 
             if (Distance < 325){
+                MouseDownRegion = Region
+            }
+        })
+
+        d3.select("#region-globe").on("click.log", function(){
+            const Mouse = d3.mouse(this)
+            const Vector = globe.projection.invert(Mouse)
+            const [Distance, Region] = GetClosestRegion(Vector[1], Vector[0])
+
+            if (Distance < 325 && MouseDownRegion === Region){
                 FilterListOpen = false
                 UpdateFilterListVisibility()
 
@@ -224,6 +235,7 @@ async function HandleMapRegion(){
                 Open = false
                 UpdateVisiblity()
             }
+            MouseDownRegion = undefined
         })
 
         d3.select("#region-globe").on("mousemove.log", function(){
