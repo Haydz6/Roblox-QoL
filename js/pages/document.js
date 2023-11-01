@@ -548,6 +548,21 @@ function ChildRemoved(Node, Callback){
   }).observe(Node, {childList: true})
 }
 
+function LoadLocalFile(Path){
+  return new Promise((resolve, reject) => {
+    let xmlhttp = new XMLHttpRequest()
+    xmlhttp.onreadystatechange = async function(){
+        if (xmlhttp.status == 200 && xmlhttp.readyState == 4){
+          resolve(xmlhttp.responseText)
+          return
+        }
+    }
+
+    xmlhttp.open("GET", Path, true)
+    xmlhttp.send()
+  })
+}
+
 async function FetchSubscription(){
   if (!CurrentSubscription){
     CurrentSubscription = await chrome.runtime.sendMessage({type: "GetSubscription"})

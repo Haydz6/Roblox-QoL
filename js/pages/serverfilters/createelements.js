@@ -13,7 +13,7 @@ function CreateHeaderAndValueForHover(HoverElement, HeaderText, ValueText){
     HoverElement.appendChild(Header)
     HoverElement.appendChild(Value)
 
-    return Value
+    return [Header, Value]
 }
 
 function CreateInfoDiv(){
@@ -70,7 +70,7 @@ function CreateServerInfo(Element, Server){
     }
 
     CreateHeaderAndValueForHover(HoverElement, "Server Region", Server.Region)
-    const UptimeLabel = CreateHeaderAndValueForHover(HoverElement, "Uptime", SecondsToLength((Date.now()/1000)-Server.CreatedTimestamp))
+    const [_, UptimeLabel] = CreateHeaderAndValueForHover(HoverElement, "Uptime", SecondsToLength((Date.now()/1000)-Server.CreatedTimestamp))
     CreateHeaderAndValueForHover(HoverElement, "Version Date", Server.Version === 0 && "Unknown" || TimestampToDate(Server.Version, false))
 
     SetVisibility(false)

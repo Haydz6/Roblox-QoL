@@ -63,12 +63,12 @@
 }
 
 .filter-globe {
-    width: 575px;
-    height: 450px;
+    width: 500px;
+    height: 500px;
     position: absolute;
     z-index: 5;
     bottom: -300px;
-    left: -580px;
+    left: -505px;
     border-radius: 12px;
     padding: 0px;
     box-shadow: 0 0 8px 0 rgba(0,0,0,.3);

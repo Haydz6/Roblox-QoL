@@ -25,13 +25,22 @@ function CreateSettingsSection(){
     IsFeatureEnabled("CurrentTheme").then(function(Theme){
         if (!Theme.Settings) Theme.Settings = {}
 
-        Container.append(CreateSliderOption("Theme Blur", 20, Theme.Settings.Blur || 0, function(Value){
+        //<span class="upload-subtitle error" style="color: rgba(247,75,82,255); display: none;"><span class="icon-warning"></span></span>
+
+        const BlurContainer = CreateSliderOption("Theme Blur", 20, Theme.Settings.Blur || 0, function(Value){
             Theme.Settings.Blur = Value
             chrome.runtime.sendMessage({type: "ThemeSettings", key: "Blur", value: Value})
             return Value
         }, function(Value){
             return `${Value}px`
-        }))
+        })
+
+        const BlurWarning = document.createElement("span")
+        BlurWarning.className = "error"
+        BlurWarning.style = "color: white;"
+        BlurWarning.innerHTML = `<span class="icon-warning"></span>This will lag weak devices`
+        BlurContainer.appendChild(BlurWarning)
+        Container.append(BlurContainer)
 
         Container.append(CreateSliderOption("Foreground Opacity", 100, Math.round(Theme.Settings.Opacity*100) || 100, function(Value){
             Theme.Settings.Opacity = Value/100

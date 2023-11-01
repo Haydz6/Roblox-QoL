@@ -82,6 +82,10 @@ const ContentScripts = [{
         "css/games.css"
     ],
     "js": [
+        "js/modules/d3.min.js",
+        "js/modules/topojson.min.js",
+        "js/modules/planetaryjs.min.js",
+
         "js/pages/liveexperience/api.js",
         "js/pages/liveexperience/main.js",
         "js/pages/serverfilters/createelements.js",

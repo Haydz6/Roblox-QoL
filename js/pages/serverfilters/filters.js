@@ -24,57 +24,131 @@ async function HandleMapRegion(){
     GlobeDiv.style = "display:none;"
     FilterList.appendChild(GlobeDiv)
 
-    const colorInterpolator = t => `rgba(255,100,50,${Math.sqrt(1-t)})`;
+    const Tooltip = CreateInfoDiv()
+    const [TooltipHeader, TooltipValue] = CreateHeaderAndValueForHover(Tooltip, "", "")
 
-    await import(chrome.runtime.getURL("js/modules/globe.js"))
+    Tooltip.className = "filter-globe-serverinfo"
+    Tooltip.style.display = "none"
+    Tooltip.style.pointerEvents = "none"
+    GlobeDiv.appendChild(Tooltip)
 
     let World
-    let WorldContainer
-    let WorldElements
     let WorldCanvas
-    let Controls
     let IsHovering = false
+    let planetaryjs = CreatePlanetaryJS(undefined, undefined, window)
+
+    GlobeDiv.addEventListener("mouseenter", function(){
+        if (World) World.plugins.autorotate.pause()
+        IsHovering = true
+    })
+
+   GlobeDiv.addEventListener("mouseleave", function(){
+        if (World) World.plugins.autorotate.resume()
+        IsHovering = false
+        Tooltip.style.display = "none"
+    })
 
     function CreateGlobe(){
         if (World) return
 
-        World = Globe()
-        .globeImageUrl(chrome.runtime.getURL("img/filters/world.png"))
-        //.ringsData(gData)
-        .ringColor(() => colorInterpolator)
-        .ringMaxRadius('maxR')
-        .ringPropagationSpeed('propagationSpeed')
-        .ringRepeatPeriod('repeatPeriod')
-        .width(575)
-        .height(450)
-        .backgroundColor('rgba(255, 165, 0, 0)')
-        .showAtmosphere(false)
-        (GlobeDiv)
+        WorldCanvas = document.createElement("canvas")
+        WorldCanvas.id = "region-globe"
+        WorldCanvas.style = "height: 100%; width: 100%;"
+        WorldCanvas.setAttribute("height", "500px")
+        WorldCanvas.setAttribute("width", "500px")
 
-        WorldContainer = GlobeDiv.getElementsByTagName("div")[0].getElementsByTagName("div")[0].getElementsByTagName("div")[0]
-        WorldElements = WorldContainer.getElementsByTagName("div")[2]
-        WorldCanvas = WorldContainer.getElementsByTagName("canvas")[0]
-    
-        Controls = World.controls()
-    
-        Controls.zoomSpeed = 3
-        Controls.minZoom = 0.25
-        Controls.maxZoom = 0.4
-        Controls.minDistance = 0.25
-        Controls.miaxDistance = 0.4
-        Controls.autoRotate = true
-        Controls.autoRotateSpeed = 1
-        Controls.update()
-    
-        GlobeDiv.addEventListener("mouseenter", function(){
-            IsHovering = true
-            Controls.autoRotate = false
-         })
-    
-        GlobeDiv.addEventListener("mouseleave", function(){
-            IsHovering = false
-            Controls.autoRotate = true
-        })
+        GlobeDiv.appendChild(WorldCanvas)
+
+        globe = planetaryjs.planet()
+        World = globe
+
+        function autorotate(degPerSec) {
+            // Planetary.js plugins are functions that take a `planet` instance
+            // as an argument...
+            return function(planet) {
+              var lastTick = null;
+              planet.plugins.autorotate = {
+                paused: IsHovering,
+                pause:  function() { planet.plugins.autorotate.paused = true;  },
+                resume: function() { planet.plugins.autorotate.paused = false; }
+              };
+              // ...and configure hooks into certain pieces of its lifecycle.
+              planet.onDraw(function() {
+                if (planet.plugins.autorotate.paused || !lastTick) {
+                  lastTick = new Date();
+                } else {
+                  var now = new Date();
+                  var delta = now - lastTick;
+                  // This plugin uses the built-in projection (provided by D3)
+                  // to rotate the globe each time we draw it.
+                  var rotation = planet.projection.rotate();
+                  rotation[0] += degPerSec * delta / 1000;
+                  if (rotation[0] >= 180) rotation[0] -= 360;
+                  planet.projection.rotate(rotation);
+                  lastTick = now;
+                }
+              });
+            };
+          };
+
+          function lakes(options) {
+            options = options || {};
+            var lakes = null;
+        
+            return function(planet) {
+              planet.onInit(function() {
+                // We can access the data loaded from the TopoJSON plugin
+                // on its namespace on `planet.plugins`. We're loading a custom
+                // TopoJSON file with an object called "ne_110m_lakes".
+                var world = planet.plugins.topojson.world;
+                lakes = topojson.feature(world, world.objects.ne_110m_lakes);
+              });
+        
+              planet.onDraw(function() {
+                planet.withSavedContext(function(context) {
+                  context.beginPath();
+                  planet.path.context(context)(lakes);
+                  context.fillStyle = options.fill || 'black';
+                  context.fill();
+                });
+              });
+            };
+          };
+
+        LoadLocalFile(chrome.runtime.getURL("js/modules/world.json")).then(function(WorldData){
+            globe.loadPlugin(planetaryjs.plugins.earth({
+                topojson: {world: JSON.parse(WorldData)},
+                oceans:   { fill:   '#354060' },
+                land:     { fill:   '#1b1f2b' },
+                borders:  { stroke: '#5f6061' }
+            }))
+
+            globe.loadPlugin(lakes({
+                fill: '#354060'
+            }))
+
+            globe.loadPlugin(planetaryjs.plugins.zoom({
+                scaleExtent: [200, 700]
+              }));
+              globe.loadPlugin(planetaryjs.plugins.drag({
+                // Dragging the globe should pause the
+                // automatic rotation until we release the mouse.
+                onDragStart: function() {
+                    WorldCanvas.style.cursor = "grabbing"
+                  this.plugins.autorotate.pause();
+                },
+                onDragEnd: function() {
+                    WorldCanvas.style.cursor = "grab"
+                  if (!IsHovering) this.plugins.autorotate.resume();
+                }
+              }))
+              globe.loadPlugin(planetaryjs.plugins.pings());
+
+            globe.projection.scale(250).translate([250, 250]).rotate([0, -10, 0]);
+            globe.loadPlugin(autorotate(10))
+
+            globe.draw(WorldCanvas)
+        }).catch()
 
         WorldCanvas.style["border-radius"] = "12px"
     }
@@ -85,6 +159,9 @@ async function HandleMapRegion(){
     let Open = false
 
     function UpdateVisiblity(){
+        if (WorldCanvas) WorldCanvas.style.cursor = "grab"
+        
+        Tooltip.style.display = "none"
         GlobeDiv.style = `display:${Open && "block" || "none"};`
     }
 
@@ -101,81 +178,144 @@ async function HandleMapRegion(){
 
         Fetched = true
 
-        const GlobeData = []
+        //const GlobeData = []
         CreateGlobe()
-        
+
         for (let i = 0; i < Result.length; i++){
             const Region = Result[i]
 
-            const Info = CreateInfoDiv()
-            CreateHeaderAndValueForHover(Info, Region.Region, `Server${Region.Count > 1 && "s" || ""}: `+Region.Count)
-
-            Region.element = Info
-            Info.className = "filter-globe-serverinfo hidden"
-            WorldElements.appendChild(Info)
-
-            GlobeData.push({
-                lat: Region.Lat,
-                lng: Region.Lng,
-                count: Region.Count,
-                region: Region.Region,
-                element: Info,
-                maxR: 1,
-                size: 10,
-                propagationSpeed: 0.25,
-                repeatPeriod: 1000
-            })
+            const Lat = Region.Lat
+            const Lng = Region.Lng
+            const Config = {color: "#3c89e7", ttl: 2000, angle: 3.5}
+            
+            setInterval(function(){
+                globe.plugins.pings.add(Lng, Lat, Config)
+            }, 350)
         }
 
-        World.tilesData(GlobeData)
-        .tileWidth(5)
-        .tileHeight(3)
-        .tileMaterial({opacity: 0})
-        .onTileHover(function(Tile, PreviousTile){
-            if (PreviousTile){
-                PreviousTile.element.className = "filter-globe-serverinfo hidden"
+        function GetClosestRegion(Lat, Lng){
+            let ClosestDistance = 99999999
+            let ClosestRegion
+
+            for (let i = 0; i < Result.length; i++){
+                const Region = Result[i]
+
+                const Distance = DistanceBetweenCoordinates(Lat, Lng, Region.Lat, Region.Lng)
+                if (Distance < ClosestDistance){
+                    ClosestDistance = Distance
+                    ClosestRegion = Region
+                }
             }
-            if (Tile){
-                Tile.element.className = "filter-globe-serverinfo visible"
+
+            return [ClosestDistance, ClosestRegion]
+        }
+
+        d3.select("#region-globe").on("click.log", function(){
+            const Mouse = d3.mouse(this)
+            const Vector = globe.projection.invert(Mouse)
+            const [Distance, Region] = GetClosestRegion(Vector[1], Vector[0])
+
+            if (Distance < 325){
+                FilterListOpen = false
+                UpdateFilterListVisibility()
+
+                EnableRegionFilter(Region.Region)
+
+                Open = false
+                UpdateVisiblity()
             }
         })
-        .onTileClick(function(Tile){
-            FilterListOpen = false
-            UpdateFilterListVisibility()
 
-            EnableRegionFilter(Tile.region)
+        d3.select("#region-globe").on("mousemove.log", function(){
+            const Mouse = d3.mouse(this)
+            const Vector = globe.projection.invert(Mouse)
+            const [Distance, Region] = GetClosestRegion(Vector[1], Vector[0])
 
-            Open = false
-            UpdateVisiblity()
+            if (Distance < 325){
+                TooltipHeader.innerText = Region.Region
+                TooltipValue.innerText = `Servers: ${Region.Count}`
+                Tooltip.style.display = ""
+                Tooltip.style.top = Mouse[1] - Tooltip.offsetHeight - 5 + "px"
+                Tooltip.style.left = Mouse[0] - Tooltip.offsetWidth/2 + "px"
+
+                WorldCanvas.style.cursor = "pointer"
+            } else {
+                Tooltip.style.display = "none"
+            }
         })
+        
+        // for (let i = 0; i < Result.length; i++){
+        //     const Region = Result[i]
 
-        // World.htmlElementsData(GlobeData)
-        // .htmlElement(Region => {
         //     const Info = CreateInfoDiv()
-        //     CreateHeaderAndValueForHover(Info, Region.region, "Servers: "+Region.count)
+        //     CreateHeaderAndValueForHover(Info, Region.Region, `Server${Region.Count > 1 && "s" || ""}: `+Region.Count)
 
         //     Region.element = Info
         //     Info.className = "filter-globe-serverinfo hidden"
+        //     WorldElements.appendChild(Info)
 
-        //     return Info
+        //     GlobeData.push({
+        //         lat: Region.Lat,
+        //         lng: Region.Lng,
+        //         count: Region.Count,
+        //         region: Region.Region,
+        //         element: Info,
+        //         maxR: 1,
+        //         size: 10,
+        //         propagationSpeed: 0.25,
+        //         repeatPeriod: 1000
+        //     })
+        // }
+
+        // World.tilesData(GlobeData)
+        // .tileWidth(5)
+        // .tileHeight(3)
+        // .tileMaterial({opacity: 0})
+        // .onTileHover(function(Tile, PreviousTile){
+        //     if (PreviousTile){
+        //         PreviousTile.element.className = "filter-globe-serverinfo hidden"
+        //     }
+        //     if (Tile){
+        //         Tile.element.className = "filter-globe-serverinfo visible"
+        //     }
+        // })
+        // .onTileClick(function(Tile){
+        //     FilterListOpen = false
+        //     UpdateFilterListVisibility()
+
+        //     EnableRegionFilter(Tile.region)
+
+        //     Open = false
+        //     UpdateVisiblity()
         // })
 
-        function UpdateElements(){
-            for (let i = 0; i < GlobeData.length; i++){
-                const Region = GlobeData[i]
+        // // World.htmlElementsData(GlobeData)
+        // // .htmlElement(Region => {
+        // //     const Info = CreateInfoDiv()
+        // //     CreateHeaderAndValueForHover(Info, Region.region, "Servers: "+Region.count)
 
-                const {x,y} = World.getScreenCoords(Region.lat, Region.lng)
-                Region.element.style = `top: ${y-75}px; left: ${x-75}px;`
-            }
+        // //     Region.element = Info
+        // //     Info.className = "filter-globe-serverinfo hidden"
+
+        // //     return Info
+        // // })
+
+        // function UpdateElements(){
+        //     for (let i = 0; i < GlobeData.length; i++){
+        //         const Region = GlobeData[i]
+
+        //         const {x,y} = World.getScreenCoords(Region.lat, Region.lng)
+        //         Region.element.style = `top: ${y-75}px; left: ${x-75}px;`
+        //     }
 
 
-            if (!IsHovering) Controls.update()
+        //     if (!IsHovering) Controls.update()
 
-            window.requestAnimationFrame(UpdateElements)
-        }
-        window.requestAnimationFrame(UpdateElements)
+        //     window.requestAnimationFrame(UpdateElements)
+        // }
+        // window.requestAnimationFrame(UpdateElements)
 
-        World.ringsData(GlobeData)
+        // World.ringsData(GlobeData)
     }
 
     // Button.addEventListener("mouseenter", function(){
