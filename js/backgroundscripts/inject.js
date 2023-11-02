@@ -212,7 +212,8 @@ const ContentScripts = [{
 },
 {
     "matches": [
-        "*://*.roblox.com/catalog/*"
+        "*://*.roblox.com/catalog/*",
+        "*://*.roblox.com/bundles/*"
     ],
     "css": [
         "css/assets.css",

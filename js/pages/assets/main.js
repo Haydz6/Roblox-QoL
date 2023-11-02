@@ -13,6 +13,7 @@ function GetAssetIdFromURL(){
     let URLWithID = URL.split("library/")[1]
 
     if (!URLWithID) URLWithID = URL.split("catalog/")[1]
+    if (!URLWithID) URLWithID = URL.split("bundles/")[1]
 
     return parseInt(URLWithID.split("/")[0])
 }

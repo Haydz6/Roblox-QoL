@@ -621,12 +621,12 @@ async function PaidForFeature(Feature){
 }
 
 async function IsFeatureEnabled(Feature){
-    await FetchAllFeaturesEnabled()
-    const IsKilled = await IsFeatureKilled(Feature)
-    if (IsKilled) return false
-    if (!await PaidForFeature(Feature)) return false
+  await FetchAllFeaturesEnabled()
+  const IsKilled = await IsFeatureKilled(Feature)
+  if (IsKilled) return false
+  if (!await PaidForFeature(Feature)) return false
 
-    return EnabledFeatures[Feature]
+  return EnabledFeatures[Feature]
 }
 
 const OnSettingChanged = {}

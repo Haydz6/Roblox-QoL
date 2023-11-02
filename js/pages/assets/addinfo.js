@@ -145,19 +145,27 @@ setTimeout(function(){
     IsFeatureEnabled("ShowUSDOnAsset").then(async function(Enabled){
         if (!Enabled) return
 
-        const PriceContainer = await WaitForClass("price-container-text")
-        const RobuxLabel = PriceContainer.getElementsByClassName("text-robux-lg")[0]
+        //const PriceContainer = await WaitForClass("price-container-text")
+        const ItemDetails = await Promise.race([WaitForClass("item-details-section"), WaitForId("item-details")])
+        // const RobuxLabel = PriceContainer.getElementsByClassName("text-robux-lg")[0]
 
-        if (!RobuxLabel) return
+        ChildAdded(ItemDetails, true, async function(Element){
+            const RobuxLabels = Element.getElementsByClassName("text-robux-lg")
+            //if (!RobuxLabel) return
 
-        const Robux = parseInt(RobuxLabel.innerText.replaceAll(",", ""))
+            for (let i = 0; i < RobuxLabels.length; i++){
+                const RobuxLabel = RobuxLabels[i]
 
-        const PriceLabel = document.createElement("span")
-        PriceLabel.className = "text-label"
-        PriceLabel.style = "margin-left: 5px; font-weight: 500;"
-        PriceLabel.innerText = `(${await RobuxToCurrency(Robux)})`
+                const Robux = parseInt(RobuxLabel.innerText.replaceAll(",", ""))
 
-        RobuxLabel.appendChild(PriceLabel)
+                const PriceLabel = document.createElement("span")
+                PriceLabel.className = "text-label"
+                PriceLabel.style = "margin-left: 5px; font-weight: 500;"
+                PriceLabel.innerText = `(${await RobuxToCurrency(Robux)})`
+
+                RobuxLabel.appendChild(PriceLabel)
+            }
+        })
     })
 
     AddAssetInfo()

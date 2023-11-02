@@ -11,7 +11,7 @@ setTimeout(function(){
     IsFeatureEnabled("ValueDemandOnItem").then(async function(Enabled){
         if (!Enabled) return
 
-        const ItemDetails = await WaitForClass("item-details-section")
+        const ItemDetails = await Promise.race([WaitForClass("item-details-section"), WaitForId("item-details")])
         const PriceContainer = ItemDetails.getElementsByClassName("price-row-container")[0]
 
         const AssetId = GetAssetIdFromURL()
