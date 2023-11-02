@@ -52,7 +52,8 @@
                 "*://*.roblox.com/*"
             ],
             "css": [
-                "css/streamermode.css"
+                "css/streamermode.css",
+                "css/opacitythemefix.css"
             ],
             "js": [
                 "js/modules/hbaClient.js",
