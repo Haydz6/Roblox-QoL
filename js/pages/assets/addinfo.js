@@ -141,22 +141,24 @@ async function AddAssetInfo(){
     }
 }
 
-IsFeatureEnabled("ShowUSDOnAsset").then(async function(Enabled){
-    if (!Enabled) return
+setTimeout(function(){
+    IsFeatureEnabled("ShowUSDOnAsset").then(async function(Enabled){
+        if (!Enabled) return
 
-    const PriceContainer = await WaitForClass("price-container-text")
-    const RobuxLabel = PriceContainer.getElementsByClassName("text-robux-lg")[0]
+        const PriceContainer = await WaitForClass("price-container-text")
+        const RobuxLabel = PriceContainer.getElementsByClassName("text-robux-lg")[0]
 
-    if (!RobuxLabel) return
+        if (!RobuxLabel) return
 
-    const Robux = parseInt(RobuxLabel.innerText.replaceAll(",", ""))
+        const Robux = parseInt(RobuxLabel.innerText.replaceAll(",", ""))
 
-    const PriceLabel = document.createElement("span")
-    PriceLabel.className = "text-label"
-    PriceLabel.style = "margin-left: 5px; font-weight: 500;"
-    PriceLabel.innerText = `(${await RobuxToCurrency(Robux)})`
+        const PriceLabel = document.createElement("span")
+        PriceLabel.className = "text-label"
+        PriceLabel.style = "margin-left: 5px; font-weight: 500;"
+        PriceLabel.innerText = `(${await RobuxToCurrency(Robux)})`
 
-    RobuxLabel.appendChild(PriceLabel)
-})
+        RobuxLabel.appendChild(PriceLabel)
+    })
 
-AddAssetInfo()
+    AddAssetInfo()
+}, 0)

@@ -38,6 +38,7 @@ async function FetchKilledFeatures(){
 }
 
 async function IsFeatureKilled(FeatureName){
+    if (IgnoreDisabledFeatures) return false
     while (!FeatureKilledStatus){
         await sleep(100)
     }

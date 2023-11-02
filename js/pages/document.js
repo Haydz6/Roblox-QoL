@@ -11,6 +11,8 @@ let UserId
 let CSRFToken = ""
 
 const Debugging = false
+const IgnoreDisabledFeatures = false
+
 const WebServerURL = !Debugging && "https://roqol.io/" || "http://localhost:8192/"
 const WebServerEndpoints = {Ads: WebServerURL+"api/ads/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", BestFriends: WebServerURL+"api/bestfriends/", Pinned: WebServerURL+"api/pinned/", Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 const SubscriptionToName = ["Free", "Pro"]
@@ -606,6 +608,7 @@ async function FetchAllFeaturesKilled(BypassCheck){
 }
 
 async function IsFeatureKilled(FeatureName){
+  if (IgnoreDisabledFeatures) return false
   await FetchAllFeaturesKilled(false)
   return KilledFeatures ? KilledFeatures.includes(FeatureName) : false
 }

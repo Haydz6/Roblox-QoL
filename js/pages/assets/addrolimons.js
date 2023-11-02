@@ -7,46 +7,48 @@ const DemandIntToString = {
     4: "Amazing"
 }
 
-IsFeatureEnabled("ValueDemandOnItem").then(async function(Enabled){
-    if (!Enabled) return
+setTimeout(function(){
+    IsFeatureEnabled("ValueDemandOnItem").then(async function(Enabled){
+        if (!Enabled) return
 
-    const ItemDetails = await WaitForClass("item-details-section")
-    const PriceContainer = ItemDetails.getElementsByClassName("price-row-container")[0]
+        const ItemDetails = await WaitForClass("item-details-section")
+        const PriceContainer = ItemDetails.getElementsByClassName("price-row-container")[0]
 
-    const AssetId = GetAssetIdFromURL()
-    const RolimonsURL = `https://www.rolimons.com/item/${AssetId}`
+        const AssetId = GetAssetIdFromURL()
+        const RolimonsURL = `https://www.rolimons.com/item/${AssetId}`
 
-    const [Success, Result] = await GetItemDetails([AssetId], false)
+        const [Success, Result] = await GetItemDetails([AssetId], false)
 
-    if (!Success) return
+        if (!Success) return
 
-    const Details = Result[AssetId]
+        const Details = Result[AssetId]
 
-    if (!Details) return
+        if (!Details) return
 
-    const [ValueContainer, ValueTitle, ValueValue] = CreateItemField("Value", "...", RolimonsURL)
-    const [DemandContainer, DemandTitle, DemandValue] = CreateItemField("Demand", "...", RolimonsURL)
-    //DemandContainer.style = "margin-bottom: 12px;"
+        const [ValueContainer, ValueTitle, ValueValue] = CreateItemField("Value", "...", RolimonsURL)
+        const [DemandContainer, DemandTitle, DemandValue] = CreateItemField("Demand", "...", RolimonsURL)
+        //DemandContainer.style = "margin-bottom: 12px;"
 
-    const SibilingAfter = PriceContainer.nextSibling.nextSibling
+        const SibilingAfter = PriceContainer.nextSibling.nextSibling
 
-    ItemDetails.insertBefore(ValueContainer, SibilingAfter)
-    ItemDetails.insertBefore(DemandContainer, SibilingAfter)
+        ItemDetails.insertBefore(ValueContainer, SibilingAfter)
+        ItemDetails.insertBefore(DemandContainer, SibilingAfter)
 
-    ValueValue.innerText = numberWithCommas(Details.Value)
-    DemandValue.innerText = DemandIntToString[Details.Demand]
+        ValueValue.innerText = numberWithCommas(Details.Value)
+        DemandValue.innerText = DemandIntToString[Details.Demand]
 
-    const ItemNameContainer = await WaitForClass("item-details-name-row")
-    const NameLabel = ItemNameContainer.getElementsByTagName("h1")[0]
-    NameLabel.style = "display: inline-flex; align-items: center;"
+        const ItemNameContainer = await WaitForClass("item-details-name-row")
+        const NameLabel = ItemNameContainer.getElementsByTagName("h1")[0]
+        NameLabel.style = "display: inline-flex; align-items: center;"
 
-    if (Details.Rare){
-        NameLabel.appendChild(CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg")))
-    }
-    if (Details.Projected){
-        NameLabel.appendChild(CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg")))
-    }
-    if (Details.Hyped){
-        NameLabel.appendChild(CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg")))
-    }
-})
+        if (Details.Rare){
+            NameLabel.appendChild(CreateCategoryIcon("Rare", chrome.runtime.getURL("img/trades/rare.svg")))
+        }
+        if (Details.Projected){
+            NameLabel.appendChild(CreateCategoryIcon("Projected", chrome.runtime.getURL("img/trades/projected.svg")))
+        }
+        if (Details.Hyped){
+            NameLabel.appendChild(CreateCategoryIcon("Hyped", chrome.runtime.getURL("img/trades/hyped.svg")))
+        }
+    })
+}, 0)
