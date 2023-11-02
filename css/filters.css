@@ -54,6 +54,44 @@
     margin-bottom: 5px;
 }
 
+.dark-theme .invite-server-box {
+    background-color: rgb(25,25,25);
+}
+
+.light-theme .invite-server-box {
+    background-color: #ffffff;
+}
+
+.invite-server-box {
+    width: 255px;
+    height: 87px;
+    bottom: 72px;
+    left: -8px;
+    position: absolute;
+    left: -8px;
+    z-index: 5;
+    border-radius: 12px;
+    padding: 5px;
+}
+
+.dark-theme .server-info-hover {
+    background-color: #191919;
+}
+
+.light-theme .server-info-hover {
+    background-color: #ffffff;;
+}
+
+.server-info-hover {
+    width: 150px;
+    height: 150px;
+    position:absolute;
+    z-index: 5;
+    bottom: 24px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,.3);
+}
+
 .dark-theme .filter-globe {
     background-color: rgb(25,25,25);
 }
@@ -74,22 +112,21 @@
     box-shadow: 0 0 8px 0 rgba(0,0,0,.3);
 }
 
+.dark-theme .filter-globe-serverinfo {
+    background-color: #191919;
+}
+
+.light-theme .filter-globe-serverinfo {
+    background-color: #ffffff;
+}
+
 .filter-globe-serverinfo {
     width: 150px;
     height: 55px;
     position:absolute;
     z-index: 5;
-    background-color: #191919;
     bottom: 440px;
     border-radius: 12px;
-}
-
-.filter-globe-serverinfo .hidden {
-    display: none;
-}
-
-.filter-globe-serverinfo .visible {
-    display: block;
 }
 
 .filter-list .max-players-list {
@@ -118,17 +155,25 @@
     min-width: 40%;
 }
 
+.dark-theme .quick-invite-clipboard {
+    background-color: rgb(25,25,25);
+    color: rgb(255, 255, 255);
+}
+
+.light-theme .quick-invite-clipboard {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+}
+
 .quick-invite-clipboard {
     width: 70%;
     height: 30%;
     font-weight: 400;
     font-size: unset;
-    color: rgb(255, 255, 255);
     position: absolute;
     text-align: center !important;
     top: -30px;
     left: 50%;
-    background-color: rgb(25,25,25);
     font-size: 14px;
     border-radius: 12px;
     padding-top: 1px !important;

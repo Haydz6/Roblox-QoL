@@ -48,6 +48,23 @@ async function HandleMapRegion(){
         Tooltip.style.display = "none"
     })
 
+    let GlobeConfig
+    const Colors = {dark: {oceans: "#354060", land: "#1b1f2b", borders: "#5f6061"}, light: {oceans: "#8ab4f8", land: "#bbe2c6", borders: "#64686b"}}
+    let ActiveColor = Colors.dark
+
+    function UpdateGlobeColors(){
+        ActiveColor = document.body.className.includes("light-theme") ? Colors.light : Colors.dark
+
+        if (GlobeConfig){
+            GlobeConfig.oceans.fill = ActiveColor.oceans
+            GlobeConfig.lakes.fill = ActiveColor.oceans
+            GlobeConfig.land.fill = ActiveColor.land
+            GlobeConfig.borders.stroke = ActiveColor.borders
+        }
+    }
+    new MutationObserver(UpdateGlobeColors).observe(document.body, {attributeFilter: ["class"]})
+    UpdateGlobeColors()
+
     function CreateGlobe(){
         if (World) return
 
@@ -115,17 +132,18 @@ async function HandleMapRegion(){
             };
           };
 
-        LoadLocalFile(chrome.runtime.getURL("js/modules/world.json")).then(function(WorldData){
-            globe.loadPlugin(planetaryjs.plugins.earth({
-                topojson: {world: JSON.parse(WorldData)},
-                oceans:   { fill:   '#354060' },
-                land:     { fill:   '#1b1f2b' },
-                borders:  { stroke: '#5f6061' }
-            }))
 
-            globe.loadPlugin(lakes({
-                fill: '#354060'
-            }))
+        LoadLocalFile(chrome.runtime.getURL("js/modules/world.json")).then(function(WorldData){
+            GlobeConfig = {
+                topojson: {world: JSON.parse(WorldData)},
+                oceans:   { fill:   ActiveColor.oceans },
+                land:     { fill:   ActiveColor.land },
+                borders:  { stroke: ActiveColor.borders },
+                lakes:    { fill: ActiveColor.oceans }
+            }
+
+            globe.loadPlugin(planetaryjs.plugins.earth(GlobeConfig))
+            globe.loadPlugin(lakes(GlobeConfig.lakes))
 
             globe.loadPlugin(planetaryjs.plugins.zoom({
                 scaleExtent: [200, 700]

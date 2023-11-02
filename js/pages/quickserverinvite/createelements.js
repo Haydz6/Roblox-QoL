@@ -9,11 +9,10 @@ function CreateServerButton(Text){
 
 function CreateInviteBox(){
     const List = document.createElement("li")
-    List.className = "max-players-list"
-    List.style = "display: block; width: 255px; height: 87px; bottom: 72px; left: -8px; position: absolute; left: -8px; z-index: 5; background-color: rgb(25,25,25); border-radius: 12px; padding: 5px;"
+    List.className = "max-players-list invite-server-box"
 
     const Title = document.createElement("p")
-    Title.style = "text-align: center!important; width: 100%; height: 30%; font-weight: 650; font-size: unset; color: #ffff;"
+    Title.style = "text-align: center!important; width: 100%; height: 30%; font-weight: 650; font-size: unset;"
     Title.innerText = "Invite"
 
     const Input = document.createElement("input")
