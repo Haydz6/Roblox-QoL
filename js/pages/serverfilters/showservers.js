@@ -4,6 +4,7 @@ let ClearFiltersButton
 let HiddenRefreshButton
 let RefreshButtonConn
 
+let IsFilterEnabled = false
 let FilterInt = 0
 let FirstEightServerElements = []
 let CurrentFilterFunction, CurrentFilterFunctionArgs
@@ -169,6 +170,9 @@ function ReupdateFilter(){
 }
 
 function EnableFilterMode(HideDefaultFilters){
+    if (IsFilterEnabled) DisableFilter()
+    IsFilterEnabled = true
+
     WaitForId("rbx-running-games").then(function(ServerList){
         const Options = ServerList.getElementsByClassName("container-header")[0].getElementsByClassName("server-list-container-header")[0]
         
@@ -823,6 +827,7 @@ async function EnableRegionFilter(Region){
 }
 
 async function DisableFilter(){
+    IsFilterEnabled = false
     // WaitForClass("btn-more rbx-refresh refresh-link-icon btn-control-xs btn-min-width").then(function(RefreshButton){
     //     RefreshButton.style = ""
     // })
