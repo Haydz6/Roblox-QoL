@@ -8,7 +8,7 @@ function WaitForRoblox(Callback){
     Callback()
 }
 
-const Params = new URLSearchParams(window.location.search)
+const Params = new URLSearchParams(document.currentScript.getAttribute("search"))
 const PlaceId = Params.get("placeId")
 const JobId = Params.get("jobId")
 

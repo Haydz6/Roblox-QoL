@@ -1,14 +1,18 @@
-async function InjectScript(Path, URLMatch, FullPath){
+async function InjectScript(Path, URLMatch, FullPath, Attrs){
     if (URLMatch){
         const Regexp = new RegExp(URLMatch.replace(/\*/g, "[^ ]*"))
         if (!Regexp.test(window.location.href)) return
     }
 
     const Script = document.createElement("script")
+    Script.id = "injectedscript-"+Path
     Script.src = chrome.runtime.getURL(FullPath ? Path : "js/pages/generalfixes/scriptinjections/"+Path+".js")
 
     while (!document.head) await new Promise(r => setTimeout(r, 20))
 
+    if (Attrs) for ([k, v] of Object.entries(Attrs)){
+        Script.setAttribute(k, v)
+    }
     document.head.appendChild(Script)
 }
 
@@ -25,7 +29,7 @@ IsFeatureEnabled("NewMessagePing3").then(async function(Enabled){
     InjectScript("newmessageping", "*://web.roblox.com/*") //Stop trying to inject into api pages
 })
 
-InjectScript("checkforinvite", "*://*.roblox.com/games/*")
+InjectScript("checkforinvite", "*://*.roblox.com/games/*", undefined, {search: window.location.search})
 InjectScript("AvatarPage", "*://*.roblox.com/my/avatar")
 
 IsFeatureEnabled("AddRowToHomeFriends").then(function(Enabled){

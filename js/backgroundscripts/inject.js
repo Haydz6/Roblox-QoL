@@ -224,7 +224,8 @@ const ContentScripts = [{
         "js/pages/assets/main.js",
         "js/pages/trades/rolimons.js",
         "js/pages/assets/addrolimons.js",
-        "js/pages/assets/addinfo.js"
+        "js/pages/assets/addinfo.js",
+        "js/pages/assets/quickwear.js"
     ],
     "run_at": "document_start"
 },
