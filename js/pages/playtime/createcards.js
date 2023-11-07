@@ -38,7 +38,7 @@ async function CreateGameCardsFromUniverseIds(Games, CardsContainer, CacheFetchI
     while (CloneUniverseIds.length > 0){
         const CallUniverseIds = []
         for (let i = 0; i < Math.min(CloneUniverseIds.length, 10); i++){
-            CallUniverseIds.push(CloneUniverseIds.pop())
+            CallUniverseIds.push(CloneUniverseIds.shift())
         }
 
         const [UniverseSuccess, Universes] = await RequestFunc(`https://games.roblox.com/v1/games?universeIds=${CallUniverseIds.join(",")}`, "GET", undefined, undefined, true)
