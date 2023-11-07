@@ -32,16 +32,26 @@ async function CreateGameCardsFromUniverseIds(Games, CardsContainer, CacheFetchI
         UniverseIdToPlaytime[Game.UniverseId] = Game.Playtime
     }
 
-    const [UniverseSuccess, Universes] = await RequestFunc(`https://games.roblox.com/v1/games?universeIds=${UniverseIds.join(",")}`, "GET", undefined, undefined, true)
-    if (FetchInt[0] !== CacheFetchInt) return
+    const Data = []
+    const CloneUniverseIds = UniverseIds.slice(0)
 
-    if (!UniverseSuccess) {
-        Fail("Failed to load games")
-        return
+    while (CloneUniverseIds.length > 0){
+        const CallUniverseIds = []
+        for (let i = 0; i < Math.min(CloneUniverseIds.length, 10); i++){
+            CallUniverseIds.push(CloneUniverseIds.pop())
+        }
+
+        const [UniverseSuccess, Universes] = await RequestFunc(`https://games.roblox.com/v1/games?universeIds=${CallUniverseIds.join(",")}`, "GET", undefined, undefined, true)
+        if (FetchInt[0] !== CacheFetchInt) return
+
+        if (!UniverseSuccess) {
+            Fail("Failed to load games")
+            return
+        }
+        Data.push(...Universes.data)
     }
     Spinner.remove()
 
-    const Data = Universes.data
     const UniverseIdToVotePercent = {}
     const UniverseIdToImageElement = {}
 

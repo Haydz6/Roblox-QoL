@@ -88,7 +88,7 @@ async function AddPlaceIds(Places){
             }
             Lookup[Info.UniverseId].push(Info)
 
-            if (Chunk.length >= 100) break
+            if (Chunk.length >= 10) break
         }
 
         if (Chunk.length === 0) break

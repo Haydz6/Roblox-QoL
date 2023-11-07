@@ -71,7 +71,7 @@ async function GetBuilderTypeFromAssetIds(NewGames){
         AllAssets.push(Game.UniverseId)
     }
 
-    const Chunks = SplitArrayIntoChunks(AllAssets, 35)
+    const Chunks = SplitArrayIntoChunks(AllAssets, 10)
 
     for (let i = 0; i < Chunks.length; i++){
         const Chunk = Chunks[i]

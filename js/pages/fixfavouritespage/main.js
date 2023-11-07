@@ -46,27 +46,30 @@ async function GetUniversesLikes(Universes){
     return Lookup
 }
   
-async function GetUniversesInfo(Universes){
+async function GetUniversesInfo(RawUniverses){
     let URL = "https://games.roblox.com/v1/games?universeIds="
-    let UniverseIds = ""
-  
-    for (let i = 0; i < Universes.length; i++){
-      if (i > 0) {
-        UniverseIds = `${UniverseIds}%2C`
-      }
-      UniverseIds = `${UniverseIds}${Universes[i]}`
-    }
-    
-    const [Success, Result] = await RequestFunc(URL+UniverseIds, "GET", undefined, undefined, true)
-  
-    if (!Success) return
-  
+    const Universes = RawUniverses.slice(0)
     const Lookup = {}
-    const Data = Result.data
-  
-    for (let i = 0; i < Data.length; i++){
-      const Item = Data[i]
-      Lookup[Item.id] = Item
+
+    while (Universes.length > 0){
+      let UniverseIds = ""
+    
+      for (let i = 0; i < Math.min(Universes.length, 10); i++){
+        if (i > 0) {
+          UniverseIds = `${UniverseIds}%2C`
+        }
+        UniverseIds = `${UniverseIds}${Universes.pop()}`
+      }
+      
+      const [Success, Result] = await RequestFunc(URL+UniverseIds, "GET", undefined, undefined, true)
+      if (!Success) continue
+    
+      const Data = Result.data
+    
+      for (let i = 0; i < Data.length; i++){
+        const Item = Data[i]
+        Lookup[Item.id] = Item
+      }
     }
   
     return Lookup
@@ -127,7 +130,7 @@ async function GetPage(){
   IsLoading = true
   CurrentPage += 1
   
-  const [Success, Data] = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=100&pageNumber=${CurrentPage}&userId=${await GetUserId()}`, "GET", undefined, undefined, true)
+  const [Success, Data] = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=35&pageNumber=${CurrentPage}&userId=${await GetUserId()}`, "GET", undefined, undefined, true)
 
   if (await ParsePage(Data)) {
     ReachedEnd = true

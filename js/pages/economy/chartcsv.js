@@ -167,8 +167,13 @@ const ChartCSVTypes = {
                 UniverseIds.push(AssetId)
             }
 
-            if (UniverseIds.length > 0){
-                const [Success, Body] = await RequestFunc(`https://games.roblox.com/v1/games?universeIds=${UniverseIds.join(",")}`, "GET", undefined, undefined, true)
+            while (UniverseIds.length > 0){
+                const BatchUniverseIds = []
+                for (let i = 0; i < Math.min(UniverseIds.length, 10); i++){
+                    BatchUniverseIds.push(UniverseIds.pop())
+                }
+
+                const [Success, Body] = await RequestFunc(`https://games.roblox.com/v1/games?universeIds=${BatchUniverseIds.join(",")}`, "GET", undefined, undefined, true)
                 if (Success){
                     const Data = Body.data
                     for (let i = 0; i < Data.length; i++){
