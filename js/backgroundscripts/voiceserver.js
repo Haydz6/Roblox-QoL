@@ -75,7 +75,6 @@ async function UpdateVoiceServer(UniverseId, RootPlaceId, PlaceId, JobId, PlaceI
     // ServerInformation.hash = await sha256(JSON.stringify(ServerInformation))
 
     const Server = await FindVoiceServer(PlaceId, JobId, 30)
-    console.log(Server)
     if (Server){
         ServerInformation.Tokens = Server.playerTokens
         ServerInformation.Players = Server.playing

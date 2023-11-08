@@ -10,7 +10,7 @@ let CurrentSubscription = undefined
 let UserId
 let CSRFToken = ""
 
-const Debugging = true
+const Debugging = false
 const IgnoreDisabledFeatures = false
 
 const WebServerURL = !Debugging && "https://roqol.io/" || "http://localhost:8192/"

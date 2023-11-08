@@ -28,7 +28,7 @@ function CreateVoiceServer(PlaceId, Server){
 
     const Container = document.createElement("li")
     Container.className = "rbx-game-server-item col-md-3 col-sm-4 col-xs-6"
-    Container.innerHTML = `<div class="card-item" style="min-height: 200px !important;"><div class="player-thumbnails-container"></div><div class="rbx-game-server-details game-server-details"><div class="text-info rbx-game-status rbx-game-server-status text-overflow">${Server.VoiceTokens.length} voice user${Server.VoiceTokens.length > 1 ? "s" : ""}<br>${parseInt(Server.Players)} of ${parseInt(Server.MaxPlayers)} people max</div><div class="server-player-count-gauge border"><div class="gauge-inner-bar border" style="width: ${(Server.Players/Server.MaxPlayers)*100}%;"></div></div><span data-placeid="${parseInt(PlaceId)}"><button type="button" class="btn-full-width btn-control-xs rbx-game-server-join game-server-join-btn btn-primary-md btn-min-width">Join</button></span></div></div></div>`
+    Container.innerHTML = `<div class="card-item" style="min-height: 200px !important;"><div class="player-thumbnails-container"></div><div class="rbx-game-server-details game-server-details"><div class="text-info rbx-game-status rbx-game-server-status text-overflow">${Server.VoicePlayers} voice user${Server.VoicePlayers > 1 ? "s" : ""}<br>${parseInt(Server.Players)} of ${parseInt(Server.MaxPlayers)} people max</div><div class="server-player-count-gauge border"><div class="gauge-inner-bar border" style="width: ${(Server.Players/Server.MaxPlayers)*100}%;"></div></div><span data-placeid="${parseInt(PlaceId)}"><button type="button" class="btn-full-width btn-control-xs rbx-game-server-join game-server-join-btn btn-primary-md btn-min-width">Join</button></span></div></div></div>`
 
     Container.setAttribute("placeid", PlaceId)
     Container.setAttribute("jobid", Server.JobId)
@@ -51,6 +51,8 @@ function CreateVoiceServer(PlaceId, Server){
         Span.innerText = `${Server.Players-5}+`
         ThumbnailContainer.appendChild(Span)
     }
+
+    AddServerRegion(Container)
 
     return Container
 }
