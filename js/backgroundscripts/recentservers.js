@@ -28,7 +28,7 @@ const PlaceIdToUniverseCache = {}
 
 async function GetUniverseIdFromPlaceId(PlaceId){
     const Cache = PlaceIdToUniverseCache[PlaceId]
-    if (Cache) return Cache
+    if (Cache) return Cache.universeId
 
     const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/multiget-place-details?placeIds=${PlaceId}`, "GET", undefined, undefined, true)
 
@@ -37,7 +37,7 @@ async function GetUniverseIdFromPlaceId(PlaceId){
     }
 
     const UniverseId = Result?.[0]?.universeId || 0
-    PlaceIdToUniverseCache[PlaceId] = UniverseId
+    PlaceIdToUniverseCache[PlaceId] = Result?.[0]
 
     setTimeout(function(){
         delete PlaceIdToUniverseCache[PlaceId]
@@ -95,6 +95,7 @@ async function UpdateRecentServer(){
     UniverseId = UniverseId || 0
 
     if (CanUpdatePlaytimeEndpoint(InGame, InStudio, UniverseId)) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0}))
+    if (UniverseId) UpdateVoiceServer(UniverseId, Presence.rootPlaceId, Presence.placeId, Presence.gameId, PlaceIdToUniverseCache[Presence.placeId])
     //Updated playtime
 
     LastRecentServerSuccess = Date.now()

@@ -10,11 +10,11 @@ let CurrentSubscription = undefined
 let UserId
 let CSRFToken = ""
 
-const Debugging = false
+const Debugging = true
 const IgnoreDisabledFeatures = false
 
 const WebServerURL = !Debugging && "https://roqol.io/" || "http://localhost:8192/"
-const WebServerEndpoints = {Ads: WebServerURL+"api/ads/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", BestFriends: WebServerURL+"api/bestfriends/", Pinned: WebServerURL+"api/pinned/", Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {Voice: WebServerURL+"api/voice/", Ads: WebServerURL+"api/ads/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", BestFriends: WebServerURL+"api/bestfriends/", Pinned: WebServerURL+"api/pinned/", Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 const SubscriptionToName = ["Free", "Pro"]
 
 function FindFirstClass(ClassName){

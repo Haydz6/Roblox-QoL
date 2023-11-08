@@ -1,6 +1,6 @@
-function CreateRecentServersList(){
+function CreateRecentServersList(Title, Id){
     const Container = document.createElement("div")
-    Container.id = "rbx-recent-running-games"
+    Container.id = `rbx-${Id ? Id : "recent"}-running-games`
     Container.className = "stack server-list-section"
 
     const ContainerHeader = document.createElement("div")
@@ -13,7 +13,7 @@ function CreateRecentServersList(){
 
     const ServerList = document.createElement("ul")
     ServerList.className = "card-list rbx-friends-game-server-item-container"
-    ServerList.id = "rbx-recent-game-server-item-container"
+    ServerList.id = `rbx-${Id ? Id : "recent"}-game-server-item-container`
 
     let Opened = true
     ContainerHeader.addEventListener("click", function(){
@@ -31,7 +31,7 @@ function CreateRecentServersList(){
 
     const Header = document.createElement("h2")
     Header.className = "server-list-header"
-    Header.innerText = "Recent Servers"
+    Header.innerText = Title || "Recent Servers"
 
     ServerListContainerHeader.append(Header, Minimize)
 
@@ -51,7 +51,7 @@ function CreateRecentServersList(){
 
     Container.appendChild(ServerList)
 
-    return [Container, ServerList, NoServersContent]
+    return [Container, ServerList, NoServersContent, NoServersMessage]
 }
 
 function CreateRecentServerBox(PlaceId, JobId, ServerUserId, LastPlayed){

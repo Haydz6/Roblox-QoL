@@ -106,6 +106,8 @@ const ContentScripts = [{
         "js/pages/recentservers/recentservers.js",
         "js/pages/recentservers/main.js",
 
+        "js/pages/voiceservers/voiceservers.js",
+
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/game.js",
 

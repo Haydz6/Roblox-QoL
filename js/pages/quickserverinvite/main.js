@@ -153,4 +153,5 @@ IsFeatureEnabled("QuickInvite").then(function(Enabled){
     HandleInviteList("rbx-game-server-item-container")
 	HandleInviteList("rbx-friends-game-server-item-container")
     HandleInviteList("rbx-recent-game-server-item-container")
+    HandleInviteList("rbx-voice-game-server-item-container")
 })

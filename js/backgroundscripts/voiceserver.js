@@ -1,0 +1,88 @@
+async function sha256(message) {
+    // encode as UTF-8
+    const msgBuffer = new TextEncoder().encode(message);                   
+
+    // hash the message
+    const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer)
+
+    // convert ArrayBuffer to Array
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+
+    // // convert bytes to hex string                  
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+    return hashHex
+}
+
+let LastVoiceServerUpdate = 0
+
+async function FindVoiceServer(PlaceId, JobId, ScanTime){
+    let Cursor = ""
+    let Scans = 0
+    let Duration = Date.now()
+
+    while (true){
+        const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/${PlaceId}/servers/0?limit=100&cursor=${Cursor}`, "GET", undefined, undefined, true)
+        if (!Success) return
+
+        for (let i = 0; i < Result.data.length; i++){
+            const Server = Result.data[i]
+            if (Server.id === JobId){
+                return Server
+            }
+        }
+
+        Cursor = Result.nextPageCursor
+        Scans++
+        if (!Cursor || Scans >= 10 || (Date.now()-Duration)/1000 >= ScanTime) return
+    }
+}
+
+async function UniverseHasVoiceChat(UniverseId){
+    const [Success, Settings] = await RequestFunc(`https://voice.roblox.com/v1/settings/universe/${UniverseId}`, "GET", undefined, undefined, true)
+    if (!Success) return false
+    return Settings.isUniverseEnabledForVoice
+}
+
+async function UpdateVoiceServer(UniverseId, RootPlaceId, PlaceId, JobId, PlaceInfo){
+    if (!await IsFeatureEnabled("VoiceChatServerAnalytics")) return
+    if (!UniverseId || !RootPlaceId || !PlaceId || !JobId || RootPlaceId !== PlaceId) return
+    if (Date.now()/1000 - LastVoiceServerUpdate < 60) return
+    LastVoiceServerUpdate = Date.now()/1000
+
+    const UserId = await GetCurrentUserId()
+    if (!UserId) return
+
+    if (!await UniverseHasVoiceChat(UniverseId)) return
+
+    const [Success, Settings] = await RequestFunc("https://voice.roblox.com/v1/settings", "GET", undefined, undefined, true)
+    if (!Success) return
+    if (!Settings.isVoiceEnabled || Settings.isBanned) return
+
+    const ChannelId = `game_${UniverseId}_${PlaceId}_${JobId}_default`
+    const [InfoSuccess, Info] = await RequestFunc(`https://voice.roblox.com/v1/calls/${ChannelId}/users`, "GET", undefined, undefined, true)
+    if (!InfoSuccess) return
+
+    const VoiceUsers = []
+    for (let i = 0; i < Info.publishers.length; i++){
+        const User = Info.publishers[i]
+        VoiceUsers.push({UserId: User.userId, IsMuted: User.isMuted})
+    }
+
+    VoiceUsers.push({UserId: UserId, IsMuted: Info.ownState ? Info.ownState.isMuted : true})
+
+    const ServerInformation = {Users: VoiceUsers, Players: VoiceUsers.length, Tokens: [], MaxPlayers: PlaceInfo ? PlaceInfo.maxPlayers : -1, Timestamp: Date.now()}
+    // console.log(JSON.stringify(ServerInformation))
+    // ServerInformation.hash = await sha256(JSON.stringify(ServerInformation))
+
+    const Server = await FindVoiceServer(PlaceId, JobId, 30)
+    console.log(Server)
+    if (Server){
+        ServerInformation.Tokens = Server.playerTokens
+        ServerInformation.Players = Server.playing
+        ServerInformation.MaxPlayers = Server.maxPlayers
+    }
+
+    RequestFunc(WebServerEndpoints.Voice+"server/"+ChannelId, "POST", {"Content-Type": "application/json"}, JSON.stringify(ServerInformation), false, true).then(function(){
+        LastVoiceServerUpdate = Date.now()/1000
+    })
+}
