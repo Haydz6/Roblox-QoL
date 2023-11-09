@@ -141,7 +141,7 @@ async function UpdateTheme(Theme){
 }
 
 IsFeatureEnabled("CurrentTheme").then(async function(Theme){
-    UpdateTheme(Theme)
+    if (Theme) UpdateTheme(Theme)
 })
 
 ListenToEventFromBackground("ThemeChange", function(Message){
