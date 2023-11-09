@@ -147,11 +147,13 @@ function HandleInviteList(Id){
 	})
 }
 
-IsFeatureEnabled("QuickInvite").then(function(Enabled){
-    if (!Enabled) return
+setTimeout(function(){
+    IsFeatureEnabled("QuickInvite").then(function(Enabled){
+        if (!Enabled) return
 
-    HandleInviteList("rbx-game-server-item-container")
-	HandleInviteList("rbx-friends-game-server-item-container")
-    HandleInviteList("rbx-recent-game-server-item-container")
-    HandleInviteList("rbx-voice-game-server-item-container")
-})
+        HandleInviteList("rbx-game-server-item-container")
+        HandleInviteList("rbx-friends-game-server-item-container")
+        HandleInviteList("rbx-recent-game-server-item-container")
+        HandleInviteList("rbx-voice-game-server-item-container")
+    })
+}, 0)
