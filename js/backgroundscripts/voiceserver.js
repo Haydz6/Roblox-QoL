@@ -33,7 +33,7 @@ async function FindVoiceServer(PlaceId, JobId, ScanTime){
 
         Cursor = Result.nextPageCursor
         Scans++
-        if (!Cursor || Scans >= 10 || (Date.now()-Duration)/1000 >= ScanTime) return
+        if (!Cursor || Scans >= 50 || (Date.now()-Duration)/1000 >= ScanTime) return
     }
 }
 
@@ -43,7 +43,7 @@ async function UniverseHasVoiceChat(UniverseId){
     return Settings.isUniverseEnabledForVoice
 }
 
-async function UpdateVoiceServer(UniverseId, RootPlaceId, PlaceId, JobId, PlaceInfo){
+async function UpdateVoiceServer(UniverseId, RootPlaceId, PlaceId, JobId){
     if (!await IsFeatureEnabled("VoiceChatServerAnalytics")) return
     if (!UniverseId || !RootPlaceId || !PlaceId || !JobId || RootPlaceId !== PlaceId) return
     if (Date.now()/1000 - LastVoiceServerUpdate < 60) return
@@ -54,12 +54,17 @@ async function UpdateVoiceServer(UniverseId, RootPlaceId, PlaceId, JobId, PlaceI
 
     if (!await UniverseHasVoiceChat(UniverseId)) return
 
+    const [GameSuccess, GameInfo] = await RequestFunc(`https://games.roblox.com/v1/games?universeIds=${UniverseId}`, "GET", undefined, undefined, true)
+    if (!GameSuccess) return
+
     const [Success, Settings] = await RequestFunc("https://voice.roblox.com/v1/settings", "GET", undefined, undefined, true)
     if (!Success) return
     if (!Settings.isVoiceEnabled || Settings.isBanned) return
 
     const ChannelId = `game_${UniverseId}_${PlaceId}_${JobId}_default`
-    const [InfoSuccess, Info] = await RequestFunc(`https://voice.roblox.com/v1/calls/${ChannelId}/users`, "GET", undefined, undefined, true)
+    let InfoSuccess, Info
+
+    [InfoSuccess, Info] = await RequestFunc(`https://voice.roblox.com/v1/calls/${ChannelId}/users`, "GET", undefined, undefined, true)
     if (!InfoSuccess) return
 
     const VoiceUsers = []
@@ -70,11 +75,12 @@ async function UpdateVoiceServer(UniverseId, RootPlaceId, PlaceId, JobId, PlaceI
 
     VoiceUsers.push({UserId: UserId, IsMuted: Info.ownState ? Info.ownState.isMuted : true})
 
-    const ServerInformation = {Users: VoiceUsers, Players: VoiceUsers.length, Tokens: [], MaxPlayers: PlaceInfo ? PlaceInfo.maxPlayers : -1, Timestamp: Date.now()}
+    const ServerInformation = {Users: VoiceUsers, Players: VoiceUsers.length, Tokens: [], MaxPlayers: GameInfo.maxPlayers || -1, Timestamp: Date.now()}
     // console.log(JSON.stringify(ServerInformation))
     // ServerInformation.hash = await sha256(JSON.stringify(ServerInformation))
 
-    const Server = await FindVoiceServer(PlaceId, JobId, 30)
+    //const LookupStart = Date.now()
+    const Server = await FindVoiceServer(PlaceId, JobId, 50)
     if (Server){
         ServerInformation.Tokens = Server.playerTokens
         ServerInformation.Players = Server.playing

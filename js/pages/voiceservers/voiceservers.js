@@ -10,17 +10,19 @@ function CreateVoiceServer(PlaceId, Server){
         else {
             Headshot.src = User.Token
 
-            const Mic = document.createElement("img")
-            Mic.src = chrome.runtime.getURL("/img/microphone.svg")
-            Mic.style = "width: 40%; height: 40%; position: absolute; right: 0; bottom: 0;"
+            // const Mic = document.createElement("img")
+            // Mic.src = chrome.runtime.getURL("/img/microphone.svg")
+            // Mic.style = "width: 40%; height: 40%; position: absolute; right: 0; bottom: 0;"
 
-            if (User.IsMuted){
-                Mic.style.filter = "invert(33%) sepia(77%) saturate(1610%) hue-rotate(331deg) brightness(107%) contrast(94%)"
-            } else {
-                Mic.style.filter = "invert(38%) sepia(94%) saturate(1052%) hue-rotate(129deg) brightness(98%) contrast(101%)"
-            }
+            // if (User.IsMuted){
+            //     Mic.style.filter = "invert(33%) sepia(77%) saturate(1610%) hue-rotate(331deg) brightness(107%) contrast(94%)"
+            // } else {
+            //     Mic.style.filter = "invert(38%) sepia(94%) saturate(1052%) hue-rotate(129deg) brightness(98%) contrast(101%)"
+            // }
 
-            Span.children[0].appendChild(Mic)
+            Span.getElementsByClassName("thumbnail-2d-container")[0].style.backgroundColor = User.IsMuted ? "#f74a54" : "#2cb848"
+
+            //Span.children[0].appendChild(Mic)
         }
 
         return Span
@@ -57,17 +59,31 @@ function CreateVoiceServer(PlaceId, Server){
     return Container
 }
 
+async function UniverseHasVoiceChat(UniverseId){
+    const [Success, Settings] = await RequestFunc(`https://voice.roblox.com/v1/settings/universe/${UniverseId}`, "GET", undefined, undefined, true)
+    if (!Success) return false
+    return Settings.isUniverseEnabledForVoice
+}
+
 setTimeout(function(){
     IsFeatureEnabled("VoiceChatServers").then(async function(Enabled){
         if (!Enabled) return
+        if (!await UniverseHasVoiceChat(await GetUniverseIdFromGamePage())) return
 
         const [Container, List, NoServers, NoServersMessage] = CreateRecentServersList("Voice Chat Servers", "voice")
         const FriendsList = await WaitForId("rbx-friends-running-games")
         FriendsList.parentElement.insertBefore(Container, FriendsList)
 
+        const Spinner = document.createElement("span")
+        Spinner.className = "spinner spinner-default"
+        List.appendChild(Spinner)
+
         const PlaceId = await GetPlaceIdFromGamePage()
         const UniverseId = await GetUniverseIdFromGamePage()
         const [Success, Result] = await RequestFunc(WebServerEndpoints.Voice+"servers/"+UniverseId)
+
+        Spinner.remove()
+
         if (!Success){
             NoServersMessage.innerText = Result?.Result || Result.status
             NoServers.style.display = ""

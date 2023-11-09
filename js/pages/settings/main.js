@@ -234,6 +234,14 @@ const Settings = {
         }
     },
     Games: {
+        VoiceChatServers: {
+            Title: "Voice Chat Servers",
+            Description: "Adds a new row that displays servers with voice chat users."
+        },
+        VoiceChatServerAnalytics: {
+            Title: "Voice Chat Analytics",
+            Description: "Provides the extension with information about voice chat servers."
+        },
         LiveExperienceStats: {
             Title: "Live Experience Statistics",
             Description: "Updates an experiences stats while you are looking at the page."
