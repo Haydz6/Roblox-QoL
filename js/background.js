@@ -361,7 +361,7 @@ async function IsFeatureEnabled(Feature){
     await FetchAllFeaturesEnabled()
     const IsKilled = await IsFeatureKilled(Feature)
     if (IsKilled) return false
-    if (!PaidForFeature(Feature)) return false
+    if (!await PaidForFeature(Feature)) return false
 
     return EnabledFeatures[Feature]
 }
