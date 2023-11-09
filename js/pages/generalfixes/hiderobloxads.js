@@ -19,6 +19,10 @@ IsFeatureEnabled("HideRobloxAds").then(async function(Enabled){
         const MainContainer = await WaitForId("container-main")
         const Content = MainContainer.getElementsByClassName("content")[0]
 
+        IsFeatureKilled("ForceMaxWidthOnContent").then(function(Killed){
+            if (!Killed) Content.style.maxWidth = "970px"
+        })
+
         new MutationObserver(function(Mutations){
             Mutations.forEach(function(Mutation){
                 if (Mutation.type !== "childList") return
