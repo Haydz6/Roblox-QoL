@@ -19,8 +19,21 @@ IsFeatureEnabled("HideRobloxAds").then(async function(Enabled){
         const MainContainer = await WaitForId("container-main")
         const Content = MainContainer.getElementsByClassName("content")[0]
 
-        IsFeatureKilled("ForceMaxWidthOnContent").then(function(Killed){
-            if (!Killed) Content.style.maxWidth = "970px"
+        // IsFeatureKilled("FlexBoxHideAds").then(function(Killed){
+        //     if (!Killed){
+        //         Content.style.display = "flex"
+        //         Content.style.justifyContent = "center"
+        //     }
+        // })
+        IsFeatureKilled("HideRobloxAdFix").then(function(Killed){
+            if (!Killed){
+                Content.style.padding = "20px"
+        
+                const DocURL = window.location.href
+                if (DocURL.includes("/home") || DocURL.match("/games/[0-9]+/") && DocURL.match("/games/[0-9]+/").length != 0) {
+                    Content.style.maxWidth = "1000px"
+                }
+            }
         })
 
         new MutationObserver(function(Mutations){
