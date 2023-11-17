@@ -130,7 +130,7 @@ async function GetPage(){
   IsLoading = true
   CurrentPage += 1
   
-  const [Success, Data] = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=35&pageNumber=${CurrentPage}&userId=${await GetUserId()}`, "GET", undefined, undefined, true)
+  const [Success, Data] = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=100&pageNumber=${CurrentPage}&userId=${await GetUserId()}`, "GET", undefined, undefined, true)
 
   if (await ParsePage(Data)) {
     ReachedEnd = true
@@ -162,10 +162,13 @@ IsFeatureEnabled("FixFavouritesPage").then(async function(Enabled){
   GameCarousel.appendChild(SortContainer)
 
   GetPage()
-  
-  window.onscroll = function(){
+
+  function OnScroll(){
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
       GetPage()
     }
   }
+  
+  window.onscroll = OnScroll
+  OnScroll()
 })
