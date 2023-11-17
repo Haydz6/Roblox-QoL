@@ -1,8 +1,9 @@
 function UpdateOutfitSearchCard(Card, Keyword){
     if (Card.nodeType !== Node.ELEMENT_NODE) return
 
-    const OutfitName = Card.getElementsByClassName("text-overflow item-card-name ng-binding")[0]
-    Card.style.display = !OutfitName.innerText.toLowerCase().includes(Keyword.toLowerCase()) && "none" || ""
+    //const OutfitName = Card.getElementsByClassName("text-overflow item-card-name ng-binding")[0]
+    const OutfitName = Card.getElementsByClassName("item-card-thumb-container")[0]?.getAttribute("data-item-name")?.toLowerCase()
+    if (OutfitName) Card.style.display = !OutfitName.includes(Keyword) && "none" || ""
 }
 
 function OutfitSearch(ItemCards, Keyword){
@@ -54,15 +55,15 @@ IsFeatureEnabled("AvatarSearchbar").then(async function(Enabled){
         Tab.insertBefore(Searchbar, Tab.querySelector(`[avatar-items=""]`))
 
         Searchbar.addEventListener("input", function(){
-            OutfitSearch(ItemCards, Searchbar.value)
+            OutfitSearch(ItemCards, Searchbar.value.toLowerCase())
         })
 
         ChildAdded(ItemCards, true, function(Card){
-            UpdateOutfitSearchCard(Card, Searchbar.value)
+            UpdateOutfitSearchCard(Card, Searchbar.value.toLowerCase())
         })
 
         new MutationObserver(function(){
-            if (!Tab.className.includes("active")) Searchbar.value = ""
+            if (!Tab.className.includes("active")) if (Searchbar.value != "") Searchbar.value = "" //Stop unnecessary update
         }).observe(Tab, {attributeFilter: ["class"]})
     })
 })
