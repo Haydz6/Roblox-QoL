@@ -223,6 +223,7 @@ const ContentScripts = [{
     ],
     "js": [
         "js/pages/assets/createelements.js",
+        "js/pages/generalfixes/versionhistory/download.js",
         "js/pages/assets/main.js",
         "js/pages/trades/rolimons.js",
         "js/pages/assets/addrolimons.js",

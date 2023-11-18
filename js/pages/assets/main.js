@@ -18,6 +18,19 @@ function GetAssetIdFromURL(){
     return parseInt(URLWithID.split("/")[0])
 }
 
+function GetFileTypeFromAsset(AssetTypeId) {
+	switch(AssetTypeId) {
+        case 1:
+            return "png"
+        case 3:
+            return "mp3"
+        case 4: return "mesh"
+        case 63: return "xml"
+        case 9: return "rbxl"
+        default: return "rbxm"
+	}
+}
+
 IsFeatureEnabled("ExploreAsset").then(async function(Enabled){
     if (!Enabled) return
 
@@ -42,15 +55,30 @@ IsFeatureEnabled("ExploreAsset").then(async function(Enabled){
         LastButton = Button
     }
 
+    const AssetType = await GetAssetType(AssetId)
     if (ButtonsList.getElementsByClassName("btr-download-button-container").length === 0){
         DownloadButton = CreateAssetButton(chrome.runtime.getURL("img/assets/DownloadIcon.png"))
-        DownloadButton.href = `https://assetdelivery.roblox.com/v1/asset?id=${AssetId}`
+        //DownloadButton.href = `https://assetdelivery.roblox.com/v1/asset?id=${AssetId}`
+
+        DownloadButton.addEventListener("click", async function(){
+            const Headers = {}
+            if (AssetType === 3) Headers["Roblox-Browser-Asset-Request"] = "true"
+
+            const [Success, Result] = await RequestFunc(`https://assetdelivery.roblox.com/v2/asset?id=${AssetId}`, "GET", Headers, undefined, true)
+            if (!Success) return
+            
+            const Location = Result?.locations?.[0]?.location
+            if (!Location) return
+
+            Download(Location, `${AssetId}.${GetFileTypeFromAsset(AssetType)}`)
+        })
+
         ButtonsList.insertBefore(DownloadButton, LastButton)
         LastButton = DownloadButton
     }
 
     if (ButtonsList.getElementsByClassName("btr-content-button").length === 0){
-        if (await GetAssetType(AssetId) === 13){
+        if (AssetType === 13){
             const Response = await fetch(`https://assetdelivery.roblox.com/v1/asset/?id=${AssetId}`, {method: "GET"})
 
             if (Response.ok){
