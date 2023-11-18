@@ -9,6 +9,22 @@ let FilterInt = 0
 let FirstEightServerElements = []
 let CurrentFilterFunction, CurrentFilterFunctionArgs
 
+function CreateShowServersError(Error){
+    const PriorError = document.getElementById("active-show-servers-error")
+    if (PriorError) PriorError.remove()
+
+    const List = document.getElementById("rbx-game-server-item-container")
+    if (List){
+        const Paragraph = document.createElement("p")
+        Paragraph.id = "active-show-servers-error"
+        Paragraph.innerText = Error
+        List.appendChild(Paragraph)
+        return Paragraph
+    }
+
+    return Paragraph
+}
+
 async function GetImageUrlsFromServer(Servers){
     const Batch = []
     const JobIdToServer = {}
@@ -647,6 +663,8 @@ async function EnableBestConnection(){
 
         if (Err){
             SetButtonLoadingState(true)
+            CreateShowServersError(Err)
+
             console.log(Err)
             return
         }
