@@ -32,7 +32,7 @@ function CreatePrivateServerCard(GameIcon, Name, OwnerName, OwnerId, OwnerType, 
     ItemContainer.className = "item-card-container"
 
     const CardItemLink = document.createElement("a")
-    const href = `https://www.roblox.com/games/${PlaceId}/-#!/game-instances`
+    const href = `https://www.roblox.com/games/${PlaceId}/`
     CardItemLink.setAttribute("ng-href", href)
     CardItemLink.href = href
     CardItemLink.className = "item-card-link"
