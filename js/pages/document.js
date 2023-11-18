@@ -280,8 +280,8 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     if (!BypassResJSON){
       try {
         ResBody = await (Response).json()
-      } catch { //Hacky way for roblox's new api
-        ResBody = {Success: false, Result: "???"}
+      } catch (err) { //Hacky way for roblox's new api
+        ResBody = {Success: false, Result: `decode failed: ${err}`}
         Response.ok = false
       }
     }
@@ -307,7 +307,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     return [Response.ok, ResBody, Response]
   } catch (err) {
     console.log(err)
-    return [false, {Success: false, Result: "???"}]
+    return [false, {Success: false, Result: `fetch failed: ${err}`}]
   }
 }
 
