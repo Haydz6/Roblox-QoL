@@ -74,7 +74,7 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
         }
 
         if (!Success) {
-            Fail(`Failed to load playtime (${Result?.statusText || "HTTP Failed"}. ${Games?.Result || ""})`)
+            Fail(`Failed to load playtime (${Result?.status || ""} ${Result?.statusText || "HTTP Failed"}. ${Games?.Result || ""})`)
             return
         }
 
