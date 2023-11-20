@@ -47,12 +47,17 @@ function WaitForChildIndex(Parent, Index){
   })
 }
 
-function WaitForClass(ClassName){
+function WaitForClass(ClassName, Timeout){
+  let CurrentTime = 0
+
   function Look(resolve){
     let Element = null
   
     Element = FindFirstClass(ClassName)
     if (Element == null){
+      CurrentTime += 0.05
+      if (Timeout && CurrentTime >= Timeout) return resolve()
+
       setTimeout(Look, 50, resolve)
       return
     }

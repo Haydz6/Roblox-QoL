@@ -226,8 +226,8 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
             if (!BypassResJSON){
                 ResBody = await (Response).json()
             }
-        } catch {
-            ResBody = {Success: false, Result: "???"}
+        } catch (err) {
+            ResBody = {Success: false, Result: `decode failed: ${err}`}
         }
         
         if (!Response.ok && (ResBody?.message == "Token Validation Failed" || NewCSRFToken || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
@@ -246,7 +246,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
         return [Response.ok, ResBody, Response]
     } catch (err) {
         console.log(err)
-        return [false, {Success: false, Result: "???"}]
+        return [false, {Success: false, Result: `fetch failed: ${err}`}]
     }
 }
 
