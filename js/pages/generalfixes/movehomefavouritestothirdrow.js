@@ -1,4 +1,6 @@
-async function SearchForRow(Container, SortId){
+async function SearchForRow(Container, SortId, Timeout){
+    let TimeElapsed = 0
+
     while (true){
         const Children = Container.children
 
@@ -15,6 +17,8 @@ async function SearchForRow(Container, SortId){
         }
 
         await sleep(50)
+        TimeElapsed += 0.05
+        if (Timeout && TimeElapsed >= Timeout) return
     }
 }   
 

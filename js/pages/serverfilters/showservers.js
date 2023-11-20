@@ -635,7 +635,7 @@ async function EnableBestConnection(){
             Lng = Position.coords.longitude
         }, function(Error){
             Err = Error.message
-        }, {maximumAge: 86400, timeout: 60*1000, enableHighAccuracy: false})
+        }, {maximumAge: 86400, timeout: 10*1000, enableHighAccuracy: false})
 
         while (!Lat && !Lng && !Err){
             await sleep(100)
