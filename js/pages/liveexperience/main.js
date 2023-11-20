@@ -103,7 +103,7 @@ async function RunLiveStats(){
 
             LastActive = Info.Playing
             LastFavourites = Info.Favourites
-            LastVisits = Info.Visits
+            if (LastVisits < Info.Visits) LastVisits = Info.Visits
         }
 
         setTimeout(Update, 5000)
