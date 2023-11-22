@@ -12,10 +12,111 @@ let CSRFToken = ""
 
 const Debugging = false
 const IgnoreDisabledFeatures = false
+const UseV2Waiters = false
 
 const WebServerURL = !Debugging && "https://roqol.io/" || "http://localhost:8192/"
 const WebServerEndpoints = {Voice: WebServerURL+"api/voice/", Ads: WebServerURL+"api/ads/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", BestFriends: WebServerURL+"api/bestfriends/", Pinned: WebServerURL+"api/pinned/", Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 const SubscriptionToName = ["Free", "Pro"]
+
+function WaitForClassV2(ClassName){
+  return new Promise((resolve) => {
+    
+    const Mutator = new MutationObserver(async function(){
+      Mutator.disconnect()
+      await sleep(0)
+
+      const Element = document.getElementsByClassName(ClassName)[0]
+      if (Element) resolve(Element)
+      else Mutator.observe(document, {childList: true, subtree: true})
+    })
+    Mutator.observe(document, {childList: true, subtree: true})
+  })
+}
+
+function WaitForIdV2(Id){
+  return new Promise((resolve) => {
+    
+    const Mutator = new MutationObserver(async function(){
+      Mutator.disconnect()
+      await sleep(0)
+
+      const Element = document.getElementById(Id)
+      if (Element) resolve(Element)
+      else Mutator.observe(document, {childList: true, subtree: true})
+    })
+    Mutator.observe(document, {childList: true, subtree: true})
+  })
+}
+
+function WaitForQuerySelectorV2(Query){
+  return new Promise((resolve) => {
+    
+    const Mutator = new MutationObserver(async function(){
+      Mutator.disconnect()
+      await sleep(0)
+
+      const Element = document.querySelector(Query)
+      if (Element) resolve(Element)
+      else Mutator.observe(document, {childList: true, subtree: true})
+    })
+    Mutator.observe(document, {childList: true, subtree: true})
+  })
+}
+
+function WaitForTagV2(Tag){
+  return new Promise((resolve) => {
+    
+    const Mutator = new MutationObserver(async function(){
+      Mutator.disconnect()
+      await sleep(0)
+
+      const Element = document.getElementsByTagName(Tag)[0]
+      if (Element) resolve(Element)
+      else Mutator.observe(document, {childList: true, subtree: true})
+    })
+    Mutator.observe(document, {childList: true, subtree: true})
+  })
+}
+
+function WaitForChildIndexV2(Parent, Index){
+  return new Promise((resolve) => {
+    
+    const Mutator = new MutationObserver(async function(){
+      Mutator.disconnect()
+      await sleep(0)
+
+      const Element = Parent.children[Index || 0]
+      if (Element) resolve(Element)
+      else Mutator.observe(Parent, {childList: true})
+    })
+    Mutator.observe(Parent, {childList: true})
+  })
+}
+
+function WaitForClassPathV2(Parent, ...Paths){
+  function WaitForClassInElement(Element, Class){
+    return new Promise((resolve) => {
+      const Mutator = new MutationObserver(async function(){
+        Mutator.disconnect()
+        await sleep(0)
+
+        const Child = Element.getElementsByClassName(Class)[0]
+        if (Child) resolve(Child)
+        else Mutator.observe(Parent, {childList: true})
+      })
+      Mutator.observe(Parent, {childList: true})
+    })
+  }
+
+  return new Promise(async(resolve) => {
+    let CurrentElement = Parent
+    for (let i = 0; i < Paths.length; i++){
+      CurrentElement = await WaitForClassInElement(CurrentElement, Paths[i])
+    }
+
+    resolve(CurrentElement)
+  })
+}
 
 function FindFirstClass(ClassName){
   return document.getElementsByClassName(ClassName)[0]
@@ -30,6 +131,8 @@ function FindFirstTag(Tag){
 }
 
 function WaitForChildIndex(Parent, Index){
+  if (UseV2Waiters) return WaitForChildIndexV2(Parent, Index)
+
   function Look(resolve){
     let Element = null
   
@@ -48,6 +151,8 @@ function WaitForChildIndex(Parent, Index){
 }
 
 function WaitForClass(ClassName, Timeout){
+  if (UseV2Waiters) return WaitForClassV2(ClassName)
+
   let CurrentTime = 0
 
   function Look(resolve){
@@ -71,6 +176,8 @@ function WaitForClass(ClassName, Timeout){
 }
 
 function WaitForId(Id){
+  if (UseV2Waiters) return WaitForIdV2(Id)
+
   function Look(resolve){
     let Element = null
   
@@ -89,6 +196,8 @@ function WaitForId(Id){
 }
 
 function WaitForQuerySelector(Query){
+  if (UseV2Waiters) return WaitForQuerySelectorV2(Query)
+
   function Look(resolve){
     let Element = null
   
@@ -107,6 +216,8 @@ function WaitForQuerySelector(Query){
 }
 
 function WaitForTag(Tag){
+  if (UseV2Waiters) return WaitForTagV2(Tag)
+
   function Look(resolve){
     let Element = null
   
@@ -155,6 +266,8 @@ function FindClassPath(Element, ...Paths){
 }
 
 async function WaitForClassPath(Element, ...Paths){
+  if (UseV2Waiters) return await WaitForClassPathV2(Element, Paths)
+
   let LastElement = Element
 
   for (let i = 0; i < Paths.length; i++){
