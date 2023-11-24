@@ -1,53 +1,55 @@
 async function AddTradeAge(TradeElement){
-    if (!TradeElement.className) return
+  if (!TradeElement.className) return
 
-    const TradeInfo = angular.element(TradeElement).scope()
-    const Created = new Date(TradeInfo.trade.created)
-    const Since = Date.now() - Created.getTime()
+  const TradeInfo = angular.element(TradeElement).scope()
+  if (!TradeInfo) return
 
-    function SecondsToLengthSingle(Seconds, Full){
-        if (Full){
-          const y = Math.floor(Seconds / (3600*24*365))
-          const mo = Math.floor(Seconds / (3600*24*30))
-          const d = Math.floor(Seconds / (3600*24))
-          const h = Math.floor(Seconds % (3600*24) / 3600)
-          const m = Math.floor(Seconds % 3600 / 60)
-          const s = Math.floor(Seconds % 60)
-      
-          if (y > 0){
-            return `${y} year${y == 1 ? "" : "s"}`
-          } else if (mo > 0){
-            return `${mo} month${mo == 1 ? "" : "s"}`
-          } else if (d > 0){
-            return `${d} day${d == 1 ? "" : "s"}`
-          } else if (h > 0){
-            return `${h} hour${h == 1 ? "" : "s"}`
-          } else if (m > 0){
-            return `${m} minute${m == 1 ? "" : "s"}`
-          }
-      
-          return `${s} second${s == 1 ? "" : "s"}`
-        }
-      
+  const Created = new Date(TradeInfo.trade.created)
+  const Since = Date.now() - Created.getTime()
+
+  function SecondsToLengthSingle(Seconds, Full){
+      if (Full){
+        const y = Math.floor(Seconds / (3600*24*365))
+        const mo = Math.floor(Seconds / (3600*24*30))
         const d = Math.floor(Seconds / (3600*24))
         const h = Math.floor(Seconds % (3600*24) / 3600)
         const m = Math.floor(Seconds % 3600 / 60)
         const s = Math.floor(Seconds % 60)
-      
-        if (d > 0){
+    
+        if (y > 0){
+          return `${y} year${y == 1 ? "" : "s"}`
+        } else if (mo > 0){
+          return `${mo} month${mo == 1 ? "" : "s"}`
+        } else if (d > 0){
           return `${d} day${d == 1 ? "" : "s"}`
         } else if (h > 0){
           return `${h} hour${h == 1 ? "" : "s"}`
         } else if (m > 0){
           return `${m} minute${m == 1 ? "" : "s"}`
         }
-      
+    
         return `${s} second${s == 1 ? "" : "s"}`
       }
+    
+      const d = Math.floor(Seconds / (3600*24))
+      const h = Math.floor(Seconds % (3600*24) / 3600)
+      const m = Math.floor(Seconds % 3600 / 60)
+      const s = Math.floor(Seconds % 60)
+    
+      if (d > 0){
+        return `${d} day${d == 1 ? "" : "s"}`
+      } else if (h > 0){
+        return `${h} hour${h == 1 ? "" : "s"}`
+      } else if (m > 0){
+        return `${m} minute${m == 1 ? "" : "s"}`
+      }
+    
+      return `${s} second${s == 1 ? "" : "s"}`
+    }
 
-    const Label = TradeElement.getElementsByClassName("trade-sent-date")[0]
-    Label.title = Created.toLocaleString()
-    Label.innerText = SecondsToLengthSingle(Since/1000)
+  const Label = TradeElement.getElementsByClassName("trade-sent-date")[0]
+  Label.title = Created.toLocaleString()
+  Label.innerText = SecondsToLengthSingle(Since/1000)
 }
 
 async function InjectTradeAge(){
