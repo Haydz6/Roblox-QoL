@@ -1,6 +1,6 @@
 const BestFriendPresenceScript = document.currentScript
 
-function FetchFromPresenceHelper(UserId){
+function FetchFromPresenceHelper(UserIds){
     return new Promise(async(resolve) => {
         function OnEvent(e){
             document.removeEventListener("RobloxQoL.GetBestFriendsPresenceResponse", OnEvent)
@@ -10,7 +10,7 @@ function FetchFromPresenceHelper(UserId){
         document.addEventListener("RobloxQoL.GetBestFriendsPresenceResponse", OnEvent)
 
         while (!BestFriendPresenceScript.getAttribute("presencehelper-ready")) await new Promise(r => setTimeout(r, 50))
-        document.dispatchEvent(new CustomEvent("RobloxQoL.GetBestFriendsPresence", {detail: UserId}))
+        document.dispatchEvent(new CustomEvent("RobloxQoL.GetBestFriendsPresence", {detail: UserIds}))
     })
 }
 
@@ -116,7 +116,7 @@ IsFeatureEnabled("BestFriendPresence").then(function(Enabled){
                                     if (Users.length === 1){
 
                                         try {
-                                            const Response = await FetchFromPresenceHelper(Users[0])
+                                            const Response = await FetchFromPresenceHelper(Users)
                                             if (Response && Response.ok){
                                                 const BestFriendPresence = Response.json
 
@@ -133,7 +133,7 @@ IsFeatureEnabled("BestFriendPresence").then(function(Enabled){
                                     } else {
 
                                         try {
-                                            const Response = await FetchFromPresenceHelper()
+                                            const Response = await FetchFromPresenceHelper(Users)
                                             if (Response && Response.ok){
                                                 const BestFriendsPresence = Response.json
 
