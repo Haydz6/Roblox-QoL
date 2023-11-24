@@ -200,7 +200,7 @@ if (chrome.notifications?.onButtonClicked) chrome.notifications.onButtonClicked.
     if (!Notification) return
 
     const Button = Notification.buttons[ButtonIndex]
-    if (Button.title === "Open") chrome.tabs.create({url: `https://roblox.com/trades?tradeid=${Notification.tradeid}#${Notification.type.toLowerCase()}`})
+    if (Button.title === "Open") chrome.tabs.create({url: `https://www.roblox.com/trades?tradeid=${Notification.tradeid}#${Notification.type.toLowerCase()}`})
     else if (Button.title === "Decline" || Button.title === "Cancel") DeclineTrade(Notification.tradeid)
 })
 
@@ -208,7 +208,7 @@ if (chrome.notifications?.onClicked) chrome.notifications.onClicked.addListener(
     const Notification = TradeNotifications[NotificationId]
     if (!Notification) return
 
-    chrome.tabs.create({url: `https://roblox.com/trades#${Notification.type.toLowerCase()}`})
+    chrome.tabs.create({url: `https://www.roblox.com/trades#${Notification.type.toLowerCase()}`})
 })
 
 setInterval(CheckForNewTrades, 20*1000)
