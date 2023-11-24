@@ -627,24 +627,28 @@ function AbbreviateNumber(number, decPlaces, noPlus){
 }
 
 function ChildAdded(Node, SendInitial, Callback){
+  let Observer
+  async function Disconnect(){
+    while (!Observer) await sleep(0)
+    try {Observer.disconnect()} catch {}
+  }
+
   if (SendInitial){
     const children = Node.children
     if (children){
       for (let i = 0; i < children.length; i++){
-        Callback(children[i])
+        Callback(children[i], Disconnect  )
       }
     }
   }
 
-  const Observer = new MutationObserver(function(Mutations, Observer){
+  Observer = new MutationObserver(function(Mutations, Observer){
     Mutations.forEach(function(Mutation) {
       if (Mutation.type !== "childList") return
 
       const addedNodes = Mutation.addedNodes
       for (let i = 0; i < addedNodes.length; i++){
-        Callback(addedNodes[i], function(){
-          try {Observer.disconnect()} catch {}
-        })
+        Callback(addedNodes[i], Disconnect)
       }
     })
   })
@@ -767,3 +771,7 @@ setInterval(FetchAllFeaturesKilled, 20*1000, true)
 GetUserId()
 
 chrome.runtime.sendMessage({type: "InjectContentScripts"})
+
+document.addEventListener("RobloxQoL.IsFeatureEnabled", async function(e){
+  document.dispatchEvent(new CustomEvent("RobloxQoL.IsFeatureEnabledResponse", {detail: await IsFeatureEnabled(e.detail)}))
+})

@@ -132,7 +132,8 @@ const ContentScripts = [{
         "js/pages/settings/createelements.js",
         "js/pages/settings/main.js",
         "js/pages/settings/themes.js",
-        "js/pages/settings/mainv2.js"
+        "js/pages/settings/mainv2.js",
+        "js/pages/bestfriend/canview.js"
     ],
     "run_at": "document_start"
 },
@@ -170,6 +171,7 @@ const ContentScripts = [{
         "js/pages/profile/discord.js",
         "js/pages/profile/lastonline.js",
 
+        "js/pages/bestfriend/presencehelper.js",
         "js/pages/bestfriend/profile.js"
     ],
     "run_at": "document_start"

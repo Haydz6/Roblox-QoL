@@ -1,4 +1,4 @@
-async function InjectScript(Path, URLMatch, FullPath, Attrs){
+async function InjectScript(Path, URLMatch, FullPath, Attrs, RunFirst){
     if (URLMatch){
         const Regexp = new RegExp(URLMatch.replace(/\*/g, "[^ ]*"))
         if (!Regexp.test(window.location.href)) return
@@ -6,15 +6,30 @@ async function InjectScript(Path, URLMatch, FullPath, Attrs){
 
     const Script = document.createElement("script")
     Script.id = "injectedscript-"+Path
-    Script.src = chrome.runtime.getURL(FullPath ? Path : "js/pages/generalfixes/scriptinjections/"+Path+".js")
-
-    while (!document.head) await new Promise(r => setTimeout(r, 20))
+    Script.src = chrome.runtime.getURL(FullPath ? FullPath : "js/pages/generalfixes/scriptinjections/"+Path+".js")
 
     if (Attrs) for ([k, v] of Object.entries(Attrs)){
         Script.setAttribute(k, v)
     }
+
+    if (RunFirst){
+        try {
+            ChildRemoved(document.documentElement, function(Item){
+                if (Item === Script) document.documentElement.insertBefore(Script, document.documentElement.children[0])
+            })
+            
+            document.documentElement.insertBefore(Script, document.documentElement.children[0])
+        } catch (error) {console.log(error)}
+    }
+
+    while (!document.head) await new Promise(r => setTimeout(r, 20))
+
     document.head.appendChild(Script)
 }
+
+// InjectScript("bestfriendpresence", "*://*.roblox.com/users/*/profile", "js/pages/bestfriend/presence.js", undefined, true)
+// InjectScript("bestfriendpresence", "*://*.roblox.com/home*", "js/pages/bestfriend/presence.js", undefined, true)
+InjectScript("bestfriendpresence", "*://*.roblox.com/*", "js/pages/bestfriend/presence.js", undefined, true)
 
 IsFeatureEnabled("NewMessagePing3").then(async function(Enabled){
     if (!Enabled) return
@@ -47,3 +62,10 @@ IsFeatureEnabled("RemoveAccessoryLimit").then(function(Enabled){
 IsFeatureEnabled("TradeAge").then(function(Enabled){
     if (Enabled) InjectScript("TradeAge", "*://*.roblox.com/trades*")
 })
+
+// IsFeatureEnabled("BestFriendPresence").then(function(Enabled){
+//     if (Enabled){
+//         InjectScript("bestfriendpresence", "*://*.roblox.com/users/*/profile", "js/pages/bestfriend/presence.js")
+//         InjectScript("bestfriendpresence", "*://*.roblox.com/home*", "js/pages/bestfriend/presence.js")
+//     }
+// })

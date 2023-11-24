@@ -1,0 +1,68 @@
+IsFeatureEnabled("BestFriendPresence").then(async function(Enabled){
+    if (!Enabled || !await PaidForFeature("BestFriends")) return
+
+    let CanView
+
+    async function FetchCanView(){
+        if (CanView !== undefined) return CanView
+
+        const [Success, Result] = await RequestFunc(WebServerEndpoints.BestFriends+"view", "GET")
+        if (!Success) return
+        CanView = Result.CanView
+    }
+
+    function UpdateCanView(){
+        RequestFunc(WebServerEndpoints.BestFriends+"setview", "POST", {"Content-Type": "application/json"}, JSON.stringify({CanView: CanView}))
+    }
+
+    ChildAdded(await WaitForClass("tab-content"), true, async function(){
+        const JoinPrivacy = document.getElementById("FollowMePrivacy")
+        if (!JoinPrivacy || document.getElementById("best-friends-view-game")) return
+
+        const Option = document.createElement("option")
+        Option.value = "BestFriends"
+        Option.id = "best-friends-view-game"
+        Option.innerText = "Best Friends"
+
+        function GetBestFriendIndex(){
+            const Children = JoinPrivacy.children
+
+            for (let i = 0; i < Children.length; i++){
+                if (Children[i] === Option){
+                    return i
+                }
+            }
+        }
+
+        JoinPrivacy.addEventListener("change", function(){
+            console.log(JoinPrivacy.selectedIndex, GetBestFriendIndex())
+            if (JoinPrivacy.selectedIndex === GetBestFriendIndex()){
+                Option.value = "NoOne"
+
+                if (!CanView){
+                    CanView = true
+                    UpdateCanView()
+                }
+            } else {
+                Option.value = "BestFriends"
+
+                if (CanView){
+                    CanView = false
+                    UpdateCanView()
+                }
+            }
+        })
+
+        ChildRemoved(JoinPrivacy, function(){
+            if (!Option.parentNode) JoinPrivacy.insertBefore(Option, JoinPrivacy.children[JoinPrivacy.children.length-1])
+        })
+
+        JoinPrivacy.insertBefore(Option, JoinPrivacy.children[JoinPrivacy.children.length-1])
+
+        await FetchCanView()
+
+        if (CanView && JoinPrivacy.value === "NoOne"){
+            JoinPrivacy.value = "BestFriends"
+        }
+    })
+})

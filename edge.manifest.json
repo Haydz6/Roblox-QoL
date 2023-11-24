@@ -87,7 +87,8 @@
                 "js/pages/generalfixes/addusdtorobux.js",
                 "js/pages/generalfixes/resizablechatboxes.js",
                 "js/pages/feed/navfeedbutton.js",
-                "js/pages/theme/customtheme.js"
+                "js/pages/theme/customtheme.js",
+                "js/pages/bestfriend/presencehelper.js"
             ],
             "run_at": "document_start"
         },
