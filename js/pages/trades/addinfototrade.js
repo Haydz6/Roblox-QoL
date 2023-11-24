@@ -161,10 +161,10 @@ async function OffersAdded(BothOffers){
             const Value = Details?.Value
             const Demand = Details?.Demand
 
-            if (!Value) AreResultsValid = false
-            else TotalValue[ValueElement.Type] += Value
+            if (Value !== undefined) TotalValue[ValueElement.Type] += Value
+            else AreResultsValid = false
 
-            if (Demand) Demands[ValueElement.Type].push(Demand)
+            if (Demand !== undefined) Demands[ValueElement.Type].push(Demand)
             else AreResultsValid = false
 
             ValueElement.Label.innerText = Value && numberWithCommas(Value) || "???"
