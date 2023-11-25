@@ -63,7 +63,7 @@ IsFeatureEnabled("TradeAge").then(function(Enabled){
     if (Enabled) InjectScript("TradeAge", "*://*.roblox.com/trades*")
 })
 
-// IsFeatureEnabled("BestFriendPresence").then(function(Enabled){
+// IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
 //     if (Enabled){
 //         InjectScript("bestfriendpresence", "*://*.roblox.com/users/*/profile", "js/pages/bestfriend/presence.js")
 //         InjectScript("bestfriendpresence", "*://*.roblox.com/home*", "js/pages/bestfriend/presence.js")

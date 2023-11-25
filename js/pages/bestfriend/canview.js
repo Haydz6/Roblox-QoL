@@ -1,4 +1,4 @@
-IsFeatureEnabled("BestFriendPresence").then(async function(Enabled){
+IsFeatureEnabled("BestFriendPresenceV2").then(async function(Enabled){
     if (!Enabled || !await PaidForFeature("BestFriends")) return
 
     let CanView

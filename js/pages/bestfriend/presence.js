@@ -73,7 +73,7 @@ async function PopulateUniverse(Presences){
     }
 }
 
-IsFeatureEnabled("BestFriendPresence").then(function(Enabled){
+IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
     if (!Enabled) return
 
     var _XMLHttpRequest = XMLHttpRequest;
@@ -154,6 +154,10 @@ IsFeatureEnabled("BestFriendPresence").then(function(Enabled){
                                     Object.defineProperty(this, "responseText", {writable: true, configurable: true})
                                     this.responseText = JSON.stringify(Body)
                                     Object.defineProperty(this, "responseText", {writable: false, configurable: true})
+
+                                    Object.defineProperty(this, "response", {writable: true, configurable: true})
+                                    this.response = Body
+                                    Object.defineProperty(this, "response", {writable: false, configurable: true})
                                 }
                             }
                         }
@@ -170,5 +174,93 @@ IsFeatureEnabled("BestFriendPresence").then(function(Enabled){
         }
 
         return xhr;
+    }
+
+    //intercept fetch too
+    const _fetch = fetch
+    window.fetch = async function(...args){
+        const response = await _fetch(...args)
+        if (response.url !== "https://presence.roblox.com/v1/presence/users" || !response.ok) return response
+
+        const Body = await response.clone().json()
+
+        const Users = []
+        const Presences = Body.userPresences
+        const UserIdToPresence = {}
+        
+        for (let i = 0; i < Presences.length; i++){
+            const Presence = Presences[i]
+            if (Presence.userPresenceType !== 2 || Presence.universeId) continue
+
+            UserIdToPresence[Presence.userId] = Presence
+            Users.push(Presence.userId)
+        }
+
+        //my goodness this code is terrible but is the only way to efficiently query the database.
+
+        if (Users.length > 0){
+            
+            const Populate = []
+            if (Users.length === 1){
+
+                try {
+                    const Response = await FetchFromPresenceHelper(Users)
+                    if (Response && Response.ok){
+                        const BestFriendPresence = Response.json
+
+                        if (BestFriendPresence.UniverseId){
+                            const Presence = UserIdToPresence[Users[0]]
+
+                            Presence.universeId = BestFriendPresence.UniverseId
+                            Presence.gameId = BestFriendPresence.JobId
+                            Populate.push(Presence)
+                        }
+                    }
+                } catch (error) {console.log(error)}
+
+            } else {
+
+                try {
+                    const Response = await FetchFromPresenceHelper(Users)
+                    if (Response && Response.ok){
+                        const BestFriendsPresence = Response.json
+
+                        for (let i = 0; i < BestFriendsPresence.length; i++){
+                            const BestFriendPresence = BestFriendsPresence[i]
+                            const Presence = UserIdToPresence[BestFriendPresence.UserId]
+
+                            Presence.universeId = BestFriendPresence.UniverseId
+                            Presence.gameId = BestFriendPresence.JobId
+                            Populate.push(Presence)
+                        }
+                    }
+                } catch (error) {console.log(error)}
+            }
+
+            if (Populate.length > 0) await PopulateUniverse(Populate)
+
+            // Object.defineProperty(response, "body", {writable: true, configurable: true})
+
+            // response.body = new ReadableStream({
+            //     start(controller){
+            //         return pump()
+            //         function pump(){
+            //             controller.enqueue(JSON.stringify(Body))
+            //             controller.close()
+            //         }
+            //     },
+            //     pull(controller){},
+            //     cancel(){}
+            // })
+
+            // Object.defineProperty(response, "body", {writable: false, configurable: true})
+            // Object.defineProperty(response, "bodyUsed", {writable: true, configurable: true})
+            // response.bodyUsed = false
+            // Object.defineProperty(response, "bodyUsed", {writable: false, configurable: true})
+
+            return new Response(JSON.stringify(Body), {status: response.status, statusText: response.statusText, headers: response.headers})
+        }
+
+        return response
     }
 })
