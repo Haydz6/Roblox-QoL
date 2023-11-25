@@ -41,17 +41,26 @@
 }
 
 .light-theme .filter-list {
-    background-color: #ffffff;
+    background-color: #bfbfbf;
 }
 
 .dark-theme .filter-list {
     background-color: rgb(25,25,25);
 }
 
+.light-theme .filter-button {
+    background-color: #fff!important;
+}
+
+.dark-theme .filter-button {
+    background-color: #393b3d!important;
+}
+
 .filter-button {
     height: 22px !important;
     text-align: center !important;
     margin-bottom: 5px;
+    border-color: transparent!important;
 }
 
 .dark-theme .invite-server-box {
