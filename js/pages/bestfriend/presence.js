@@ -151,8 +151,12 @@ IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
 
                                     if (Populate.length > 0) await PopulateUniverse(Populate)
 
-                                    Object.defineProperty(this, "responseText", {configurable: true, value: JSON.stringify(Body)})
-                                    Object.defineProperty(this, "response", {configurable: true, value: Body})
+                                    try {
+                                        Object.defineProperties(this, {
+                                            responseText: {configurable: true, value: JSON.stringify(Body)},
+                                            response: {configurable: true, value: Body}
+                                        })
+                                    } catch (error) {console.log(error)}
                                 }
                             }
                         }
