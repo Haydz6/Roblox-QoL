@@ -151,13 +151,8 @@ IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
 
                                     if (Populate.length > 0) await PopulateUniverse(Populate)
 
-                                    Object.defineProperty(this, "responseText", {writable: true, configurable: true})
-                                    this.responseText = JSON.stringify(Body)
-                                    Object.defineProperty(this, "responseText", {writable: false, configurable: true})
-
-                                    Object.defineProperty(this, "response", {writable: true, configurable: true})
-                                    this.response = Body
-                                    Object.defineProperty(this, "response", {writable: false, configurable: true})
+                                    Object.defineProperty(this, "responseText", {configurable: true, value: JSON.stringify(Body)})
+                                    Object.defineProperty(this, "response", {configurable: true, value: Body})
                                 }
                             }
                         }
@@ -238,25 +233,6 @@ IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
             }
 
             if (Populate.length > 0) await PopulateUniverse(Populate)
-
-            // Object.defineProperty(response, "body", {writable: true, configurable: true})
-
-            // response.body = new ReadableStream({
-            //     start(controller){
-            //         return pump()
-            //         function pump(){
-            //             controller.enqueue(JSON.stringify(Body))
-            //             controller.close()
-            //         }
-            //     },
-            //     pull(controller){},
-            //     cancel(){}
-            // })
-
-            // Object.defineProperty(response, "body", {writable: false, configurable: true})
-            // Object.defineProperty(response, "bodyUsed", {writable: true, configurable: true})
-            // response.bodyUsed = false
-            // Object.defineProperty(response, "bodyUsed", {writable: false, configurable: true})
 
             return new Response(JSON.stringify(Body), {status: response.status, statusText: response.statusText, headers: response.headers})
         }
