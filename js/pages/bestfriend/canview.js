@@ -15,54 +15,62 @@ IsFeatureEnabled("BestFriendPresenceV2").then(async function(Enabled){
         RequestFunc(WebServerEndpoints.BestFriends+"setview", "POST", {"Content-Type": "application/json"}, JSON.stringify({CanView: CanView}))
     }
 
-    ChildAdded(await WaitForClass("tab-content"), true, async function(){
-        const JoinPrivacy = document.getElementById("FollowMePrivacy")
-        if (!JoinPrivacy || document.getElementById("best-friends-view-game")) return
+    ChildAdded(await WaitForClass("tab-content"), true, function(){
+        const Container = document.getElementById("privacy-settings")
+        if (!Container) return
 
-        const Option = document.createElement("option")
-        Option.value = "BestFriends"
-        Option.id = "best-friends-view-game"
-        Option.innerText = "Best Friends"
+        ChildAdded(Container, true, async function(){
+            const JoinPrivacy = document.getElementById("FollowMePrivacy")
+            console.log(JoinPrivacy)
+            if (!JoinPrivacy || document.getElementById("best-friends-view-game")) return
 
-        function GetBestFriendIndex(){
-            const Children = JoinPrivacy.children
+            const Option = document.createElement("option")
+            Option.value = "BestFriends"
+            Option.id = "best-friends-view-game"
+            Option.innerText = "Best Friends"
 
-            for (let i = 0; i < Children.length; i++){
-                if (Children[i] === Option){
-                    return i
+            function GetBestFriendIndex(){
+                const Children = JoinPrivacy.children
+
+                for (let i = 0; i < Children.length; i++){
+                    if (Children[i] === Option){
+                        return i
+                    }
                 }
             }
-        }
 
-        JoinPrivacy.addEventListener("change", function(){
-            console.log(JoinPrivacy.selectedIndex, GetBestFriendIndex())
-            if (JoinPrivacy.selectedIndex === GetBestFriendIndex()){
-                Option.value = "NoOne"
+            JoinPrivacy.addEventListener("change", function(){
+                console.log(JoinPrivacy.selectedIndex, GetBestFriendIndex())
+                if (JoinPrivacy.selectedIndex === GetBestFriendIndex()){
+                    Option.value = "NoOne"
+                    Option.innerText = "Best Friends (Best Friends must have extension installed)"
 
-                if (!CanView){
-                    CanView = true
-                    UpdateCanView()
+                    if (!CanView){
+                        CanView = true
+                        UpdateCanView()
+                    }
+                } else {
+                    Option.value = "BestFriends"
+                    Option.innerText = "Best Friends"
+
+                    if (CanView){
+                        CanView = false
+                        UpdateCanView()
+                    }
                 }
-            } else {
-                Option.value = "BestFriends"
+            })
 
-                if (CanView){
-                    CanView = false
-                    UpdateCanView()
-                }
+            ChildRemoved(JoinPrivacy, function(){
+                if (!Option.parentNode) JoinPrivacy.insertBefore(Option, JoinPrivacy.children[JoinPrivacy.children.length-1])
+            })
+
+            JoinPrivacy.insertBefore(Option, JoinPrivacy.children[JoinPrivacy.children.length-1])
+
+            await FetchCanView()
+
+            if (CanView && JoinPrivacy.value === "NoOne"){
+                JoinPrivacy.value = "BestFriends"
             }
         })
-
-        ChildRemoved(JoinPrivacy, function(){
-            if (!Option.parentNode) JoinPrivacy.insertBefore(Option, JoinPrivacy.children[JoinPrivacy.children.length-1])
-        })
-
-        JoinPrivacy.insertBefore(Option, JoinPrivacy.children[JoinPrivacy.children.length-1])
-
-        await FetchCanView()
-
-        if (CanView && JoinPrivacy.value === "NoOne"){
-            JoinPrivacy.value = "BestFriends"
-        }
     })
 })
