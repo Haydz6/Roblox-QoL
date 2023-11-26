@@ -40,10 +40,9 @@ IsFeatureEnabled("BestFriendPresenceV2").then(async function(Enabled){
             }
 
             JoinPrivacy.addEventListener("change", function(){
-                console.log(JoinPrivacy.selectedIndex, GetBestFriendIndex())
                 if (JoinPrivacy.selectedIndex === GetBestFriendIndex()){
                     Option.value = "NoOne"
-                    Option.innerText = "Best Friends (Best Friends must have extension installed)"
+                    Option.innerText = "Best Friends (Best Friends must have RoQoL extension installed)"
 
                     if (!CanView){
                         CanView = true
@@ -69,6 +68,7 @@ IsFeatureEnabled("BestFriendPresenceV2").then(async function(Enabled){
             await FetchCanView()
 
             if (CanView && JoinPrivacy.value === "NoOne"){
+                Option.innerText = "Best Friends (Best Friends must have RoQoL extension installed)"
                 JoinPrivacy.value = "BestFriends"
             }
         })
