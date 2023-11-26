@@ -355,6 +355,10 @@ const Settings = {
             Title: "Quick Cancel",
             Description: "Adds a button to the trades list to quick cancel."
         },
+        HideSerials: {
+            Title: "Hide Serials",
+            Description: "Adds a button at the top of a trade to hide serials"
+        },
         AutodeclineTradeValue: {
             Title: "Auto-decline Inbound Value Loss",
             Description: "Declines any trade that you receive which have a value loss more than specified",

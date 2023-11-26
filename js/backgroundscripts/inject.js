@@ -210,7 +210,8 @@ const ContentScripts = [{
         "js/pages/trades/main.js",
         "js/pages/trades/addinfototrade.js",
         "js/pages/trades/createtrade.js",
-        "js/pages/trades/openontrade.js"
+        "js/pages/trades/openontrade.js",
+        "js/pages/trades/hideserials.js"
     ],
     "run_at": "document_start"
 },
