@@ -2,7 +2,7 @@ async function AddTradeAge(TradeElement){
   if (!TradeElement.className) return
 
   const TradeInfo = angular.element(TradeElement).scope()
-  if (!TradeInfo) return
+  if (!TradeInfo?.trade) return
 
   const Created = new Date(TradeInfo.trade.created)
   const Since = Date.now() - Created.getTime()
