@@ -326,8 +326,10 @@ async function CreateAlert(Text, Success){
     AlertSystemFeedback.appendChild(TextHolder)
 
     try {
-        (await WaitForClass("alert-context ng-binding")).parentNode.parentNode.appendChild(AlertSystemFeedback)
-    } catch {}
+        const Container = (await WaitForClass("alert-context")).parentNode.parentNode
+        if (Container.children[0]) Container.insertBefore(AlertSystemFeedback, Container.children[0])
+        else Container.appendChild(AlertSystemFeedback)
+    } catch (error) {console.log(error)}
 
     await sleep(3000)
 
