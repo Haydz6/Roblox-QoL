@@ -136,17 +136,33 @@ async function WearExtraOutfit(Id){
   // }
 
   const LayeredAssets = []
+  const IgnoreAssetIds = {}
+  let RetrySetWearingAssets = false
+  const InvalidAssets = []
   
   const Responses = await Promise.all(AllPromises)
 
   for (let i = 0; i < Responses.length; i++){
     const Response = Responses[i][2]
     
-    if (Response.url == "https://avatar.roblox.com/v2/avatar/set-wearing-assets" && !Response.ok){
-      let json = Responses[i][1]
-
+    let json = Responses[i][1]
+    if (Response.url == "https://avatar.roblox.com/v2/avatar/set-wearing-assets" && (!Response.ok || !json.success)){
       let ValidationErrors = json?.ValidationErrors || json?.errors?.[0]?.message
-      if (!ValidationErrors) break
+      if (!ValidationErrors){
+        //Check for invalid assets
+
+        const InvalidAssetIds = json?.invalidAssetIds
+        if (InvalidAssetIds && !json.success) {
+          RetrySetWearingAssets = true
+
+          for (let i = 0; i < InvalidAssetIds.length; i++){
+            InvalidAssets.push(InvalidAssetIds[i])
+            IgnoreAssetIds[InvalidAssetIds[i]] = true
+          }
+        }
+
+        break
+      }
 
       if (typeof(ValidationErrors) == "string") {
         ValidationErrors = JSON.parse(ValidationErrors)?.ValidationErrors
@@ -165,31 +181,37 @@ async function WearExtraOutfit(Id){
   }
 
 
-  if (LayeredAssets.length > 0) {
+  if (RetrySetWearingAssets || LayeredAssets.length > 0) {
     Assets = []
     const DetailBatch = []
 
     for (let i = 0; i < LayeredAssets.length; i++){
       const AssetId = LayeredAssets[i]
+      if (IgnoreAssetIds[AssetId]) continue
+
       OutfitAssets.splice(OutfitAssets.indexOf(AssetId))
       DetailBatch.push({itemType: 1, id: AssetId})
     }
 
     for (let i = 0; i < OutfitAssets.length; i++){
+      if (IgnoreAssetIds[OutfitAssets[i]]) continue
+
       Assets.push({id: OutfitAssets[i]})
     }
 
-    const [Success, Result] = await RequestFunc("https://catalog.roblox.com/v1/catalog/items/details", "POST", {"Content-Type": "application/json"}, JSON.stringify({items: DetailBatch}))
-    if (!Success){
-      CreateAlert("Some of your costume failed to wear", false)
-      RedrawCharacter()
-      return
-    }
+    if (DetailBatch.length > 0){
+      const [Success, Result] = await RequestFunc("https://catalog.roblox.com/v1/catalog/items/details", "POST", {"Content-Type": "application/json"}, JSON.stringify({items: DetailBatch}))
+      if (!Success){
+        CreateAlert("Some of your costume failed to wear", false)
+        RedrawCharacter()
+        return
+      }
 
-    const Data = Result.data
-    for (let i = 0; i < Data.length; i++){
-      const Item = Data[i]
-      Assets.push({id: Item.id, meta: {order: LayeredOrderLookup[Item.assetType], version: 1}})
+      const Data = Result.data
+      for (let i = 0; i < Data.length; i++){
+        const Item = Data[i]
+        Assets.push({id: Item.id, meta: {order: LayeredOrderLookup[Item.assetType], version: 1}})
+      }
     }
 
     const [SetSuccess] = await RequestFunc("https://avatar.roblox.com/v2/avatar/set-wearing-assets", "POST", {"Content-Type": "application/json"}, JSON.stringify({assets: Assets}), true)
@@ -200,7 +222,8 @@ async function WearExtraOutfit(Id){
     }
   }
 
-  CreateAlert("Successfully wore costume", true)
+  if (RetrySetWearingAssets) CreateAlert(`Wore costume, however you do not own ${InvalidAssets.join(", ")}!`, true)
+  else CreateAlert("Successfully wore costume", true)
 
   RedrawCharacter()
 }
