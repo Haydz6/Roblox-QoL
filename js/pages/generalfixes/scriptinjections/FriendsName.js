@@ -31,7 +31,7 @@ async function FriendsNameOnHomePage(){
 
             const Label = document.createElement("span")
             Label.className = "text-overflow friend-name font-caption-header"
-            Label.style = "font-size: x-small; color: darkgrey; top: -6px; position: inherit; margin-bottom: -9 px;"
+            Label.style = "font-size: x-small; color: darkgrey; top: -6px; position: inherit; margin-bottom: -9px;"
             Label.innerText = `@${Name}`
             Label.title = Name
 
