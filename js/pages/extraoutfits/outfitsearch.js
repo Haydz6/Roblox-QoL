@@ -3,7 +3,7 @@ function UpdateOutfitSearchCard(Card, Keyword){
 
     //const OutfitName = Card.getElementsByClassName("text-overflow item-card-name ng-binding")[0]
     const OutfitName = Card.getElementsByClassName("item-card-thumb-container")[0]?.getAttribute("data-item-name")?.toLowerCase()
-    if (OutfitName) Card.style.display = !OutfitName.includes(Keyword) && "none" || ""
+    if (OutfitName) Card.style.display = OutfitName.includes(Keyword) ? "" : "none"
 }
 
 function OutfitSearch(ItemCards, Keyword){
