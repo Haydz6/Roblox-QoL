@@ -62,6 +62,9 @@ IsFeatureEnabled("RemoveAccessoryLimit").then(function(Enabled){
 IsFeatureEnabled("TradeAge").then(function(Enabled){
     if (Enabled) InjectScript("TradeAge", "*://*.roblox.com/trades*")
 })
+IsFeatureEnabled("NameOnHomeFriends").then(function(Enabled){
+    if (Enabled) InjectScript("FriendsName", "*://*.roblox.com/home*")
+})
 
 // IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
 //     if (Enabled){

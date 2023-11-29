@@ -59,6 +59,10 @@ const Settings = {
             Title: "Friend Mutuals",
             Description: "Shows mutuals on a users page."
         },
+        NameOnHomeFriends: {
+            Title: "Username on home friends row",
+            Description: "Adds username to friends on your home page"
+        },
         BestFriends: {
             Title: "Best Friends",
             Description: "Adds a new friends row to your home page."
