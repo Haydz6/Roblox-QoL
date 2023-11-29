@@ -7,9 +7,12 @@ function UpdateOutfitSearchCard(Card, Keyword){
 }
 
 function OutfitSearch(ItemCards, Keyword){
-    const children = ItemCards.children
-    for (let i = 0; i < children.length; i++){
-        UpdateOutfitSearchCard(children[i], Keyword)
+    //const children = ItemCards.children
+    // for (let i = 0; i < children.length; i++){
+    //     UpdateOutfitSearchCard(children[i], Keyword)
+    // }
+    for (const Child of ItemCards.children){
+        UpdateOutfitSearchCard(Child, Keyword)
     }
 }
 
