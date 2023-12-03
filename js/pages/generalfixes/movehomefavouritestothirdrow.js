@@ -22,15 +22,16 @@ async function SearchForRow(Container, SortId, Timeout){
     }
 }   
 
-IsFeatureEnabled("MoveHomeFavouritesToThirdRow").then(async function(Enabled){
-    if (!Enabled) return
-
-    let GamesList = await WaitForClass("game-home-page-container")
-    if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
-    const [FavTitle, FavRow] = await SearchForRow(GamesList, 100000001)
-        //const [RecommendedTitle, _] = await SearchForRow(Container, "Recommended")
-    const ThirdTitle = GamesList.children[4]
+setTimeout(function(){
+    IsFeatureEnabled("MoveHomeFavouritesToThirdRow").then(async function(Enabled){
+        if (!Enabled) return
     
-    GamesList.insertBefore(FavRow, ThirdTitle)
-    GamesList.insertBefore(FavTitle, FavRow)
-})
+        let GamesList = await WaitForClass("game-home-page-container")
+        if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
+        const [FavTitle, FavRow] = await SearchForRow(GamesList, 100000001)
+        const [ThirdTitle] = await SearchForRow(GamesList, 100000000)
+        
+        GamesList.insertBefore(FavRow, ThirdTitle)
+        GamesList.insertBefore(FavTitle, FavRow)
+    })
+}, 0)
