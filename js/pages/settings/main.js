@@ -451,6 +451,10 @@ const Settings = {
             Title: "Item Searchbar",
             Description: "Adds a search bar to your avatar page."
         },
+        AssetQuickWearV2: {
+            Title: "Quick Wear Button",
+            Description: "Adds a quick wear button to an accessory page."
+        }
     },
     Economy: {
         AddSales: {
