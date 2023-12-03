@@ -23,7 +23,7 @@ async function SearchForRow(Container, SortId, Timeout){
 }   
 
 IsFeatureEnabled("MoveHomeFavouritesToThirdRow").then(async function(Enabled){
-    if (Enabled) return
+    if (!Enabled) return
 
     let GamesList = await WaitForClass("game-home-page-container")
     if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
