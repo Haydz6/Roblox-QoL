@@ -80,6 +80,10 @@ setTimeout(function(){
             const NoButton = Modal.getElementsByClassName("btn-control-md")[0]
             const Spinner = Modal.getElementsByClassName("spinner")[0]
 
+            //fix tooltip not going away
+            const TooltipId = PreferredButton.getAttribute("aria-describedby")
+            if (TooltipId) document.getElementById(TooltipId)?.remove()
+
             let Closed = false
 
             function RemoveSpinner(){
