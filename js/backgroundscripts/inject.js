@@ -51,6 +51,7 @@ const ContentScripts = [{
         "js/pages/fixfavouritespage/createSortDiscover.js",
         "js/pages/fixfavouritespage/main.js",
 
+        "js/pages/generalfixes/getuniversesbatchlive.js",
         "js/pages/playtime/createcards.js",
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/allgames.js",
