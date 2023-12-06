@@ -1,42 +1,42 @@
-.home-header {
+.top-home-header {
     display: flex;
     align-items: center;
     margin-bottom: 12px;
 }
 
-.home-header .name {
+.top-home-header .name {
     margin-left: 20px;
 }
 
-.home-header .icon-premium {
+.top-home-header .icon-premium {
     margin-left: 12px;
 }
 
-.home-header .icon-verified-badge {
+.top-home-header .icon-verified-badge {
     margin-left: 12px;
 }
 
-.home-header thumbnail-2d {
+.top-home-header thumbnail-2d {
     height: 100%;
     width: 100%;
 }
 
-.home-header .thumbnail-2d-container {
+.top-home-header .thumbnail-2d-container {
     height: 100%;
     width: 100%;
 }
 
-.home-header .avatar-card-link {
+.top-home-header .avatar-card-link {
     height: 125px;
     width: 125px;
 
     border-radius: 50%;
 }
 
-.home-header .avatar-card-image {
+.top-home-header .avatar-card-image {
     border-radius: 50%;
 }
 
-.home-header .user-headshot {
+.top-home-header .user-headshot {
     background-color: #d4d4d4;
 }
