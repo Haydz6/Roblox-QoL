@@ -59,7 +59,7 @@ async function GetActivePrivateServersV2(Callback){
 
             AddToScanQueue(async function(){
                 while (PrivateCursor !== null){
-                    const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/${Place}/private-servers?limit=100&sortOrder=Asc&cursor=${PrivateCursor}`, "GET", undefined, undefined, true)
+                    const [Success, Result, Response] = await RequestFunc(`https://games.roblox.com/v1/games/${Place}/private-servers?limit=100&sortOrder=Asc&cursor=${PrivateCursor}`, "GET", undefined, undefined, true)
                     if (Response?.status === 429){
                         await sleep(3000)
                         continue
