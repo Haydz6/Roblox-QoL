@@ -467,7 +467,7 @@ const Settings = {
         },
         ActivePrivateServers: {
             Title: "Active Private Servers",
-            Description: "Allows you to see which private servers are billing you."
+            Description: "Allows you to see which private servers are billing you.\nYou can view this on your transactions or inventory page."
         },
         DetailedGroupTranscationSummary: {
             Title: "Transaction Summary Source",
