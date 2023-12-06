@@ -32,25 +32,6 @@ async function CreateGameCardsFromUniverseIds(Games, CardsContainer, CacheFetchI
         UniverseIdToPlaytime[Game.UniverseId] = Game.Playtime
     }
 
-    // const Data = []
-    // const CloneUniverseIds = UniverseIds.slice(0)
-
-    // while (CloneUniverseIds.length > 0){
-    //     const CallUniverseIds = []
-    //     for (let i = 0; i < Math.min(CloneUniverseIds.length, 10); i++){
-    //         CallUniverseIds.push(CloneUniverseIds.shift())
-    //     }
-
-    //     const [UniverseSuccess, Universes] = await RequestFunc(`https://games.roblox.com/v1/games?universeIds=${CallUniverseIds.join(",")}`, "GET", undefined, undefined, true)
-    //     if (FetchInt[0] !== CacheFetchInt) return
-
-    //     if (!UniverseSuccess) {
-    //         Fail("Failed to load games")
-    //         return
-    //     }
-    //     Data.push(...Universes.data)
-    // }
-
     const Cards = {}
     const Data = []
 
@@ -163,37 +144,6 @@ async function CreateGameCardsFromUniverseIds(Games, CardsContainer, CacheFetchI
     })
 
     Spinner.remove()
-
-    // const Cards = {}
-
-    // for (let i = 0; i < Data.length; i++){
-    //     const Universe = Data[i]
-    //     const [GameCard, GameImage, CardInfo, VotePercent] = CreateGameCard(Universe.name, `https://roblox.com/games/${Universe.rootPlaceId}`, Universe.playing)
-
-    //     CardsContainer.appendChild(GameCard)
-
-    //     UniverseIdToImageElement[Universe.id] = GameImage
-    //     UniverseIdToVotePercent[Universe.id] = VotePercent
-
-    //     const PlaytimeCardInfo = document.createElement("div")
-    //     PlaytimeCardInfo.className = "game-card-info"
-
-    //     const PlaytimeIcon = document.createElement("span")
-    //     PlaytimeIcon.className = "info-label icon-playing-counts-gray icon-playtime"
-
-    //     const Playtime = UniverseIdToPlaytime[Universe.id]
-
-    //     if (Playtime){
-    //         const PlaytimeLabel = document.createElement("span")
-    //         PlaytimeLabel.className = "info-label playing-counts-label"
-    //         PlaytimeLabel.innerText = SecondsToLength(Playtime, true, true)
-
-    //         PlaytimeCardInfo.append(PlaytimeIcon, PlaytimeLabel)
-    //         CardInfo.parentElement.appendChild(PlaytimeCardInfo)
-    //     }
-
-    //     Cards[Universe.id] = GameCard
-    // }
 
     return Cards
 }
