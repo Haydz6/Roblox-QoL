@@ -40,7 +40,7 @@ function CreateMobileMenuOption(Text, NoSpace){
 
 function CreateStandaloneButton(Text){
     const Container = document.createElement("div")
-    Container.style = "display: flex; justify-content: center;"
+    Container.style = "display: flex; justify-content: center; width: 100%;"
     Container.innerHTML = `<button class="btn-control-sm" style="width: 90%; margin-top: 20px;"><span>Return</span></button>`
     Container.getElementsByTagName("span")[0].innerText = Text
 
