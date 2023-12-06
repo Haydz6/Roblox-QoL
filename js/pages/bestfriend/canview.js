@@ -21,7 +21,6 @@ IsFeatureEnabled("BestFriendPresenceV2").then(async function(Enabled){
 
         ChildAdded(Container, true, async function(){
             const JoinPrivacy = document.getElementById("FollowMePrivacy")
-            console.log(JoinPrivacy)
             if (!JoinPrivacy || document.getElementById("best-friends-view-game")) return
 
             const Option = document.createElement("option")
