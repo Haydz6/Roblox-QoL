@@ -53,7 +53,8 @@
             ],
             "css": [
                 "css/streamermode.css",
-                "css/opacitythemefix.css"
+                "css/opacitythemefix.css",
+                "css/payment.css"
             ],
             "js": [
                 "js/modules/hbaClient.js",
