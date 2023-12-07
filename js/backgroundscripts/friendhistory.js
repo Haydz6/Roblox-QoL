@@ -163,7 +163,10 @@ async function UpdateHistory(){
     await GetSavedFriends()
     if (!await CanUpdateHistory()) return
 
-    const [Success, Result] = await RequestFunc(`https://friends.roblox.com/v1/users/${await GetCurrentUserId()}/friends`, "GET", undefined, undefined, true)
+    const UserId = await GetCurrentUserId()
+    if (!UserId) return
+
+    const [Success, Result] = await RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/friends`, "GET", undefined, undefined, true)
 
     if (!Success) return
 
