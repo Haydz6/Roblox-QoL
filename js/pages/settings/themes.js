@@ -86,7 +86,7 @@ async function CreateThemesSection(List){
     PaidForFeature("CurrentTheme").then(function(Paid){
         if (Paid) return
 
-        ThemeUpload.style = "pointer-events: none; cursor: pointer;"
+        ThemeUpload.style = "pointer-events: none; cursor: pointer; display: none;"
         ThemeUpload.addEventListener("click", CreatePaymentPrompt)
     })
 
@@ -133,8 +133,11 @@ async function CreateThemesSection(List){
 
         ThemesList.appendChild(Theme)
 
-        if (!CustomHandler) Button.addEventListener("click", async function(){
-            if (!await PaidForFeature("CurrentTheme")) return CreatePaymentPrompt()
+        if (!CustomHandler) Button.addEventListener("click", async function(e){
+            if (!await PaidForFeature("CurrentTheme")){
+                CreatePaymentPrompt()
+                return
+            }
 
             const ThemeInfo = await IsFeatureEnabled("CurrentTheme")
             if (ThemeInfo?.Theme === Name) return
