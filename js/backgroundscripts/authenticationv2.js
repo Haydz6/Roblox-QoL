@@ -49,6 +49,25 @@ async function GetAuthKey(){
     return await GetAuthKeyV2()
 }
 
+async function WaitForGameFavourite(UserId, UniverseId, Favourited = true, Timeout = 15){
+    const End = (Date.now()/1000)+Timeout
+
+    while (End > Date.now()/1000){
+        const [Success, Result] = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=1&pageNumber=1&userId=${UserId}`, "GET", undefined, undefined, true)
+        
+        if (Success){
+            const FavouritedUniverseId = Result?.Data?.Items?.[0]?.Item?.UniverseId
+            console.log(FavouritedUniverseId)
+
+            if (Favourited && UniverseId == FavouritedUniverseId) return true
+            if (!Favourited && UniverseId != FavouritedUniverseId) return true
+        }
+        await sleep(2000)
+    }
+
+    return false
+}
+
 async function GetAuthKeyV2(){
     while (FetchingAuthKey){
         await sleep(100)
@@ -104,6 +123,7 @@ async function GetAuthKeyV2(){
         }
 
         if (FavoriteResult.MustUnfavourite){
+            await WaitForGameFavourite(UserId, UniverseId, false, 15)
             const [UnfavoriteSuccess] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"clear", "POST", undefined, JSON.stringify({Key: Key}))
 
             if (!UnfavoriteSuccess){
@@ -120,6 +140,7 @@ async function GetAuthKeyV2(){
         return CachedAuthKey
     }
     
+    await WaitForGameFavourite(UserId, UniverseId, true, 15)
     const [ServerSuccess, ServerResult] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"verify", "POST", undefined, JSON.stringify({Key: Key}))
     
     if (ServerSuccess){
