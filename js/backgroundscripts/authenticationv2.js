@@ -57,7 +57,6 @@ async function WaitForGameFavourite(UserId, UniverseId, Favourited = true, Timeo
         
         if (Success){
             const FavouritedUniverseId = Result?.Data?.Items?.[0]?.Item?.UniverseId
-            console.log(FavouritedUniverseId)
 
             if (Favourited && UniverseId == FavouritedUniverseId) return true
             if (!Favourited && UniverseId != FavouritedUniverseId) return true
