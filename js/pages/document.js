@@ -772,6 +772,10 @@ GetUserId()
 
 chrome.runtime.sendMessage({type: "InjectContentScripts"})
 
+GetUserId().then(function(UserId){
+  chrome.runtime.sendMessage({type: "DocumentUserIdUpdate", UserId: parseInt(UserId)})
+})
+
 document.addEventListener("RobloxQoL.IsFeatureEnabled", async function(e){
   document.dispatchEvent(new CustomEvent("RobloxQoL.IsFeatureEnabledResponse", {detail: await IsFeatureEnabled(e.detail)}))
 })

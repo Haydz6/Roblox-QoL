@@ -413,6 +413,16 @@ BindToOnMessage("PaymentRequired", false, function(request){
     return PaymentRequiredFailure(request.result)
 })
 
+BindToOnMessage("DocumentUserIdUpdate", false, async function(request){
+    const NewUserId = request.UserId
+    if (NewUserId !== await GetCurrentUserId()){
+        UserId = NewUserId
+        CachedAuthKey = ""
+        await LocalStorage.remove("AuthKey")
+        GetAuthKeyV2()
+    }
+})
+
 let LastThemeChange = 0
 let ThemeChangePending = false
 let ThemePendingChanges = {}

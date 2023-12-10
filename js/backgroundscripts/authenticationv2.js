@@ -12,11 +12,14 @@ async function HasGameFavourited(UniverseId){
 }
 
 async function ReauthenticateV2(){
+    const UserId = await GetCurrentUserId()
+    if (!UserId) return CachedAuthKey
+
     const [Success, Result] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"reverify", "POST")
 
     if (Success){
         CachedAuthKey = Result.Key
-        LocalStorage.set("AuthKey", CachedAuthKey)
+        LocalStorage.set("AuthKey", JSON.stringify({UserId: UserId, Key: CachedAuthKey}))
     }
     
     return CachedAuthKey
@@ -38,11 +41,25 @@ async function GetAuthKey(){
     FetchingAuthKey = true
     LastAuthKeyAttempt = Date.now()/1000
     StoredKey = await LocalStorage.get("AuthKey")
+    if (StoredKey){
+        try {
+            StoredKey = JSON.parse(StoredKey)
+        } catch {}
+    }
     
     if (StoredKey){
-        CachedAuthKey = StoredKey
-        FetchingAuthKey = false
-        return CachedAuthKey
+        const UserId = await GetCurrentUserId()
+        if (typeof(StoredKey) == "string"){
+            StoredKey = {UserId: UserId, Key: StoredKey}
+            await LocalStorage.set("AuthKey", JSON.stringify(StoredKey))
+        }
+
+        if (StoredKey.UserId == UserId){
+            console.log(StoredKey)
+            CachedAuthKey = StoredKey.Key
+            FetchingAuthKey = false
+            return CachedAuthKey
+        }
     }
 
     FetchingAuthKey = false
@@ -85,11 +102,24 @@ async function GetAuthKeyV2(){
 
     FetchingAuthKey = true
     StoredKey = await LocalStorage.get("AuthKey")
+    if (StoredKey){
+        try {
+            StoredKey = JSON.parse(StoredKey)
+        } catch {}
+    }
     
     if (StoredKey){
-        CachedAuthKey = StoredKey
-        FetchingAuthKey = false
-        return CachedAuthKey
+        const UserId = await GetCurrentUserId()
+        if (typeof(StoredKey) == "string"){
+            StoredKey = {UserId: UserId, Key: StoredKey}
+            await LocalStorage.set("AuthKey", JSON.stringify(StoredKey))
+        }
+
+        if (StoredKey.UserId == UserId){
+            CachedAuthKey = StoredKey.Key
+            FetchingAuthKey = false
+            return CachedAuthKey
+        }
     }
     
     if (!UserId){
@@ -151,7 +181,7 @@ async function GetAuthKeyV2(){
     
     if (ServerSuccess){
         CachedAuthKey = ServerResult.Key
-        LocalStorage.set("AuthKey", CachedAuthKey)
+        LocalStorage.set("AuthKey", JSON.stringify({UserId: UserId, Key: CachedAuthKey}))
     }
     
     new Promise(async function(){
