@@ -13,7 +13,7 @@ async function SaveLastFriendRequestSent(){
 }
 
 async function CheckForNewFriendRequests(){
-    if (!await IsFeatureEnabled("FriendRequestNotifications") || chrome.notifications?.create) return
+    if (!await IsFeatureEnabled("FriendRequestNotifications") || !chrome.notifications?.create) return
 
     if (!LastFriendRequestSent){
         const [Success, Body] = await RequestFunc(WebServerEndpoints.Friends+"requests", "GET")
