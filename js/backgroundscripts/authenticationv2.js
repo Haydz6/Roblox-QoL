@@ -55,7 +55,6 @@ async function GetAuthKey(){
         }
 
         if (StoredKey.UserId == UserId){
-            console.log(StoredKey)
             CachedAuthKey = StoredKey.Key
             FetchingAuthKey = false
             return CachedAuthKey
