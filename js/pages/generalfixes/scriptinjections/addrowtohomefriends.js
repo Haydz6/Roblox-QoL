@@ -13,7 +13,8 @@ async function AddRowToHomeFriends(){
     if (PeopleController.library.numOfFriends < PeopleController.layout.maxNumberOfFriendsDisplayed) return
 
     const Style = document.createElement("style")
-    Style.innerHTML = ".people-list {height: 280px !important; max-height: 280px !important;} .people-list-container {height: 340px !important;}"
+    Style.innerHTML = `:not(.roblox-usernames) .people-list {height: 280px !important; max-height: 280px !important;} :not(.roblox-usernames) .people-list-container {height: 340px !important;}
+                        .roblox-usernames .people-list {height: 292px !important; max-height: 292px !important;} .roblox-usernames .people-list-container {height: 362px !important;}`
     document.body.appendChild(Style)
 }
 AddRowToHomeFriends()

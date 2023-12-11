@@ -40,3 +40,13 @@
 .top-home-header .user-headshot {
     background-color: #d4d4d4;
 }
+
+
+.roblox-usernames .people-list {
+    height: 155px;
+    max-height: 155px;
+}
+
+.roblox-usernames .people-list-container {
+    height: 212px;
+}

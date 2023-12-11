@@ -53,6 +53,8 @@ async function FriendsNameOnHomePage(){
         for (let i = 0; i < Children.length; i++){
             ChildAdded(Children[i])
         }
+
+        Container.classList.add("roblox-usernames")
     }
 
     document.addEventListener("RobloxQoL.BestFriendsLoaded", function(){
