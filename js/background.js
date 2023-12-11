@@ -262,23 +262,6 @@ const LocalStorage = {set: function(key, value){
     return chrome.storage.local.remove(key)
 }}
 
-function GetBrowser(){
-    var aKeys = ["MSIE", "Firefox", "Safari", "Chrome", "Opera"];
-    var sUsrAg = navigator.userAgent;
-    var nIdx = aKeys.length - 1;
-    
-    while(nIdx > -1 && sUsrAg.indexOf(aKeys[nIdx]) === -1){
-        nIdx--;
-    }  
-
-    var browserStr = "Unknown";
-    if (nIdx > -1){
-        browserStr = aKeys[nIdx]
-    }
-
-    return browserStr
-}
-
 function CallLogin(){
     RequestFunc(WebServerEndpoints.User+"login", "POST")
 }
