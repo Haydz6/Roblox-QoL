@@ -40,7 +40,7 @@ async function CheckForNewFriendRequests(){
     }
 
     if (NewRequests.length === 0) return
-    LastFriendRequestSent = Math.floor(LatestRequest)
+    LastFriendRequestSent = Math.floor(LatestRequest) + 1
 
     SaveLastFriendRequestSent()
 
