@@ -63,10 +63,6 @@ const Settings = {
             Title: "Username on home friends row",
             Description: "Adds username to friends on your home page"
         },
-        BestFriends: {
-            Title: "Best Friends",
-            Description: "Adds a new friends row to your home page."
-        },
         ResizableChatBoxes: {
             Title: "Resizable chat boxes",
             Description: "Allows you to resize the chat boxes on the roblox site. (Drag top left)"
@@ -421,6 +417,10 @@ const Settings = {
         }
     },
     Friends: {
+        BestFriends: {
+            Title: "Best Friends",
+            Description: "Adds a new friends row to your home page."
+        },
         FriendHistory: {
             Title: "Friend History",
             Description: "Allows you to see a history of what friends you have had."
