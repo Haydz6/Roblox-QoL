@@ -23,7 +23,7 @@ function RequestPlaytimeBatchFetch(Type){
 }
 
 async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
-    const [ContainerHeader, SeeAllButton] = CreateContainerHeader(Name, `https://roblox.com/discover#/sortName?sort=Playtime&type=${Type}`)
+    const [ContainerHeader, SeeAllButton] = CreateContainerHeader(Name, `https://www.roblox.com/discover#/sortName?sort=Playtime&type=${Type}`)
     if (!ShowIfEmpty) ContainerHeader.style = "display: none;"
     const GameCarousel = CreateGameCarousel()
 

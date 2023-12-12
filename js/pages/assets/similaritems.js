@@ -45,7 +45,7 @@ async function CreateSimilarList(Container, AssetId){
         const Item = document.createElement("a")
         Item.className = "thumbnail-2d-container item-card-thumb-container"
         Item.style = "height: 90px; width: 90px; padding: 5px; margin-right: 5px;"
-        Item.href = `https://roblox.com/catalog/${ThumbnailResult.targetId}/`
+        Item.href = `https://www.roblox.com/catalog/${ThumbnailResult.targetId}/`
         
         const Image = document.createElement("img")
         Image.src = ThumbnailResult.imageUrl

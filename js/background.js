@@ -294,7 +294,7 @@ chrome.cookies.onChanged.addListener(function(Change){
 //     CookieGetFunc = browser.cookies.get
 // }
 
-// CookieGetFunc({name: ".ROBLOSECURITY", url: "https://roblox.com"}).then(function(Cookie){
+// CookieGetFunc({name: ".ROBLOSECURITY", url: "https://www.roblox.com"}).then(function(Cookie){
 //     if (!Cookie) return //Not logged in
 
 //     //ROBLOSECURITY = Cookie.value

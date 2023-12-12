@@ -93,10 +93,10 @@ function CreatePrivateServerCard(GameIcon, Name, OwnerName, OwnerId, OwnerType, 
 
     const CreatorNameButton = document.createElement("a")
     CreatorNameButton.className = "creator-name text-overflow text-link ng-binding"
-    CreatorNameButton.setAttribute("ng-href", `https://roblox.com/users/${OwnerId}/profile/`)
+    CreatorNameButton.setAttribute("ng-href", `https://www.roblox.com/users/${OwnerId}/profile/`)
     CreatorNameButton.setAttribute("ng-show", "$ctrl.currentData.isPrivateServerCategoryType")
     CreatorNameButton.setAttribute("ng-bind", "item.PrivateServer.nameForDisplay")
-    CreatorNameButton.href = OwnerType === "User" && `https://roblox.com/users/${OwnerId}/profile/` || `https://roblox.com/groups/${OwnerId}`
+    CreatorNameButton.href = OwnerType === "User" && `https://www.roblox.com/users/${OwnerId}/profile/` || `https://www.roblox.com/groups/${OwnerId}`
     CreatorNameButton.innerText = ` ${OwnerType === "User" && "@" || ""}${OwnerName}`
 
     CreatorNameDiv.appendChild(CreatorNameBySpan)

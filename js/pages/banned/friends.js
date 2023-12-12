@@ -24,7 +24,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
         return
     }
     if (!Account.isBanned){
-        window.location.href = `https://roblox.com/users/${UserId}/friends`
+        window.location.href = `https://www.roblox.com/users/${UserId}/friends`
         return
     }
 

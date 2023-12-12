@@ -168,7 +168,7 @@ function CreateGamePlaytime(Type, Name, Icon){
     Value.className = "text-name text-overflow"
     Value.style = "font-size: 14px; font-weight: 500;" + (Type ? "" : " text-decoration: none;")
     Value.innerText = "..."
-    Value.href = Type ? `https://roblox.com/discover#/sortName?sort=Playtime&type=${Type}` : ""
+    Value.href = Type ? `https://www.roblox.com/discover#/sortName?sort=Playtime&type=${Type}` : ""
 
     Container.append(Image, NameLabel, Value)
 

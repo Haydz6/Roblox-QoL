@@ -19,7 +19,7 @@ async function WaitForTableRow(TBody, Name){
 }
 
 function CreateGroupItem(Group, BackgroundColor){
-    const href = `https://roblox.com/${Group.Type == "Group" && "group" || Group.Type == "Place" && "games" || Group.Type == "GamePass" && "game-pass" || Group.Type == "User" && "users" || Group.Type == "Asset" && "catalog"}/${Group.Type == "Place" && Group.Place.placeId || Group.Id}/${Group.Type == "User" && "profile" || "-"}`
+    const href = `https://www.roblox.com/${Group.Type == "Group" && "group" || Group.Type == "Place" && "games" || Group.Type == "GamePass" && "game-pass" || Group.Type == "User" && "users" || Group.Type == "Asset" && "catalog"}/${Group.Type == "Place" && Group.Place.placeId || Group.Id}/${Group.Type == "User" && "profile" || "-"}`
 
     const Container = document.createElement("div")
     Container.style = BackgroundColor+"padding: 9px; height: 62px; display: flex; align-items: center;"

@@ -24,7 +24,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
         return
     }
     if (!Account.isBanned){
-        window.location.href = `https://roblox.com/users/${UserId}/profile`
+        window.location.href = `https://www.roblox.com/users/${UserId}/profile`
         return
     }
 
@@ -120,7 +120,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     const Badge = Body[i]
                     const BadgeElement = RobloxBadgeClone.cloneNode(true)
                     
-                    BadgeElement.children[0].href = `https://roblox.com/info/roblox-badges#Badge${Badge.id}`
+                    BadgeElement.children[0].href = `https://www.roblox.com/info/roblox-badges#Badge${Badge.id}`
                     BadgeElement.children[0].title = Badge.description
                     BadgeElement.getElementsByClassName("asset-thumb-container")[0].className = "border asset-thumb-container icon-badge-"+Badge.name.toLowerCase().replaceAll(" ", "-")
                     BadgeElement.getElementsByClassName("asset-thumb-container")[0].title = Badge.name
@@ -168,7 +168,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     const Badge = Badges[i]
                     const BadgeElement = BadgeClone.cloneNode(true)
                     
-                    BadgeElement.children[0].href = `https://roblox.com/badges/${Badge.id}/You-Played-Admin-Roulette`
+                    BadgeElement.children[0].href = `https://www.roblox.com/badges/${Badge.id}/You-Played-Admin-Roulette`
                     BadgeElement.children[0].title = Badge.description
                     BadgeElement.getElementsByClassName("asset-thumb-container")[0].src = BadgeIcons[Badge.id] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"
                     BadgeElement.getElementsByClassName("asset-thumb-container")[0].title = Badge.description
@@ -230,7 +230,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     let Playing = UniverseLookup[Badge.Item.UniverseId]?.playing
                     if (Playing === undefined) Playing = "???"
 
-                    BadgeElement.getElementsByClassName("game-card-link")[0].href = `https://roblox.com/games/${Badge.Item.AssetId}`
+                    BadgeElement.getElementsByClassName("game-card-link")[0].href = `https://www.roblox.com/games/${Badge.Item.AssetId}`
                     BadgeElement.getElementsByClassName("game-card-thumb")[0].src = Badge.Thumbnail.Url
                     BadgeElement.getElementsByClassName("game-card-name")[0].innerText = UniverseLookup[Badge.Item.UniverseId]?.name || "???"
                     BadgeElement.getElementsByClassName("game-card-name")[0].title = UniverseLookup[Badge.Item.UniverseId]?.name || "???"
@@ -295,7 +295,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
             //         const Badge = Badges[i]
             //         const BadgeElement = CollectibleClone.cloneNode(true)
                     
-            //         BadgeElement.children[0].href = `https://roblox.com/catalog/${Badge.assetId}`
+            //         BadgeElement.children[0].href = `https://www.roblox.com/catalog/${Badge.assetId}`
             //         BadgeElement.children[0].title = Badge.name
             //         BadgeElement.getElementsByClassName("asset-thumb-container")[0].src = BadgeIcons[Badge.assetId] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"
             //         BadgeElement.getElementsByClassName("item-name")[0].innerText = Badge.name
@@ -344,7 +344,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     const AssetId = Assets[i]
                     const BadgeElement = WearingClone.cloneNode(true)
                     
-                    BadgeElement.children[0].href = `https://roblox.com/catalog/${AssetId}`
+                    BadgeElement.children[0].href = `https://www.roblox.com/catalog/${AssetId}`
                     BadgeElement.getElementsByClassName("accoutrment-image")[0].src = BadgeIcons[AssetId] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"
                     BadgeElement.getElementsByClassName("accoutrment-image")[0].title = AssetInfoLookup[AssetId]?.name || ""
 
@@ -353,7 +353,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
             })
 
             const FriendsList = document.getElementById("friends-list")
-            document.getElementsByClassName("people-list-container")[0].getElementsByClassName("btn-more")[0].href = `https://roblox.com/users/${UserId}/friends`
+            document.getElementsByClassName("people-list-container")[0].getElementsByClassName("btn-more")[0].href = `https://www.roblox.com/users/${UserId}/friends`
 
             const FriendClone = FriendsList.getElementsByClassName("list-item")[0].cloneNode(true)
             FriendsList.replaceChildren()
@@ -392,7 +392,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     FriendElement.id = "people-"+Friend.id
                     FriendElement.setAttribute("rbx-user-id", Friend.id)
                     
-                    FriendElement.getElementsByClassName("friend-link")[0].href = `https://roblox.com/users/${Friend.id}/profile`
+                    FriendElement.getElementsByClassName("friend-link")[0].href = `https://www.roblox.com/users/${Friend.id}/profile`
                     FriendElement.getElementsByClassName("friend-thumbnail-image")[0].src = FriendIcons[Friend.id] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"
                     FriendElement.getElementsByClassName("friend-name")[0].innerText = Friend.displayName
                     FriendElement.getElementsByClassName("friend-name")[0].title = Friend.displayName
@@ -418,7 +418,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     const Asset = Assets[i]
                     const AssetElement = PackageClone.cloneNode(true)
 
-                    AssetElement.children[0].href = `https://roblox.com/library/${Asset.Id}/`
+                    AssetElement.children[0].href = `https://www.roblox.com/library/${Asset.Id}/`
                     AssetElement.children[0].title = Asset.Name
                     AssetElement.getElementsByClassName("asset-thumb-container")[0].src = Asset.Thumbnail.Url
                     AssetElement.getElementsByClassName("item-name")[0].innerText = Asset.Name
@@ -443,7 +443,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                     const Asset = Assets[i]
                     const AssetElement = ClothesClone.cloneNode(true)
 
-                    AssetElement.children[0].href = `https://roblox.com/library/${Asset.Id}/`
+                    AssetElement.children[0].href = `https://www.roblox.com/library/${Asset.Id}/`
                     AssetElement.children[0].title = Asset.Name
                     AssetElement.getElementsByClassName("asset-thumb-container")[0].src = Asset.Thumbnail.Url
                     AssetElement.getElementsByClassName("item-name")[0].innerText = Asset.Name
@@ -586,7 +586,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                         SlideElement.className += " active"
                     }
 
-                    SlideElement.getElementsByClassName("slide-item-emblem-container")[0].children[0].href = `https://roblox.com/games/${GameInfo.rootPlaceId}/`
+                    SlideElement.getElementsByClassName("slide-item-emblem-container")[0].children[0].href = `https://www.roblox.com/games/${GameInfo.rootPlaceId}/`
                     SlideElement.getElementsByClassName("slide-item-image")[0].src = UniverseIdToThumbnail[Game]
 
                     SlideElement.getElementsByClassName("slide-item-name")[0].innerText = GameInfo?.name !== undefined ? GameInfo.name : "???"
@@ -600,7 +600,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
 
                     const CardElement = GameCardTemplate.cloneNode(true)
 
-                    CardElement.getElementsByClassName("game-card-link")[0].href = `https://roblox.com/games/${GameInfo.rootPlaceId}/`
+                    CardElement.getElementsByClassName("game-card-link")[0].href = `https://www.roblox.com/games/${GameInfo.rootPlaceId}/`
                     CardElement.getElementsByClassName("game-card-thumb")[0].src = UniverseIdToThumbnail[Game]
 
                     CardElement.getElementsByClassName("game-card-name")[0].innerText = GameInfo?.name !== undefined ? GameInfo.name : "???"
@@ -746,7 +746,7 @@ IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
                 for (let i = 0; i < Groups.length; i++){
                     const Group = Groups[i]
                     const Icon = GroupIcons[Group.group.id] || "https://tr.rbxcdn.com/53eb9b17fe1432a809c73a13889b5006/420/420/Image/Png"
-                    const URL = `https://roblox.com/groups/${Group.group.id}`
+                    const URL = `https://www.roblox.com/groups/${Group.group.id}`
 
                     const Grid = GroupGridClone.cloneNode(true)
                     Grid.getElementsByClassName("game-card-container")[0].href = URL

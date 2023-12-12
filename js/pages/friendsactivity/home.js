@@ -12,7 +12,7 @@ IsFeatureEnabled("FriendsActivity").then(async function(Enabled){
     }
     if (Games.length === 0) return
 
-    const [ContainerHeader, _, HeaderButton] = CreateContainerHeader("Friends Activity", `https://roblox.com/discover#/sortName?sort=FriendsActivity`)
+    const [ContainerHeader, _, HeaderButton] = CreateContainerHeader("Friends Activity", `https://www.roblox.com/discover#/sortName?sort=FriendsActivity`)
     HeaderButton.innerText = "Friends Activity"
 
     const GameCarousel = CreateGameCarousel()

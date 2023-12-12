@@ -43,7 +43,7 @@ if (chrome.notifications?.onClicked) chrome.notifications.onClicked.addListener(
     const Notification = GroupShoutNotifications[NotificationId]
     if (!Notification) return
 
-    chrome.tabs.create({url: `https://roblox.com/groups/${Notification}/group#!/about`})
+    chrome.tabs.create({url: `https://www.roblox.com/groups/${Notification}/group#!/about`})
 })
 
 async function CheckForNewGroupShoutNotification(Body){

@@ -33,7 +33,7 @@ async function GetLastVariable(){
         if (ImageId && !isNaN(ImageId)){
             const AssetId = await GetItemFromImage(ImageId)
             if (AssetId){
-                window.location.href = `https://roblox.com/catalog/${AssetId}/`
+                window.location.href = `https://www.roblox.com/catalog/${AssetId}/`
             }
         }
     }

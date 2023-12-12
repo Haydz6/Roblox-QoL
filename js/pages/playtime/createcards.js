@@ -107,7 +107,7 @@ async function CreateGameCardsFromUniverseIds(Games, CardsContainer, CacheFetchI
     GetRatings()
 
     await GetUniversesBatchToLiveCallback(UniverseIds, function(Universe){
-        const [GameCard, GameImage, CardInfo, VotePercent] = CreateGameCard(Universe.name, `https://roblox.com/games/${Universe.rootPlaceId}`, Universe.playing)
+        const [GameCard, GameImage, CardInfo, VotePercent] = CreateGameCard(Universe.name, `https://www.roblox.com/games/${Universe.rootPlaceId}`, Universe.playing)
 
         CardsContainer.appendChild(GameCard)
 
