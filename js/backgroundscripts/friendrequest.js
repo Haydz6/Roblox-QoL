@@ -35,7 +35,7 @@ async function CheckForNewFriendRequests(){
 
         if (Time > LastFriendRequestSent){
             NewRequests.push(Request)
-            LatestRequest = Time
+            if (!LatestRequest || Time > LatestRequest) LatestRequest = Time
         }
     }
 
