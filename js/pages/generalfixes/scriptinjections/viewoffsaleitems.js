@@ -47,11 +47,10 @@ IsFeatureEnabled("ViewOffsaleItems").then(function(Enabled){
                     typeId: Result.AssetTypeId
                 },
                 creator: {
-                    id: Result.Creator.Id,
                     name: Result.Creator.Name,
                     type: Result.Creator.CreatorType === "User" ? 1 : 2,
                     isVerifiedCreator: true,//Result.Creator.HasVerifiedBadge,
-                    id: Result.Creator.Id
+                    id: Result.Creator.CreatorTargetId
                 },
                 voting: {
                     canVote: false,
