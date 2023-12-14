@@ -42,7 +42,7 @@ IsFeatureEnabled("ViewOffsaleItems").then(function(Enabled){
                     duration: 0,
                     id: AssetId,
                     isAssetHashApproved: true,
-                    isEndoresed: false,
+                    isEndorsed: false,
                     name: Result.Name,
                     typeId: Result.AssetTypeId
                 },
@@ -50,7 +50,7 @@ IsFeatureEnabled("ViewOffsaleItems").then(function(Enabled){
                     id: Result.Creator.Id,
                     name: Result.Creator.Name,
                     type: Result.Creator.CreatorType === "User" ? 1 : 2,
-                    isVerifiedCreator: Result.Creator.HasVerifiedBadge,
+                    isVerifiedCreator: true,//Result.Creator.HasVerifiedBadge,
                     id: Result.Creator.Id
                 },
                 voting: {
