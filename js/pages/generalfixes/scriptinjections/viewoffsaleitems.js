@@ -25,7 +25,6 @@ IsFeatureEnabled("ViewOffsaleItems").then(function(Enabled){
         const Data = []
         const AssetIds = response.url.substring(InterceptURL.length, response.url.length).split(",")
 
-        console.log(AssetIds)
         for (let i = 0; i < AssetIds.length; i++){
             const AssetId = parseInt(AssetIds[i])
             const Response = await _fetch(`https://economy.roblox.com/v2/assets/${AssetId}/details`, {method: "GET", credentials: "include"})
@@ -66,7 +65,6 @@ IsFeatureEnabled("ViewOffsaleItems").then(function(Enabled){
             })
         }
 
-        console.log(Data)
         return new Response(JSON.stringify({data: Data}), {status: 200, headers: {"Content-Type": "application/json"}})
     }
 })
