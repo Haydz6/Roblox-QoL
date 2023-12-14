@@ -74,7 +74,7 @@ async function PopulateUniverse(Presences){
 }
 
 IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
-    if (!Enabled) return
+    if (!Enabled || !window.location.href.includes("www.roblox.com")) return
 
     var _XMLHttpRequest = XMLHttpRequest;
     XMLHttpRequest = function() {

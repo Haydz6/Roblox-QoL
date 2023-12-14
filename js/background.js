@@ -11,6 +11,7 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
+    ViewOffsaleItems: true,
     AssetQuickWearV2: true, VoiceChatServers: true, VoiceChatServerAnalytics: true, BestFriendPresenceV2: true, HideSerials: true, NameOnHomeFriends: false,
     UserHeaderGreeting: "Hello, {displayname}", UserHeader: false, TradeAge: true, CurrentTheme: {}, FriendsPageLastOnline: true, AvatarSearchbar: true, 
     DontTryBypassHBA: false, FriendsActivity: true, LastOnline: true, TemporaryHomePageContainerFix: true, Feed: true, IgnoreSystemInboxNofitications: false, InboxNotifications: false, 
@@ -268,7 +269,7 @@ function CallLogin(){
 
 chrome.cookies.onChanged.addListener(function(Change){
     const Cookie = Change.cookie
-    if (Cookie.domain.search("roblox.com") > -1 && Cookie.httpOnly && Cookie.name === ".ROBLOSECURITY"){
+    if (Cookie.domain.includes("roblox.com") && Cookie.httpOnly && Cookie.name === ".ROBLOSECURITY"){
         UserId = null
         CachedAuthKey = ""
 
@@ -281,26 +282,9 @@ chrome.cookies.onChanged.addListener(function(Change){
             }
         })
 
-        //ROBLOSECURITY = Cookie.value
-        //UpdateExternalDiscordCookie(ROBLOSECURITY)
         CallLogin()
     }
 })
-
-// let CookieGetFunc
-// if (ManifestVersion > 2) {
-//     CookieGetFunc = chrome.cookies.get
-// } else {
-//     CookieGetFunc = browser.cookies.get
-// }
-
-// CookieGetFunc({name: ".ROBLOSECURITY", url: "https://www.roblox.com"}).then(function(Cookie){
-//     if (!Cookie) return //Not logged in
-
-//     //ROBLOSECURITY = Cookie.value
-//     //UpdateExternalDiscordCookie(ROBLOSECURITY)
-//     CallLogin()
-// })
 
 async function FetchAllFeaturesEnabled(){
     if (!AreEnabledFeaturesFetched){
