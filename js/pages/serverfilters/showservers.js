@@ -416,10 +416,14 @@ async function EnableServerAge(Oldest){
             JobIdToServer[Data[i].id] = Data[i]
         }
 
-        const [RegionSuccess, RegionResult] = await RequestFunc(WebServerEndpoints.Servers, "POST", undefined, JSON.stringify({PlaceId: await GetPlaceIdFromGamePage(), JobIds: JobIds}))
+        const [RegionSuccess, RegionResult, RegionResponse] = await RequestFunc(WebServerEndpoints.Servers, "POST", undefined, JSON.stringify({PlaceId: await GetPlaceIdFromGamePage(), JobIds: JobIds}))
 
         if (CacheFilterInt != FilterInt) return
 
+        if (RegionResponse.status === 402){
+            SetButtonLoadingState(true)
+            return CreatePaymentPrompt()
+        }
         if (!RegionSuccess){
             SetButtonLoadingState(true)
             return
@@ -694,10 +698,14 @@ async function EnableBestConnection(){
             JobIdToServer[Data[i].id] = Data[i]
         }
 
-        const [RegionSuccess, RegionResult] = await RequestFunc(WebServerEndpoints.Servers, "POST", undefined, JSON.stringify({PlaceId: await GetPlaceIdFromGamePage(), JobIds: JobIds, IncludeCoordinates: true}))
+        const [RegionSuccess, RegionResult, RegionResponse] = await RequestFunc(WebServerEndpoints.Servers, "POST", undefined, JSON.stringify({PlaceId: await GetPlaceIdFromGamePage(), JobIds: JobIds, IncludeCoordinates: true}))
 
         if (CacheFilterInt != FilterInt) return
 
+        if (RegionResponse.status === 402){
+            SetButtonLoadingState(true)
+            return CreatePaymentPrompt()
+        }
         if (!RegionSuccess){
             SetButtonLoadingState(true)
             return
@@ -797,10 +805,14 @@ async function EnableRegionFilter(Region){
             JobIdToServer[Data[i].id] = Data[i]
         }
 
-        const [RegionSuccess, RegionResult] = await RequestFunc(WebServerEndpoints.Servers, "POST", undefined, JSON.stringify({PlaceId: await GetPlaceIdFromGamePage(), JobIds: JobIds}))
+        const [RegionSuccess, RegionResult, RegionResponse] = await RequestFunc(WebServerEndpoints.Servers, "POST", undefined, JSON.stringify({PlaceId: await GetPlaceIdFromGamePage(), JobIds: JobIds}))
 
         if (CacheFilterInt != FilterInt) return
 
+        if (RegionResponse.status === 402){
+            SetButtonLoadingState(true)
+            return CreatePaymentPrompt()
+        }
         if (!RegionSuccess){
             SetButtonLoadingState(true)
             return

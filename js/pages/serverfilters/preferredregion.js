@@ -169,8 +169,13 @@ setTimeout(function(){
                     JobIds.push(Result.data[i].id)
                 }
 
-                const [RegionSuccess, RegionResult] = await RequestFunc(WebServerEndpoints.Servers, "POST", undefined, JSON.stringify({PlaceId: PlaceId, JobIds: JobIds}))
+                const [RegionSuccess, RegionResult, RegionResponse] = await RequestFunc(WebServerEndpoints.Servers, "POST", undefined, JSON.stringify({PlaceId: PlaceId, JobIds: JobIds}))
                 if (!RegionSuccess){
+                    if (RegionResponse.status === 402){
+                        Fail("This feature is for subscribers only!")
+                        return CreatePaymentPrompt()
+                    }
+
                     Fail("An error occurred while looking for servers!")
                     return
                 }
