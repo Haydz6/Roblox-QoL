@@ -14,7 +14,7 @@ async function AddRowToHomeFriends(){
 
     const Style = document.createElement("style")
     Style.innerHTML = `:not(.roblox-usernames) .people-list {height: 280px !important; max-height: 280px !important;} :not(.roblox-usernames) .people-list-container {height: 340px !important;}
-                        .roblox-usernames .people-list {height: 292px !important; max-height: 292px !important;} .roblox-usernames .people-list-container {height: 362px !important;}`
+                        .roblox-usernames .people-list {height: 297px !important; max-height: 297px !important;} .roblox-usernames .people-list-container {height: 367px !important;}`
     document.body.appendChild(Style)
 }
 AddRowToHomeFriends()
