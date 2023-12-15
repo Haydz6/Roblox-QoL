@@ -153,8 +153,8 @@ IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
 
                                     try {
                                         Object.defineProperties(this, {
-                                            responseText: {configurable: true, value: JSON.stringify(Body)},
-                                            response: {configurable: true, value: Body}
+                                            responseText: {writable: true, configurable: true, value: JSON.stringify(Body)},
+                                            response: {writable: true, configurable: true, value: Body}
                                         })
                                     } catch (error) {console.log(error)}
                                 }
