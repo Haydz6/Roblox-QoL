@@ -149,11 +149,19 @@ function CreateOutfitModalWindow(Title, Description, InputPlaceholder, LeftButto
 function CreateButton(Text){
   let Button = document.createElement("button")
     Button.setAttribute("ng-type", "button")
-    Button.className = "btn-secondary-xs btn-float-right ng-binding ng-scope"
+    Button.className = "btn-secondary-xs"
     Button.innerText = Text || "Create Extra Outfit"
-    Button.style = "margin-right:130px"
-  
-    CostumesList.getElementsByTagName("div")[0].appendChild(Button)
+    Button.style = "float: right; margin-right: 8px;"
+
+    const ButtonContainer = CostumesList.getElementsByTagName("div")[0]
+
+    ButtonContainer.appendChild(Button)
+    ChildAdded(ButtonContainer, true, function(Child){
+        Child.style.marginTop = "0px"
+    })
+
+    ButtonContainer.style.marginTop = "-28px"
+    ButtonContainer.style.height = "28px"
   
     return Button
 }
