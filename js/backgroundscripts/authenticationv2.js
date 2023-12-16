@@ -70,6 +70,8 @@ async function WaitForGameFavourite(UserId, UniverseId, Favourited = true, Timeo
     const End = (Date.now()/1000)+Timeout
 
     while (End > Date.now()/1000){
+        if (await GetCurrentUserId() !== UserId) return false
+
         const [Success, Result] = await RequestFunc(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=1&pageNumber=1&userId=${UserId}`, "GET", undefined, undefined, true)
         
         if (Success){
@@ -90,6 +92,15 @@ async function GetAuthKeyV2(){
     }
     
     const UserId = await GetCurrentUserId()
+
+    async function CheckIfSameUser(ResetAuthKey = true){
+        if (UserId !== await GetCurrentUserId()){
+            if (ResetAuthKey) FetchingAuthKey = false
+            return false
+        }
+        return true
+    }
+
     if (CachedAuthKey != "" && UserId == LastAuthenticatedUserId){
         return CachedAuthKey
     }
@@ -108,7 +119,6 @@ async function GetAuthKeyV2(){
     }
     
     if (StoredKey){
-        const UserId = await GetCurrentUserId()
         if (typeof(StoredKey) == "string"){
             StoredKey = {UserId: UserId, Key: StoredKey}
             await LocalStorage.set("AuthKey", JSON.stringify(StoredKey))
@@ -121,7 +131,7 @@ async function GetAuthKeyV2(){
         }
     }
     
-    if (!UserId){
+    if (!UserId || !await CheckIfSameUser()){
         FetchingAuthKey = false
         return CachedAuthKey //No userid, so we cannot validate
     }
@@ -129,7 +139,7 @@ async function GetAuthKeyV2(){
     LastAuthenticatedUserId = UserId
     const [GetFavoriteSuccess, FavoriteResult] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"fetch", "POST", undefined, JSON.stringify({UserId: UserId}))
     
-    if (!GetFavoriteSuccess){
+    if (!GetFavoriteSuccess || !await CheckIfSameUser()){
         FetchingAuthKey = false
         return CachedAuthKey
     }
@@ -148,6 +158,7 @@ async function GetAuthKeyV2(){
 
         ForceMustUnfavourite = Favourited
     }
+    if (!await CheckIfSameUser()) return
 
     if (FavoriteResult.MustUnfavourite || ForceMustUnfavourite){
         const [FavouriteSuccess] = await SetFavouriteGame(UniverseId, false)
@@ -170,14 +181,17 @@ async function GetAuthKeyV2(){
     
     const [FavouriteSuccess] = await SetFavouriteGame(UniverseId, true)
     
-    if (!FavouriteSuccess){
+    if (!FavouriteSuccess || !await CheckIfSameUser()){
         FetchingAuthKey = false
         return CachedAuthKey
     }
     
     await WaitForGameFavourite(UserId, UniverseId, true, 15)
+    if (!await CheckIfSameUser()) return
+
     const [ServerSuccess, ServerResult] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"verify", "POST", undefined, JSON.stringify({Key: Key}))
-    
+    if (!await CheckIfSameUser()) return
+
     if (ServerSuccess){
         CachedAuthKey = ServerResult.Key
         LocalStorage.set("AuthKey", JSON.stringify({UserId: UserId, Key: CachedAuthKey}))
@@ -185,6 +199,8 @@ async function GetAuthKeyV2(){
     
     new Promise(async function(){
         while (true){
+            if (!await CheckIfSameUser(false)) return
+
             const [FavSuccess] = await SetFavouriteGame(UniverseId, false)
     
             if (FavSuccess) break
