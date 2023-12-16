@@ -13,7 +13,7 @@ async function GetUserLimitedInventory(UserId){
     while (true){
         if (Cursor === null) break
 
-        const [Success, Result, Response] = await RequestFunc(`https://inventory.roblox.com/v1/users/${UserId}/assets/collectibles?cursor=${Cursor}&limit=100`)
+        const [Success, Result, Response] = await RequestFunc(`https://inventory.roblox.com/v1/users/${UserId}/assets/collectibles?cursor=${Cursor}&limit=100`, "GET", undefined, undefined, true)
 
         if (!Success){
             if (Response.status === 429){
