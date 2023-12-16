@@ -369,6 +369,9 @@ chrome.runtime.onMessage.addListener(function(Message, _, sendResponse){
       sendResponse(Headers)
     })
     return true
+  } else if (Message.type === "Reauthenticating"){
+    CachedAuthKey = Message.AuthKey || ""
+    return true
   }
 
   const Listener = BackgroundEventListeners[Message.type]

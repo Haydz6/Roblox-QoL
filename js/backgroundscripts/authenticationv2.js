@@ -11,6 +11,12 @@ async function HasGameFavourited(UniverseId){
     return [true, Result.isFavorited]
 }
 
+function AlertTabsOfNewAuthKey(NewAuthKey){
+    for (let i = 0; i < ActiveRobloxPages.length; i++){
+        chrome.tabs.sendMessage(ActiveRobloxPages[i], {type: "Reauthenticating", AuthKey: NewAuthKey})
+    }
+}
+
 async function ReauthenticateV2(){
     const UserId = await GetCurrentUserId()
     if (!UserId) return CachedAuthKey
@@ -19,6 +25,7 @@ async function ReauthenticateV2(){
 
     if (Success){
         CachedAuthKey = Result.Key
+        AlertTabsOfNewAuthKey(CachedAuthKey)
         LocalStorage.set("AuthKey", JSON.stringify({UserId: UserId, Key: CachedAuthKey}))
     }
     
@@ -107,6 +114,7 @@ async function GetAuthKeyV2(){
     if (UserId != LastAuthenticatedUserId){
         CachedAuthKey = ""
         FetchingAuthKey = true
+        AlertTabsOfNewAuthKey()
         await LocalStorage.remove("AuthKey")
     }
 
@@ -195,6 +203,7 @@ async function GetAuthKeyV2(){
     if (ServerSuccess){
         CachedAuthKey = ServerResult.Key
         LocalStorage.set("AuthKey", JSON.stringify({UserId: UserId, Key: CachedAuthKey}))
+        AlertTabsOfNewAuthKey(CachedAuthKey)
     }
     
     new Promise(async function(){
