@@ -1,0 +1,28 @@
+#navigation.minimized .font-header-2 {
+    display: none!important;
+}
+
+#navigation.minimized .left-col-list .dynamic-width-item {
+    display: none!important;
+}
+
+#navigation.minimized .left-col-list .rbx-upgrade-now {
+    display: none!important;
+}
+
+#navigation.minimized {
+    width: 50px
+}
+
+#navigation.minimized .age-bracket-label-age {
+    display: none!important;
+}
+
+#navigation.minimized .rbx-divider {
+    display: none!important;
+}
+
+#navigation .left-col-list .hamburger {
+    bottom: 20px;
+    position: fixed;
+}

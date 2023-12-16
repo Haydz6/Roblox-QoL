@@ -379,6 +379,15 @@ const ContentScripts = [{
        "js/pages/generalfixes/lastonlineforfriendspage.js"
     ],
     "run_at": "document_start"
+},
+{
+    "matches": [
+        "*://www.roblox.com/*"
+    ],
+    "js": [
+       "js/pages/generalfixes/minimizesidebar.js",
+    ],
+    "run_at": "document_start"
 }]
 
 function RemoveDuplicateFromArray(Array){

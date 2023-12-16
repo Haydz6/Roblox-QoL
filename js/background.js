@@ -11,7 +11,7 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
-    ViewOffsaleItems: true,
+    ViewOffsaleItems: true, MinimizableSideBar: true,
     AssetQuickWearV2: true, VoiceChatServers: true, VoiceChatServerAnalytics: true, BestFriendPresenceV2: true, HideSerials: true, NameOnHomeFriends: false,
     UserHeaderGreeting: "Hello, {displayname}", UserHeader: false, TradeAge: true, CurrentTheme: {}, FriendsPageLastOnline: true, AvatarSearchbar: true, 
     DontTryBypassHBA: false, FriendsActivity: true, LastOnline: true, TemporaryHomePageContainerFix: true, Feed: true, IgnoreSystemInboxNofitications: false, InboxNotifications: false, 
@@ -388,6 +388,12 @@ BindToOnMessage("DocumentUserIdUpdate", false, async function(request){
         CachedAuthKey = ""
         await LocalStorage.remove("AuthKey")
         GetAuthKeyV2()
+    }
+})
+
+BindToOnMessage("Sidebar", false, function(request){
+    for (let i = 0; i < ActiveRobloxPages.length; i++){
+        chrome.tabs.sendMessage(ActiveRobloxPages[i], {type: "Sidebar", state: request.state})
     }
 })
 

@@ -105,6 +105,10 @@ const Settings = {
             Title: "Expand home friends list",
             Description: "Adds another row to friends list on the home page."
         },
+        MinimizableSideBar: {
+            Title: "Minimizable Sidebar",
+            Description: "Adds a button to the navigation sidebar to minimize it but still show the buttons."
+        },
         // Mutuals: {
         //     Title: "Mutuals",
         //     Description: "Allows you to see mutuals friends!"

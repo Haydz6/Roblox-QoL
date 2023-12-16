@@ -70,7 +70,8 @@
             "css": [
                 "css/streamermode.css",
                 "css/opacitythemefix.css",
-                "css/payment.css"
+                "css/payment.css",
+                "css/roblox.css"
             ],
             "matches": [
                 "*://*.roblox.com/*"
