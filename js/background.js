@@ -117,19 +117,29 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     }
 })
 
+let GetCurrentUserIdDelay = false
+let IsFetchingUserId = false
+
 async function GetCurrentUserId(){
-    while (UserId === true) await sleep(100)
+    while (IsFetchingUserId || GetCurrentUserIdDelay) await sleep(100)
 
     if (!UserId){
-        UserId = true
+        IsFetchingUserId = true
 
         const [Success, Response] = await RequestFunc("https://users.roblox.com/v1/users/authenticated", "GET", undefined, undefined, true)
         
         if (!Success){
             UserId = null
+            
+            GetCurrentUserIdDelay = true
+            setTimeout(function(){
+                GetCurrentUserIdDelay = false
+            }, 3000)
         } else {
             UserId = Response.id
         }
+
+        IsFetchingUserId = false
     }
 
     return UserId
@@ -280,10 +290,9 @@ chrome.cookies.onChanged.addListener(function(Change){
 
             if (!Change.removed){
                 GetCurrentUserId()
+                CallLogin()
             }
         })
-
-        CallLogin()
     }
 })
 

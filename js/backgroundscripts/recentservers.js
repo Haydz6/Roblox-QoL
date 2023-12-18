@@ -1,5 +1,8 @@
 async function GetCurrentGame(){
-    const [Success, Result] = await RequestFunc("https://presence.roblox.com/v1/presence/users", "POST", undefined, JSON.stringify({userIds: [await GetCurrentUserId()]}), true)
+    const UserId = await GetCurrentUserId()
+    if (!UserId) return [false]
+
+    const [Success, Result] = await RequestFunc("https://presence.roblox.com/v1/presence/users", "POST", undefined, JSON.stringify({userIds: [UserId]}), true)
     
     if (!Success){
         return [false]

@@ -460,6 +460,24 @@ const Settings = {
             Description: "Adds a quick wear button to an accessory page."
         }
     },
+    // StreamerMode: {
+    //     StreamerMode: {
+    //         Title: "Enable Streamer Mode",
+    //         Description: "Hides sensitive information on the roblox page."
+    //     },
+    //     HideRobux: {
+    //         Title: "Hide your robux",
+    //         Description: "Hides your robux."
+    //     },
+    //     HideServerInvites: {
+    //         Title: "Hide Server Invites",
+    //         Description: "Hides private server invite urls."
+    //     },
+    //     HideNames: {
+    //         Title: "Hide Friend Names",
+    //         Description: "Hides names of your friends."
+    //     }
+    // },
     Economy: {
         AddSales: {
             Title: "Show Sales",
