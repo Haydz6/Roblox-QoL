@@ -111,6 +111,8 @@ function CreateServerInfo(Element, Server){
     RegionContainer.appendChild(RegionLabel)
     RegionContainer.appendChild(HoverElement)
 
+    Element.getElementsByClassName("card-item")[0].style.minHeight = "252px"
+
     //Element.appendChild(RegionContainer)
     return RegionContainer
 }
