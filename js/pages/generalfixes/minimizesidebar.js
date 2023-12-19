@@ -3,6 +3,8 @@ let IsSidebarOpen = true
 function UpdateSidebar(Open){
     const Navigation = document.getElementById("navigation")
 
+    Navigation.classList.add("roqol-sidebar-check")
+
     if (Open) Navigation.classList.add("minimized")
     else Navigation.classList.remove("minimized")
 }
@@ -28,6 +30,10 @@ IsFeatureEnabled("MinimizableSideBar").then(async function(Enabled){
 
         UpdateSidebar(IsSidebarOpen)
     })
+
+    new MutationObserver(function(){
+        if (!Navigation.classList.contains("roqol-sidebar-check")) UpdateSidebar(IsSidebarOpen)
+    }).observe(Navigation, {attributes: true, attributeFilter: ["class"]})
 
     UpdateSidebar(IsSidebarOpen)
 })
