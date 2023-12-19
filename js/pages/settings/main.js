@@ -458,6 +458,10 @@ const Settings = {
         AssetQuickWearV2: {
             Title: "Quick Wear Button",
             Description: "Adds a quick wear button to an accessory page."
+        },
+        AvatarEditorForMobile: {
+            Title: "Avatar Editor for Mobile",
+            Description: "Forces the avatar editor on the site to show for mobile."
         }
     },
     // StreamerMode: {
