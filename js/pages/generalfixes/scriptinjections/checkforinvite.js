@@ -20,7 +20,7 @@ if (PlaceId && JobId){
 
 document.addEventListener("joinGameInstance", function(Event){
     WaitForRoblox(function(){
-        const Detail = Event.detail
+        const Detail = JSON.parse(Event.detail)
         Roblox.GameLauncher.joinGameInstance(Detail.PlaceId, Detail.JobId)
     })
 })

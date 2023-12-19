@@ -100,7 +100,7 @@ setTimeout(function(){
             NoButton.addEventListener("click", RemoveModal)
 
             function JoinServer(JobId){
-                document.dispatchEvent(new CustomEvent("joinGameInstance", {detail: {PlaceId: PlaceId, JobId: JobId}}))
+                document.dispatchEvent(new CustomEvent("joinGameInstance", {detail: JSON.stringify({PlaceId: PlaceId, JobId: JobId})}))
             }
 
             function Fail(Text){
