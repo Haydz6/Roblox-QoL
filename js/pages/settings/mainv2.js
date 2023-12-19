@@ -82,7 +82,7 @@ async function CreateSettingsList(){
     let CurrentOption
 
     function UpdateMobileVerticalMenuName(title){
-        MobileVerticalMenuButtonLabel.innerText = title
+        MobileVerticalMenuButtonLabel.innerText = title.replace(/([A-Z])/g, ' $1').trim()
     }
 
     let MobileVerticalMenuOpen = false

@@ -31,6 +31,7 @@ async function InjectScript(Path, URLMatch, FullPath, Attrs, RunFirst){
 // InjectScript("bestfriendpresence", "*://*.roblox.com/home*", "js/pages/bestfriend/presence.js", undefined, true)
 InjectScript("bestfriendpresence", "*://*.roblox.com/*", "js/pages/bestfriend/presence.js", undefined, true)
 InjectScript("bestfriendpresence", "*://create.roblox.com/*", "js/pages/generalfixes/scriptinjections/viewoffsaleitems.js", undefined, true)
+//`InjectScript("firefoxandroidavatartabs", "*://www.roblox.com/my/avatar")
 
 IsFeatureEnabled("NewMessagePing3").then(async function(Enabled){
     if (!Enabled) return
