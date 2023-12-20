@@ -640,12 +640,12 @@ function ChildAdded(Node, SendInitial, Callback){
     const children = Node.children
     if (children){
       for (let i = 0; i < children.length; i++){
-        Callback(children[i], Disconnect  )
+        Callback(children[i], Disconnect)
       }
     }
   }
 
-  Observer = new MutationObserver(function(Mutations, Observer){
+  Observer = new MutationObserver(function(Mutations){
     Mutations.forEach(function(Mutation) {
       if (Mutation.type !== "childList") return
 
@@ -759,15 +759,17 @@ function ListenForFeatureChanged(Setting, Callback){
   OnSettingChanged[Setting] = Callback
 }
 
-async function SetFeatureEnabled(Feature, Enabled){
-    await FetchAllFeaturesEnabled()
+async function SetFeatureEnabled(Feature, Enabled, WaitForResponse){
+  await FetchAllFeaturesEnabled()
 
-    EnabledFeatures[Feature] = Enabled
-    //window.localStorage.setItem("robloxQOL-settings", JSON.stringify(EnabledFeatures))
-    chrome.runtime.sendMessage({type: "changesetting", feature: Feature, enabled: Enabled})
+  EnabledFeatures[Feature] = Enabled
 
-    const Callback = OnSettingChanged[Feature]
-    if (Callback) Callback(Enabled)
+  const Message = {type: "changesetting", feature: Feature, enabled: Enabled}
+  if (WaitForResponse) await chrome.runtime.sendMessage(Message)
+  else chrome.runtime.sendMessage(Message)
+
+  const Callback = OnSettingChanged[Feature]
+  if (Callback) Callback(Enabled)
 }
 
 setInterval(FetchAllFeaturesKilled, 20*1000, true)

@@ -11,7 +11,7 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
-    ViewOffsaleItems: true, MinimizableSideBar: true, AvatarEditorForMobile: false, AvatarPageCSSFix: true,
+    ViewOffsaleItems: true, MinimizableSideBar: true, AvatarEditorForMobile: false, AvatarPageCSSFix: true, BypassAvatarEditorMobilePromptUpsellButton: true,
     AssetQuickWearV2: true, VoiceChatServers: true, VoiceChatServerAnalytics: true, BestFriendPresenceV2: true, HideSerials: true, NameOnHomeFriends: false,
     UserHeaderGreeting: "Hello, {displayname}", UserHeader: false, TradeAge: true, CurrentTheme: {}, FriendsPageLastOnline: true, AvatarSearchbar: true, 
     DontTryBypassHBA: false, FriendsActivity: true, LastOnline: true, TemporaryHomePageContainerFix: true, Feed: true, IgnoreSystemInboxNofitications: false, InboxNotifications: false, 
@@ -89,7 +89,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         })
         return true
     } else if (request.type === "changesetting"){
-        SetFeatureEnabled(request.feature, request.enabled)
+        SetFeatureEnabled(request.feature, request.enabled).then(function(){
+            sendResponse()
+        })
+        return true
     } else if (request.type === "getsettings"){
         FetchAllFeaturesEnabled().then(() => {
             sendResponse(EnabledFeatures)

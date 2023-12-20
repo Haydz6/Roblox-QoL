@@ -11,7 +11,36 @@ IsFeatureEnabled("AvatarPageCSSFix").then(async function(Enabled){
         const Equipped = await WaitForClassPath(Item, "item-card-equipped")
         const Container = await WaitForClassPath(Item, "item-card-container")
 
-        console.log(Equipped, Container)
         Container.appendChild(Equipped)
+    })
+})
+
+IsFeatureEnabled("BypassAvatarEditorMobilePromptUpsellButton").then(async function(Enabled){
+    if (!Enabled) return
+
+    const Content = await WaitForClass("content")
+    ChildAdded(Content, true, async function(Upsell, Disconnect){
+        if (Upsell.id !== "upsell-container") return
+        Disconnect()
+
+        const Panel = await WaitForClassPath(Upsell, "part2-panel")
+        const ContinueButton = document.createElement("a")
+        ContinueButton.className = "btn-secondary-lg get-app-button"
+        ContinueButton.innerText = "Continue anyways"
+
+        Content.addEventListener("click", function(){
+            SetFeatureEnabled("AvatarEditorForMobile", true, true).then(function(){
+                window.location.reload()
+            })
+        })
+
+        IsFeatureEnabled("AvatarEditorForMobile").then(function(Enabled){
+            if (!Enabled) return
+            setTimeout(function(){
+                window.location.reload()
+            }, 200)
+        })
+
+        Panel.appendChild(ContinueButton)
     })
 })

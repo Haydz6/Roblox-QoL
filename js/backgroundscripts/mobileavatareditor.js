@@ -12,7 +12,7 @@ function ManifestV2AvatarEditorForMobile(request){
     return {requestHeaders: Headers}
 }
 
-async function ToggleAvatarEditorForMobile(Enabled){
+function ToggleAvatarEditorForMobile(Enabled){
     if (ManifestVersion >= 3){
         let Update
         if (Enabled) Update = {addRules: [
