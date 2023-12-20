@@ -206,7 +206,11 @@ if (chrome.notifications?.onButtonClicked) chrome.notifications.onButtonClicked.
     else if (Button.title === "Decline" || Button.title === "Cancel"){
         DeclineTrade(Notification.tradeid).then(function([Success, Result]){
             if (!Success){
-                if (chrome.notifications?.create) chrome.notifications.create(NotificationId, {type: "basic", priority: 3, iconUrl: Notification.iconUrl, title: `Failed to decline ${Notification.user.name} trade`, contextMessage: "This can happen if you do not have a roblox tab open", message: `${Result?.errors?.[0]?.message || "Unknown error"}`})
+                const Buttons = [{title: "Open"}]
+                const NewNotificationId = GenerateNotificationId(50)
+
+                TradeNotifications[NewNotificationId] = {type: Notification.type, user: Notification.user, iconUrl: Notification.iconUrl, tradeid: Notification.tradeid, buttons: Buttons}
+                if (chrome.notifications?.create) chrome.notifications.create(NewNotificationId, {type: "basic", priority: 3, iconUrl: Notification.iconUrl, title: `Failed to decline ${Notification.user.name} trade`, contextMessage: "This can happen if you do not have a roblox tab open", message: `${Result?.errors?.[0]?.message || "Unknown error"}`})
             }
         })
     }
