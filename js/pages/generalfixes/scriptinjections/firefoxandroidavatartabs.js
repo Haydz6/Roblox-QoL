@@ -7,17 +7,16 @@ async function FixAvatarTabsForFirefoxAndroid(){
     }
 
     const Controller = angular.element(AvatarControllerHTML).scope()
-    const _mouseLeftTabMenu = Controller.mouseLeftTabMenu
-    console.log(Controller)
+    const _onTabBlur = Controller.onTabBlur
 
-    Controller.mouseLeftTabMenu = function(){
-        //if (!Controller.tabWithOpenMenu?.active) return _mouseLeftTabMenu.apply(this, arguments)
+    Controller.onTabBlur = async function(...args){
+        if (!Controller.isMenuOpen) return _onTabBlur(...args)
 
         setTimeout(function(){
-            _mouseLeftTabMenu.apply(this, arguments)
+            _onTabBlur(...args)
+            Controller.$apply()
         }, 100)
     }
 }
 
-//setTimeout
 setTimeout(FixAvatarTabsForFirefoxAndroid, 0)

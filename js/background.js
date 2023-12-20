@@ -406,6 +406,10 @@ BindToOnMessage("Sidebar", false, function(request){
     }
 })
 
+BindToOnMessage("UserAgent", false, function(){
+    return navigator.userAgent
+})
+
 let LastThemeChange = 0
 let ThemeChangePending = false
 let ThemePendingChanges = {}
