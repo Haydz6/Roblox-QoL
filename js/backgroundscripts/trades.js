@@ -142,9 +142,11 @@ async function NotifyNewTrades(Trades, Type){
             }
 
             const NotificationId = GenerateNotificationId(50)
-            TradeNotifications[NotificationId] = {type: Type, tradeid: Trade.id, buttons: Buttons}
+            const IconUrl = await GetHeadshotBlobFromUserId(Trade.user.id)
 
-            if (chrome.notifications?.create) chrome.notifications.create(NotificationId, {type: "basic", buttons: Buttons, priority: 2, eventTime: Date.now(), iconUrl: await GetHeadshotBlobFromUserId(Trade.user.id), title: Title, contextMessage: ContextMessage, message: `Trader: ${Trade.user.name}\nYour Value: ${Offers.Ours.Valid && numberWithCommas(Offers.Ours.Value) || "???"}\nTheir Value: ${Offers.Other.Valid && numberWithCommas(Offers.Other.Value) || "???"}`})
+            TradeNotifications[NotificationId] = {type: Type, user: Trade.user, iconUrl: IconUrl, tradeid: Trade.id, buttons: Buttons}
+
+            if (chrome.notifications?.create) chrome.notifications.create(NotificationId, {type: "basic", buttons: Buttons, priority: 2, eventTime: Date.now(), iconUrl: IconUrl, title: Title, contextMessage: ContextMessage, message: `Trader: ${Trade.user.name}\nYour Value: ${Offers.Ours.Valid && numberWithCommas(Offers.Ours.Value) || "???"}\nTheir Value: ${Offers.Other.Valid && numberWithCommas(Offers.Other.Value) || "???"}`})
         }
     }
 }
@@ -201,7 +203,13 @@ if (chrome.notifications?.onButtonClicked) chrome.notifications.onButtonClicked.
 
     const Button = Notification.buttons[ButtonIndex]
     if (Button.title === "Open") chrome.tabs.create({url: `https://www.roblox.com/trades?tradeid=${Notification.tradeid}#${Notification.type.toLowerCase()}`})
-    else if (Button.title === "Decline" || Button.title === "Cancel") DeclineTrade(Notification.tradeid)
+    else if (Button.title === "Decline" || Button.title === "Cancel"){
+        DeclineTrade(Notification.tradeid).then(function([Success, Result]){
+            if (!Success){
+                if (chrome.notifications?.create) chrome.notifications.create(NotificationId, {type: "basic", priority: 3, iconUrl: Notification.iconUrl, title: `Failed to decline ${Notification.user.name} trade`, contextMessage: "This can happen if you do not have a roblox tab open", message: `${Result?.errors?.[0]?.message}`})
+            }
+        })
+    }
 })
 
 if (chrome.notifications?.onClicked) chrome.notifications.onClicked.addListener(function(NotificationId){
