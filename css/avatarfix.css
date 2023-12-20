@@ -1,0 +1,28 @@
+.avatar-page-fix .item-cards-stackable .list-item .item-card-container {
+    width: 100%;
+}
+
+.avatar-page-fix .item-cards-stackable .list-item .item-card-thumb-container {
+    width: 100%;
+    height: 100%;
+}
+
+.avatar-page-fix .item-cards-stackable .list-item .item-card-thumb {
+    background-color: rgba(57,59,61,.5);
+    min-width: 80px;
+}
+
+.avatar-page-fix .item-cards-stackable .list-item .item-card-link {
+    aspect-ratio: 1/1;
+    width: 100%;
+}
+
+.avatar-page-fix .item-cards-stackable .list-item .thumbnail-2d-container {
+    background-color: initial;
+}
+
+.avatar-page-fix .item-cards-stackable .list-item .item-card-equipped {
+    aspect-ratio: 1/1;
+    width: 100%;
+    height: auto;
+}

@@ -613,6 +613,13 @@ const Settings = {
         },
     },
     Fixes: {
+        AvatarPageCSSFix: {
+            Title: "Avatar Page Style Fix",
+            Description: "Fixes the styling of the avatar page size so it behaves well with small screens.",
+            Supported: function(){
+                return CSS.supports("aspect-ratio: 1/1")
+            }
+        },
         FixFavouritesPage: {
             Title: "Favourites Page Fix",
             Description: "Fixes the favourites page only showing the first 30 games."

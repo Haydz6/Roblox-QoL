@@ -2,13 +2,17 @@ const ContentScripts = [{
     "matches": [
         "*://*.roblox.com/my/avatar*"
     ],
+    "css": [
+        "css/avatarfix.css"
+    ],
     "js": [
         "js/pages/extraoutfits/createelements.js",
         "js/pages/extraoutfits/handleconversion.js",
         "js/pages/extraoutfits/createnormaloutfitelement.js",
         "js/pages/extraoutfits/regeneratethumb.js",
         "js/pages/extraoutfits/main.js",
-        "js/pages/extraoutfits/outfitsearch.js"
+        "js/pages/extraoutfits/outfitsearch.js",
+        "js/pages/generalfixes/avatarfix.js"
     ],
     "run_at": "document_start"
 },
