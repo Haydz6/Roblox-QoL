@@ -30,7 +30,8 @@ IsFeatureEnabled("MinimizePrivateServers").then(function(Enabled){
 
     setTimeout(async function(){
         WaitForId("running-game-instances-container").then(function(Container){
-            const Observer = ChildAdded(Container, true, function(Item){
+            let Observer
+            Observer = ChildAdded(Container, true, function(Item){
                 if (Item.id === "rbx-private-servers"){
                     ModifyPrivateServersList(Item)
                     Observer.disconnect()
@@ -39,7 +40,8 @@ IsFeatureEnabled("MinimizePrivateServers").then(function(Enabled){
         })
 
         WaitForId("private-server-container-about-tab").then(function(Container){
-            const Observer = ChildAdded(Container, true, function(Item){
+            let Observer
+            Observer = ChildAdded(Container, true, function(Item){
                 if (Item.id === "rbx-private-servers"){
                     ModifyPrivateServersList(Item)
                     Observer.disconnect()
