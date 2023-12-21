@@ -32,8 +32,11 @@ async function InjectScript(Path, URLMatch, FullPath, Attrs, RunFirst){
 InjectScript("bestfriendpresence", "*://*.roblox.com/*", "js/pages/bestfriend/presence.js", undefined, true)
 InjectScript("bestfriendpresence", "*://create.roblox.com/*", "js/pages/generalfixes/scriptinjections/viewoffsaleitems.js", undefined, true)
 
-chrome.runtime.sendMessage({type: "UserAgent"}).then(function(UserAgent){
-    if (UserAgent.toLowerCase().includes("android") && UserAgent.toLowerCase().includes("firefox")) InjectScript("firefoxandroidavatartabs", "*://www.roblox.com/my/avatar")
+IsFeatureEnabled("FixAvatarPageFirefoxMobileMenu").then(function(Enabled){
+    if (!Enabled) return
+    chrome.runtime.sendMessage({type: "UserAgent"}).then(function(UserAgent){
+        if (UserAgent.toLowerCase().includes("android") && UserAgent.toLowerCase().includes("firefox")) InjectScript("firefoxandroidavatartabs", "*://www.roblox.com/my/avatar")
+    })
 })
 
 IsFeatureEnabled("NewMessagePing3").then(async function(Enabled){

@@ -25,7 +25,6 @@ function ToggleAvatarEditorForMobile(Enabled){
 
         else Update = {removeRuleIds: [11]}
         
-        console.log(Update)
         try {chrome.declarativeNetRequest.updateDynamicRules(Update)} catch (error) {console.warn(error)}
     } else { //Firefox
         if (Enabled){

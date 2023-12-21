@@ -620,6 +620,22 @@ const Settings = {
                 return CSS.supports("aspect-ratio: 1/1")
             }
         },
+        FixAvatarPageFirefoxMobileMenu: {
+            Title: "Avatar Page Mobile Menu Fix for Firefox Android",
+            Description: "Fixes not being able to select a new tab on the avatar page on Firefox Android.",
+            Supported: async function(){
+                const UserAgent = await chrome.runtime.sendMessage({type: "UserAgent"})
+                return UserAgent.toLowerCase().includes("android") && UserAgenttoLowerCase().includes("firefox")
+            }
+        },
+        ServerListFixForFirefoxAndroid: {
+            Title: "Server List Fix for Firefox Android",
+            Description: "Fixes the server list on Firefox Android not appearing.",
+            Supported: async function(){
+                const UserAgent = await chrome.runtime.sendMessage({type: "UserAgent"})
+                return UserAgent.toLowerCase().includes("android") && UserAgenttoLowerCase().includes("firefox")
+            }
+        },
         FixFavouritesPage: {
             Title: "Favourites Page Fix",
             Description: "Fixes the favourites page only showing the first 30 games."
