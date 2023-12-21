@@ -625,7 +625,7 @@ const Settings = {
             Description: "Fixes not being able to select a new tab on the avatar page on Firefox Android.",
             Supported: async function(){
                 const UserAgent = await chrome.runtime.sendMessage({type: "UserAgent"})
-                return UserAgent.toLowerCase().includes("android") && UserAgenttoLowerCase().includes("firefox")
+                return UserAgent.toLowerCase().includes("android") && UserAgent.toLowerCase().includes("firefox")
             }
         },
         ServerListFixForFirefoxAndroid: {
@@ -633,7 +633,7 @@ const Settings = {
             Description: "Fixes the server list on Firefox Android not appearing.",
             Supported: async function(){
                 const UserAgent = await chrome.runtime.sendMessage({type: "UserAgent"})
-                return UserAgent.toLowerCase().includes("android") && UserAgenttoLowerCase().includes("firefox")
+                return UserAgent.toLowerCase().includes("android") && UserAgent.toLowerCase().includes("firefox")
             }
         },
         FixFavouritesPage: {

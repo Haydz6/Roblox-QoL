@@ -41,7 +41,7 @@ async function GetAuthKey(){
         await sleep(100)
     }
 
-    if (CachedAuthKey != ""){
+    if (CachedAuthKey != "" && UserId == LastAuthenticatedUserId){
         return CachedAuthKey
     }
 
