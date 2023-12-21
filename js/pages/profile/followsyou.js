@@ -6,7 +6,7 @@ IsFeatureEnabled("ShowFollowsYou").then(async function(Enabled){
 
     const HeaderTitle = await WaitForClass("header-title")
     const Image = document.createElement("img")
-    Image.src = chrome.runtime.getURL("img/profile/followsyou.png")
+    Image.src = chrome.runtime.getURL("img/profile/FollowsYou.png")
     Image.style = "height: 30px; width: 30px; margin: 0px 10px;"
     Image.id = "FollowsYouIcon"
 
