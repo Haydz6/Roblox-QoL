@@ -33,43 +33,6 @@ async function ReauthenticateV2(){
 }
 
 async function GetAuthKey(){
-    if ((Date.now()/1000) - LastAuthKeyAttempt < 3){
-        await sleep(3000)
-    }
-
-    while (FetchingAuthKey){
-        await sleep(100)
-    }
-
-    if (CachedAuthKey != "" && UserId == LastAuthenticatedUserId){
-        return CachedAuthKey
-    }
-
-    FetchingAuthKey = true
-    LastAuthKeyAttempt = Date.now()/1000
-    StoredKey = await LocalStorage.get("AuthKey")
-    if (StoredKey){
-        try {
-            StoredKey = JSON.parse(StoredKey)
-        } catch {}
-    }
-    
-    if (StoredKey){
-        const UserId = await GetCurrentUserId()
-        if (typeof(StoredKey) == "string"){
-            StoredKey = {UserId: UserId, Key: StoredKey}
-            await LocalStorage.set("AuthKey", JSON.stringify(StoredKey))
-        }
-
-        if (StoredKey.UserId == UserId){
-            CachedAuthKey = StoredKey.Key
-            FetchingAuthKey = false
-            return CachedAuthKey
-        }
-    }
-
-    FetchingAuthKey = false
-
     return await GetAuthKeyV2()
 }
 
@@ -94,6 +57,10 @@ async function WaitForGameFavourite(UserId, UniverseId, Favourited = true, Timeo
 }
 
 async function GetAuthKeyV2(){
+    if ((Date.now()/1000) - LastAuthKeyAttempt < 3){
+        await sleep(3000)
+    }
+
     while (FetchingAuthKey){
         await sleep(100)
     }
@@ -119,6 +86,8 @@ async function GetAuthKeyV2(){
     }
 
     FetchingAuthKey = true
+    LastAuthKeyAttempt = Date.now()/1000
+
     StoredKey = await LocalStorage.get("AuthKey")
     if (StoredKey){
         try {
