@@ -193,7 +193,7 @@
     }
 }
 
-_::-webkit-full-page-media, _:future, :root .safari_only {
+_::-webkit-full-page-media, _:future, :root {
     .gain-summary > .box > .icon-rolimons-20x20 {
         background-image: url(/img/trades/rolimons-16x16-white.png)!important;
     }
