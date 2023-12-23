@@ -69,6 +69,10 @@ async function GetAuthKeyV2(){
     FetchingAuthKey = true
     
     const UserId = await GetCurrentUserId()
+    if (!UserId){
+        FetchingAuthKey = false
+        return "" //No userid, so we cannot validate
+    }
 
     async function CheckIfSameUser(ResetAuthKey = true){
         if (UserId !== await GetCurrentUserId()){
@@ -114,9 +118,9 @@ async function GetAuthKeyV2(){
         }
     }
     
-    if (!UserId || !await CheckIfSameUser()){
+    if (!await CheckIfSameUser()){
         FetchingAuthKey = false
-        return CachedAuthKey //No userid, so we cannot validate
+        return ""
     }
 
     LastAuthenticatedUserId = UserId
@@ -124,7 +128,7 @@ async function GetAuthKeyV2(){
     
     if (!GetFavoriteSuccess || !await CheckIfSameUser()){
         FetchingAuthKey = false
-        return CachedAuthKey
+        return ""
     }
     
     Key = FavoriteResult.Key
@@ -136,7 +140,7 @@ async function GetAuthKeyV2(){
 
         if (!Success){
             FetchingAuthKey = false
-            return CachedAuthKey
+            return ""
         }
 
         ForceMustUnfavourite = Favourited
@@ -148,7 +152,7 @@ async function GetAuthKeyV2(){
     
         if (!FavouriteSuccess){
             FetchingAuthKey = false
-            return CachedAuthKey
+            return ""
         }
 
         if (FavoriteResult.MustUnfavourite){
@@ -157,7 +161,7 @@ async function GetAuthKeyV2(){
 
             if (!UnfavoriteSuccess){
                 FetchingAuthKey = false
-                return CachedAuthKey
+                return ""
             }
         }
     }
@@ -166,7 +170,7 @@ async function GetAuthKeyV2(){
     
     if (!FavouriteSuccess || !await CheckIfSameUser()){
         FetchingAuthKey = false
-        return CachedAuthKey
+        return ""
     }
     
     await WaitForGameFavourite(UserId, UniverseId, true, 15)
