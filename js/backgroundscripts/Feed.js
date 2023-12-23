@@ -54,7 +54,7 @@ async function UpdateFeed(){
     const Data = Groups.data
     for (let i = 0; i < Data.length; i++){
         const [Success, Body] = await RequestFunc(`https://groups.roblox.com/v1/groups/${Data[i].group.id}`, "GET", undefined, undefined, true)
-        if (Success){
+        if (Success && await GetCurrentUserId() === UserId){
             const Shout = Body.shout
             const Prior = Feed[Body.id]?.Date
 
