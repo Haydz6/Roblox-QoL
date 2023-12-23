@@ -1,5 +1,6 @@
 let LastAuthKeyAttempt = 0
 let LastAuthenticatedUserId
+let FirstAuthenticationAttempt = true
 
 async function HasGameFavourited(UniverseId){
     const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "GET", undefined, undefined, true)
@@ -64,6 +65,8 @@ async function GetAuthKeyV2(){
     while (FetchingAuthKey){
         await sleep(100)
     }
+
+    FetchingAuthKey = true
     
     const UserId = await GetCurrentUserId()
 
@@ -76,15 +79,17 @@ async function GetAuthKeyV2(){
     }
 
     if (CachedAuthKey != "" && UserId == LastAuthenticatedUserId){
+        FetchingAuthKey = false
         return CachedAuthKey
     }
-    if (UserId != LastAuthenticatedUserId){
+    if (UserId != LastAuthenticatedUserId && !FirstAuthenticationAttempt){
         CachedAuthKey = ""
         FetchingAuthKey = true
         AlertTabsOfNewAuthKey()
         await LocalStorage.remove("AuthKey")
     }
 
+    FirstAuthenticationAttempt = false
     FetchingAuthKey = true
     LastAuthKeyAttempt = Date.now()/1000
 
@@ -103,6 +108,7 @@ async function GetAuthKeyV2(){
 
         if (StoredKey.UserId == UserId){
             CachedAuthKey = StoredKey.Key
+            LastAuthenticatedUserId = UserId
             FetchingAuthKey = false
             return CachedAuthKey
         }
