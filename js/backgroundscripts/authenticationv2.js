@@ -2,6 +2,9 @@ let LastAuthKeyAttempt = 0
 let LastAuthenticatedUserId
 let FirstAuthenticationAttempt = true
 
+let FetchedAuthenticationFromStorage = false
+let AuthenticationFailuresCounter = 0
+
 async function HasGameFavourited(UniverseId){
     const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "GET", undefined, undefined, true)
 
@@ -34,7 +37,17 @@ async function ReauthenticateV2(){
 }
 
 async function GetAuthKey(){
-    return await GetAuthKeyV2()
+    const FetchedKey = await GetAuthKeyV2()
+    if (FetchedKey == "") AuthenticationFailuresCounter++
+    else AuthenticationFailuresCounter = 0
+
+    if (AuthenticationFailuresCounter > 5){
+        for (let i = 0; i < ActiveRobloxPages.length; i++){
+            chrome.tabs.sendMessage(ActiveRobloxPages[i], {type: "AuthenticationFailure", Failed: true})
+        }
+    }
+    
+    return FetchedKey
 }
 
 async function WaitForGameFavourite(UserId, UniverseId, Favourited = true, Timeout = 15){
@@ -111,12 +124,16 @@ async function GetAuthKeyV2(){
         }
 
         if (StoredKey.UserId == UserId){
+            FetchedAuthenticationFromStorage = true
+
             CachedAuthKey = StoredKey.Key
             LastAuthenticatedUserId = UserId
             FetchingAuthKey = false
             return CachedAuthKey
         }
     }
+
+    FetchedAuthenticationFromStorage = false
     
     if (!await CheckIfSameUser()){
         FetchingAuthKey = false
@@ -197,6 +214,15 @@ async function GetAuthKeyV2(){
     })
     
     FetchingAuthKey = false
+    AuthenticationFailuresCounter = 0
     
     return CachedAuthKey
 }
+
+BindToOnMessage("AuthDebug", false, function(){
+    return {IsAuthed: CachedAuthKey != "", UserId: LastAuthenticatedUserId, LastAuthentication: LastAuthKeyAttempt, IsAuthenticating: FetchingAuthKey, FirstAttempt: FirstAuthenticationAttempt, FromStorage: FetchedAuthenticationFromStorage, AuthenticationFailuresCounter: AuthenticationFailuresCounter}
+})
+
+BindToOnMessage("AuthenticationFailureCheck", false, function(){
+    return {Failed: AuthenticationFailuresCounter > 5}
+})

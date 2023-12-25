@@ -223,7 +223,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
             Headers = {...Generated, ...Headers}
         }
     } else if (IsQOLAPI && !URL.includes("disabled_features")){
-        if (!URL.includes("/auth") || URL.includes("/reverify")){
+        if (!URL.includes("/auth") || URL.includes("/reverify") && Headers?.Authentication === undefined){
             Headers.Authentication = await GetAuthKey()
         }
     }

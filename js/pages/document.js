@@ -784,3 +784,22 @@ GetUserId().then(function(UserId){
 document.addEventListener("RobloxQoL.IsFeatureEnabled", async function(e){
   document.dispatchEvent(new CustomEvent("RobloxQoL.IsFeatureEnabledResponse", {detail: await IsFeatureEnabled(e.detail)}))
 })
+
+let AlreadySetAuthenticationError = false
+
+function ReportAuthenticationError(request){
+  if (!request?.Failed || !window.location.href.includes("www.roblox.com") || AlreadySetAuthenticationError) return
+  AlreadySetAuthenticationError = true
+
+  setTimeout(async function(){
+    const SettingsIcon = await WaitForId("settings-icon")
+    const Error = document.createElement("img")
+    Error.src = chrome.runtime.getURL("img/warning.png")
+    Error.style = "position: absolute; bottom: 10px; left: 10px; width: 26px; height: 26px;"
+
+    SettingsIcon.appendChild(Error)
+  }, 0)
+}
+
+ListenToEventFromBackground("AuthenticationFailure", ReportAuthenticationError)
+chrome.runtime.sendMessage({type: "AuthenticationFailureCheck"}).then(ReportAuthenticationError)

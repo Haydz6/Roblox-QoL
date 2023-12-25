@@ -759,6 +759,22 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
     }
 }
 
+async function CreateDiagnoseSection(OptionsList){
+    const Description = document.createElement("p")
+    Description.innerHTML = `RoQoL is unable to verify with our backend servers! If you are unable to diagnose the issue yourself, please <a style="color: white; text-decoration: underline;" href="https://roqol.io/pages/contact">contact us</a> and send the screenshot of the authentication information!`
+
+    let Errors = "<br>Make sure the extension has permissions to contact its backend servers:<br><br>Go to extensions > RoQoL > Details > Make sure it has permissions to access roqol.io, roblox.com and rbxcdn.com"
+
+    const Info = document.createElement("p")
+    Info.innerHTML = Errors
+
+    const AuthenticationStatus = document.createElement("p")
+    const Auth = await chrome.runtime.sendMessage({type: "AuthDebug"})
+    AuthenticationStatus.innerHTML = `<br><br>Authentication Status: ${Auth.IsAuthed}<br>Account: ${Auth.UserId}<br>Last Authentication: ${Auth.LastAuthentication ? SecondsToLength(Date.now() / 1000 - Auth.LastAuthentication) + " ago" : "None"}<br>Is Authenticating: ${Auth.IsAuthenticating}<br>First Attempt: ${Auth.FirstAttempt}<br>From Storage: ${Auth.FromStorage}<br>Failures in row: ${Auth.AuthenticationFailuresCounter}`
+
+    OptionsList.append(Description, Info, AuthenticationStatus)
+}
+
 async function CreateSettingsSection(OptionsList){
     for (const [title, settings] of Object.entries(Settings)){
         if (title == "Security") continue

@@ -9,6 +9,16 @@ async function AddOptionToSettingsDropdown(){
         Button.href = "https://www.roblox.com/my/account?tab=robloxqol"
         Button.innerText = "QoL Settings"
 
+        if (AlreadySetAuthenticationError){
+            const Error = document.createElement("img")
+            Error.src = chrome.runtime.getURL("img/warning.png")
+            Error.style = "width: 23px; height: 23px; margin-left: 5px;"
+
+            Button.href = "https://www.roblox.com/my/account?tab=robloxqol&option=Diagnose"
+
+            Button.appendChild(Error)
+        }
+
         List.appendChild(Button)
         Dropdown.insertBefore(List, Dropdown.firstChild)
     })

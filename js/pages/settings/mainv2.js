@@ -144,7 +144,7 @@ async function CreateSettingsList(){
     const CustomTabNames = []
     let TabConstructors = []
 
-    async function CreateCustomTab(Name, Callback){
+    async function CreateCustomTab(Name, Callback, GhostTab){
         CustomTabNames.push(Name)
 
         await new Promise((resolve) => {
@@ -158,9 +158,11 @@ async function CreateSettingsList(){
         const MobileButton = CreateMobileMenuOption(Name)
 
         Callback(SecurityList)
-        VerticalMenu.insertBefore(Button, TitleToButton[AllTitleIndexes[AllTitleIndexes.indexOf(Name)+1]])
-        MobileVerticalMenuList.insertBefore(MobileButton, TitleToMobileButton[AllTitleIndexes[AllTitleIndexes.indexOf(Name)+1]])
-        TabContent.appendChild(SecurityList)
+
+        if (!GhostTab){
+            VerticalMenu.insertBefore(Button, TitleToButton[AllTitleIndexes[AllTitleIndexes.indexOf(Name)+1]])
+            MobileVerticalMenuList.insertBefore(MobileButton, TitleToMobileButton[AllTitleIndexes[AllTitleIndexes.indexOf(Name)+1]])
+        }
 
         Button.addEventListener("click", function(){
             OpenContainer(Name)
@@ -169,7 +171,8 @@ async function CreateSettingsList(){
         MobileButton.addEventListener("click", function(){
             OpenContainer(Name)
         })
-            
+
+        TabContent.appendChild(SecurityList)
         TitleToButton[Name] = Button
         TitleToContainer[Name] = SecurityList
         SecurityList.style.display = "none"
@@ -177,7 +180,8 @@ async function CreateSettingsList(){
 
     const CustomTabPromises = [
         CreateCustomTab("Themes", CreateThemesSection),
-        CreateCustomTab("Security", CreateSecuritySection)
+        CreateCustomTab("Security", CreateSecuritySection),
+        CreateCustomTab("Diagnose", CreateDiagnoseSection, true)
     ]
 
     for (const [title, _] of Object.entries(Settings)){
