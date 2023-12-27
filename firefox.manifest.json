@@ -70,6 +70,7 @@
                 "js/pages/generalfixes/disablefooter.js",
                 "js/pages/generalfixes/addusdtorobux.js",
                 "js/pages/generalfixes/resizablechatboxes.js",
+                "js/pages/generalfixes/streamermode.js",
                 "js/pages/feed/navfeedbutton.js",
                 "js/pages/theme/customtheme.js",
                 "js/pages/bestfriend/presencehelper.js"

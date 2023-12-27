@@ -464,24 +464,87 @@ const Settings = {
             Description: "Forces the avatar editor on the site to show for mobile."
         }
     },
-    // StreamerMode: {
-    //     StreamerMode: {
-    //         Title: "Enable Streamer Mode",
-    //         Description: "Hides sensitive information on the roblox page."
-    //     },
-    //     HideRobux: {
-    //         Title: "Hide your robux",
-    //         Description: "Hides your robux."
-    //     },
-    //     HideServerInvites: {
-    //         Title: "Hide Server Invites",
-    //         Description: "Hides private server invite urls."
-    //     },
-    //     HideNames: {
-    //         Title: "Hide Friend Names",
-    //         Description: "Hides names of your friends."
-    //     }
-    // },
+    StreamerMode: {
+        StreamerMode: {
+            Title: "Enable Streamer Mode",
+            Description: "Hides sensitive information on the roblox page. (EXPERIMENTAL! Some things may not work correctly)"
+        },
+        StreamerModeKeybind: {
+            Title: "Streamer Mode Keybind",
+            Description: "Toggles streamer mode whenever you press the keybind on a roblox page.",
+            Type: "InputBox",
+            Placeholder: "",
+            Run: function(_, _, Section){
+                const InputBox = Section.getElementsByTagName("input")[0]
+                InputBox.setAttribute("readonly", "readonly")
+                InputBox.style.cursor = "pointer"
+                InputBox.style.opacity = 1
+                
+                async function UpdateValue(){
+                    const Keybind = await IsFeatureEnabled("StreamerModeKeybind")
+
+                    InputBox.value = Keybind ? Keybind.replace("Key", "") : ""
+                }
+
+                async function HandleKeyPress(e){
+                    document.removeEventListener("keydown", HandleKeyPress)
+
+                    const KeyCode = e.code
+                    await SetFeatureEnabled("StreamerModeKeybind", KeyCode == "Escape" ? null : KeyCode)
+
+                    UpdateValue()
+                    BindClick()
+                    InputBox.blur()
+                }
+
+                function HandleClick(){
+                    InputBox.value = "Press a key (ESC to clear)"
+
+                    document.addEventListener("keydown", HandleKeyPress)
+                    InputBox.removeEventListener("focusin", HandleClick)
+                }
+
+                function BindClick(){
+                    InputBox.addEventListener("focusin", HandleClick)
+                }
+
+                BindClick()
+                UpdateValue()
+            }
+        },
+        HideAge: {
+            Title: "Hide Age",
+            Description: "Hides your roblox account age. (excludes dob)"
+        },
+        HideSensitiveInfo: {
+            Title: "Hide Sensitive Information",
+            Description: "Hides sensitive information such as your billing information, date of birth, email, phone etc."
+        },
+        HideRobux: {
+            Title: "Hide your robux",
+            Description: "Hides anything that displays your robux."
+        },
+        HideGroupRobux: {
+            Title: "Hide your group robux",
+            Description: "Hides anything that displays your robux for your groups."
+        },
+        HideServerInvites: {
+            Title: "Hide Server Invites",
+            Description: "Hides private server invite urls."
+        },
+        HideNames: {
+            Title: "Hide Names",
+            Description: "Hides names."
+        },
+        HideSocials: {
+            Title: "Hide Socials",
+            Description: "Hides your socials on your settings page."
+        },
+        HideGroupPayouts: {
+            Title: "Hide Group Payouts Information",
+            Description: "Hides percentages on group payouts page."
+        }
+    },
     Economy: {
         AddSales: {
             Title: "Show Sales",
@@ -759,20 +822,35 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
     }
 }
 
-async function CreateDiagnoseSection(OptionsList){
-    const Description = document.createElement("p")
-    Description.innerHTML = `RoQoL is unable to verify with our backend servers! If you are unable to diagnose the issue yourself, please <a style="color: white; text-decoration: underline;" href="https://roqol.io/pages/contact">contact us</a> and send the screenshot of the authentication information!`
+function CreateDiagnoseSection(OptionsList){
+    let Initalized = false
 
-    let Errors = "<br>Make sure the extension has permissions to contact its backend servers:<br><br>Go to extensions > RoQoL > Details > Make sure it has permissions to access roqol.io, roblox.com and rbxcdn.com"
+    async function Run(){
+        if (Initalized || OptionsList.style.display == "none") return
+        Initalized = true
+        
+        const Description = document.createElement("p")
+        Description.innerHTML = `RoQoL is unable to verify with our backend servers! If you are unable to diagnose the issue yourself, please <a style="color: white; text-decoration: underline;" href="https://roqol.io/pages/contact">contact us</a> and send the screenshot of the authentication information!`
 
-    const Info = document.createElement("p")
-    Info.innerHTML = Errors
+        let Errors = "<br>Make sure the extension has permissions to contact its backend servers:<br><br>Go to extensions > RoQoL > Details > Make sure it has permissions to access roqol.io, roblox.com and rbxcdn.com<br><br>"
 
-    const AuthenticationStatus = document.createElement("p")
-    const Auth = await chrome.runtime.sendMessage({type: "AuthDebug"})
-    AuthenticationStatus.innerHTML = `<br><br>Authentication Status: ${Auth.IsAuthed}<br>Account: ${Auth.UserId}<br>Last Authentication: ${Auth.LastAuthentication ? SecondsToLength(Date.now() / 1000 - Auth.LastAuthentication) + " ago" : "None"}<br>Is Authenticating: ${Auth.IsAuthenticating}<br>First Attempt: ${Auth.FirstAttempt}<br>From Storage: ${Auth.FromStorage}<br>Failures in row: ${Auth.AuthenticationFailuresCounter}`
+        const Info = document.createElement("p")
+        Info.innerHTML = Errors
 
-    OptionsList.append(Description, Info, AuthenticationStatus)
+        const ConnectionStatus = document.createElement("p")
+        ConnectionStatus.innerText = "Testing connection"
+        chrome.runtime.sendMessage({type: "AuthDebugTestConnection"}).then(function(Text){
+            ConnectionStatus.innerHTML = `400-499 means a client error (If you are getting a 429, make sure you have your VPN turned off)<br>500-599 means a server error and you will have to wait for it to be fixed<br><br>${Text.join("<br>")}`
+        })
+
+        const AuthenticationStatus = document.createElement("p")
+        const Auth = await chrome.runtime.sendMessage({type: "AuthDebug"})
+        AuthenticationStatus.innerHTML = `<br><br>Authentication Status: ${Auth.IsAuthed}<br>Account: ${Auth.UserId}<br>Last Authentication: ${Auth.LastAuthentication ? SecondsToLength(Date.now() / 1000 - Auth.LastAuthentication) + " ago" : "None"}<br>Is Authenticating: ${Auth.IsAuthenticating}<br>First Attempt: ${Auth.FirstAttempt}<br>From Storage: ${Auth.FromStorage}<br>Failures in row: ${Auth.AuthenticationFailuresCounter}`
+
+        OptionsList.append(Description, Info, ConnectionStatus, AuthenticationStatus)
+    }
+
+    new MutationObserver(Run).observe(OptionsList, {attributes: true, attributeFilter: ["style"]})
 }
 
 async function CreateSettingsSection(OptionsList){

@@ -11,6 +11,8 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
+    StreamerMode: false, StreamerModeKeybind: null,
+    HideAge: false, HideSensitiveInfo: false, HideRobux: false, HideGroupRobux: false, HideServerInvites: false, HideNames: false, HideSocials: false, HideGroupPayouts: false,
     FixAvatarPageFirefoxMobileMenu: true, ServerListFixForFirefoxAndroid: true,
     ViewOffsaleItems: true, MinimizableSideBar: true, AvatarEditorForMobile: false, AvatarPageCSSFix: true, BypassAvatarEditorMobilePromptUpsellButton: true,
     AssetQuickWearV2: true, VoiceChatServers: true, VoiceChatServerAnalytics: true, BestFriendPresenceV2: true, HideSerials: true, NameOnHomeFriends: false,
@@ -209,6 +211,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
     }
 
     const IsQOLAPI = URL.search(WebServerURL) > -1
+    let ShouldRetryOnAuthenticationFailure = true
   
     if (URL.search("roblox.com") > -1) {
         Headers["x-csrf-token"] = CSRFToken
@@ -223,6 +226,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
             Headers = {...Generated, ...Headers}
         }
     } else if (IsQOLAPI && !URL.includes("disabled_features")){
+        if (Headers?.Authentication !== undefined) ShouldRetryOnAuthenticationFailure = false
         if (!URL.includes("/auth") || URL.includes("/reverify") && Headers?.Authentication === undefined){
             Headers.Authentication = await GetAuthKey()
         }
@@ -246,7 +250,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
             ResBody = {Success: false, Result: `decode failed: ${err}`}
         }
         
-        if (!Response.ok && (ResBody?.message == "Token Validation Failed" || NewCSRFToken || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
+        if (!Response.ok && ShouldRetryOnAuthenticationFailure && (ResBody?.message == "Token Validation Failed" || NewCSRFToken || ResBody?.errors?.[0]?.message == "Token Validation Failed") || ResBody?.Result == "Invalid authentication!"){
             if (ResBody?.Result == "Invalid authentication!"){
                 CachedAuthKey = ""
                 await LocalStorage.remove("AuthKey")
@@ -413,6 +417,16 @@ BindToOnMessage("Sidebar", false, function(request){
 BindToOnMessage("UserAgent", false, function(){
     return navigator.userAgent
 })
+
+const StreamerList = ["StreamerMode", "StreamerModeKeybind", "HideAge", "HideSensitiveInfo", "HideRobux", "HideGroupRobux", "HideServerInvites", "HideNames", "HideSocials", "HideGroupPayouts"]
+for (let i = 0; i < StreamerList.length; i++){
+    const Setting = StreamerList[i]
+    ListenForSettingChanged(Setting, function(Enabled){
+        for (let o = 0; o < ActiveRobloxPages.length; o++){
+            chrome.tabs.sendMessage(ActiveRobloxPages[o], {type: "StreamerMode", setting: Setting, enabled: Enabled})
+        }
+    })
+}
 
 let LastThemeChange = 0
 let ThemeChangePending = false

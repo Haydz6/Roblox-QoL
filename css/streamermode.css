@@ -1,75 +1,122 @@
-body[StreamerMode = true] #nav-robux-amount {
+body[StreamerMode = true][HideRobux = true] #nav-robux-amount {
     display: none !important;
 }
 
-body[StreamerMode = true] .friend-name {
+body[StreamerMode = true][HideNames = true] .friend-name {
+    visibility: hidden !important;
+}
+
+body[StreamerMode = true][HideNames = true] .profile-name {
+    visibility: hidden !important;
+}
+
+body[StreamerMode = true][HideNames = true] .profile-display-name {
+    visibility: hidden !important;
+}
+
+body[StreamerMode = true][HideNames = true] .friend-parent-container {
+    visibility: hidden !important;
+}
+
+body[StreamerMode = true][HideNames = true] .change-alias-bolded {
+    visibility: hidden !important;
+}
+
+body[StreamerMode = true][HideNames = true] .top-home-header .name {
     display: none !important;
 }
 
-body[StreamerMode = true] .age-bracket-label-age {
+body[StreamerMode = true][HideServerInvites = true] .private-server-container #join-link {
     display: none !important;
 }
 
-body[StreamerMode = true] .dropdown-wallet-section {
+body[StreamerMode = true][HideNames = true] #navigation > ul > li .dynamic-overflow-container .font-header-2.dynamic-ellipsis-item {
     display: none !important;
 }
 
-body[StreamerMode = true] .account-field-password {
+body[StreamerMode = true][HideNames = true] .people-info-card-container .interaction-item[ng-click = "goToChat()"] .label {
+    visibility: hidden;
+    text-indent: -9999px;
+    line-height: 0;
+}
+
+body[StreamerMode = true][HideNames = true] .people-info-card-container .interaction-item[ng-click = "goToChat()"] .label:after {
+    content: "Chat";
+    visibility: visible;
+    display: block;
+    position: absolute;
+    line-height: initial;
+    text-indent: 0;
+}
+
+body[StreamerMode = true][HideAge = true] .age-bracket-label-age {
     display: none !important;
 }
 
-body[StreamerMode = true] .account-field-phone {
+body[StreamerMode = true][HideSensitiveInfo = true] .dropdown-wallet-section {
     display: none !important;
 }
 
-body[StreamerMode = true] .account-field-email {
+body[StreamerMode = true][HideSensitiveInfo = true] #account-field-password {
     display: none !important;
 }
 
-body[StreamerMode = true] .birthday-container {
+body[StreamerMode = true][HideSensitiveInfo = true] #account-field-phone {
     display: none !important;
 }
 
-body[StreamerMode = true] #security-tab {
+body[StreamerMode = true][HideSensitiveInfo = true] #account-field-email {
     display: none !important;
 }
 
-body[StreamerMode = true] .payment-method-image {
+body[StreamerMode = true][HideSensitiveInfo = true] .birthday-container {
     display: none !important;
 }
 
-body[StreamerMode = true] .cardContainer {
+body[StreamerMode = true][HideSensitiveInfo = true] #security-tab {
     display: none !important;
 }
 
-body[StreamerMode = true] .saved-payment-method-header-container {
+body[StreamerMode = true][HideSensitiveInfo = true] .payment-method-image {
     display: none !important;
 }
 
-body[StreamerMode = true] .other-payment-methods-container {
+body[StreamerMode = true][HideSensitiveInfo = true] .cardContainer {
     display: none !important;
 }
 
-body[StreamerMode = true] .cardExpiry, .cardIcon, .cardNumber, .roblox-credit-balance {
+body[StreamerMode = true][HideSensitiveInfo = true] .saved-payment-method-header-container {
     display: none !important;
 }
 
-body[StreamerMode = true] #social-networks {
+body[StreamerMode = true][HideSensitiveInfo = true] .other-payment-methods-container {
     display: none !important;
 }
 
-body[StreamerMode = true] .btr-payouts {
+body[StreamerMode = true][HideSensitiveInfo = true] .cardExpiry, .cardIcon, .cardNumber, .roblox-credit-balance {
     display: none !important;
 }
 
-body[StreamerMode = true] group-payouts {
+body[StreamerMode = true][HideSocials = true] .social-networks-container {
     display: none !important;
 }
 
-body[StreamerMode = true] .recurring-payout {
+body[StreamerMode = true][HideGroupPayouts = true] .btr-payouts {
     display: none !important;
 }
 
-body[StreamerMode = true] .icon-robux-container {
+body[StreamerMode = true][HideGroupPayouts = true] group-payouts {
+    display: none !important;
+}
+
+body[StreamerMode = true][HideGroupPayouts = true] .recurring-payout {
+    display: none !important;
+}
+
+body[StreamerMode = true][HideGroupRobux = true] #configure-group .icon-robux-container {
+    display: none !important;
+}
+
+body[StreamerMode = true][HideRobux = true] :not(#configure-group) .icon-robux-container {
     display: none !important;
 }
