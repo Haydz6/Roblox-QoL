@@ -841,14 +841,17 @@ function CreateDiagnoseSection(OptionsList){
         const ConnectionStatus = document.createElement("p")
         ConnectionStatus.innerText = "Testing connection"
         chrome.runtime.sendMessage({type: "AuthDebugTestConnection"}).then(function(Text){
-            ConnectionStatus.innerHTML = `400-499 means a client error (If you are getting a 429, make sure you have your VPN turned off)<br>500-599 means a server error and you will have to wait for it to be fixed<br><br>${Text.join("<br>")}`
+            ConnectionStatus.innerHTML = `200-399 means a successful connection<br>400-499 means a client error (If you are getting a 429, make sure you have your VPN turned off)<br>500-599 means a server error and you will have to wait for it to be fixed<br><br>${Text.join("<br>")}`
         })
 
         const AuthenticationStatus = document.createElement("p")
         const Auth = await chrome.runtime.sendMessage({type: "AuthDebug"})
-        AuthenticationStatus.innerHTML = `<br><br>Authentication Status: ${Auth.IsAuthed}<br>Account: ${Auth.UserId}<br>Last Authentication: ${Auth.LastAuthentication ? SecondsToLength(Date.now() / 1000 - Auth.LastAuthentication) + " ago" : "None"}<br>Is Authenticating: ${Auth.IsAuthenticating}<br>First Attempt: ${Auth.FirstAttempt}<br>From Storage: ${Auth.FromStorage}<br>Failures in row: ${Auth.AuthenticationFailuresCounter}`
+        AuthenticationStatus.innerHTML = `<br><br>Authentication Status: ${Auth.IsAuthed}<br>Account: ${Auth.UserId}<br>Last Authentication: ${Auth.LastAuthentication ? SecondsToLength(Date.now() / 1000 - Auth.LastAuthentication) + " ago" : "None"}<br>Is Authenticating: ${Auth.IsAuthenticating}<br>First Attempt: ${Auth.FirstAttempt}<br>From Storage: ${Auth.FromStorage}<br>Failures in row: ${Auth.AuthenticationFailuresCounter}<br><br>`
 
-        OptionsList.append(Description, Info, ConnectionStatus, AuthenticationStatus)
+        const Version = document.createElement("p")
+        Version.innerText = `Version ${await chrome.runtime.sendMessage({type: "Version"})}`
+
+        OptionsList.append(Description, Info, ConnectionStatus, AuthenticationStatus, Version)
     }
 
     new MutationObserver(Run).observe(OptionsList, {attributes: true, attributeFilter: ["style"]})

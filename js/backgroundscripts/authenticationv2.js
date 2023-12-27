@@ -233,7 +233,7 @@ BindToOnMessage("AuthenticationFailureCheck", false, function(){
 })
 
 BindToOnMessage("AuthDebugTestConnection", true, async function(){
-    const Sites = {"roblox.com": "https://users.roblox.com", "rbxcdn.com": "https://t1.rbxcdn.com/4a51c69f32e68ba3d1843fc4ace2a46b", "discord.com": "https://discord.com", "roqol.io": "https://roqol.io/api/debug/ping"}
+    const Sites = {"roblox.com": "https://users.roblox.com", "rbxcdn.com": "https://t1.rbxcdn.com/4a51c69f32e68ba3d1843fc4ace2a46b", "discord.com (Optional, Discord rich presence)": "https://discord.com", "roqol.io": "https://roqol.io/api/debug/ping"}
     const Results = []
 
     for ([Site, Url] of Object.entries(Sites)){

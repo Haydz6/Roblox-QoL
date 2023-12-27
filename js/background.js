@@ -418,6 +418,10 @@ BindToOnMessage("UserAgent", false, function(){
     return navigator.userAgent
 })
 
+BindToOnMessage("Version", false, function(){
+    return ExtensionVersion
+})
+
 const StreamerList = ["StreamerMode", "StreamerModeKeybind", "HideAge", "HideSensitiveInfo", "HideRobux", "HideGroupRobux", "HideServerInvites", "HideNames", "HideSocials", "HideGroupPayouts"]
 for (let i = 0; i < StreamerList.length; i++){
     const Setting = StreamerList[i]
