@@ -6,7 +6,7 @@ async function SaveLastFriendRequestSent(AuthKey){
     const Cache = IsTryingSave
 
     while (Cache === IsTryingSave){
-        const [Success] = await RequestFunc(WebServerEndpoints.Friends+"requests", "POST", {"Content-Type": "application/json", AuthKey: AuthKey}, JSON.stringify({Timestamp: LastFriendRequestSent}))
+        const [Success] = await RequestFunc(WebServerEndpoints.Friends+"requests", "POST", {"Content-Type": "application/json", Authentication: AuthKey}, JSON.stringify({Timestamp: LastFriendRequestSent}))
         if (Success) break
         await sleep(5000)
     }
