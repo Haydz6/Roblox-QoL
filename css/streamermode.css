@@ -120,3 +120,7 @@ body[StreamerMode = true][HideGroupRobux = true] #configure-group .icon-robux-co
 body[StreamerMode = true][HideRobux = true] :not(#configure-group) .icon-robux-container {
     display: none !important;
 }
+
+body[StreamerMode = true][HideRobux = true] .modal-footer .text-robux {
+    display: none !important;
+}
