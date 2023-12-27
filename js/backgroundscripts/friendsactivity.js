@@ -15,9 +15,11 @@ function CanUpdateFriendActivity(Presence, LastActivity){
 async function UpdateFriendsActivity(Friends){
     if (!await IsFeatureEnabled("FriendsActivity")) return
 
-    const UserId = await GetCurrentUserId()
+    const [AuthKey, UserId] = await GetAuthKeyDetailed()
+    if (!AuthKey || !UserId) return
+
     const [Success, Result] = await RequestFunc("https://presence.roblox.com/v1/presence/users", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: Friends}), true)
-    if (!Success || UserId !== await GetCurrentUserId()) return
+    if (!Success) return
 
     const Presences = Result.userPresences
     const FriendsToUniverseId = []
@@ -34,5 +36,5 @@ async function UpdateFriendsActivity(Friends){
         }
     }
 
-    if (Updated) RequestFunc(WebServerEndpoints.Friends+"sort", "POST", {"Content-Type": "application/json"}, JSON.stringify(FriendsToUniverseId))
+    if (Updated) RequestFunc(WebServerEndpoints.Friends+"sort", "POST", {"Content-Type": "application/json", Authentication: AuthKey}, JSON.stringify(FriendsToUniverseId))
 }

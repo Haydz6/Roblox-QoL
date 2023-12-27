@@ -163,11 +163,11 @@ async function UpdateHistory(){
     await GetSavedFriends()
     if (!await CanUpdateHistory()) return
 
-    const UserId = await GetCurrentUserId()
-    if (!UserId) return
+    const [AuthKey, UserId] = await GetAuthKeyDetailed()
+    if (!UserId || !AuthKey) return
 
     const [Success, Result] = await RequestFunc(`https://friends.roblox.com/v1/users/${UserId}/friends`, "GET", undefined, undefined, true)
-    if (!Success || await GetCurrentUserId() !== UserId) return
+    if (!Success) return
 
     const Friends = []
     const Data = Result.data
@@ -182,7 +182,7 @@ async function UpdateHistory(){
     if (!HasFriendsChanged(Friends)) return
     LastFriends = Friends
 
-    const [UpdateSuccess, UpdateResult] = await RequestFunc(WebServerEndpoints.History+"update", "POST", undefined, JSON.stringify(Friends))
+    const [UpdateSuccess, UpdateResult] = await RequestFunc(WebServerEndpoints.History+"update", "POST", {Authentication: AuthKey}, JSON.stringify(Friends))
 
     if (!UpdateSuccess || !await IsFeatureEnabled("FriendNotifications")) return
 

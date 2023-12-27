@@ -1,12 +1,12 @@
 let LastFriendRequestSent
 let IsTryingSave = 0
 
-async function SaveLastFriendRequestSent(){
+async function SaveLastFriendRequestSent(AuthKey){
     IsTryingSave++
     const Cache = IsTryingSave
 
     while (Cache === IsTryingSave){
-        const [Success] = await RequestFunc(WebServerEndpoints.Friends+"requests", "POST", {"Content-Type": "application/json"}, JSON.stringify({Timestamp: LastFriendRequestSent}))
+        const [Success] = await RequestFunc(WebServerEndpoints.Friends+"requests", "POST", {"Content-Type": "application/json", AuthKey: AuthKey}, JSON.stringify({Timestamp: LastFriendRequestSent}))
         if (Success) break
         await sleep(5000)
     }
@@ -14,9 +14,12 @@ async function SaveLastFriendRequestSent(){
 
 async function CheckForNewFriendRequests(){
     if (!await IsFeatureEnabled("FriendRequestNotifications") || !chrome.notifications?.create) return
+    
+    const AuthKey = await GetAuthKey()
+    if (!AuthKey) return
 
     if (!LastFriendRequestSent){
-        const [Success, Body] = await RequestFunc(WebServerEndpoints.Friends+"requests", "GET")
+        const [Success, Body] = await RequestFunc(WebServerEndpoints.Friends+"requests", "GET", {Authentication: AuthKey})
         if (!Success) return
         LastFriendRequestSent = Body.Timestamp
     }
@@ -42,7 +45,7 @@ async function CheckForNewFriendRequests(){
     if (NewRequests.length === 0) return
     LastFriendRequestSent = Math.floor(LatestRequest) + 1
 
-    SaveLastFriendRequestSent()
+    SaveLastFriendRequestSent(AuthKey)
 
     let NotificationMessage
     const FirstRequest = NewRequests[0]

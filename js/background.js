@@ -227,7 +227,7 @@ async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, Bypas
         }
     } else if (IsQOLAPI && !URL.includes("disabled_features")){
         if (Headers?.Authentication !== undefined) ShouldRetryOnAuthenticationFailure = false
-        if (!URL.includes("/auth") || URL.includes("/reverify") && Headers?.Authentication === undefined){
+        else if (!URL.includes("/auth") || URL.includes("/reverify")){
             Headers.Authentication = await GetAuthKey()
         }
     }
