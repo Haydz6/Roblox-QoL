@@ -479,6 +479,7 @@ const Settings = {
                 InputBox.setAttribute("readonly", "readonly")
                 InputBox.style.cursor = "pointer"
                 InputBox.style.opacity = 1
+                InputBox.style.width = "250px"
                 
                 async function UpdateValue(){
                     const Keybind = await IsFeatureEnabled("StreamerModeKeybind")
