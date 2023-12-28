@@ -1,5 +1,5 @@
-async function GetCurrentGame(){
-    const UserId = await GetCurrentUserId()
+async function GetCurrentGame(UserId){
+    if (!UserId) UserId = await GetCurrentUserId()
     if (!UserId) return [false]
 
     const [Success, Result] = await RequestFunc("https://presence.roblox.com/v1/presence/users", "POST", undefined, JSON.stringify({userIds: [UserId]}), true)
@@ -63,7 +63,10 @@ function CanUpdatePlaytimeEndpoint(InGame, InStudio, UniverseId){
 }
 
 async function UpdateRecentServer(){
-    const [Success, Presence] = await GetCurrentGame()
+    const [AuthKey, UserId] = await GetAuthKeyDetailed()
+    if (!AuthKey || !UserId) return
+
+    const [Success, Presence] = await GetCurrentGame(UserId)
     await GetAllRecentServers()
 
     UpdateInt++
@@ -97,8 +100,8 @@ async function UpdateRecentServer(){
     }
     UniverseId = UniverseId || 0
 
-    if (CanUpdatePlaytimeEndpoint(InGame, InStudio, UniverseId)) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0, JobId: await IsFeatureEnabled("BestFriendPresenceV2") ? Presence.gameId : undefined}))
-    if (UniverseId) UpdateVoiceServer(UniverseId, Presence.rootPlaceId, Presence.placeId, Presence.gameId)
+    if (CanUpdatePlaytimeEndpoint(InGame, InStudio, UniverseId)) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json", Authentication: AuthKey}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0, JobId: await IsFeatureEnabled("BestFriendPresenceV2") ? Presence.gameId : undefined}))
+    if (UniverseId) UpdateVoiceServer(UserId, AuthKey, UniverseId, Presence.rootPlaceId, Presence.placeId, Presence.gameId)
     //Updated playtime
 
     LastRecentServerSuccess = Date.now()
@@ -130,7 +133,7 @@ async function UpdateRecentServer(){
 
         if (LastUniverseId !== Presence.universeId){
             new Promise(async() => {
-                RequestFunc(WebServerEndpoints.Playtime+"continue/set", "POST", null, JSON.stringify({UniverseId: Presence.universeId}))
+                RequestFunc(WebServerEndpoints.Playtime+"continue/set", "POST", {Authentication: AuthKey}, JSON.stringify({UniverseId: Presence.universeId}))
             })
         }
 

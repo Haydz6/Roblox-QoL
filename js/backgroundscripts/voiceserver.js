@@ -43,14 +43,11 @@ async function UniverseHasVoiceChat(UniverseId){
     return Settings.isUniverseEnabledForVoice
 }
 
-async function UpdateVoiceServer(UniverseId, RootPlaceId, PlaceId, JobId){
+async function UpdateVoiceServer(UserId, AuthKey, UniverseId, RootPlaceId, PlaceId, JobId){
     if (!await IsFeatureEnabled("VoiceChatServerAnalytics")) return
     if (!UniverseId || !RootPlaceId || !PlaceId || !JobId || RootPlaceId !== PlaceId) return
     if (Date.now()/1000 - LastVoiceServerUpdate < 60) return
     LastVoiceServerUpdate = Date.now()/1000
-
-    const UserId = await GetCurrentUserId()
-    if (!UserId) return
 
     if (!await UniverseHasVoiceChat(UniverseId)) return
 
@@ -59,6 +56,7 @@ async function UpdateVoiceServer(UniverseId, RootPlaceId, PlaceId, JobId){
 
     const [Success, Settings] = await RequestFunc("https://voice.roblox.com/v1/settings", "GET", undefined, undefined, true)
     if (!Success) return
+    if (UserId !== await GetCurrentUserId()) return
     if (!Settings.isVoiceEnabled || Settings.isBanned) return
 
     const ChannelId = `game_${UniverseId}_${PlaceId}_${JobId}_default`
@@ -87,7 +85,7 @@ async function UpdateVoiceServer(UniverseId, RootPlaceId, PlaceId, JobId){
         ServerInformation.MaxPlayers = Server.maxPlayers
     }
 
-    RequestFunc(WebServerEndpoints.Voice+"server/"+ChannelId, "POST", {"Content-Type": "application/json"}, JSON.stringify(ServerInformation), false, true).then(function(){
+    RequestFunc(WebServerEndpoints.Voice+"server/"+ChannelId, "POST", {"Content-Type": "application/json", Authentication: AuthKey}, JSON.stringify(ServerInformation), false, true).then(function(){
         LastVoiceServerUpdate = Date.now()/1000
     })
 }

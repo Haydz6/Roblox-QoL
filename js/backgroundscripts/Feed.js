@@ -2,10 +2,10 @@ let HaveFetchedFeed = false
 const Feed = {}
 let FeedList = []
 
-async function GetFeed(){
+async function GetFeed(AuthKey){
     if (HaveFetchedFeed) return true
 
-    const [Success, Result] = await RequestFunc(WebServerEndpoints.Feed, "GET")
+    const [Success, Result] = await RequestFunc(WebServerEndpoints.Feed, "GET", {Authentication: AuthKey})
     if (!Success) return false
     
     for (let i = 0; i < Result.length; i++){
@@ -19,7 +19,7 @@ async function GetFeed(){
     return true
 }
 
-async function FeedGroupShoutChanged(Group){
+async function FeedGroupShoutChanged(Group, AuthKey){
     const Feed = {
         Group: Group.id,
         Comment: Group.shout.body,
@@ -27,7 +27,7 @@ async function FeedGroupShoutChanged(Group){
         Date: Math.floor(new Date(Group.shout.updated).getTime()/1000),
     }
 
-    const [Success] = await RequestFunc(WebServerEndpoints.Feed+"add", "POST", {"Content-Type": "application/json"}, JSON.stringify(Feed))
+    const [Success] = await RequestFunc(WebServerEndpoints.Feed+"add", "POST", {"Content-Type": "application/json", Authentication: AuthKey}, JSON.stringify(Feed))
     if (!Success) return [false]
     if (FeedList.unshift(Feed) > 200) FeedList.length = 200
 
@@ -41,12 +41,12 @@ async function UpdateFeed(){
 
     if (!FeedEnabled && !AllShoutNotificationsEnabled) return
 
-    const UserId = await GetCurrentUserId()
-    if (!UserId){
+    const [AuthKey, UserId] = await GetAuthKeyDetailed()
+    if (!UserId || !AuthKey){
         setTimeout(UpdateFeed, 60*1000)
         return
     }
-    if (FeedEnabled) if (!await GetFeed()) return
+    if (FeedEnabled) if (!await GetFeed(AuthKey)) return
 
     const [Success, Groups] = await RequestFunc(`https://groups.roblox.com/v1/users/${UserId}/groups/roles`, "GET", undefined, undefined, true)
     if (!Success) return
@@ -75,7 +75,7 @@ async function UpdateFeed(){
                         }
                     }
 
-                    const [Success, Result] = await FeedGroupShoutChanged(Body)
+                    const [Success, Result] = await FeedGroupShoutChanged(Body, AuthKey)
                     if (Success) Feed[Body.id] = Result
                 }
             }
