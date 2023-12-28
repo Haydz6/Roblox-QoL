@@ -840,8 +840,15 @@ function CreateDiagnoseSection(OptionsList){
 
         const ConnectionStatus = document.createElement("p")
         ConnectionStatus.innerText = "Testing connection"
-        chrome.runtime.sendMessage({type: "AuthDebugTestConnection"}).then(function(Text){
-            ConnectionStatus.innerHTML = `200-399 means a successful connection<br>400-499 means a client error (If you are getting a 429, make sure you have your VPN turned off)<br>500-599 means a server error and you will have to wait for it to be fixed<br><br>${Text.join("<br>")}`
+        chrome.runtime.sendMessage({type: "AuthDebugTestConnection"}).then(function(Sites){
+            ConnectionStatus.innerHTML = "200-399 means a successful connection<br>400-499 means a client error (If you are getting a 429, make sure you have your VPN turned off)<br>500-599 means a server error and you will have to wait for it to be fixed<br><br>"
+
+            for (let i = 0; i < Sites.length; i++){
+                const Site = Sites[i]
+                const Text = document.createElement("p")
+                Text.innerHTML = Site.Status ? `${Site.Site}: ${Site.Status} ${Site.StatusText} <a href="${URL.createObjectURL(new Blob([Site.Body]))}" target="_blank" style="color: white; text-decoration: underline;">(View Response)</a>` : `${Site.Site}: ${Site.Body}`
+                ConnectionStatus.appendChild(Text)
+            }
         })
 
         const AuthenticationStatus = document.createElement("p")

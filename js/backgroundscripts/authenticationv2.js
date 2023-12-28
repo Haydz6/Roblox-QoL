@@ -239,9 +239,18 @@ BindToOnMessage("AuthDebugTestConnection", true, async function(){
     for ([Site, Url] of Object.entries(Sites)){
         try {
             const Response = await fetch(Url, {method: "GET", credentials: "include"})
-            Results.push(`${Site}: ${Response.status} ${Response.statusText}`)
+            //Results.push(`${Site}: ${Response.status} ${Response.statusText}`)
+            let Body = ""
+            try {
+                Body = await Response.text()
+            } catch (error) {
+                Body = error
+            }
+
+            Results.push({Site: Site, Status: Response.status, StatusText: Response.statusText, Body: Body})
         } catch {
-            Results.push(`${Site}: No internet connection, dns resolve fail or you have not given permission for the extension to access this site`)
+            //Results.push(`${Site}: No internet connection, dns resolve fail or you have not given permission for the extension to access this site`)
+            Results.push({Site: Site, Body: "No internet connection, dns resolve fail or you have not given permission for the extension to access this site"})
         }
     }
 
