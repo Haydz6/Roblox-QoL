@@ -1,14 +1,15 @@
-let BannedUsersSupported = true
+chrome.webRequest.onBeforeRedirect.addListener(function(Document){
+    if (Document.redirectUrl.includes("roblox.com/request-error?code=404") && Document.url.includes("roblox.com/users/")){
+        const Split = Document.url.split("users/")[1].split("/")
+        const UserId = Split[0]
+        chrome.tabs.update(Document.tabId, {url: "https://www.roblox.com/banned-user/"+UserId+"/"+Split[1]})
+    }
+}, {urls: ["*://*.roblox.com/users/*/profile*", "*://*.roblox.com/users/*/friends*"]})
 
-try {
-    chrome.webRequest.onBeforeRedirect.addListener(function(Document){
-        if (Document.redirectUrl.includes("roblox.com/request-error?code=404") && Document.url.includes("roblox.com/users/")){
-            const Split = Document.url.split("users/")[1].split("/")
-            const UserId = Split[0]
-            chrome.tabs.update(Document.tabId, {url: "https://www.roblox.com/banned-user/"+UserId+"/"+Split[1]})
-        }
-    }, {urls: ["*://*.roblox.com/users/*/profile*", "*://*.roblox.com/users/*/friends*"]})
-} catch {
+//let BannedUsersSupported = true
+
+//try {
+//} catch {
     // const NavigationTabs = {}
 
     // chrome.webNavigation.onBeforeNavigate.addListener(function(Navigation){
@@ -34,5 +35,5 @@ try {
     //     }
     // })
 
-    BannedUsersSupported = false
-} //Stop errors from safari
+    //BannedUsersSupported = false
+//} //Stop errors from safari

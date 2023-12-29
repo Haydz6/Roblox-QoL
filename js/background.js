@@ -2,6 +2,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 const Debugging = false
 const IgnoreDisabledFeatures = false
+const IsSafari = false
 
 const WebServerURL = !Debugging && "https://roqol.io/" || "http://localhost:8192/"
 const WebServerEndpoints = {Voice: WebServerURL+"api/voice/", Themes: WebServerURL+"api/themes/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", Game: WebServerURL+"api/game/", User: WebServerURL+"api/user/", Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
@@ -375,7 +376,7 @@ function numberWithCommas(x) {
 
 BindToOnMessage("FeatureSupported", false, function(Result){
     if (Result.name === "viewbanneduser"){
-        return BannedUsersSupported
+        return true//BannedUsersSupported
     }
 
     return chrome[Result.name] != undefined
@@ -496,8 +497,10 @@ if (BrowserAction?.onClicked) BrowserAction.onClicked.addListener(() => {
 })
 
 if (ManifestVersion > 2){
-    const Scripts = ["js/modules/hbaClient.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/inject.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendsactivity.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/bannedprofile.js", "js/backgroundscripts/friendrequest.js", "js/backgroundscripts/GroupShoutNotifications.js", "js/backgroundscripts/inboxnotifications.js", "js/backgroundscripts/Feed.js", "js/backgroundscripts/voiceserver.js", "js/backgroundscripts/mobileavatareditor.js", "js/backgroundscripts/fixserverlistandroidfirefox.js"]
+    const Scripts = ["js/modules/hbaClient.js", "js/backgroundscripts/authenticationv2.js", "js/backgroundscripts/inject.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendsactivity.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/friendrequest.js", "js/backgroundscripts/GroupShoutNotifications.js", "js/backgroundscripts/inboxnotifications.js", "js/backgroundscripts/Feed.js", "js/backgroundscripts/voiceserver.js", "js/backgroundscripts/mobileavatareditor.js", "js/backgroundscripts/fixserverlistandroidfirefox.js"]
     const FullScriptURLs = []
+
+    if (!IsSafari) Scripts.push("js/backgroundscripts/bannedprofile.js")
 
     for (let i = 0; i < Scripts.length; i++){
         FullScriptURLs.push(chrome.runtime.getURL(Scripts[i]))
