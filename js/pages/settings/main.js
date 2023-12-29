@@ -96,10 +96,10 @@ const Settings = {
         },
         ViewBannedUser: {
             Title: "View Banned User",
-            Description: "Allows you to view a banned user.",
-            Supported: async function(){
-                return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "viewbanneduser"})
-            }
+            Description: "Allows you to view a banned user. (Safari users will manually have to put in the url: roblox.com/banned-user/USERID",
+            // Supported: async function(){
+            //     return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "viewbanneduser"})
+            // }
         },
         AddRowToHomeFriends: {
             Title: "Expand home friends list",
