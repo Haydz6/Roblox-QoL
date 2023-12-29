@@ -177,11 +177,16 @@ const Settings = {
                     if (!GetState()){
                         const Iframe = document.createElement("iframe")
 
-                        window.addEventListener("message", function(e){
+                        let IsIframeReady = false
+
+                        function OnMessage(e){
                             if (e.data.type === "permission-iframe-ready"){
+                                IsIframeReady = true
                                 Iframe.contentWindow.postMessage({type: "theme", theme: document.body.classList.contains("dark-theme") ? "dark-theme" : "light-theme"}, "*")
                             }
                             else if (e.data.type === "permission-iframe-remove"){
+                                IsIframeReady = true
+
                                 SetState(false)
                                 Iframe.remove()
 
@@ -189,12 +194,30 @@ const Settings = {
                                     chrome.runtime.sendMessage({type: "DiscordPresenceNewTab"})
                                 }
                                 if (e.data.success) SetEnabled(true)
+
+                                DisconnectListener()
                             }
-                        })
+                        }
+
+                        function DisconnectListener(){
+                            window.removeEventListener("message", OnMessage)
+                        }
+
+                        window.addEventListener("message", OnMessage)
 
                         Iframe.style = "border: none; height: 70px;"
                         Iframe.src = chrome.runtime.getURL("html/discordpresencerequest.html")
                         Section.appendChild(Iframe)
+
+                        setTimeout(function(){
+                            if (!IsIframeReady){
+                                SetState(false)
+                                Iframe.remove()
+
+                                chrome.runtime.sendMessage({type: "DiscordPresenceNewTab"})
+                                DisconnectListener()
+                            }
+                        }, 500)
 
                         SetState(true)
                     }
