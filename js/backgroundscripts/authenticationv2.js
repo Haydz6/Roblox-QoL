@@ -223,36 +223,3 @@ async function GetAuthKeyDetailed(){
     const AuthKey = await GetAuthKey()
     return [AuthKey != "" ? AuthKey : null, AuthKey != "" ? LastAuthenticatedUserId : null]
 }
-
-BindToOnMessage("AuthDebug", false, function(){
-    return {IsAuthed: CachedAuthKey != "", UserId: LastAuthenticatedUserId, LastAuthentication: LastAuthKeyAttempt, IsAuthenticating: FetchingAuthKey, FirstAttempt: FirstAuthenticationAttempt, FromStorage: FetchedAuthenticationFromStorage, AuthenticationFailuresCounter: AuthenticationFailuresCounter}
-})
-
-BindToOnMessage("AuthenticationFailureCheck", false, function(){
-    return {Failed: AuthenticationFailuresCounter > 5}
-})
-
-BindToOnMessage("AuthDebugTestConnection", true, async function(){
-    const Sites = {"roblox.com": "https://users.roblox.com", "rbxcdn.com": "https://t1.rbxcdn.com/4a51c69f32e68ba3d1843fc4ace2a46b", "discord.com (Optional, Discord rich presence)": "https://discord.com", "roqol.io": "https://roqol.io/api/debug/ping"}
-    const Results = []
-
-    for ([Site, Url] of Object.entries(Sites)){
-        try {
-            const Response = await fetch(Url, {method: "GET", credentials: "include"})
-            //Results.push(`${Site}: ${Response.status} ${Response.statusText}`)
-            let Body = ""
-            try {
-                Body = await Response.text()
-            } catch (error) {
-                Body = error
-            }
-
-            Results.push({Site: Site, Status: Response.status, StatusText: Response.statusText, Body: Body})
-        } catch {
-            //Results.push(`${Site}: No internet connection, dns resolve fail or you have not given permission for the extension to access this site`)
-            Results.push({Site: Site, Body: "No internet connection, dns resolve fail or you have not given permission for the extension to access this site"})
-        }
-    }
-
-    return Results
-})
