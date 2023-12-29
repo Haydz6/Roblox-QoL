@@ -174,6 +174,7 @@ function CheckUpdatedTab(URL, Id){
 function TabUpdated(Tab){
     if (!Tab) return //??? how
     if (!Tab.url) chrome.tabs.get(Tab.id, function(tab){
+        if (!tab) return
         CheckUpdatedTab(tab.url, Tab.id)
     })
     else CheckUpdatedTab(Tab.url, Tab.id)
