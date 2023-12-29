@@ -132,7 +132,7 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled, Feat
         return MiddlemanState
     }
     function SetEnabled(NewEnabled){
-        NewEnabled = Enabled
+        Enabled = NewEnabled
         UpdateEnabled()
     }
 
