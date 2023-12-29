@@ -375,7 +375,7 @@ const ContentScripts = [{
 },
 {
     "matches": [
-        "*://*.roblox.com/banned-user/*"
+        "*://*.roblox.com/banned-user*"
     ],
     "js": [
        "js/pages/banned/profile.js",

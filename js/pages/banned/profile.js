@@ -1,5 +1,10 @@
 IsFeatureEnabled("ViewBannedUser").then(async function(Enabled){
     if (!Enabled) return
+
+    const FixedURLWithNoNumbers = window.location.href.split("banned-user/")[1]?.replace(/[0-9]/g, "")
+
+    if (FixedURLWithNoNumbers === "" || FixedURLWithNoNumbers === "/") window.history.replaceState(null, document.title, window.location.href+`${FixedURLWithNoNumbers == "/" ? "" : "/"}profile`)
+
     if (!window.location.href.includes("profile")) return
 
     const Title = await WaitForClass("error-title")
