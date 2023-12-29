@@ -44,8 +44,16 @@ async function ImageUrlToExternalDiscord(ImageUrl){
     return "mp:"+Result[0].external_asset_path
 }
 
+function HasPermissionsForDiscord(){
+    return new Promise((resolve) => {
+        chrome.permissions.contains({origins: ["https://www.discord.com/"]}, function(Result){
+            resolve(Result)
+        })
+    })
+}
+
 async function OpenDiscord(Resume){
-    if (!await IsFeatureEnabled("DiscordPresence") || ExternalDiscordLoggedIn || (!Resume && (DiscordLoggedIn || !await GetDiscordToken()))) return
+    if (!await IsFeatureEnabled("DiscordPresence") || !await HasPermissionsForDiscord() || ExternalDiscordLoggedIn || (!Resume && (DiscordLoggedIn || !await GetDiscordToken()))) return
 
     const ws = new WebSocket(Resume?.url || "wss://gateway.discord.gg/?v=10&encoding=json")
     DiscordWS = ws
@@ -250,11 +258,7 @@ BindToOnMessage("DiscordPresenceNewTab", false, function(){
 })
 
 BindToOnMessage("DiscordPresencePermitted", true, function(){
-    return new Promise((resolve) => {
-        chrome.permissions.contains({origins: ["https://www.discord.com/"]}, function(Result){
-            resolve(Result)
-        })
-    })
+    return HasPermissionsForDiscord()
 })
 
 BindToOnMessage("NewDiscordToken", false, function(Result){
