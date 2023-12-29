@@ -119,7 +119,7 @@ const Settings = {
         DiscordPresence: {
             Title: "Discord Presence",
             Description: "Displays what you are playing and join button on discord. (You will not be able to see your own presence if you already have activity, this is a discord limitation)\nUses the account logged into the browser version.",
-            Run: async function(Title){
+            Run: async function(Title, _, Section){
                 const Avatar = document.createElement("span")
                 Avatar.className = "avatar avatar-headshot-xs user"
                 Avatar.style = "display: none; margin-left: 10px; height: 23px; width: 23px;"
@@ -168,6 +168,40 @@ const Settings = {
 
                 setInterval(CheckLogin, 1*1000)
                 CheckLogin()
+            },
+            Supported: async function(){
+                return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "permissions"})
+            },
+            Middleman: async function(Enabled, GetState, SetState, SetEnabled, Section){
+                if (Enabled && !await chrome.runtime.sendMessage({type: "DiscordPresencePermitted"})){
+                    if (!GetState()){
+                        const Iframe = document.createElement("iframe")
+
+                        window.addEventListener("message", function(e){
+                            if (e.data.type === "permission-iframe-ready"){
+                                Iframe.contentWindow.postMessage({type: "theme", theme: document.body.classList.contains("dark-theme") ? "dark-theme" : "light-theme"}, "*")
+                            }
+                            else if (e.data.type === "permission-iframe-remove"){
+                                SetState(false)
+                                Iframe.remove()
+
+                                if (e.data.newtab){
+                                    chrome.runtime.sendMessage({type: "DiscordPresenceNewTab"})
+                                }
+                                if (e.data.success) SetEnabled(true)
+                            }
+                        })
+
+                        Iframe.style = "border: none; height: 70px;"
+                        Iframe.src = chrome.runtime.getURL("html/discordpresencerequest.html")
+                        Section.appendChild(Iframe)
+
+                        SetState(true)
+                    }
+                    return false
+                }
+
+                return Enabled
             }
         },
         ExternalDiscordPresence: {
@@ -803,7 +837,7 @@ async function CreateSpecificSettingsSection(OptionsList, title, settings){
                 SetFeatureEnabled(feature, NewValue)
             })
             else if (info.Type === "ListAndSearch") Section = CreateSectionSettingsWithListAndSearch(feature, info.Title, info.Description, info.Get, info.Update, info.State, info.Search, info.Icon, info.Toggles, info.ItemType, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
-            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported)
+            else Section = CreateSectionSettingsToggable(feature, info.Title, info.Description, FeatureEnabled, FeatureKilled, FeaturePaid, IsSupported, info.Middleman)
 
             if (info.Run) info.Run(Section.getElementsByTagName("label")[0], Section.getElementsByClassName("text-description")[0], Section)
 

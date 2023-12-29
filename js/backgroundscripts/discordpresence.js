@@ -245,6 +245,18 @@ async function OpenDiscord(Resume){
     }
 }
 
+BindToOnMessage("DiscordPresenceNewTab", false, function(){
+    chrome.tabs.create({url: chrome.runtime.getURL("html/discordpresencerequest.html")})
+})
+
+BindToOnMessage("DiscordPresencePermitted", true, function(){
+    return new Promise((resolve) => {
+        chrome.permissions.contains({origins: ["https://www.discord.com/"]}, function(Result){
+            resolve(Result)
+        })
+    })
+})
+
 BindToOnMessage("NewDiscordToken", false, function(Result){
     if (Result.token != DiscordToken){
         DiscordToken = Result.token

@@ -37,16 +37,8 @@
         "scripts": ["js/modules/hbaClient.js", "js/backgroundscripts/authenticationv2.js", "js/background.js", "js/backgroundscripts/inject.js", "js/backgroundscripts/killswitch.js", "js/backgroundscripts/newsessionnotifier.js", "js/backgroundscripts/friendsactivity.js", "js/backgroundscripts/friendhistory.js", "js/backgroundscripts/clientdiscordpresence.js", "js/backgroundscripts/discordpresence.js", "js/backgroundscripts/recentservers.js", "js/pages/trades/rolimons.js", "js/backgroundscripts/trades.js", "js/pages/trades/tradeapi.js", "js/backgroundscripts/bannedprofile.js", "js/backgroundscripts/friendrequest.js", "js/backgroundscripts/GroupShoutNotifications.js", "js/backgroundscripts/inboxnotifications.js", "js/backgroundscripts/Feed.js", "js/backgroundscripts/voiceserver.js", "js/backgroundscripts/mobileavatareditor.js", "js/backgroundscripts/fixserverlistandroidfirefox.js"],
         "persistent": true
     },
+    "optional_permissions": ["*://*.discord.com/"],
     "content_scripts": [
-        {
-            "matches": [
-                "*://*.discord.com/*"
-            ],
-            "js": [
-                "js/pages/discord/fetchtoken.js"
-            ],
-            "run_at": "document_start"
-        },
         {
             "matches": [
                 "*://*.roblox.com/*"
@@ -79,7 +71,6 @@
         },
         {
             "matches": [
-                "*://qol.haydz6.com/i/*",
                 "*://roqol.io/i/*"
             ],
             "js": [

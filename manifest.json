@@ -56,16 +56,8 @@
     "background": {
         "service_worker": "js/background.js"
     },
+    "optional_host_permissions": ["*://*.discord.com/"],
     "content_scripts": [
-        {
-            "matches": [
-                "*://*.discord.com/*"
-            ],
-            "js": [
-                "js/pages/discord/fetchtoken.js"
-            ],
-            "run_at": "document_start"
-        },
         {
             "css": [
                 "css/streamermode.css",
@@ -98,7 +90,6 @@
         },
         {
             "matches": [
-                "*://qol.haydz6.com/i/*",
                 "*://roqol.io/i/*"
             ],
             "js": [

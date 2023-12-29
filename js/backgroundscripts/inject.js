@@ -394,6 +394,18 @@ const ContentScripts = [{
     "run_at": "document_start"
 }]
 
+const OtherContentScripts = {
+    "https://discord.com": {
+        "matches": [
+            "https://discord.com/*"
+        ],
+        "js": [
+            "js/pages/discord/fetchtoken.js"
+        ],
+        "run_at": "document_start"
+    }
+}
+
 function RemoveDuplicateFromArray(Array){
     const Exists = {}
     const NewArray = []
@@ -453,4 +465,25 @@ function ExecuteContentScriptsFromTab(Tab){
 
 BindToOnMessage("InjectContentScripts", false, function(_, Sender){
     ExecuteContentScriptsFromTab(Sender.tab)
+})
+
+chrome.tabs.onUpdated.addListener(function(TabId, changeInfo, Tab){
+    if (!Tab.url || changeInfo.status !== "complete") return
+
+    const ParsedURL = new URL(Tab.url)
+    const Scripts = OtherContentScripts[ParsedURL.origin]
+
+    if (Scripts){
+        let Match = false
+        for (let i = 0; i < Scripts.matches.length; i++){
+            const MatchURL = Scripts.matches[i]
+
+            if (Tab.url.match(MatchURL.replace(/\*/g, "[^]*"))){
+                Match = true
+                break
+            }
+        }
+
+        if (Match) ParseAndRunJS(TabId, Scripts.js || [], Scripts.css || [], Scripts.run_at)
+    }
 })

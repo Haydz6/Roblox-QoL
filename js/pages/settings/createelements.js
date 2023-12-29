@@ -101,7 +101,7 @@ function CreateFeaturePaid(){
     return Container
 }
 
-function CreateSectionSettingsToggable(Option, Title, Description, Enabled, FeatureKilled, FeaturePaid, IsSupported){
+function CreateSectionSettingsToggable(Option, Title, Description, Enabled, FeatureKilled, FeaturePaid, IsSupported, Middleman){
     const [Section, Divider] = CreateSectionSettingsTemplate(Option, Title, Description)
 
     const Slider = document.createElement("button")
@@ -119,10 +119,28 @@ function CreateSectionSettingsToggable(Option, Title, Description, Enabled, Feat
         Section.insertBefore(CreateFeaturePaid(), Divider)
     }
 
-    Slider.addEventListener("click", function(){
-        Enabled = !Enabled
+    function UpdateEnabled(){
         Slider.className = `btn-toggle receiver-destination-type-toggle ${Enabled && "on" || "off"}`
         SetFeatureEnabled(Option, Enabled)
+    }
+    
+    let MiddlemanState
+    function SetState(State){
+        MiddlemanState = State
+    }
+    function GetState(){
+        return MiddlemanState
+    }
+    function SetEnabled(NewEnabled){
+        NewEnabled = Enabled
+        UpdateEnabled()
+    }
+
+    Slider.addEventListener("click", async function(){
+        if (Middleman) Enabled = await Middleman(!Enabled, GetState, SetState, SetEnabled, Section)
+        else Enabled = !Enabled
+
+        UpdateEnabled()
     })
     
     const ToggleFlip = document.createElement("span")
@@ -169,16 +187,17 @@ function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, 
         Section.insertBefore(CreateFeaturePaid(), Divider)
     }
 
-    async function FocusLost(){
-        if (!Middleman) return
-        const Result = Middleman(Option, await IsFeatureEnabled(Option), Input.value)
-        if (Result){
-            Input.value = Result
+    if (Middleman){
+        async function FocusLost(){
+            const Result = Middleman(Option, await IsFeatureEnabled(Option), Input.value)
+            if (Result){
+                Input.value = Result
+            }
         }
-    }
 
-    Input.addEventListener("focusout", FocusLost)
-    FocusLost()
+        Input.addEventListener("focusout", FocusLost)
+        FocusLost()
+    }
 
     Section.insertBefore(Input, Section.firstChild)
 

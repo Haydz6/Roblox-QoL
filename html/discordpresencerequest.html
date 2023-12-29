@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .btn-primary-md {
+                border-radius: 8px;
+
+                user-select: none;
+                cursor: pointer;
+                height: auto;
+                text-align: center;
+                white-space: nowrap;
+                vertical-align: middle;
+                padding: 9px;
+                font-size: 16px;
+                line-height: 100%;
+
+                font-family: HCo Gotham SSm,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;
+                text-rendering: auto;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+
+                border-style: none;
+            }
+
+            .light-theme .btn-primary-md {
+                background-color: #393b3d;
+                border-color: #393b3d;
+                color: #fff;
+            }
+
+            .dark-theme .btn-primary-md {
+                background-color: #fff;
+                border-color: #fff;
+                color: #393b3d;
+            }
+        </style>
+    </head>
+    <body>
+        <button id="request-button" class="btn-primary-md">Click here to grant RoQoL to discord</button>
+        <script src="/js/modules/discordpresencerequest.js"></script>
+    </body>
+</html>
