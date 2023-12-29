@@ -5,7 +5,7 @@ function ManifestV2ServerListFixForFirefoxAndroid(){
 function ToggleServerListFixForFirefoxAndroid(Enabled){
     const IsFirefoxAndroid = navigator.userAgent.toLowerCase().includes("android") && navigator.userAgent.toLowerCase().includes("firefox")
 
-    if (ManifestVersion >= 3 || !IsFirefoxAndroid){
+    if (ManifestVersion >= 3){
         let Update
         if (Enabled && IsFirefoxAndroid) Update = {addRules: [
             {
@@ -19,7 +19,7 @@ function ToggleServerListFixForFirefoxAndroid(Enabled){
         
         try {chrome.declarativeNetRequest.updateDynamicRules(Update)} catch (error) {console.warn(error)}
     } else { //Firefox
-        if (Enabled){
+        if (Enabled && IsFirefoxAndroid){
             chrome.webRequest.onBeforeRequest.addListener(ManifestV2ServerListFixForFirefoxAndroid, {urls: ["https://js.rbxcdn.com/8a07ae90334a7b1ce360c0bd9621cf1d6342899b9de21f6cb1ff8c0484df97da.js"], types: ["script"]}, ["blocking"])
         } else {
             chrome.webRequest.onBeforeRequest.removeListener(ManifestV2ServerListFixForFirefoxAndroid)
