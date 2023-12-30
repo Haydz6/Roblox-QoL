@@ -888,7 +888,7 @@ function CreateDiagnoseSection(OptionsList){
         Initalized = true
         
         const Description = document.createElement("p")
-        Description.innerHTML = `RoQoL is unable to verify with our backend servers! If you are unable to diagnose the issue yourself, please <a style="color: white; text-decoration: underline;" href="https://roqol.io/pages/contact">contact us</a> and send the screenshot of the authentication information!<br><br>`
+        Description.innerHTML = `RoQoL is unable to verify with our backend servers! If you are unable to diagnose the issue yourself, please <a class="a-in-p-color-fix" style="text-decoration: underline;" href="https://roqol.io/pages/contact">contact us</a> and send the screenshot of the authentication information!<br><br>`
 
         //let Errors = "<br>Make sure the extension has permissions to contact its backend servers:<br><br>Go to extensions > RoQoL > Details > Make sure it has permissions to access roqol.io, roblox.com and rbxcdn.com<br><br>"
 
@@ -896,7 +896,7 @@ function CreateDiagnoseSection(OptionsList){
         // Info.innerHTML = Errors
 
         const GrantText = document.createElement("a")
-        GrantText.style = "color: white; text-decoration: underline;"
+        GrantText.style = "text-decoration: underline;"
         GrantText.innerText = "Click here to open the extensions options page and give permissions for RoQoL to access the required sites."
         GrantText.addEventListener("click", function(){
             chrome.runtime.sendMessage({type: "DiscordPresenceNewTab"})
@@ -913,7 +913,7 @@ function CreateDiagnoseSection(OptionsList){
             for (let i = 0; i < Sites.length; i++){
                 const Site = Sites[i]
                 const Text = document.createElement("p")
-                Text.innerHTML = Site.Status ? `${Site.Site}: ${Site.Status} ${Site.StatusText} <a href="${URL.createObjectURL(new Blob([Site.Body]))}" target="_blank" style="color: white; text-decoration: underline;">(View Response)</a>` : `${Site.Site}: ${Site.Body}`
+                Text.innerHTML = Site.Status ? `${Site.Site}: ${Site.Status} ${Site.StatusText} <a class="a-in-p-color-fix" href="${URL.createObjectURL(new Blob([Site.Body]))}" target="_blank" style="text-decoration: underline;">(View Response)</a>` : `${Site.Site}: ${Site.Body}`
                 ConnectionStatus.appendChild(Text)
             }
         })
@@ -926,6 +926,10 @@ function CreateDiagnoseSection(OptionsList){
         Version.innerText = `Version ${await chrome.runtime.sendMessage({type: "Version"})}`
 
         OptionsList.append(Description, GrantText, Warning, ConnectionStatus, AuthenticationStatus, Version)
+
+        const Style = document.createElement("style")
+        Style.innerHTML = ".dark-theme .a-in-p-color-fix {color: white;} .light-theme .a-in-p-color-fix {color: #393b3d;}"
+        document.head.appendChild(Style)
     }
 
     new MutationObserver(Run).observe(OptionsList, {attributes: true, attributeFilter: ["style"]})
