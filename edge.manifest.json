@@ -89,14 +89,5 @@
                 "js/pages/bestfriend/presencehelper.js"
             ],
             "run_at": "document_start"
-        },
-        {
-            "matches": [
-                "*://roqol.io/i/*"
-            ],
-            "js": [
-                "js/pages/quickserverinvite/setinstalledidentifier.js"
-            ],
-            "run_at": "document_idle"
         }]
 }

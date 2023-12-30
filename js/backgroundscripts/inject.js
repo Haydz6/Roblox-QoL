@@ -403,6 +403,15 @@ const OtherContentScripts = {
             "js/pages/discord/fetchtoken.js"
         ],
         "run_at": "document_start"
+    },
+    "https://roqol.io": {
+        "matches": [
+            "*://roqol.io/i/*"
+        ],
+        "js": [
+            "js/pages/quickserverinvite/setinstalledidentifier.js"
+        ],
+        "run_at": "document_idle"
     }
 }
 
