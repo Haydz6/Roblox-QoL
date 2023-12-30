@@ -16,6 +16,8 @@ window.addEventListener("message", function(e){
 
 async function HandleClick(){
     chrome.permissions.request({origins: ["*://*.discord.com/"]}, function(Granted){
+        if (!Granted) return
+
         if (IsIframe()) parent.postMessage({type: "permission-iframe-remove", success: true}, "*")
         else {
             document.getElementById("request-button").removeEventListener("click", HandleClick)
