@@ -180,6 +180,8 @@ const Settings = {
                         let IsIframeReady = false
 
                         function OnMessage(e){
+                            if (e.source !== Iframe.contentWindow) return
+
                             if (e.data.type === "permission-iframe-ready"){
                                 IsIframeReady = true
                                 Iframe.contentWindow.postMessage({type: "theme", theme: document.body.classList.contains("dark-theme") ? "dark-theme" : "light-theme"}, "*")
