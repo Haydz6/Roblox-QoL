@@ -31,3 +31,5 @@ if (!chrome.permissions?.request){
     if (IsIframe()) parent.postMessage({type: "permission-iframe-remove", newtab: true}, "*")
     else document.getElementById("request-button").innerText = "This feature is not supported on your browser."
 } else if (IsIframe()) window.parent.postMessage({type: "permission-iframe-ready"}, "*")
+
+if (!IsIframe()) document.body.classList.add("light-theme")
