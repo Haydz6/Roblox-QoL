@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .btn-primary-md {
+                border-radius: 8px;
+                margin: 8px;
+
+                user-select: none;
+                cursor: pointer;
+                height: auto;
+                text-align: center;
+                white-space: nowrap;
+                vertical-align: middle;
+                padding: 9px;
+                font-size: 16px;
+                line-height: 100%;
+
+                font-family: HCo Gotham SSm,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;
+                text-rendering: auto;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+
+                border-style: none;
+            }
+
+            .light-theme .btn-primary-md {
+                background-color: #393b3d;
+                border-color: #393b3d;
+                color: #fff;
+            }
+
+            .dark-theme .btn-primary-md {
+                background-color: #fff;
+                border-color: #fff;
+                color: #393b3d;
+            }
+
+            #request-button {
+                top: 50%;
+                position: absolute;
+            }
+
+            #buttons {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .center {
+                display: flex!important;
+                justify-content: center;
+                align-items: center;
+            }
+
+            #title-bar {
+                display: flex;
+                align-items: center;
+                width: 100%;
+            }
+
+            #title-bar * {
+                display: inline-block;
+            }
+
+            #title-bar h1 {
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                text-align: center;
+                width: 100%;
+            }
+
+            #empty-page-text {
+                font-size: medium;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="title-bar">
+            <img src="/img/icons/icon128x128.png">
+            <div class="center" style="width: 100%;">
+                <h1>Extension Settings</h1>
+            </div>
+        </div>
+
+        <div id="buttons">
+            <button id="required-request-button" class="btn-primary-md">Allow access to roblox, rbxcdn and roqol <b>(Required)</b></button>
+            <button id="discord-request-button" class="btn-primary-md">Allow access to discord <b>(Optional)</b></button>
+            <p id="empty-page-text" style="display: none;">All permissions have been allowed so this is just an empty page</p>
+        </div>
+    
+        <script src="/js/modules/optionspage.js"></script>
+    </body>
+</html>

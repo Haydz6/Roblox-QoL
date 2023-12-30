@@ -254,7 +254,8 @@ async function OpenDiscord(Resume){
 }
 
 BindToOnMessage("DiscordPresenceNewTab", false, function(){
-    chrome.tabs.create({url: chrome.runtime.getURL("html/discordpresencerequest.html")})
+    //chrome.tabs.create({url: chrome.runtime.getURL("html/discordpresencerequest.html")})
+    chrome.runtime.openOptionsPage()
 })
 
 BindToOnMessage("DiscordPresencePermitted", true, function(){

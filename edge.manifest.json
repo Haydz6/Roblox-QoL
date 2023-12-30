@@ -11,6 +11,9 @@
         "48": "img/icons/icon48x48.png"
     },
     "action": {},
+    "options_ui": {
+        "page": "html/options.html"
+    },
     "permissions": [
         "storage",
         "notifications",
