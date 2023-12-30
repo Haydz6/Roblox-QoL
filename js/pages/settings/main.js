@@ -888,12 +888,22 @@ function CreateDiagnoseSection(OptionsList){
         Initalized = true
         
         const Description = document.createElement("p")
-        Description.innerHTML = `RoQoL is unable to verify with our backend servers! If you are unable to diagnose the issue yourself, please <a style="color: white; text-decoration: underline;" href="https://roqol.io/pages/contact">contact us</a> and send the screenshot of the authentication information!`
+        Description.innerHTML = `RoQoL is unable to verify with our backend servers! If you are unable to diagnose the issue yourself, please <a style="color: white; text-decoration: underline;" href="https://roqol.io/pages/contact">contact us</a> and send the screenshot of the authentication information!<br><br>`
 
-        let Errors = "<br>Make sure the extension has permissions to contact its backend servers:<br><br>Go to extensions > RoQoL > Details > Make sure it has permissions to access roqol.io, roblox.com and rbxcdn.com<br><br>"
+        //let Errors = "<br>Make sure the extension has permissions to contact its backend servers:<br><br>Go to extensions > RoQoL > Details > Make sure it has permissions to access roqol.io, roblox.com and rbxcdn.com<br><br>"
 
-        const Info = document.createElement("p")
-        Info.innerHTML = Errors
+        // const Info = document.createElement("p")
+        // Info.innerHTML = Errors
+
+        const GrantText = document.createElement("a")
+        GrantText.style = "color: white; text-decoration: underline;"
+        GrantText.innerText = "Click here to open the extensions options page and give permissions for RoQoL to access the required sites."
+        GrantText.addEventListener("click", function(){
+            chrome.runtime.sendMessage({type: "DiscordPresenceNewTab"})
+        })
+
+        const Warning = document.createElement("p")
+        Warning.innerHTML = "<br><br>Debug information below<br><br>"
 
         const ConnectionStatus = document.createElement("p")
         ConnectionStatus.innerText = "Testing connection"
@@ -915,7 +925,7 @@ function CreateDiagnoseSection(OptionsList){
         const Version = document.createElement("p")
         Version.innerText = `Version ${await chrome.runtime.sendMessage({type: "Version"})}`
 
-        OptionsList.append(Description, Info, ConnectionStatus, AuthenticationStatus, Version)
+        OptionsList.append(Description, GrantText, Warning, ConnectionStatus, AuthenticationStatus, Version)
     }
 
     new MutationObserver(Run).observe(OptionsList, {attributes: true, attributeFilter: ["style"]})
