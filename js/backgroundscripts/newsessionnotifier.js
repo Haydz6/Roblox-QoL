@@ -112,11 +112,19 @@ function GetBrowserFromSession(Session){
     return Type || "Unknown Browser"
 }
 
-async function LogoutSession(Session, TTS, LogoutCurrent){
+async function LogoutSession(Session, TTS, LogoutCurrent, UserAction){
     let Success, Result, Response
 
     if (!LogoutCurrent) [Success, Result, Response] = await RequestFunc("https://apis.roblox.com/token-metadata-service/v1/logout", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({token: Session.token}), true, false)
-    else [Success, Result, Response] = await RequestFunc("https://auth.roblox.com/v2/logout", "POST", undefined, undefined, true)
+    else {
+        [Success, Result, Response] = await RequestFunc("https://auth.roblox.com/v2/logout", "POST", undefined, undefined, true)
+        if (!Success && (!Response || Response.status < 500) && ((UserAction && await IsFeatureEnabled("OpenNewTabIfRequiredHAB")) || (!UserAction && await IsFeatureEnabled("OpenNewTabIfRequiredJobsHAB")))){
+            await chrome.tabs.create({url: "https://www.roblox.com/my/account#!/security", active: false})
+            await WaitForRobloxPage()
+
+            ;[Success, Result, Response] = await RequestFunc("https://auth.roblox.com/v2/logout", "POST", undefined, undefined, true)
+        }
+    }
 
     if (!Success && !LogoutCurrent){
         if (Response?.status == 400 && Result?.errors?.[0]?.message == "attempting to invalidate current token"){
@@ -340,7 +348,7 @@ if (chrome.notifications?.onButtonClicked) chrome.notifications.onButtonClicked.
 
     const Button = Notification.buttons[ButtonIndex]
     if (Button.title === "Logout"){
-        LogoutSession(Notification.session)
+        LogoutSession(Notification.session, undefined, undefined, true)
     }
 })
 

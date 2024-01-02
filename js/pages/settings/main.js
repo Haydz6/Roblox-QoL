@@ -1,5 +1,13 @@
 const Settings = {
     General: {
+        OpenNewTabIfRequiredHAB: {
+            Title: "Open new tab for actions if required",
+            Description: "To support the account security update, the extension might have to open a new tab to perform certain actions. (These actions are triggered by you, tabs will not open randomly)"
+        },
+        OpenNewTabIfRequiredJobsHAB: {
+            Title: "Open new tab for background jobs if required",
+            Description: "To support the account security update, the extension might have to open a new tab to perform certain actions. (These are automatically triggered by the extension, this will lead to tabs opening randomly)"
+        },
         NewMessagePing3: {
             Title: "New Message Ping",
             Description: "Creates a ping sound whenever you receive a new chat message."
@@ -108,7 +116,7 @@ const Settings = {
         MinimizableSideBar: {
             Title: "Minimizable Sidebar",
             Description: "Adds a button to the navigation sidebar to minimize it but still show the buttons."
-        },
+        }
         // Mutuals: {
         //     Title: "Mutuals",
         //     Description: "Allows you to see mutuals friends!"

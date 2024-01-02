@@ -54,6 +54,26 @@ async function IsTradeScanned(Type, TradeId){
     return AlreadyScannedTrades[Type][TradeId]
 }
 
+async function HandleAutoDecline(Trade, Type){
+    let [Success, _, Response] = await DeclineTrade(Trade.id)
+    if (!Success && (!Response || Response.status < 500) && await IsFeatureEnabled("OpenNewTabIfRequiredJobsHAB")){
+        await chrome.tabs.create({url: `https://www.roblox.com/trades?tradeid=${Notification.tradeid}#${Notification.type.toLowerCase()}`, active: false})
+        await WaitForRobloxPage()
+
+        ;[Success, _, Response] = await DeclineTrade(Trade.id)
+    }
+
+    if (!Success){
+        const NotificationId = GenerateNotificationId(50)
+        const IconUrl = await GetHeadshotBlobFromUserId(Trade.user.id)
+
+        const Buttons = [{title: "Open"}]
+        TradeNotifications[NotificationId] = {type: Type, user: Trade.user, iconUrl: IconUrl, tradeid: Trade.id, buttons: Buttons}
+
+        if (chrome.notifications?.create) chrome.notifications.create(NotificationId, {type: "basic", priority: 3, iconUrl: Notification.iconUrl, title: `Failed to decline ${Trade.user.name} trade`, contextMessage: "This can happen if you do not have a roblox tab open", message: `${Result?.errors?.[0]?.message || "Unknown error"}`})
+    }
+}
+
 async function NotifyNewTrades(Trades, Type){
     await IsTradeScanned(Type, -1)
 
@@ -105,7 +125,7 @@ async function NotifyNewTrades(Trades, Type){
 
                 if (-Threshold >= Percentage){
                     Declined = true
-                    DeclineTrade(Trade.id)
+                    HandleAutoDecline(Trade, Type)
                 }
             }
             if (!Declined && await IsFeatureEnabled("AutodeclineLowTradeValue")){
@@ -113,7 +133,7 @@ async function NotifyNewTrades(Trades, Type){
 
                 if (Threshold > Offers.Other.Value){
                     Declined = true
-                    DeclineTrade(Trade.id)
+                    HandleAutoDecline(Trade, Type)
                 }
             }
         }
@@ -122,7 +142,7 @@ async function NotifyNewTrades(Trades, Type){
             const Percentage = (Offers.Other.Value - Offers.Ours.Value)/Offers.Ours.Value * 100
 
             if (-Threshold >= Percentage){
-                DeclineTrade(Trade.id)
+                HandleAutoDecline(Trade, Type)
             }
         }
 
@@ -204,13 +224,28 @@ if (chrome.notifications?.onButtonClicked) chrome.notifications.onButtonClicked.
     const Button = Notification.buttons[ButtonIndex]
     if (Button.title === "Open") chrome.tabs.create({url: `https://www.roblox.com/trades?tradeid=${Notification.tradeid}#${Notification.type.toLowerCase()}`})
     else if (Button.title === "Decline" || Button.title === "Cancel"){
-        DeclineTrade(Notification.tradeid).then(function([Success, Result]){
-            if (!Success){
+        async function AttemptDecline(Notify){
+            const [Success, _, Response] = await DeclineTrade(Notification.tradeid)
+
+            if (!Success && (!Response || Response.status < 500) && Notify){
                 const Buttons = [{title: "Open"}]
                 const NewNotificationId = GenerateNotificationId(50)
 
                 TradeNotifications[NewNotificationId] = {type: Notification.type, user: Notification.user, iconUrl: Notification.iconUrl, tradeid: Notification.tradeid, buttons: Buttons}
                 if (chrome.notifications?.create) chrome.notifications.create(NewNotificationId, {type: "basic", priority: 3, iconUrl: Notification.iconUrl, title: `Failed to decline ${Notification.user.name} trade`, contextMessage: "This can happen if you do not have a roblox tab open", message: `${Result?.errors?.[0]?.message || "Unknown error"}`})
+            }
+
+            return Success
+        }
+
+        IsFeatureEnabled("OpenNewTabIfRequiredHAB").then(async function(CanOpenTab){
+            if (!await AttemptDecline(!CanOpenTab)){
+                if (CanOpenTab){
+                    await chrome.tabs.create({url: `https://www.roblox.com/trades?tradeid=${Notification.tradeid}#${Notification.type.toLowerCase()}`, active: false})
+                    await WaitForRobloxPage()
+
+                    AttemptDecline(true)
+                }
             }
         })
     }

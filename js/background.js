@@ -12,7 +12,7 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
-    StreamerMode: false, StreamerModeKeybind: null,
+    StreamerMode: false, StreamerModeKeybind: null, OpenNewTabIfRequiredHAB: true, OpenNewTabIfRequiredJobsHAB: false,
     HideAge: false, HideSensitiveInfo: false, HideRobux: false, HideGroupRobux: false, HideServerInvites: false, HideNames: false, HideSocials: false, HideGroupPayouts: false,
     FixAvatarPageFirefoxMobileMenu: true, ServerListFixForFirefoxAndroid: true,
     ViewOffsaleItems: true, MinimizableSideBar: true, AvatarEditorForMobile: false, AvatarPageCSSFix: true, BypassAvatarEditorMobilePromptUpsellButton: true,
@@ -162,6 +162,13 @@ async function SetFavouriteGame(UniverseId, Favourited){
 }
 
 let ActiveRobloxPages = []
+
+async function WaitForRobloxPage(Timeout = 5){
+    const End = Date.now() + (Timeout*1000)
+    while (ActiveRobloxPages.length === 0 && End > Date.now()) await sleep(100)
+
+    return ActiveRobloxPages[0]
+}
 
 function CheckUpdatedTab(URL, Id){
     const Index = ActiveRobloxPages.indexOf(Id)

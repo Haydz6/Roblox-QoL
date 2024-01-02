@@ -8,10 +8,10 @@ async function DeclineTrade(TradeId){
                 continue
             }
 
-            return [false, Result]
+            return [false, Result, Response]
         }
 
-        return [true, Result]
+        return [true, Result, Response]
     }
 }
 
