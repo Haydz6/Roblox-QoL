@@ -118,7 +118,7 @@ async function LogoutSession(Session, TTS, LogoutCurrent, UserAction){
     if (!LogoutCurrent) [Success, Result, Response] = await RequestFunc("https://apis.roblox.com/token-metadata-service/v1/logout", "POST", {["Content-Type"]: "application/json"}, JSON.stringify({token: Session.token}), true, false)
     else {
         [Success, Result, Response] = await RequestFunc("https://auth.roblox.com/v2/logout", "POST", undefined, undefined, true)
-        if (!Success && (!Response || Response.status < 500) && ((UserAction && await IsFeatureEnabled("OpenNewTabIfRequiredHAB")) || (!UserAction && await IsFeatureEnabled("OpenNewTabIfRequiredJobsHAB")))){
+        if (!Success && Response?.status < 500 && ((UserAction && await IsFeatureEnabled("OpenNewTabIfRequiredHAB")) || (!UserAction && await IsFeatureEnabled("OpenNewTabIfRequiredJobsHAB")))){
             await chrome.tabs.create({url: "https://www.roblox.com/my/account#!/security", active: false})
             await WaitForRobloxPage()
 

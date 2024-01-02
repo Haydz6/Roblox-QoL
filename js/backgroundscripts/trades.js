@@ -56,7 +56,7 @@ async function IsTradeScanned(Type, TradeId){
 
 async function HandleAutoDecline(Trade, Type){
     let [Success, Result, Response] = await DeclineTrade(Trade.id)
-    if (!Success && (!Response || Response.status < 500) && await IsFeatureEnabled("OpenNewTabIfRequiredJobsHAB")){
+    if (!Success && Response?.status < 500 && await IsFeatureEnabled("OpenNewTabIfRequiredJobsHAB")){
         await chrome.tabs.create({url: `https://www.roblox.com/trades?tradeid=${Trade.id}#${Type.toLowerCase()}`, active: false})
         await WaitForRobloxPage()
 
@@ -227,7 +227,7 @@ if (chrome.notifications?.onButtonClicked) chrome.notifications.onButtonClicked.
         async function AttemptDecline(Notify){
             const [Success, _, Response] = await DeclineTrade(Notification.tradeid)
 
-            if (!Success && (!Response || Response.status < 500) && Notify){
+            if (!Success && Response?.status < 500 && Notify){
                 const Buttons = [{title: "Open"}]
                 const NewNotificationId = GenerateNotificationId(50)
 
