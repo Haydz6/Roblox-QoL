@@ -55,12 +55,12 @@ async function IsTradeScanned(Type, TradeId){
 }
 
 async function HandleAutoDecline(Trade, Type){
-    let [Success, _, Response] = await DeclineTrade(Trade.id)
+    let [Success, Result, Response] = await DeclineTrade(Trade.id)
     if (!Success && (!Response || Response.status < 500) && await IsFeatureEnabled("OpenNewTabIfRequiredJobsHAB")){
-        await chrome.tabs.create({url: `https://www.roblox.com/trades?tradeid=${Notification.tradeid}#${Notification.type.toLowerCase()}`, active: false})
+        await chrome.tabs.create({url: `https://www.roblox.com/trades?tradeid=${Trade.id}#${Type.toLowerCase()}`, active: false})
         await WaitForRobloxPage()
 
-        ;[Success, _, Response] = await DeclineTrade(Trade.id)
+        ;[Success, Result, Response] = await DeclineTrade(Trade.id)
     }
 
     if (!Success){
@@ -70,7 +70,7 @@ async function HandleAutoDecline(Trade, Type){
         const Buttons = [{title: "Open"}]
         TradeNotifications[NotificationId] = {type: Type, user: Trade.user, iconUrl: IconUrl, tradeid: Trade.id, buttons: Buttons}
 
-        if (chrome.notifications?.create) chrome.notifications.create(NotificationId, {type: "basic", priority: 3, iconUrl: Notification.iconUrl, title: `Failed to decline ${Trade.user.name} trade`, contextMessage: "This can happen if you do not have a roblox tab open", message: `${Result?.errors?.[0]?.message || "Unknown error"}`})
+        if (chrome.notifications?.create) chrome.notifications.create(NotificationId, {type: "basic", priority: 3, iconUrl: IconUrl, title: `Failed to decline ${Trade.user.name} trade`, contextMessage: "This can happen if you do not have a roblox tab open", message: `${Result?.errors?.[0]?.message || "Unknown error"}`})
     }
 }
 
