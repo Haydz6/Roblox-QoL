@@ -68,11 +68,11 @@ function CreateAssetItemFieldContainer(Title, Content){
     Container.className = "clearfix item-info-row-container"
 
     const Header = document.createElement("div")
-    Header.className = "font-header-1 text-subheader text-label text-overflow field-label"
+    Header.className = "font-header-1 text-subheader text-label text-overflow row-label"
     Header.innerText = Title
 
     const FieldContent = document.createElement("div")
-    FieldContent.className = "field-content"
+    FieldContent.className = "font-body text wait-for-i18n-format-render"
 
     const Description = document.createElement("span")
     Description.innerText = Content
