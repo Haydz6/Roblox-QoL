@@ -308,6 +308,9 @@ const ContentScripts = [{
     "matches": [
         "*://create.roblox.com/dashboard*"
     ],
+    "css": [
+        "css/create.css"
+    ],
     "js": [
         "js/pages/generalfixes/versionhistory/download.js",
         "js/pages/generalfixes/versionhistory/newcreate.js"

@@ -1,6 +1,6 @@
 function CreateDownloadButton(){
     const Button = document.createElement("button")
-    Button.className = "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeSmall MuiButton-textSizeSmall css-dp3vre-Typography-buttonSmall-Button-text-Typography-button-Typography-buttonSmall-Button-text"
+    Button.className = "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeSmall MuiButton-textSizeSmall css-download-static-Typography-buttonSmall-Button-text-Typography-button-Typography-buttonSmall-Button-text"
     Button.style["overflow-x"] = "visible"
 
     const ButtonLabel = document.createElement("span")
@@ -32,6 +32,7 @@ async function VersionHistoryAdded(VersionHistory){
     }
 
     const DownloadButton = CreateDownloadButton()
+    if (Buttons.children.length > 0) DownloadButton.style.marginRight = "6px"
     Buttons.insertBefore(DownloadButton, Buttons.firstChild)
 
     const PlaceId = GetPlaceId()

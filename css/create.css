@@ -1,0 +1,39 @@
+.css-download-static-Typography-buttonSmall-Button-text-Typography-button-Typography-buttonSmall-Button-text {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    background-color: transparent;
+    outline: 0px;
+    border: 0px;
+    margin: 0px;
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+    appearance: none;
+    text-decoration: none;
+    text-transform: uppercase;
+    min-width: 64px;
+    padding: 4px 5px;
+    border-radius: 4px;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    color: rgb(229, 229, 230);
+    font-family: "HCo Gotham SSm", Helvetica, Arial, san-serif;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 22px;
+    font-size: 14px;
+}
+
+.css-download-static-Typography-buttonSmall-Button-text-Typography-button-Typography-buttonSmall-Button-text > .MuiButton-label {
+    display: flex;
+    align-items: center;
+}
+
+.css-download-static-Typography-buttonSmall-Button-text-Typography-button-Typography-buttonSmall-Button-text:hover {
+    background-color: rgb(41, 45, 47);
+}
