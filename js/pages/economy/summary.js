@@ -529,7 +529,7 @@ IsFeatureEnabled("DetailedGroupTranscationSummary").then(async function(Enabled)
     let LastSalesPayoutsType = ""
     let LastSalesPayoutsTransactions
 
-    function CanFetchSalesPayouts(){
+    function CanFetchSalesPayouts(Type){
         return LastSalesPayoutsTime !== Time || LastSalesPayoutsType !== Type
     }
 
