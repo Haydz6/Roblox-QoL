@@ -342,7 +342,8 @@ const ContentScripts = [{
         "js/pages/economy/summary.js",
         "js/pages/economy/chartcsv.js",
         "js/pages/activeprivateservers/getactiveprivateserversv2.js",
-        "js/pages/economy/privateservers.js"
+        "js/pages/economy/privateservers.js",
+        "js/pages/economy/transactionsUSD.js"
     ],
     "run_at": "document_start"
 },

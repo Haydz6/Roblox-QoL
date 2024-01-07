@@ -638,6 +638,10 @@ const Settings = {
             Title: "Show currency price",
             Description: "Shows price of asset in currency selected (Devex Rate)"
         },
+        AddUSDToTransactions: {
+            Title: "Show currency price on Transactions",
+            Description: "Shows price of transactions in currency selected (Devex Rate)"
+        },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
             Description: "Shows amount of robux in currency selected (Devex Rate)"

@@ -12,6 +12,7 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
+    AddUSDToTransactions: true,
     StreamerMode: false, StreamerModeKeybind: null, OpenNewTabIfRequiredHAB: true, OpenNewTabIfRequiredJobsHAB: false,
     HideAge: false, HideSensitiveInfo: false, HideRobux: false, HideGroupRobux: false, HideServerInvites: false, HideNames: false, HideSocials: false, HideGroupPayouts: false,
     FixAvatarPageFirefoxMobileMenu: true, ServerListFixForFirefoxAndroid: true,
