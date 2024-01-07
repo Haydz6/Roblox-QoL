@@ -606,8 +606,9 @@ async function EnableBestConnection(){
 
     function SortServerElements(){
         AllServers.sort(function(a, b){
-            if (SortByLowestPlayers && a.Distance == b.Distance){
-                return a.playing - b.playing
+            if (a.Distance == b.Distance){
+                if (SortByLowestPlayers) return a.playing - b.playing
+                else return b.playing - a.playing
             }
 
             return a.Distance - b.Distance
