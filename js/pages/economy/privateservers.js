@@ -57,7 +57,11 @@ IsFeatureEnabled("ActivePrivateServers").then(async function(Enabled){
         Spinner.remove()
     })
 
-    const Table = await WaitForClass("table summary")
-    const Body = await WaitForTagPath(Table, "tbody")
-    Body.insertBefore(SummaryLabel, Body.children[Body.children.length-1])
+    const Container = await WaitForClass("user-transactions-container")
+    ChildAdded(Container, true, async function(Child){
+        if (Child.className !== "summary") return
+        const Body = await WaitForTagPath(await WaitForClassPath(Child, "table summary"), "tbody")
+
+        Body.insertBefore(SummaryLabel, Body.children[Body.children.length-1])
+    })
 })
