@@ -18,6 +18,12 @@ IsFeatureEnabled("UserHeader").then(async function(Enabled){
 
     const HomeContainer = await WaitForId("HomeContainer")
     const Header = await WaitForClassPath(HomeContainer, "container-header")
+    Header.style.display = "inline-flex"
+
+    ChildAdded(Header, true, function(Child){
+        if (parseInt(Child.style.marginTop) < 0) Child.style.marginTop = ""
+    })
+
     Header.replaceChildren()
     Header.appendChild(HomeHeader)
 })

@@ -27,6 +27,7 @@
 }
 
 .top-home-header .avatar-card-link {
+    aspect-ratio: 1;
     height: 125px;
     width: 125px;
 
@@ -41,6 +42,10 @@
     background-color: #d4d4d4;
 }
 
+.top-home-header .name-container {
+    display: flex;
+    align-items: center;
+}
 
 .roblox-usernames .people-list {
     height: 160px;
