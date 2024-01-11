@@ -178,7 +178,7 @@ IsFeatureEnabled("BestFriendInventoryV2").then(async function(Enabled){
             Headers["content-type"] = "application/json"
 
             return [new Response(BodyString, {status: 200, statusText: "OK", headers: Headers}), BodyString]
-        } else if (Result.status === 403 || Result.status === 400) {
+        } else if (!Result || Result.status === 403 || Result.status === 400) {
             if (Roblox?.AssetsExplorerModel) Roblox.AssetsExplorerModel.canViewInventory = false
         }
     }
