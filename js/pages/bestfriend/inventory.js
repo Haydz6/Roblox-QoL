@@ -27,40 +27,6 @@ function IsFeatureEnabled(Feature){
     })
 }
 
-function onDefined(object, property, checkInit) { //thanks julia
-    return new Promise((resolve) => {
-        if (!checkInit && (object[property] !== undefined)) return resolve(object[property]);
-
-        const oldSetProperty = Object.getOwnPropertyDescriptor(object, property)?.set;
-        const properties = {
-            enumerable: false,
-            configurable: true,
-            set(value) {
-                // We actually define the .set property after extensions like BTRoblox
-                // so we need to store the old set property and then call it for compatibility
-                if (oldSetProperty) {
-                    try {
-                        oldSetProperty(value);
-                    } catch {
-                        /* catch errors */
-                    }
-                }
-                delete object[property];
-                object[property] = value;
-
-                resolve(value);
-            },
-        };
-
-        if (checkInit) {
-            const oldValue = object[property];
-            properties.get = () => oldValue;
-        }
-
-        Object.defineProperty(object, property, properties);
-    });
-}
-
 IsFeatureEnabled("BestFriendInventoryV2").then(async function(Enabled){
     if (!Enabled) return
     
