@@ -344,6 +344,14 @@ const Settings = {
             Title: "Playtime",
             Description: "Tracks and shows how long you have played a game."
         },
+        HidePlayTime: {
+            Title: "Hide play time on home page",
+            Description: "Hides play time on home page."
+        },
+        HideEditTime: {
+            Title: "Hide edit time on home page",
+            Description: "Hides edit time on home page."
+        },
         PinnedGames: {
             Title: "Pinned Games",
             Description: "Allows you to pin games to your home page."

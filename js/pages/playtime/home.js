@@ -1,8 +1,9 @@
 let PlaytimeBatchRequests = []
 
-function RequestPlaytimeBatchFetch(Type){
+function RequestPlaytimeBatchFetch(Type, ShouldFetch){
     return new Promise(async(resolve, reject) => {
         PlaytimeBatchRequests.push({resolve: resolve, Type: Type})
+        if (ShouldFetch === false) return
 
         if (PlaytimeBatchRequests.length >= 2) {
             const [Success, Games] = await RequestFunc(`${WebServerEndpoints.Playtime}all?time=all&type=Play,Edit&show=Some`, "GET")
@@ -111,6 +112,12 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
     let GamesList = await WaitForClass("game-home-page-container")
     if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
 
-    CreateHomeRow(GamesList, "Studio Sessions", "Edit", false)
-    CreateHomeRow(GamesList, "Playtime", "Play", false)
+    const [PlaytimeHide, EdittimeHide] = await Promise.all([IsFeatureEnabled("HidePlayTime"), IsFeatureEnabled("HideEditTime")])
+    console.log(PlaytimeHide, EdittimeHide)
+   
+    if (!EdittimeHide) CreateHomeRow(GamesList, "Studio Sessions", "Edit", false)
+    else RequestPlaytimeBatchFetch("Edit", false)
+
+    if (!PlaytimeHide) CreateHomeRow(GamesList, "Playtime", "Play", false)
+    else RequestPlaytimeBatchFetch("Play", false)
 })
