@@ -1,6 +1,6 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 
-const Debugging = true
+const Debugging = false
 const IgnoreDisabledFeatures = false
 const IsSafari = false
 
