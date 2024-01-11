@@ -16,15 +16,23 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
             PeopleList.style = "height: 190px !important;"
             PeopleList.getElementsByClassName("people-list-container")[0].style = "height: 190px !important; overflow: hidden;"
             PeopleList.getElementsByClassName("people-list")[0].style = "height: 163px !important; max-height: 163px !important;"
+
+            PeopleList.classList.remove("expand")
         } else {
             PeopleList.style = ""
             PeopleList.getElementsByClassName("people-list-container")[0].style = ""
             PeopleList.getElementsByClassName("people-list")[0].style = ""
-        }
 
+            PeopleList.classList.add("expand")
+        }
         MoreButton.innerText = IsExpanded ? "Retract" : "Expand"
         //MoreButton.children[0].style.transform = IsExpanded ? "scale(.875) rotate(90deg)" : ""
     }
+
+    const Style = document.createElement("style")
+    Style.innerHTML = ` #best-friend-list-container.expand:not(.roblox-usernames) .people-list {height: 280px !important; max-height: 280px !important;} #best-friend-list-container.expand:not(.roblox-usernames) .people-list-container {height: 340px !important;}
+    #best-friend-list-container.expand.roblox-usernames .people-list {height: 297px !important; max-height: 297px !important;} #best-friend-list-container.expand.roblox-usernames .people-list-container {height: 367px !important;}`
+    document.body.appendChild(Style)
 
     MoreButton.addEventListener("click", function(){
         IsExpanded = !IsExpanded
