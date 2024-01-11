@@ -33,7 +33,7 @@ IsFeatureEnabled("BestFriendInventoryV2").then(async function(Enabled){
         const [Success, Result] = await RequestFunc(WebServerEndpoints.BestFriends+"inventory/view", "GET")
         if (!Success) return
         CanView = Result.CanView
-        RequiresOAuth = Result.RequiresOAuth
+        RequiresOAuth = Result.OAuthRequired
 
         UpdateOAuthButton()
     }
