@@ -12,7 +12,7 @@ IsFeatureEnabled("BestFriendInventoryV2").then(async function(Enabled){
         OAuthButton = undefined
 
         if (!PrivacyContainer) return
-        if (RequiresOAuth){
+        if (RequiresOAuth && CanView){
             OAuthButton = document.createElement("button")
             OAuthButton.className = "btn-primary-md"
             OAuthButton.innerText = "Give access for best friend inventory"
