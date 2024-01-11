@@ -73,110 +73,84 @@ async function PopulateUniverse(Presences){
     }
 }
 
-IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
+IsFeatureEnabled("BestFriendPresenceV3").then(function(Enabled){
     if (!Enabled || !window.location.href.includes("www.roblox.com")) return
 
-    var _XMLHttpRequest = XMLHttpRequest;
-    XMLHttpRequest = function() {
-        var xhr = new _XMLHttpRequest();
+    InterceptXMLHttpRequest(function(url){
+        return url === "https://presence.roblox.com/v1/presence/users"
+    }, async function(xhr){
+        var Body
+        try {Body = JSON.parse(xhr.responseText)} catch {}
+        if (Body){
 
-        // augment/wrap/modify here
-        var _open = xhr.open;
-        xhr.open = function(_, url) {
-            if (url === "https://presence.roblox.com/v1/presence/users"){
-                
-                var _send = xhr.send
-                xhr.send = function(){
+            //ok
+            const Users = []
+            const Presences = Body.userPresences
+            const UserIdToPresence = {}
+            
+            for (let i = 0; i < Presences.length; i++){
+                const Presence = Presences[i]
+                if (Presence.userPresenceType !== 2 || Presence.universeId) continue
 
-                    var _onreadystatechange = xhr.onreadystatechange
-                    xhr.onreadystatechange = async function(e){
-                        if (xhr.status == 200 && xhr.readyState == 4){
-                            var Body
-                            try {Body = JSON.parse(xhr.responseText)} catch {}
-                            if (Body){
-
-                                //ok
-                                const Users = []
-                                const Presences = Body.userPresences
-                                const UserIdToPresence = {}
-                                
-                                for (let i = 0; i < Presences.length; i++){
-                                    const Presence = Presences[i]
-                                    if (Presence.userPresenceType !== 2 || Presence.universeId) continue
-
-                                    UserIdToPresence[Presence.userId] = Presence
-                                    Users.push(Presence.userId)
-                                }
-
-                                //my goodness this code is terrible but is the only way to efficiently query the database.
-
-                                if (Users.length > 0){
-                                    
-                                    const Populate = []
-                                    if (Users.length === 1){
-
-                                        try {
-                                            const Response = await FetchFromPresenceHelper(Users)
-                                            if (Response && Response.ok){
-                                                const BestFriendPresence = Response.json
-
-                                                if (BestFriendPresence.UniverseId){
-                                                    const Presence = UserIdToPresence[Users[0]]
-
-                                                    Presence.universeId = BestFriendPresence.UniverseId
-                                                    Presence.gameId = BestFriendPresence.JobId
-                                                    Populate.push(Presence)
-                                                }
-                                            }
-                                        } catch (error) {console.log(error)}
-
-                                    } else {
-
-                                        try {
-                                            const Response = await FetchFromPresenceHelper(Users)
-                                            if (Response && Response.ok){
-                                                const BestFriendsPresence = Response.json
-
-                                                for (let i = 0; i < BestFriendsPresence.length; i++){
-                                                    const BestFriendPresence = BestFriendsPresence[i]
-                                                    const Presence = UserIdToPresence[BestFriendPresence.UserId]
-
-                                                    Presence.universeId = BestFriendPresence.UniverseId
-                                                    Presence.gameId = BestFriendPresence.JobId
-                                                    Populate.push(Presence)
-                                                }
-                                            }
-                                        } catch (error) {console.log(error)}
-                                    }
-
-                                    if (Populate.length > 0) await PopulateUniverse(Populate)
-
-                                    try {
-                                        Object.defineProperties(this, {
-                                            responseText: {writable: true, configurable: true, value: JSON.stringify(Body)},
-                                            response: {writable: true, configurable: true, value: Body}
-                                        })
-                                    } catch (error) {console.log(error)}
-                                }
-                            }
-                        }
-
-                        if (_onreadystatechange) return _onreadystatechange.apply(this, arguments)
-                    }
-
-                    return _send.apply(this, arguments)
-                }
-
+                UserIdToPresence[Presence.userId] = Presence
+                Users.push(Presence.userId)
             }
 
-            return _open.apply(this, arguments);
-        }
+            //my goodness this code is terrible but is the only way to efficiently query the database.
 
-        return xhr;
-    }
+            if (Users.length > 0){
+                
+                const Populate = []
+                if (Users.length === 1){
+
+                    try {
+                        const Response = await FetchFromPresenceHelper(Users)
+                        if (Response && Response.ok){
+                            const BestFriendPresence = Response.json
+
+                            if (BestFriendPresence.UniverseId){
+                                const Presence = UserIdToPresence[Users[0]]
+
+                                Presence.universeId = BestFriendPresence.UniverseId
+                                Presence.gameId = BestFriendPresence.JobId
+                                Populate.push(Presence)
+                            }
+                        }
+                    } catch (error) {console.log(error)}
+
+                } else {
+
+                    try {
+                        const Response = await FetchFromPresenceHelper(Users)
+                        if (Response && Response.ok){
+                            const BestFriendsPresence = Response.json
+
+                            for (let i = 0; i < BestFriendsPresence.length; i++){
+                                const BestFriendPresence = BestFriendsPresence[i]
+                                const Presence = UserIdToPresence[BestFriendPresence.UserId]
+
+                                Presence.universeId = BestFriendPresence.UniverseId
+                                Presence.gameId = BestFriendPresence.JobId
+                                Populate.push(Presence)
+                            }
+                        }
+                    } catch (error) {console.log(error)}
+                }
+
+                if (Populate.length > 0) await PopulateUniverse(Populate)
+
+                try {
+                    Object.defineProperties(xhr, {
+                        responseText: {writable: true, configurable: true, value: JSON.stringify(Body)},
+                        response: {writable: true, configurable: true, value: Body}
+                    })
+                } catch (error) {console.warn(error)}
+            }
+        }
+    })
 
     //intercept fetch too
-    const _fetch = fetch
+    const _fetch = fetch.bind(globalThis)
     window.fetch = async function(...args){
         const response = await _fetch(...args)
         if (response.url !== "https://presence.roblox.com/v1/presence/users" || !response.ok) return response

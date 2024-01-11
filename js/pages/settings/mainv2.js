@@ -506,7 +506,6 @@ async function CreateSettingsList(){
         })
     ])
 
-    console.log(Result)
     if (Result === "React") CreateSettingsListReact()
     else CreateSettingsListController()
 }

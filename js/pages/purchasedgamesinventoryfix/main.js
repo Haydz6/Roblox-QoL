@@ -151,36 +151,38 @@ const DefaultPurchasedGamesCardElementObserver = new MutationObserver(function(m
     })
 })
 
-IsFeatureEnabled("PurchasedGamesFix").then(async function(Enabled){
-    if (!Enabled) return
+setTimeout(function(){
+    IsFeatureEnabled("PurchasedGamesFix").then(async function(Enabled){
+        if (!Enabled) return
 
-    let CategoriesList = await WaitForClass("menu-vertical submenus")
+        let CategoriesList = await WaitForClass("menu-vertical submenus")
 
-    let PlacesButton
+        let PlacesButton
 
-    while (!PlacesButton){
-        await sleep(100)
-        PlacesButton = await GetButtonCategoryFromHref(CategoriesList, "places")
-    }
-
-    const Parent = PlacesButton.getElementsByTagName("div")[0].getElementsByTagName("ul")[0]
-    const children = Parent.children
-
-    let PurchasedPlacesButton
-
-    for (let i = 0; i < children.length; i++){
-        if (children[i].getAttribute("href") === "#!/places/purchased"){
-            PurchasedPlacesButton = children[i]
-            break
+        while (!PlacesButton){
+            await sleep(100)
+            PlacesButton = await GetButtonCategoryFromHref(CategoriesList, "places")
         }
-    }
 
-    if (!PurchasedPlacesButton) return
+        const Parent = PlacesButton.getElementsByTagName("div")[0].getElementsByTagName("ul")[0]
+        const children = Parent.children
 
-    PurchasedPlacesButton.remove()
+        let PurchasedPlacesButton
 
-    const [NewPurchasedPlacesButton] = CreateActivePrivateServersButton("Purchased", "#!/places?tab=purchased-games")
-    Parent.insertBefore(NewPurchasedPlacesButton, Parent.nextSibiling)
+        for (let i = 0; i < children.length; i++){
+            if (children[i].getAttribute("href") === "#!/places/purchased"){
+                PurchasedPlacesButton = children[i]
+                break
+            }
+        }
 
-    CheckPurchasedGamesOpened()
-})
+        if (!PurchasedPlacesButton) return
+
+        PurchasedPlacesButton.remove()
+
+        const [NewPurchasedPlacesButton] = CreateActivePrivateServersButton("Purchased", "#!/places?tab=purchased-games")
+        Parent.insertBefore(NewPurchasedPlacesButton, Parent.nextSibiling)
+
+        CheckPurchasedGamesOpened()
+    })
+}, 0)

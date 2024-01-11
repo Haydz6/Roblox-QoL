@@ -29,8 +29,10 @@ async function InjectScript(Path, URLMatch, FullPath, Attrs, RunFirst){
 
 // InjectScript("bestfriendpresence", "*://*.roblox.com/users/*/profile", "js/pages/bestfriend/presence.js", undefined, true)
 // InjectScript("bestfriendpresence", "*://*.roblox.com/home*", "js/pages/bestfriend/presence.js", undefined, true)
+InjectScript("xhrwrapper", "*://*.roblox.com/*", "js/pages/bestfriend/xhrwrapper.js", undefined, true)
 InjectScript("bestfriendpresence", "*://*.roblox.com/*", "js/pages/bestfriend/presence.js", undefined, true)
-InjectScript("bestfriendpresence", "*://create.roblox.com/*", "js/pages/generalfixes/scriptinjections/viewoffsaleitems.js", undefined, true)
+InjectScript("bestfriendinventory", "*://www.roblox.com/users/*/inventory*", "js/pages/bestfriend/inventory.js", undefined, true)
+InjectScript("viewoffsaleitems", "*://create.roblox.com/*", "js/pages/generalfixes/scriptinjections/viewoffsaleitems.js", undefined, true)
 
 IsFeatureEnabled("FixAvatarPageFirefoxMobileMenu").then(function(Enabled){
     if (!Enabled) return
@@ -74,7 +76,7 @@ IsFeatureEnabled("NameOnHomeFriends").then(function(Enabled){
     if (Enabled) InjectScript("FriendsName", "*://*.roblox.com/home*")
 })
 
-// IsFeatureEnabled("BestFriendPresenceV2").then(function(Enabled){
+// IsFeatureEnabled("BestFriendPresenceV3").then(function(Enabled){
 //     if (Enabled){
 //         InjectScript("bestfriendpresence", "*://*.roblox.com/users/*/profile", "js/pages/bestfriend/presence.js")
 //         InjectScript("bestfriendpresence", "*://*.roblox.com/home*", "js/pages/bestfriend/presence.js")

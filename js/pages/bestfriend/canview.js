@@ -1,4 +1,4 @@
-IsFeatureEnabled("BestFriendPresenceV2").then(async function(Enabled){
+IsFeatureEnabled("BestFriendPresenceV3").then(async function(Enabled){
     if (!Enabled || !await PaidForFeature("BestFriends")) return
 
     let CanView
@@ -15,13 +15,21 @@ IsFeatureEnabled("BestFriendPresenceV2").then(async function(Enabled){
         RequestFunc(WebServerEndpoints.BestFriends+"setview", "POST", {"Content-Type": "application/json"}, JSON.stringify({CanView: CanView}))
     }
 
-    ChildAdded(await WaitForClass("tab-content"), true, function(){
-        const Container = document.getElementById("privacy-settings")
+    ChildAdded(await WaitForClass("tab-content"), true, function(Child, Disconnect){
+        const Container = document.getElementById("privacy-settings") || document.getElementById("rbx-privacy-settings-header")
         if (!Container) return
 
-        ChildAdded(Container, true, async function(){
+        let DebounceCheck = false
+        DescendantAdded(Child, true, async function(){
+            if (DebounceCheck) return
+            DebounceCheck = true
+            await sleep(0)
+            DebounceCheck = false
+
             const JoinPrivacy = document.getElementById("FollowMePrivacy")
             if (!JoinPrivacy || document.getElementById("best-friends-view-game")) return
+
+            Disconnect()
 
             const Option = document.createElement("option")
             Option.value = "BestFriends"
@@ -41,7 +49,7 @@ IsFeatureEnabled("BestFriendPresenceV2").then(async function(Enabled){
             JoinPrivacy.addEventListener("change", function(){
                 if (JoinPrivacy.selectedIndex === GetBestFriendIndex()){
                     Option.value = "NoOne"
-                    Option.innerText = "Best Friends (Best Friends must have RoQoL extension installed)"
+                    Option.innerText = "Best Friends (Best Friends require RoQoL extension)"
 
                     if (!CanView){
                         CanView = true
@@ -67,7 +75,7 @@ IsFeatureEnabled("BestFriendPresenceV2").then(async function(Enabled){
             await FetchCanView()
 
             if (CanView && JoinPrivacy.value === "NoOne"){
-                Option.innerText = "Best Friends (Best Friends must have RoQoL extension installed)"
+                Option.innerText = "Best Friends (Best Friends require RoQoL extension)"
                 JoinPrivacy.value = "BestFriends"
             }
         })

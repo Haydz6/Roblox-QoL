@@ -100,7 +100,7 @@ async function UpdateRecentServer(){
     }
     UniverseId = UniverseId || 0
 
-    if (CanUpdatePlaytimeEndpoint(InGame, InStudio, UniverseId)) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json", Authentication: AuthKey}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0, JobId: await IsFeatureEnabled("BestFriendPresenceV2") ? Presence.gameId : undefined}))
+    if (CanUpdatePlaytimeEndpoint(InGame, InStudio, UniverseId)) RequestFunc(WebServerEndpoints.Playtime+"update", "POST", {["Content-Type"]: "application/json", Authentication: AuthKey}, JSON.stringify({InGame: InGame, InStudio: InStudio, UniverseId: UniverseId || 0, JobId: await IsFeatureEnabled("BestFriendPresenceV3") ? Presence.gameId : undefined}))
     if (UniverseId) UpdateVoiceServer(UserId, AuthKey, UniverseId, Presence.rootPlaceId, Presence.placeId, Presence.gameId)
     //Updated playtime
 

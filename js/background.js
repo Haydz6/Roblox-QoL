@@ -1,6 +1,6 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 
-const Debugging = false
+const Debugging = true
 const IgnoreDisabledFeatures = false
 const IsSafari = false
 
@@ -12,12 +12,12 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
-    AddUSDToTransactions: true,
+    AddUSDToTransactions: true, BestFriendInventoryV2: true,
     StreamerMode: false, StreamerModeKeybind: null, OpenNewTabIfRequiredHAB: true, OpenNewTabIfRequiredJobsHAB: false,
     HideAge: false, HideSensitiveInfo: false, HideRobux: false, HideGroupRobux: false, HideServerInvites: false, HideNames: false, HideSocials: false, HideGroupPayouts: false,
     FixAvatarPageFirefoxMobileMenu: true, ServerListFixForFirefoxAndroid: true,
     ViewOffsaleItems: true, MinimizableSideBar: true, AvatarEditorForMobile: false, AvatarPageCSSFix: true, BypassAvatarEditorMobilePromptUpsellButton: true,
-    AssetQuickWearV2: true, VoiceChatServers: true, VoiceChatServerAnalytics: true, BestFriendPresenceV2: true, HideSerials: true, NameOnHomeFriends: false,
+    AssetQuickWearV2: true, VoiceChatServers: true, VoiceChatServerAnalytics: true, BestFriendPresenceV3: true, HideSerials: true, NameOnHomeFriends: false,
     UserHeaderGreeting: "Hello, {displayname}", UserHeader: false, TradeAge: true, CurrentTheme: {}, FriendsPageLastOnline: true, AvatarSearchbar: true, 
     DontTryBypassHBA: false, FriendsActivity: true, LastOnline: true, TemporaryHomePageContainerFix: true, Feed: true, IgnoreSystemInboxNofitications: false, InboxNotifications: false, 
     GroupShoutNotifications: {Enabled: false, Joined: true, Groups: []}, BestFriends: true, CSVChart: true, MinimizePrivateServers: true, SetThemeToSystem2: false, DiscordSocialLink: true, 
@@ -534,6 +534,10 @@ PaidForFeature("CurrentTheme").then(function(Paid){
 
         SetFeatureEnabled("CurrentTheme", Body, false)
     })
+})
+
+BindToOnMessage("OAuthNewTab", false, function(){
+    chrome.tabs.create({url: `${WebServerURL}api/oauth?scope=inventory`})
 })
 
 //Auth Debug

@@ -10,7 +10,7 @@ let CurrentSubscription = undefined
 let UserId
 let CSRFToken = ""
 
-const Debugging = false
+const Debugging = true
 const IgnoreDisabledFeatures = false
 const UseV2Waiters = false
 
@@ -659,6 +659,43 @@ function ChildAdded(Node, SendInitial, Callback){
 
   return Observer
 }
+
+function DescendantAdded(Node, SendInitial, Callback){
+  let Observer
+  async function Disconnect(){
+    while (!Observer) await sleep(0)
+    try {Observer.disconnect()} catch {}
+  }
+
+  if (SendInitial){
+    function ScanChildren(Node){
+      const children = Node.children
+      if (children){
+        for (let i = 0; i < children.length; i++){
+          Callback(children[i], Disconnect)
+          ScanChildren(children[i])
+        }
+      }
+    }
+
+    ScanChildren(Node)
+  }
+
+  Observer = new MutationObserver(function(Mutations){
+    Mutations.forEach(function(Mutation) {
+      if (Mutation.type !== "childList") return
+
+      const addedNodes = Mutation.addedNodes
+      for (let i = 0; i < addedNodes.length; i++){
+        Callback(addedNodes[i], Disconnect)
+      }
+    })
+  })
+  Observer.observe(Node, {childList: true, subtree: true})
+
+  return Observer
+}
+
 
 function ChildRemoved(Node, Callback){
   return new MutationObserver(function(Mutations, Observer){

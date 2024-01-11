@@ -138,7 +138,8 @@ const ContentScripts = [{
         "js/pages/settings/main.js",
         "js/pages/settings/themes.js",
         "js/pages/settings/mainv2.js",
-        "js/pages/bestfriend/canview.js"
+        "js/pages/bestfriend/canview.js",
+        "js/pages/bestfriend/caninventoryview.js"
     ],
     "run_at": "document_start"
 },
@@ -374,6 +375,15 @@ const ContentScripts = [{
     ],
     "css": [
         "css/groups.css"
+    ],
+    "run_at": "document_start"
+},
+{
+    "matches": [
+        "*://*.roblox.com/users/*/inventory*"
+    ],
+    "js": [
+        "js/pages/bestfriend/inventoryhelper.js"
     ],
     "run_at": "document_start"
 },
