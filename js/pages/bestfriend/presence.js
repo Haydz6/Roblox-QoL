@@ -81,6 +81,7 @@ IsFeatureEnabled("BestFriendPresenceV3").then(function(Enabled){
     }, async function(xhr){
         var Body
         try {Body = JSON.parse(xhr.responseText)} catch {}
+
         if (Body){
 
             //ok
