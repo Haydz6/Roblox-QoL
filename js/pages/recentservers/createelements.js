@@ -15,12 +15,19 @@ function CreateRecentServersList(Title, Id){
     ServerList.className = "card-list rbx-friends-game-server-item-container"
     ServerList.id = `rbx-${Id ? Id : "recent"}-game-server-item-container`
 
-    let Opened = true
-    ContainerHeader.addEventListener("click", function(){
-        Opened = !Opened
+    let Opened = localStorage.getItem("roqol-recentservers-expanded") === "false" ? false : true
+
+    function Update(){
         Minimize.className = `icon-${Opened ? "up" : "down"}-16x16`
         ServerList.style.display = Opened ? "" : "none"
+    }
+
+    ContainerHeader.addEventListener("click", function(){
+        Opened = !Opened
+        Update()
+        localStorage.setItem("roqol-recentservers-expanded", Opened)
     })
+    Update()
 
     Container.appendChild(ContainerHeader)
 

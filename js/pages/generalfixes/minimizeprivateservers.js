@@ -12,13 +12,20 @@ IsFeatureEnabled("MinimizePrivateServers").then(function(Enabled){
         Minimize.className = "icon-up-16x16"
         Minimize.style = "margin-left: 3px;"
 
-        let Opened = true
-        function Click(){
-            Opened = !Opened
+        let Opened = localStorage.getItem("roqol-privateservers-expanded") === "false" ? false : true
+
+        function Update(){
             Minimize.className = `icon-${Opened ? "up" : "down"}-16x16`
             Banner.style.display = Opened ? "" : "none"
             Section.style.display = Opened ? "" : "none"
         }
+
+        function Click(){
+            Opened = !Opened
+            Update()
+            localStorage.setItem("roqol-privateservers-expanded", Opened)
+        }
+        Update()
 
         Header.getElementsByTagName("h2")[0].addEventListener("click", Click)
         Minimize.addEventListener("click", Click)
