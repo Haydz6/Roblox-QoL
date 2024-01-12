@@ -156,12 +156,17 @@ setTimeout(function(){
             for (let i = 0; i < RobuxLabels.length; i++){
                 const RobuxLabel = RobuxLabels[i]
 
-                const Robux = parseInt(RobuxLabel.innerText.replaceAll(",", ""))
+                async function Update(){
+                    const Robux = parseInt(RobuxLabel.textContent.replace(/\D/g, ""))
+                    if (!isNaN(Robux)) PriceLabel.innerText = `(${await RobuxToCurrency(Robux)})`
+                }
 
                 const PriceLabel = document.createElement("span")
                 PriceLabel.className = "text-label"
                 PriceLabel.style = "margin-left: 5px; font-weight: 500;"
-                PriceLabel.innerText = `(${await RobuxToCurrency(Robux)})`
+
+                new MutationObserver(Update).observe(RobuxLabel, {subtree: true, characterData: true})
+                Update()
 
                 RobuxLabel.appendChild(PriceLabel)
             }
