@@ -26,10 +26,6 @@ IsFeatureEnabled("AddUSDToGameStore").then(function(Enabled){
     
                 MainUSDLabel.innerText = `(${await RobuxToCurrency(Robux)})`
     
-                ChildRemoved(PriceContainer, function(Child){
-                    if (Child === MainUSDLabel) PriceContainer.appendChild(MainUSDLabel)
-                })
-    
                 PriceContainer.appendChild(MainUSDLabel)
             })
 
