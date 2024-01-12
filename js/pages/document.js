@@ -548,7 +548,8 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function RobuxToUSD(Robux){
+async function RobuxToUSD(Robux){
+  if (await IsFeatureEnabled("ShowUSDPurchaseRate")) return Robux * 0.0125
   return Robux * 0.0035
 }
 
@@ -577,7 +578,7 @@ async function RobuxToCurrency(Robux){
   const Currency = ForceUSDCurrency && "USD" || await IsFeatureEnabled("Currency")
   const Multiplier = Currency === "USD" && 1 || ExchangeRateCache[Currency]
 
-  return new Intl.NumberFormat(Language, {style: "currency", currency: ForceUSDCurrency && "USD" || await IsFeatureEnabled("Currency"), currencyDisplay: "narrowSymbol", maximumFractionDigits: 2}).format(RobuxToUSD(Robux) * Multiplier)
+  return new Intl.NumberFormat(Language, {style: "currency", currency: ForceUSDCurrency && "USD" || await IsFeatureEnabled("Currency"), currencyDisplay: "narrowSymbol", maximumFractionDigits: 2}).format(await RobuxToUSD(Robux) * Multiplier)
 }
 
 let PageTargetId

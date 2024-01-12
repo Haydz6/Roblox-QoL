@@ -642,21 +642,29 @@ const Settings = {
             Title: "CSV Chart",
             Description: "Allows you to upload a CSV file and display it in a chart (User and Group transactions page)."
         },
+        ShowUSDPurchaseRate: {
+            Title: "Show currency in purchase rate",
+            Description: "Shows currency prices in purchase rate instead of devex rate"
+        },
         ShowUSDOnAsset: {
-            Title: "Show currency price",
-            Description: "Shows price of asset in currency selected (Devex Rate)"
+            Title: "Show currency price on asset",
+            Description: "Shows price of asset in currency selected"
         },
         AddUSDToTransactions: {
             Title: "Show currency price on Transactions",
-            Description: "Shows price of transactions in currency selected (Devex Rate)"
+            Description: "Shows price of transactions in currency selected"
+        },
+        AddUSDToGameStore: {
+            Title: "Show currency price on game store",
+            Description: "Shows price of gamepasses from game store in currency selected"
         },
         AddUSDToRobux: {
             Title: "Show currency on Robux",
-            Description: "Shows amount of robux in currency selected (Devex Rate)"
+            Description: "Shows amount of robux in currency selected"
         },
         Currency: {
             Title: "Currency",
-            Description: "Shows amount of robux in currency you selected (Devex Rate)",
+            Description: "Shows amount of robux in currency you selected",
             Type: "SelectionList",
             GetList: async function(){
                 const [Success, Result] = await RequestFunc("https://roqol.io/api/currency/rates", "GET")
