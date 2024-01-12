@@ -41,7 +41,7 @@ function InterceptXMLHttpRequest(CheckIntercept, Callback){
         let Intercept = false
         let URL
 
-        var _send = xhr.send.bind(xhr)
+        var _send = xhr.send//.bind(xhr)
         xhr.send = function(){
             if (Intercept){
                 async function Modify(){
@@ -65,7 +65,7 @@ function InterceptXMLHttpRequest(CheckIntercept, Callback){
                 onDefined(xhr, "onload").then(function(){
                     if (!xhr.onload) return
 
-                    var _onload = xhr.onload.bind(xhr)
+                    var _onload = xhr.onload//.bind(xhr)
 
                     xhr.onload = async function(){
                         await Modify()
@@ -76,7 +76,7 @@ function InterceptXMLHttpRequest(CheckIntercept, Callback){
                 onDefined(xhr, "onreadystatechange").then(function(){
                     if (!xhr.onreadystatechange) return
 
-                    var _onreadystatechange = xhr.onreadystatechange.bind(xhr)
+                    var _onreadystatechange = xhr.onreadystatechange//.bind(xhr)
 
                     xhr.onreadystatechange = async function(){
                         if (xhr.readyState == 4){
@@ -91,10 +91,9 @@ function InterceptXMLHttpRequest(CheckIntercept, Callback){
             return _send.apply(this, arguments)
         }
 
-        var _open = xhr.open.bind(xhr);
+        var _open = xhr.open//.bind(this);
         xhr.open = function(_, url) {
-            //if (url.includes("https://inventory.roblox.com/v2/users/")){
-            if (CheckIntercept(url)){
+            if (CheckIntercept(url || "")){
                 URL = url
                 Intercept = true
             }
