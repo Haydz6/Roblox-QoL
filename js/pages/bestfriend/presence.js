@@ -79,10 +79,12 @@ IsFeatureEnabled("BestFriendPresenceV3").then(function(Enabled){
     InterceptXMLHttpRequest(function(url){
         return url === "https://presence.roblox.com/v1/presence/users"
     }, async function(xhr){
+        if (xhr.status !== 200) return
+
         var Body
         try {Body = JSON.parse(xhr.responseText)} catch {}
 
-        if (xhr.status === 200 && Body){
+        if (Body){
 
             //ok
             const Users = []
