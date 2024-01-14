@@ -82,7 +82,7 @@ IsFeatureEnabled("BestFriendPresenceV3").then(function(Enabled){
         var Body
         try {Body = JSON.parse(xhr.responseText)} catch {}
 
-        if (Body){
+        if (xhr.status === 200 && Body){
 
             //ok
             const Users = []

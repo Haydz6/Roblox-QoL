@@ -47,7 +47,13 @@ function InterceptXMLHttpRequest(CheckIntercept, Callback){
                 async function Modify(){
                     if (!xhr.responseUrl) xhr.responseUrl = URL
 
-                    const Return = await Callback(xhr)
+                    let Return
+
+                    try {
+                        Return = await Callback(xhr)
+                    } catch (err) {
+                        console.log(err)
+                    }
     
                     if (Return){
                         const [Result, Body] = Return
