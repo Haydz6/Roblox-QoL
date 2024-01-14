@@ -45,12 +45,10 @@ function InterceptXMLHttpRequest(CheckIntercept, Callback){
         xhr.send = function(){
             if (Intercept){
                 async function Modify(){
-                    if (!xhr.responseUrl) xhr.responseUrl = URL
-
                     let Return
 
                     try {
-                        Return = await Callback(xhr)
+                        Return = await Callback(xhr, URL)
                     } catch (err) {
                         console.log(err)
                     }
@@ -100,7 +98,7 @@ function InterceptXMLHttpRequest(CheckIntercept, Callback){
         var _open = xhr.open//.bind(this);
         xhr.open = function(_, url) {
             if (CheckIntercept(url || "")){
-                URL = url
+                URL = url || ""
                 Intercept = true
             }
             

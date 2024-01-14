@@ -185,13 +185,13 @@ IsFeatureEnabled("BestFriendInventoryV2").then(async function(Enabled){
 
     InterceptXMLHttpRequest(function(url){
         return url.substring(0, 38) === "https://inventory.roblox.com/v2/users/" || url.substring(0, 48) === "https://www.roblox.com/users/inventory/list-json" || (url.substring(0, 36) == "https://catalog.roblox.com/v1/users/" && url.includes("/bundles/"))
-    }, async function(XHR){
-        if (XHR.responseUrl.includes("cursor=oauth_")) return GenerateBody(XHR.responseUrl, XHR)
+    }, async function(XHR, url){
+        if (url.includes("cursor=oauth_")) return GenerateBody(url, XHR)
 
-        if (XHR.status === 403) return GenerateBody(XHR.responseUrl, XHR)
-        else if (XHR.responseUrl.substring(0, 48) === "https://www.roblox.com/users/inventory/list-json"){
+        if (XHR.status === 403) return GenerateBody(url, XHR)
+        else if (url.substring(0, 48) === "https://www.roblox.com/users/inventory/list-json"){
             const Body = JSON.parse(XHR.responseText)
-            if (Body?.Data?.End === -1) return GenerateBody(XHR.responseUrl, XHR)
+            if (Body?.Data?.End === -1) return GenerateBody(url, XHR)
         }
     })
 
