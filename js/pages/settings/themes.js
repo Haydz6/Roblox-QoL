@@ -75,7 +75,7 @@ async function CreateThemesSection(List){
     CustomList.style = "display: flex; justify-content: center; margin-bottom: 16px;"
 
     const UploadContainer = document.createElement("div")
-    UploadContainer.innerHTML = `<div class="ThemeUploadContainer"><label tabindex="0" type="button"><input accept=".jpg,.png,.jpeg,.gif" type="file" size="1000000" style="display: none;" class="customThemeUpload"><span>Upload Custom Theme</span><span class="ThemeUploadRipple"></span></label><span class="spinner spinner-default" style="display: none;"></span><span class="upload-subtitle error" style="color: rgba(247,75,82,255); display: none;"><span class="icon-warning"></span></span><span class="upload-subtitle">Format: *.jpg, *.png, *.gif</span><span class="upload-subtitle">Max file size: 4 MB</span><span class="upload-subtitle">Max resolution: 2048x2048</span></div>`
+    UploadContainer.innerHTML = `<div class="ThemeUploadContainer"><label tabindex="0" type="button"><input accept=".jpg,.png,.jpeg,.gif" type="file" size="4000000" style="display: none;" class="customThemeUpload"><span>Upload Custom Theme</span><span class="ThemeUploadRipple"></span></label><span class="spinner spinner-default" style="display: none;"></span><span class="upload-subtitle error" style="color: rgba(247,75,82,255); display: none;"><span class="icon-warning"></span></span><span class="upload-subtitle">Format: *.jpg, *.png, *.gif</span><span class="upload-subtitle">Max file size: 4 MB</span><span class="upload-subtitle">Max resolution: 2048x2048</span></div>`
 
     const ThemeUpload = UploadContainer.getElementsByClassName("customThemeUpload")[0]
     const UploadErrorLabel = UploadContainer.getElementsByClassName("upload-subtitle error")[0]
