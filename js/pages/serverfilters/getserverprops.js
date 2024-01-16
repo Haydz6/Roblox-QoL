@@ -53,7 +53,7 @@ async function GetRefreshButton(){
 }
 
 async function ElementAdded(Element){
-	//const IsRORSL = Element.classList.contains("rorsl-server")
+	const IsRORSL = Element.classList.contains("rorsl-server")
 
 	if (!Element.className.includes("game-server-item")) return
 	if (Element.getAttribute("client-hooked")) return
@@ -69,20 +69,20 @@ async function ElementAdded(Element){
 			await sleep(50)
 		}
 
-		// if (IsRORSL){
-		// 	const JoinButton = Element.getElementsByClassName("rbx-game-server-join")
-		// 	if (JoinButton && JoinButton.onclick){
-		// 		const Regex = new RegExp("Roblox.GameLauncher.joinGameInstance\(([0-9]+), .*;([0-9 a-z A-Z -]+).*;\)", "i").exec(JoinButton.onclick)
-		// 		console.log(Regex.groups)
+		if (IsRORSL){
+			const JoinButton = Element.getElementsByClassName("rbx-game-server-join")[0]
+			if (JoinButton && JoinButton.onclick){
+				const Regex = new RegExp("Roblox.GameLauncher.joinGameInstance\\(([0-9]+), \"([0-9 a-z A-Z -]+)\"\\)", "gm").exec(JoinButton.onclick)
+				if (Regex[2]){
+					Element.setAttribute("jobid", Regex[2])
+					Element.setAttribute("placeid", Regex[1])
+					Element.setAttribute("qol-checked", true)
+				}
+			}
 
-		// 		Element.setAttribute("jobid", ServerInfo.id)
-		// 		Element.setAttribute("placeid", ServerInfo.placeId)
-		// 		Element.setAttribute("qol-checked", true)
-		// 	}
-
-		// 	Element.removeAttribute("checking-qol-checked")
-		// 	return
-		// }
+			Element.removeAttribute("checking-qol-checked")
+			return
+		}
 
 		AngularInfo = angular.element(Element).context[Object.keys(angular.element(Element).context)[0]]
 
@@ -129,29 +129,33 @@ async function ElementAdded(Element){
 		})
 	}).observe(Element, {attributes: true})
 
-	let ServerUpdatedDefer = false
-	new MutationObserver(function(Mutations){
-		if (ServerUpdatedDefer) return
+	const ThumbnailContainer = Element.getElementsByClassName("player-thumbnails-container")[0]
 
-		Mutations.forEach(function(Mutation){
+	if (ThumbnailContainer){
+		let ServerUpdatedDefer = false
+		new MutationObserver(function(Mutations){
 			if (ServerUpdatedDefer) return
 
-			if (Mutation.type === "childList"){
-				ServerUpdatedDefer = true
-				setTimeout(function(){
-					ServerUpdatedDefer = false
-						
-					Element.removeAttribute("jobid")
-					Element.removeAttribute("placeid")
+			Mutations.forEach(function(Mutation){
+				if (ServerUpdatedDefer) return
 
-					const ServerRegion = Element.getElementsByClassName("text-info rbx-game-status rbx-game-server-status text-overflow server-info")[0]
-					if (ServerRegion) ServerRegion.remove()
+				if (Mutation.type === "childList"){
+					ServerUpdatedDefer = true
+					setTimeout(function(){
+						ServerUpdatedDefer = false
+							
+						Element.removeAttribute("jobid")
+						Element.removeAttribute("placeid")
 
-					Element.removeAttribute("qol-checked")
-				}, 0)
-			}
-		})
-	}).observe(Element.getElementsByClassName("player-thumbnails-container")[0], {childList: true})
+						const ServerRegion = Element.getElementsByClassName("text-info rbx-game-status rbx-game-server-status text-overflow server-info")[0]
+						if (ServerRegion) ServerRegion.remove()
+
+						Element.removeAttribute("qol-checked")
+					}, 0)
+				}
+			})
+		}).observe(ThumbnailContainer, {childList: true})
+	}
 
 	UpdateInfo()
 }
@@ -184,6 +188,7 @@ async function GetServerProps(){
 	HandleList("rbx-game-server-item-container")
 	HandleList("rbx-friends-game-server-item-container")
 	HandleList("rbx-private-game-server-item-container")
+	HandleList("rbx-running-games")
 }
 
 GetServerProps()

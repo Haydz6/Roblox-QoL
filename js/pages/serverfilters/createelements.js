@@ -39,32 +39,43 @@ function CreateServerInfo(Element, Server){
     RegionLabel.style = "font-size: 12px; overflow: hidden; text-overflow: ellipsis;"
     RegionLabel.innerText = Server.Region
 
-    const InfoList = Element.getElementsByTagName("div")[0].getElementsByTagName("div")[1]
-
-    new Promise(async() => {
-        while (true){
-            let Span
-
-            const children = InfoList.children
-            for (let i = 0; i < children.length; i++){
-                if (children[i].tagName.toLowerCase() === "span"){
-                    Span = children[i]
-                    break
-                }
-            }
-
-            if (!Span){
-                await sleep(50)
-                continue
-            }
-
-            InfoList.insertBefore(RegionContainer, Span)
-            break
-        }
-    })
-
     const HoverElement = document.createElement("li")
     HoverElement.className = "server-info-hover"
+
+    const IsRORSL = Element.classList.contains("rorsl-server")
+
+    if (IsRORSL){
+        const Details = Element.getElementsByClassName("rbx-game-server-details")[0] || Element.getElementsByClassName("rbx-game-server-details'")[0]
+        if (Details){
+            HoverElement.style.right = "26px"
+            Details.insertBefore(RegionContainer, Details.children[Details.children.length-1])
+        }
+    } else {
+        const InfoList = Element.getElementsByTagName("div")[0]?.getElementsByTagName("div")[1]
+        if (InfoList){
+            new Promise(async() => {
+                while (true){
+                    let Span
+
+                    const children = InfoList.children
+                    for (let i = 0; i < children.length; i++){
+                        if (children[i].tagName.toLowerCase() === "span"){
+                            Span = children[i]
+                            break
+                        }
+                    }
+
+                    if (!Span){
+                        await sleep(50)
+                        continue
+                    }
+
+                    InfoList.insertBefore(RegionContainer, Span)
+                    break
+                }
+            })
+        }
+    }
 
     function SetVisibility(Visible){
         HoverElement.style.display = Visible ? "" : "none"
@@ -111,7 +122,8 @@ function CreateServerInfo(Element, Server){
     RegionContainer.appendChild(RegionLabel)
     RegionContainer.appendChild(HoverElement)
 
-    Element.getElementsByClassName("card-item")[0].style.minHeight = "252px"
+    const CardItem = Element.getElementsByClassName("card-item")[0]
+    if (CardItem) CardItem.style.minHeight = "252px"
 
     //Element.appendChild(RegionContainer)
     return RegionContainer

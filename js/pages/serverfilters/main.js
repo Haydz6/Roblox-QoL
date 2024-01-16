@@ -66,6 +66,7 @@ IsFeatureEnabled("ServerRegions").then(function(Enabled){
     
     HandleRegionList("rbx-game-server-item-container")
     HandleRegionList("rbx-friends-game-server-item-container")
+    HandleRegionList("rbx-running-games")
 })
 
 IsFeatureEnabled("ServerFilters").then(function(Enabled){
