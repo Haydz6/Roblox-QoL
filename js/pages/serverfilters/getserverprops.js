@@ -53,7 +53,9 @@ async function GetRefreshButton(){
 }
 
 async function ElementAdded(Element){
-	if (Element.className.search("game-server-item") === -1) return
+	//const IsRORSL = Element.classList.contains("rorsl-server")
+
+	if (!Element.className.includes("game-server-item")) return
 	if (Element.getAttribute("client-hooked")) return
     Element.setAttribute("client-hooked", true)
 
@@ -66,6 +68,21 @@ async function ElementAdded(Element){
 		while (RefreshButton.getAttribute("disabled") === ""){
 			await sleep(50)
 		}
+
+		// if (IsRORSL){
+		// 	const JoinButton = Element.getElementsByClassName("rbx-game-server-join")
+		// 	if (JoinButton && JoinButton.onclick){
+		// 		const Regex = new RegExp("Roblox.GameLauncher.joinGameInstance\(([0-9]+), .*;([0-9 a-z A-Z -]+).*;\)", "i").exec(JoinButton.onclick)
+		// 		console.log(Regex.groups)
+
+		// 		Element.setAttribute("jobid", ServerInfo.id)
+		// 		Element.setAttribute("placeid", ServerInfo.placeId)
+		// 		Element.setAttribute("qol-checked", true)
+		// 	}
+
+		// 	Element.removeAttribute("checking-qol-checked")
+		// 	return
+		// }
 
 		AngularInfo = angular.element(Element).context[Object.keys(angular.element(Element).context)[0]]
 
