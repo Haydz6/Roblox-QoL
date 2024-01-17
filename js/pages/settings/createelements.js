@@ -189,7 +189,7 @@ function CreateSectionSettingsInputBox(Option, Title, Description, Placeholder, 
 
     if (Middleman){
         async function FocusLost(){
-            const Result = Middleman(Option, await IsFeatureEnabled(Option), Input.value)
+            const Result = await Middleman(Option, await IsFeatureEnabled(Option), Input.value)
             if (Result){
                 Input.value = Result
             }

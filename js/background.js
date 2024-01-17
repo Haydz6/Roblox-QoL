@@ -19,7 +19,7 @@ const EnabledFeatures = {
     FixAvatarPageFirefoxMobileMenu: true, ServerListFixForFirefoxAndroid: true,
     ViewOffsaleItems: true, MinimizableSideBar: true, AvatarEditorForMobile: false, AvatarPageCSSFix: true, BypassAvatarEditorMobilePromptUpsellButton: true,
     AssetQuickWearV2: true, VoiceChatServers: true, VoiceChatServerAnalytics: true, BestFriendPresenceV3: true, HideSerials: true, NameOnHomeFriends: false,
-    UserHeaderGreeting: "Hello, {displayname}", UserHeader: false, TradeAge: true, CurrentTheme: {}, FriendsPageLastOnline: true, AvatarSearchbar: true, 
+    DefaultUserHeaderGreeting: "Hello, {displayname}", UserHeaderGreeting: "Hello, {displayname}", UserHeader: false, TradeAge: true, CurrentTheme: {}, FriendsPageLastOnline: true, AvatarSearchbar: true, 
     DontTryBypassHBA: false, FriendsActivity: true, LastOnline: true, TemporaryHomePageContainerFix: true, Feed: true, IgnoreSystemInboxNofitications: false, InboxNotifications: false, 
     GroupShoutNotifications: {Enabled: false, Joined: true, Groups: []}, BestFriends: true, CSVChart: true, MinimizePrivateServers: true, SetThemeToSystem2: false, DiscordSocialLink: true, 
     RemoveAccessoryLimit: true, CancelFriendRequest: true, AddRowToHomeFriends: false, ViewBannedUser: true, ViewBannedGroup: true, ShowFollowsYou: true, HideOffline: false, FriendsHomeLastOnline: true, 

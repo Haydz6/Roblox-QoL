@@ -49,8 +49,15 @@ const Settings = {
                 Input.style.width = "400px"
                 Input.maxLength = 999
 
+                let Placeholder = ""
+
+                IsFeatureEnabled("DefaultUserHeaderGreeting").then(function(Text){
+                    Placeholder = Text
+                    Input.placeholder = Placeholder
+                })
+
                 async function UpdateText(){
-                    Description.innerText = `${await GenerateUserHeaderText(Input.value)}\n${Settings.General.UserHeaderGreeting.Description}`
+                    Description.innerText = `${await GenerateUserHeaderText(Input.value || Placeholder)}\n${Settings.General.UserHeaderGreeting.Description}`
                 }
 
                 Input.addEventListener("input", UpdateText)
@@ -59,7 +66,9 @@ const Settings = {
                     UpdateText()
                 })
             },
-            Middleman: function(Name, _, Value){
+            Middleman: async function(Name, _, Value){
+                if (!Value) Value = await IsFeatureEnabled("DefaultUserHeaderGreeting")
+
                 SetFeatureEnabled(Name, Value)
             }
         },
