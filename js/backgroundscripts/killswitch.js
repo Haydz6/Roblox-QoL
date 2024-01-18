@@ -22,7 +22,9 @@ async function FetchKilledFeatures(){
                 FeatureKilledStatus = JSON.parse(Cache)
                 return
             }
-        } else if (FeatureKilledFails < 5){
+        }
+        
+        if (FeatureKilledFails < 5){
             await sleep(5*1000)
             await FetchKilledFeatures()
         } else {
