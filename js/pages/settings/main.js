@@ -113,7 +113,7 @@ const Settings = {
         },
         ViewBannedUser: {
             Title: "View Banned User",
-            Description: "Allows you to view a banned user. (Safari users will manually have to put in the url: roblox.com/banned-user/USERID)",
+            Description: "Allows you to view a banned user. (Safari users will manually have to put in the url: www.roblox.com/banned-user/USERID)",
             // Supported: async function(){
             //     return await chrome.runtime.sendMessage({type: "FeatureSupported", name: "viewbanneduser"})
             // }
