@@ -160,7 +160,7 @@ async function GetCurrentUserId(){
 }
 
 async function SetFavouriteGame(UniverseId, Favourited){
-    return RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "POST", undefined, JSON.stringify({isFavorited: Favourited}), true)
+    return RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "POST", {"Content-Type": "application/json"}, JSON.stringify({isFavorited: Favourited}), true)
 }
 
 let ActiveRobloxPages = []

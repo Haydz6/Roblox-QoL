@@ -203,13 +203,18 @@ async function GetAuthKeyV2(){
     }
     
     new Promise(async function(){
+        let UnfavouriteAttempts = 0
+
         while (true){
             if (!await CheckIfSameUser(false)) return
 
             const [FavSuccess] = await SetFavouriteGame(UniverseId, false)
     
             if (FavSuccess) break
-            await sleep(1000)
+            UnfavouriteAttempts++
+            if (UnfavouriteAttempts > 10) UnfavouriteAttempts = 10
+
+            await sleep(1000 * (10+UnfavouriteAttempts))
         }
     })
     
