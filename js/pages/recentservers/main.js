@@ -15,7 +15,7 @@ async function GetHeadshotsFromUserIds(UserIds){
 }
 
 async function CreateRecentServers(){
-    const [Container, List, NoServers] = CreateRecentServersList()
+    const [Container, List, NoServers] = await CreateRecentServersList()
 
     const FriendsList = await WaitForId("rbx-friends-running-games")
     FriendsList.parentElement.insertBefore(Container, FriendsList)
