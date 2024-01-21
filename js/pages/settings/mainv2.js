@@ -153,7 +153,6 @@ async function CreateSettingsListReact(){
     })
 
     MobileVerticalMenuList.addEventListener("change", function(){
-        console.log(MobileVerticalMenuList.value)
         OpenContainer(MobileVerticalMenuList.value)
     })
 

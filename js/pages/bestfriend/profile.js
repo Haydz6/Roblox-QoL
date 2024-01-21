@@ -50,7 +50,6 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
     const MoreHeader = await WaitForClassPath(await WaitForQuerySelector(".profile-header:not(.hidden)"), "profile-header-more")
     const DropdownContainer = await WaitForClassPath(MoreHeader, "profile-dropdown")
 
-    console.log(DropdownContainer)
     ChildAdded(DropdownContainer, true, async function(NewList){
         if (!NewList.className.includes("dropdown-menu")) return
         List = NewList

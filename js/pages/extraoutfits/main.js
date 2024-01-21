@@ -168,10 +168,8 @@ async function WearExtraOutfit(Id){
         ValidationErrors = JSON.parse(ValidationErrors)?.ValidationErrors
       }
 
-      console.log(ValidationErrors)
       for (let v = 0; v < ValidationErrors.length; v++){
         const Error = ValidationErrors[v]
-        console.log(Error?.Code)
 
         if (Error.Code == 3){
           LayeredAssets.push(parseInt(Error.FieldData))

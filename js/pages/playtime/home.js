@@ -113,7 +113,6 @@ IsFeatureEnabled("Playtime").then(async function(Enabled){
     if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
 
     const [PlaytimeHide, EdittimeHide] = await Promise.all([IsFeatureEnabled("HidePlayTime"), IsFeatureEnabled("HideEditTime")])
-    console.log(PlaytimeHide, EdittimeHide)
    
     if (!EdittimeHide) CreateHomeRow(GamesList, "Studio Sessions", "Edit", false)
     else RequestPlaytimeBatchFetch("Edit", false)

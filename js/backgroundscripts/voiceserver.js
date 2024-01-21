@@ -74,8 +74,6 @@ async function UpdateVoiceServer(UserId, AuthKey, UniverseId, RootPlaceId, Place
     VoiceUsers.push({UserId: UserId, IsMuted: Info.ownState ? Info.ownState.isMuted : true})
 
     const ServerInformation = {Users: VoiceUsers, Players: VoiceUsers.length, Tokens: [], MaxPlayers: GameInfo.maxPlayers || -1, Timestamp: Date.now()}
-    // console.log(JSON.stringify(ServerInformation))
-    // ServerInformation.hash = await sha256(JSON.stringify(ServerInformation))
 
     //const LookupStart = Date.now()
     const Server = await FindVoiceServer(PlaceId, JobId, 50)
