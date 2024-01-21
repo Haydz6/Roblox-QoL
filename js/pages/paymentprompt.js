@@ -1,9 +1,13 @@
-function CreatePaymentModalV2(){
+async function CreatePaymentModalV2(Footer){
     const Modal = document.createElement("div")
     Modal.id = "modal-dialog"
     Modal.className = "modal-dialog purchase-modal-prompt-roqol"
 
-    const Features = ["Best Friends", "Custom Themes", "500 Extra Outfits", "Voice Chat Servers", "Pinned Games"]
+    let Features = ["Best Friends", "Custom Themes", "500 Extra Outfits", "Voice Chat Servers", "Pinned Games"]
+    const [Success, Result] = await RequestFunc(WebServerEndpoints.Configuration+"paidfeatures", "GET")
+    if (Success) Features = Result.Features
+
+    let Price = Success ? Result.Price : "5"
 
     Modal.innerHTML = `<div id="simplemodal-container" class="simplemodal-container" style="position: fixed; z-index: 1042; height: 272px; width: 400px; left: 50%; top: 50%; transform: translate(-50%, -50%);"><a class="modalCloseImg simplemodal-close" title="Close"></a><div tabindex="-1" class="simplemodal-wrap" style="height: 100%; outline: 0px; width: 100%; overflow: visible;"><div id="modal-confirmation" class="modal-confirmation noImage protocolhandler-starting-modal simplemodal-data" data-modal-type="confirmation" style="display: block;">
     <div id="modal-dialog" class="modal-dialog">
@@ -42,10 +46,10 @@ function CreatePaymentModalV2(){
                 <a id="price-confirm-btn" class="btn-growth-md btn-full-width" target="_blank" href="https://roqol.io/pages/pricing" style="
     margin:  0;
     width: calc(100% - 40px);
-">Subscribe for 5$</a>
+">Subscribe for ${Price}$</a>
             </div>
         </div>
-        <div class="modal-footer text-footer" style="display: none;"></div>
+        <div class="modal-footer text-footer" ${Footer ? "" : `style="display: none;"`}>${Footer || ""}</div>
     </div>
     </div>
     </div></div></div>`
@@ -66,7 +70,9 @@ function CreatePaymentModalV2(){
     return Modal
 }
 
-function CreatePaymentPrompt(){
+const RegionPaidFooter = `<a style="text-decoration: underline; margin-bottom: 4px; width: 100%; display: block; text-align: center;" class="font-header-2 text-lead" href="https://roqol.io/pages/faq#server-region-paid" target="_blank">Learn why region filter is now paid</a>`
+
+async function CreatePaymentPrompt(Footer){
     const Backdrop = document.createElement("div")
     Backdrop.id = "simplemodal-overlay" 
     Backdrop.className = "simplemodal-overlay"
@@ -105,7 +111,7 @@ function CreatePaymentPrompt(){
     // </div>
     // </div>
     // </div></div></div>`
-    const Modal = CreatePaymentModalV2()
+    const Modal = await CreatePaymentModalV2(Footer)
     document.body.append(Backdrop, Modal)
 
     function Close(){

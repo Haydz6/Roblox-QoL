@@ -422,7 +422,7 @@ async function EnableServerAge(Oldest){
 
         if (RegionResponse.status === 402){
             SetButtonLoadingState(true)
-            return CreatePaymentPrompt()
+            return CreatePaymentPrompt(RegionPaidFooter)
         }
         if (!RegionSuccess){
             SetButtonLoadingState(true)
@@ -705,7 +705,7 @@ async function EnableBestConnection(){
 
         if (RegionResponse.status === 402){
             SetButtonLoadingState(true)
-            return CreatePaymentPrompt()
+            return CreatePaymentPrompt(RegionPaidFooter)
         }
         if (!RegionSuccess){
             SetButtonLoadingState(true)
@@ -812,7 +812,7 @@ async function EnableRegionFilter(Region){
 
         if (RegionResponse.status === 402){
             SetButtonLoadingState(true)
-            return CreatePaymentPrompt()
+            return CreatePaymentPrompt(RegionPaidFooter)
         }
         if (!RegionSuccess){
             SetButtonLoadingState(true)

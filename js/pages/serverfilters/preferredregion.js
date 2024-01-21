@@ -173,7 +173,7 @@ setTimeout(function(){
                 if (!RegionSuccess){
                     if (RegionResponse.status === 402){
                         Fail("This feature is for subscribers only!")
-                        return CreatePaymentPrompt()
+                        return CreatePaymentPrompt(RegionPaidFooter)
                     }
 
                     Fail("An error occurred while looking for servers!")
