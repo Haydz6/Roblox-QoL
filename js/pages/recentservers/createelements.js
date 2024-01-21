@@ -1,4 +1,4 @@
-function CreateRecentServersList(Title, Id){
+async function CreateRecentServersList(Title, Id){
     const Container = document.createElement("div")
     Container.id = `rbx-${Id ? Id : "recent"}-running-games`
     Container.className = "stack server-list-section"
@@ -16,6 +16,7 @@ function CreateRecentServersList(Title, Id){
     ServerList.id = `rbx-${Id ? Id : "recent"}-game-server-item-container`
 
     let Opened = localStorage.getItem("roqol-recentservers-expanded") === "false" ? false : true
+    if (await IsFeatureKilled("MinimizeServersTabKillSwitch")) Opened = true
 
     function Update(){
         Minimize.className = `icon-${Opened ? "up" : "down"}-16x16`

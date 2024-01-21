@@ -13,6 +13,7 @@ IsFeatureEnabled("MinimizePrivateServers").then(function(Enabled){
         Minimize.style = "margin-left: 3px;"
 
         let Opened = localStorage.getItem("roqol-privateservers-expanded") === "false" ? false : true
+        if (await IsFeatureKilled("MinimizeServersTabKillSwitch")) Opened = true
 
         function Update(){
             Minimize.className = `icon-${Opened ? "up" : "down"}-16x16`
