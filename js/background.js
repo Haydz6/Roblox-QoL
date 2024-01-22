@@ -12,7 +12,7 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
-    AddUSDToGameStore: true, ShowUSDPurchaseRate: false,
+    AddUSDToGameStore: true, ShowUSDPurchaseRate: false, ServerRegionsForPrivateServers: true,
     AddUSDToTransactions: true, BestFriendInventoryV2: true, HidePlayTime: false, HideEditTime: false,
     StreamerMode: false, StreamerModeKeybind: null, OpenNewTabIfRequiredHAB: true, OpenNewTabIfRequiredJobsHAB: false,
     HideAge: false, HideSensitiveInfo: false, HideRobux: false, HideGroupRobux: false, HideServerInvites: false, HideNames: false, HideSocials: false, HideGroupPayouts: false,
@@ -37,7 +37,7 @@ const EnabledFeatures = {
 
 let AreEnabledFeaturesFetched = false
 
-const PaidFeatures = {VoiceChatServers: 1, CurrentTheme: 1, FriendsActivity: 1, PinnedGames: 1, PinnedGroups: 1, FriendRequestNotifications: 1, BestFriends: 1, Feed: 1}
+const PaidFeatures = {ServerRegionsForPrivateServers: 1, VoiceChatServers: 1, CurrentTheme: 1, FriendsActivity: 1, PinnedGames: 1, PinnedGroups: 1, FriendRequestNotifications: 1, BestFriends: 1, Feed: 1}
 let CurrentSubscription = undefined
 
 //let ROBLOSECURITY

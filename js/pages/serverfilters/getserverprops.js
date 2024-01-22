@@ -101,7 +101,7 @@ async function ElementAdded(Element){
 			Attempts++
 		}
 		
-		if (!ServerInfo){
+		if (!ServerInfo || ServerInfo.id == undefined){
 			//Element.removeAttribute("qol-checked")
 			Element.removeAttribute("checking-qol-checked")
 			return

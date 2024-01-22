@@ -10,7 +10,7 @@ function InjectServerPropsRetriever(){
 }
 
 function OnNewServerElement(Element){
-    if (Element.className.search("rbx-game-server-item") > -1 || Element.className.search("rbx-friends-game-server-item") > -1){
+    if (Element.className.search("rbx-game-server-item") > -1 || Element.classList.contains("rbx-private-game-server-item") || Element.className.search("rbx-friends-game-server-item") > -1){
         if (Element.getAttribute("hooked")) return
         Element.setAttribute("hooked", true)
 
@@ -67,6 +67,10 @@ IsFeatureEnabled("ServerRegions").then(function(Enabled){
     HandleRegionList("rbx-game-server-item-container")
     HandleRegionList("rbx-friends-game-server-item-container")
     HandleRegionList("rbx-running-games")
+
+    IsFeatureEnabled("ServerRegionsForPrivateServers").then(function(Enabled){
+        if (Enabled) HandleRegionList("rbx-private-game-server-item-container")
+    })
 })
 
 IsFeatureEnabled("ServerFilters").then(function(Enabled){
