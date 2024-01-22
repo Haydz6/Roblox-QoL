@@ -70,7 +70,7 @@ setTimeout(function(){
         if (!Enabled) return
         if (!await UniverseHasVoiceChat(await GetUniverseIdFromGamePage())) return
 
-        const [Container, List, NoServers, NoServersMessage] = CreateRecentServersList("Voice Chat Servers", "voice")
+        const [Container, List, NoServers, NoServersMessage] = await CreateRecentServersList("Voice Chat Servers", "voice")
         const FriendsList = await WaitForId("rbx-friends-running-games")
         FriendsList.parentElement.insertBefore(Container, FriendsList)
 
