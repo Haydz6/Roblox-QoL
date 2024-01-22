@@ -46,7 +46,7 @@ function AddPrivateServerRegion(NewElement){
 
             PendingServers[AccessCode].push(Element)
 
-            if (Success) IPs.push({IP: Result.joinScript.UdmuxEndpoints[0].Address || Result.joinScript.MachineAddress, Version: Result.RccVersion, AccessCode: AccessCode})
+            if (Success && Result.joinScript) IPs.push({IP: Result.joinScript.UdmuxEndpoints[0].Address || Result.joinScript.MachineAddress, Version: Result.RccVersion, AccessCode: AccessCode})
         }
 
         PendingPrivateServerRegions = []

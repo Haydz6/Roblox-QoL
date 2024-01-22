@@ -52,7 +52,6 @@ function CreateServerInfo(Element, Server){
         }
     } else {
         const InfoList = Element.getElementsByTagName("div")[0]?.getElementsByTagName("div")[1]
-        console.log(InfoList, Element)
 
         if (InfoList){
             new Promise(async() => {

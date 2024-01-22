@@ -38,6 +38,7 @@ async function GetRefreshButton(){
 								Server.removeAttribute("qol-checked")
 								Server.removeAttribute("jobid")
 								Server.removeAttribute("placeid")
+								Server.removeAttribute("accesscode")
 
 								const ServerRegion = Server.getElementsByClassName("text-info rbx-game-status rbx-game-server-status text-overflow server-info")[0]
 								if (ServerRegion) ServerRegion.remove()
@@ -109,12 +110,13 @@ async function ElementAdded(Element){
 
 		Element.setAttribute("jobid", ServerInfo.id)
 		Element.setAttribute("placeid", ServerInfo.placeId)
-		Element.setAttribute("qol-checked", true)
-		Element.removeAttribute("checking-qol-checked")
 
-		if (Element.className.search("rbx-private-game-server-item") > -1){
+		if (Element.classList.contains("rbx-private-game-server-item")) {
 			Element.setAttribute("accesscode", ServerInfo.accessCode)
 		}
+
+		Element.setAttribute("qol-checked", true)
+		Element.removeAttribute("checking-qol-checked")
 	}
 	
 	ServerElements.push(Element)
@@ -146,6 +148,7 @@ async function ElementAdded(Element){
 							
 						Element.removeAttribute("jobid")
 						Element.removeAttribute("placeid")
+						Element.removeAttribute("accesscode")
 
 						const ServerRegion = Element.getElementsByClassName("text-info rbx-game-status rbx-game-server-status text-overflow server-info")[0]
 						if (ServerRegion) ServerRegion.remove()
