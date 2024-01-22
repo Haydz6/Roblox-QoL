@@ -56,7 +56,7 @@ async function GetRefreshButton(){
 async function ElementAdded(Element){
 	const IsRORSL = Element.classList.contains("rorsl-server")
 
-	if (!Element.className.includes("game-server-item")) return
+	if (!Element.className.includes("game-server-item") || Element.classList.contains("rbx-game-server-item-container")) return
 	if (Element.getAttribute("client-hooked")) return
     Element.setAttribute("client-hooked", true)
 
