@@ -29,22 +29,28 @@ async function GetInvite(PlaceId, JobId){
 async function ElementAdded(Element){
 	if (Element.className.search("game-server-item") === -1 || Element.className.search("rbx-private-game-server-item") > -1) return
 
-    const CardItem = Element.getElementsByClassName("card-item")[0]
-    let GameDetails
+    const IsRORSL = Element.classList.contains("rorsl-server")
+    let Buttons
 
-    while (!GameDetails){
-        await sleep(50)
-        GameDetails = CardItem.getElementsByClassName("game-server-details")[0]
-    }
-
-	let Buttons
-    const GameDetailsChildren = GameDetails.children
-
-    for (let i = 0; i < GameDetailsChildren.length; i++){
-        if (GameDetailsChildren[i].tagName.toLowerCase() === "span"){
-            Buttons = GameDetailsChildren[i]
-            break
+    if (!IsRORSL){
+        const CardItem = Element.getElementsByClassName("card-item")[0]
+        let GameDetails
+    
+        while (!GameDetails){
+            await sleep(50)
+            GameDetails = CardItem.getElementsByClassName("game-server-details")[0]
         }
+    
+        const GameDetailsChildren = GameDetails.children
+
+        for (let i = 0; i < GameDetailsChildren.length; i++){
+            if (GameDetailsChildren[i].tagName.toLowerCase() === "span"){
+                Buttons = GameDetailsChildren[i]
+                break
+            }
+        }
+    } else {
+        Buttons = Element.getElementsByTagName("button")[0].parentNode
     }
 
     Buttons.children[0].style = "width: 70%!important; max-width: 70%!important; min-width: 30%!important;"
@@ -52,6 +58,7 @@ async function ElementAdded(Element){
     if (Buttons.children.length > 1) return
 
     const InviteButton = CreateServerButton("Invite")
+    if (IsRORSL) InviteButton.style.marginLeft = ""
     Buttons.appendChild(InviteButton)
 
     const ButtonRemovedObserver = new MutationObserver(function(Mutations){
@@ -86,11 +93,18 @@ async function ElementAdded(Element){
         }
 
         const [InviteBox, Input, CopiedToClipboard] = CreateInviteBox()
+        let FullInviteBox = InviteBox
+        if (IsRORSL){
+            InviteBox.style = "left: -24px; bottom: 30px;"
+            FullInviteBox = document.createElement("div")
+            FullInviteBox.style = "position: absolute;"
+            FullInviteBox.appendChild(InviteBox)
+        }
 
-        Buttons.appendChild(InviteBox)
+        Buttons.appendChild(FullInviteBox)
 
-        CurrentBox = InviteBox
-        PreviousBox = InviteBox
+        CurrentBox = FullInviteBox
+        PreviousBox = FullInviteBox
 
         Input.value = "Loading..."
         const [Success, Invite] = await GetInvite(Element.getAttribute("placeid"), Element.getAttribute("jobid"))
@@ -155,5 +169,6 @@ setTimeout(function(){
         HandleInviteList("rbx-friends-game-server-item-container")
         HandleInviteList("rbx-recent-game-server-item-container")
         HandleInviteList("rbx-voice-game-server-item-container")
+        HandleInviteList("rbx-running-games")
     })
 }, 0)
