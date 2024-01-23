@@ -317,14 +317,11 @@ async function GetOAuthKey(){
     LastAuthenticatedUserId = UserId
 
     let [Success, Result, Response] = await RequestFunc("https://accountinformation.roblox.com/v1/birthdate", "GET", undefined, undefined, true)
-    if (!Success){
-        FetchingAuthKey = false
-        return ""
-    }
-
-    if (!IsOver13(Result.birthYear, Result.birthMonth, Result.birthDay)){
-        FetchingAuthKey = false
-        return ""
+    if (Success){
+        if (!IsOver13(Result.birthYear, Result.birthMonth, Result.birthDay)){
+            FetchingAuthKey = false
+            return ""
+        }
     }
 
     ;[Success, _, Response] = await RequestFunc(WebServerEndpoints.OAuth, "GET", undefined, undefined, true, true)
