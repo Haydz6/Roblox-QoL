@@ -86,7 +86,7 @@ function AddPrivateServerRegion(NewElement){
 }
 
 function AddServerRegion(NewElement){
-    if (NewElement.parentNode.id === "rbx-private-game-server-item-container") return AddPrivateServerRegion(NewElement)
+    if (NewElement.parentNode?.id === "rbx-private-game-server-item-container") return AddPrivateServerRegion(NewElement)
 
     return new Promise(async(resolve) => {
         if (NewElement.getAttribute("has-region")) return
