@@ -71,10 +71,11 @@ function CreateStandaloneButton(Text){
 async function CreateSettingsListReact(){
     const RobloxContainer = await WaitForId("settings-container")
     const FullContainer = RobloxContainer.parentNode
-    const RobloxMobileVerticalMenu = await WaitForClass("mobile-navigation-dropdown")
+    const RobloxMobileVerticalMenu = await WaitForClassPath(RobloxContainer, "mobile-navigation-dropdown")
 
     const OpenOption = CreateMenuOption("Roblox QoL", true)
-    WaitForClass("menu-vertical").then(function(RobloxVerticalMenu){
+    
+    WaitForClassPath(RobloxContainer, "menu-vertical").then(function(RobloxVerticalMenu){
         RobloxVerticalMenu.appendChild(OpenOption)
     })
 
