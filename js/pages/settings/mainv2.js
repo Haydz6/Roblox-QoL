@@ -85,7 +85,7 @@ async function CreateSettingsListReact(){
     const SettingsContainer = document.createElement("div")
     SettingsContainer.style.display = "none"
     SettingsContainer.id = "settings-container"
-    SettingsContainer.innerHTML = `<div class="left-navigation"> <ul id="vertical-menu" class="menu-vertical submenus" role="tablist" ng-init="currentData.activeTab">  </ul> </div> <div class="tab-content rbx-tab-content ng-scope" ng-controller="accountsContentController">   </div>`
+    SettingsContainer.innerHTML = `<div class="left-navigation"> <ul class="menu-vertical submenus" role="tablist" ng-init="currentData.activeTab">  </ul> </div> <div class="tab-content rbx-tab-content ng-scope" ng-controller="accountsContentController">   </div>`
     FullContainer.appendChild(SettingsContainer)
 
     const VerticalMenu = SettingsContainer.getElementsByClassName("menu-vertical")[0]
@@ -305,7 +305,7 @@ async function CreateSettingsListController(){
     const SettingsContainer = document.createElement("div")
     SettingsContainer.style.display = "none"
     SettingsContainer.id = "settings-container"
-    SettingsContainer.innerHTML = `<div class="left-navigation"> <ul id="vertical-menu" class="menu-vertical submenus" role="tablist" ng-init="currentData.activeTab">  </ul> </div> <div class="tab-content rbx-tab-content ng-scope" ng-controller="accountsContentController">   </div>`
+    SettingsContainer.innerHTML = `<div class="left-navigation"> <ul class="menu-vertical submenus" role="tablist" ng-init="currentData.activeTab">  </ul> </div> <div class="tab-content rbx-tab-content ng-scope" ng-controller="accountsContentController">   </div>`
     FullContainer.appendChild(SettingsContainer)
 
     const VerticalMenu = SettingsContainer.getElementsByClassName("menu-vertical")[0]
