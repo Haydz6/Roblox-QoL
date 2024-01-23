@@ -233,15 +233,14 @@ async function GetAuthKeyDetailed(){
 }
 
 function IsOver13(y, m, d){
-    const r = new Date()
+    const CurrentDate = new Date()
+    const BirthDate = new Date(y, m, d)
 
-    if(r.getFullYear() <= (parseInt(y) + 13)){ 
-        if((r.getMonth()+1) <= m){
-             if(r.getDate() < d){
-                 return false
- }}}
+    if (CurrentDate.getUTCFullYear() - BirthDate.getUTCFullYear() > 13) return true
+    if (CurrentDate.getUTCMonth() > BirthDate.getUTCMonth()) return true
+    if (CurrentDate.getUTCDay() >= BirthDate.getUTCDay()) return true
 
- return true
+    return false
 }
 
 async function GetOAuthKey(){
