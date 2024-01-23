@@ -177,8 +177,8 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
         }
 
         const User = CachedUser[UserId]
-        Popover.getElementsByClassName("chat-with-user")[0].title = `Chat with ${User ? User.displayName : "???"}`
-        Popover.getElementsByClassName("chat-with-user")[0].innerText = `Chat with ${User ? User.displayName : "???"}`
+        Popover.getElementsByClassName("chat-with-user")[0].title = `Chat with ${User ? User.nameToDisplay || User.displayName : "???"}`
+        Popover.getElementsByClassName("chat-with-user")[0].innerText = `Chat with ${User ? User.nameToDisplay || User.displayName : "???"}`
 
         Popover.getElementsByClassName("go-to-profile-page")[0].addEventListener("click", function(){
             window.location.href = `https://www.roblox.com/users/${UserId}/profile`
@@ -270,21 +270,42 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
         }
     })
 
-    RequestFunc("https://users.roblox.com/v1/users", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: BestFriends, excludeBannedUsers: false}), true).then(function([Success, Body]){
+    let InjectedScript
+    RequestFunc("https://users.roblox.com/v1/users", "POST", {"Content-Type": "application/json"}, JSON.stringify({userIds: BestFriends, excludeBannedUsers: false}), true).then(async function([Success, Body]){
         if (!Success) return
 
         const Data = Body.data
         for (let i = 0; i < Data.length; i++){
             const User = Data[i]
+            CachedUser[User.id] = User
+        }
+
+        await Promise.race([new Promise(async(resolve) => {
+            function Response(e){
+                for ([UserId, Tag] of Object.entries(e.detail)){
+                    CachedUser[UserId].nameToDisplay = Tag
+                }
+
+                document.removeEventListener("RobloxQoL.BestFriendsTags", Response)
+                resolve()
+            }
+
+            document.addEventListener("RobloxQoL.BestFriendsTags", Response)
+
+            while (!InjectedScript?.getAttribute("ready")) await sleep(100)
+
+            document.dispatchEvent(new CustomEvent("RobloxQoL.BestFriendsTagsRequest", {detail: JSON.stringify(BestFriends)}))
+        }), sleep(1000)])
+
+        for (let i = 0; i < Data.length; i++){
+            const User = Data[i]
             const Element = IdToElement[User.id]
             const FriendLabel = Element.getElementsByClassName("friend-name")[0]
-            FriendLabel.title = User.displayName
-            FriendLabel.innerText = User.displayName
+            FriendLabel.title = User.nameToDisplay || User.displayName
+            FriendLabel.innerText = User.nameToDisplay || User.displayName
 
             const VerifiedBadge = Element.getElementsByClassName("verified-badge")[0]
             if (User.hasVerifiedBadge) VerifiedBadge.className = VerifiedBadge.className.replace("hide", "")
-
-            CachedUser[User.id] = User
         }
     })
 
@@ -339,5 +360,5 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
         document.dispatchEvent(new CustomEvent("RobloxQoL.BestFriendsLoaded"))
     })
 
-    InjectScript("BestFriendsPresenceUpdate")
+    InjectedScript = await InjectScript("BestFriendsPresenceUpdate")
 })

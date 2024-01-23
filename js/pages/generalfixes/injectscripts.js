@@ -25,6 +25,8 @@ async function InjectScript(Path, URLMatch, FullPath, Attrs, RunFirst){
     while (!document.head) await new Promise(r => setTimeout(r, 20))
 
     document.head.appendChild(Script)
+
+    return Script
 }
 
 // InjectScript("bestfriendpresence", "*://*.roblox.com/users/*/profile", "js/pages/bestfriend/presence.js", undefined, true)
