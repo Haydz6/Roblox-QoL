@@ -133,30 +133,41 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 
 let GetCurrentUserIdDelay = false
 let IsFetchingUserId = false
+let GetCurrentUserIdPromises = []
 
-async function GetCurrentUserId(){
-    while (IsFetchingUserId || GetCurrentUserIdDelay) await sleep(100)
+function GetCurrentUserId(){
+    return new Promise(async(resolve) => {
+        GetCurrentUserIdPromises.push(resolve)
+        if (GetCurrentUserIdPromises.length > 1) return
 
-    if (!UserId){
-        IsFetchingUserId = true
+        while (IsFetchingUserId || GetCurrentUserIdDelay) await sleep(100)
 
-        const [Success, Response] = await RequestFunc("https://users.roblox.com/v1/users/authenticated", "GET", undefined, undefined, true)
-        
-        if (!Success){
-            UserId = null
+        const Promises = GetCurrentUserIdPromises
+        GetCurrentUserIdPromises = []
+
+        if (!UserId){
+            IsFetchingUserId = true
+
+            const [Success, Response] = await RequestFunc("https://users.roblox.com/v1/users/authenticated", "GET", undefined, undefined, true)
             
-            GetCurrentUserIdDelay = true
-            setTimeout(function(){
-                GetCurrentUserIdDelay = false
-            }, 3000)
-        } else {
-            UserId = Response.id
+            if (!Success){
+                UserId = null
+                
+                GetCurrentUserIdDelay = true
+                setTimeout(function(){
+                    GetCurrentUserIdDelay = false
+                }, 3000)
+            } else {
+                UserId = Response.id
+            }
+
+            IsFetchingUserId = false
         }
 
-        IsFetchingUserId = false
-    }
-
-    return UserId
+        for (let i = 0; i < Promises.length; i++){
+            Promises[i](UserId)
+        }
+    })
 }
 
 async function SetFavouriteGame(UniverseId, Favourited){
@@ -420,7 +431,7 @@ BindToOnMessage("DocumentUserIdUpdate", false, async function(request){
         UserId = NewUserId
         CachedAuthKey = ""
         await LocalStorage.remove("AuthKey")
-        GetAuthKeyV2()
+        GetAuthKey()
     }
 })
 
