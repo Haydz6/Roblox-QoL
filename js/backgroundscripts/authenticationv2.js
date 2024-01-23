@@ -37,7 +37,10 @@ async function ReauthenticateV2(){
 }
 
 async function GetAuthKey(){
-    const FetchedKey = await GetAuthKeyV2()
+    let FetchedKey = ""
+
+    if (!await IsFeatureKilled("OAuthVerification")) FetchedKey = await GetOAuthKey()
+    if (FetchedKey == "") FetchedKey = await GetAuthKeyV2()
     if (FetchedKey == "") AuthenticationFailuresCounter++
     else AuthenticationFailuresCounter = 0
 
@@ -227,6 +230,162 @@ async function GetAuthKeyV2(){
 async function GetAuthKeyDetailed(){
     const AuthKey = await GetAuthKey()
     return [AuthKey != "" ? AuthKey : null, AuthKey != "" ? LastAuthenticatedUserId : null]
+}
+
+function IsOver13(y, m, d){
+    const r = new Date()
+
+    if(r.getFullYear() <= (parseInt(y) + 13)){ 
+        if((r.getMonth()+1) <= m){
+             if(r.getDate() < d){
+                 return false
+ }}}
+
+ return true
+}
+
+async function GetOAuthKey(){
+    if ((Date.now()/1000) - LastAuthKeyAttempt < 3){
+        await sleep(3000)
+    }
+
+    while (FetchingAuthKey){
+        await sleep(100)
+    }
+
+    FetchingAuthKey = true
+    
+    const UserId = await GetCurrentUserId()
+    if (!UserId){
+        FetchingAuthKey = false
+        return "" //No userid, so we cannot validate
+    }
+
+    async function CheckIfSameUser(ResetAuthKey = true){
+        if (UserId !== await GetCurrentUserId()){
+            if (ResetAuthKey) FetchingAuthKey = false
+            return false
+        }
+        return true
+    }
+
+    if (CachedAuthKey != "" && UserId == LastAuthenticatedUserId){
+        FetchingAuthKey = false
+        return CachedAuthKey
+    }
+    if (UserId != LastAuthenticatedUserId && !FirstAuthenticationAttempt){
+        CachedAuthKey = ""
+        FetchingAuthKey = true
+        AlertTabsOfNewAuthKey()
+        await LocalStorage.remove("AuthKey")
+    }
+
+    FirstAuthenticationAttempt = false
+    FetchingAuthKey = true
+    LastAuthKeyAttempt = Date.now()/1000
+
+    StoredKey = await LocalStorage.get("AuthKey")
+    if (StoredKey){
+        try {
+            StoredKey = JSON.parse(StoredKey)
+        } catch {}
+    }
+    
+    if (StoredKey){
+        if (typeof(StoredKey) == "string"){
+            StoredKey = {UserId: UserId, Key: StoredKey}
+            await LocalStorage.set("AuthKey", JSON.stringify(StoredKey))
+        }
+
+        if (StoredKey.UserId == UserId){
+            FetchedAuthenticationFromStorage = true
+
+            CachedAuthKey = StoredKey.Key
+            LastAuthenticatedUserId = UserId
+            FetchingAuthKey = false
+            return CachedAuthKey
+        }
+    }
+
+    FetchedAuthenticationFromStorage = false
+    
+    if (!await CheckIfSameUser()){
+        FetchingAuthKey = false
+        return ""
+    }
+
+    LastAuthenticatedUserId = UserId
+
+    let [Success, Result, Response] = await RequestFunc("https://accountinformation.roblox.com/v1/birthdate", "GET", undefined, undefined, true)
+    if (!Success){
+        FetchingAuthKey = false
+        return ""
+    }
+
+    if (!IsOver13(Result.birthYear, Result.birthMonth, Result.birthDay)){
+        FetchingAuthKey = false
+        return ""
+    }
+
+    ;[Success, _, Response] = await RequestFunc(WebServerEndpoints.OAuth, "GET", undefined, undefined, true, true)
+    if (!Success){
+        FetchingAuthKey = false
+        return ""
+    }
+
+    if (!await CheckIfSameUser()){
+        FetchingAuthKey = false
+        return ""
+    }
+
+    const Params = new URLSearchParams(Response.url.split("?")[1])
+    const Scopes = []
+
+    const UnparsedScopes = Params.get("scope").split(" ")
+    for (let i = 0; i < UnparsedScopes.length; i++){
+        Scopes[i] = {scopeType: UnparsedScopes[i], operations: ["read"]}
+    }
+
+    function Capitalize(string){
+        return string.charAt(0).toUpperCase() + string.slice(1)
+    }
+
+    const AuthorizationBody = {
+        clientId: Params.get("client_id"),
+        codeChallenge: Params.get("code_challenge"),
+        codeChallengeMethod: Params.get("code_challenge_method"),
+        nonce: Params.get("nonce"),
+        redirectUri: Params.get("redirect_uri"),
+        resourceInfos: [{owner: {id: UserId.toString(), type: "User"}, resources: {}}],
+        responseTypes: [Capitalize(Params.get("response_type"))],
+        scopes: Scopes,
+        state: Params.get("state")
+    }
+
+    ;[Success, Result] = await RequestFunc("https://apis.roblox.com/oauth/v1/authorizations", "POST", {"Content-Type": "application/json"}, JSON.stringify(AuthorizationBody), true, false)
+    if (!Success){
+        FetchingAuthKey = false
+        return ""
+    }
+
+    if (!Result?.location){
+        FetchingAuthKey = false
+        return ""
+    }
+    ;[Success, _, Response] = await RequestFunc(Result.location, "GET", {type: "Authentication"}, undefined, false, true)
+    if (!Success){
+        FetchingAuthKey = false
+        return ""
+    }
+
+    CachedAuthKey = (await Response.json()).Key
+    LocalStorage.set("AuthKey", JSON.stringify({UserId: UserId, Key: CachedAuthKey}))
+    AlertTabsOfNewAuthKey(CachedAuthKey)
+
+    FetchingAuthKey = false
+    AuthenticationFailuresCounter = 0
+
+    return CachedAuthKey
 }
 
 // async function CanOAuthVerify(UserId){
