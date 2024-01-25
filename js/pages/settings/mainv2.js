@@ -173,9 +173,13 @@ async function CreateSettingsListReact(){
     function OpenContainer(Title){
         HideAllContainers()
 
-        if (LastActiveButton) LastActiveButton.className = "menu-option"
+        if (LastActiveButton){
+            LastActiveButton.className = "menu-option"
+            LastActiveButton.children[0].className = "menu-option-content"
+        }
         LastActiveButton = TitleToButton[Title]
         TitleToButton[Title].className = "menu-option active"
+        TitleToButton[Title].children[0].className = "menu-option-content active"
         TitleToContainer[Title].style.display = ""
 
         CurrentOption = Title
@@ -375,7 +379,10 @@ async function CreateSettingsListController(){
     function OpenContainer(Title){
         HideAllContainers()
 
-        if (LastActiveButton) LastActiveButton.className = "menu-option"
+        if (LastActiveButton){
+            LastActiveButton.className = "menu-option"
+            LastActiveButton.children[0].className = "menu-option-content"
+        }
         LastActiveButton = TitleToButton[Title]
         TitleToButton[Title].className = "menu-option active"
         TitleToContainer[Title].style.display = ""
