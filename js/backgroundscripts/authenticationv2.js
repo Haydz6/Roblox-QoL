@@ -383,22 +383,3 @@ async function GetOAuthKey(){
 
     return CachedAuthKey
 }
-
-// async function CanOAuthVerify(UserId){
-//     if (!UserId) return false
-
-//     const Keys = await LocalStorage.get("OAuth")
-// }
-
-// async function GetAuthKeyOAuth(UserId){
-//     if (!UserId) return ""
-//     if ((Date.now()/1000) - LastAuthKeyAttempt < 3){
-//         await sleep(3000)
-//     }
-
-//     while (FetchingAuthKey){
-//         await sleep(100)
-//     }
-
-//     FetchingAuthKey = true
-// }
