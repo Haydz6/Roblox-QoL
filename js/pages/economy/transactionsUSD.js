@@ -39,13 +39,15 @@ IsFeatureEnabled("AddUSDToTransactions").then(async function(Enabled){
 
         ChildAdded(List, true, async function(Item){
             const Amount = Item.getElementsByClassName("amount")[0]
-            const Children = Amount.children
-            if (Children.length === 0) return
+            const RobuxIcon = Amount.getElementsByClassName("icon-robux-16x16")[0]
+            const RobuxLabel = RobuxIcon?.nextSibling
+
+            if (!RobuxLabel) return
 
             const USDLabel = document.createElement("span")
             USDLabel.style = "margin-left: 6px; font-size: 14px; color: #4cb13f;"
 
-            const Robux = parseInt(Children[Children.length - 1].innerText.replace(/\D/g, ""))
+            const Robux = parseInt(RobuxLabel.innerText.replace(/\D/g, ""))
             if (!isNaN(Robux)) USDLabel.innerText = `(${await RobuxToCurrency(Robux)})`
 
             Amount.appendChild(USDLabel)
