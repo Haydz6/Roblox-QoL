@@ -590,8 +590,17 @@ function GetTargetId(){
   return PageTargetId
 }
 
-function SanitizeString(Unsantizied){
-  return Unsantizied //TODO
+function SanitizeString(Unsanitized){
+  const Replacements = {"<": "&lt;", ">": "&gt;", "&": "&amp;", "\"": "&quot;", "'": "&#039;", "\\": "&#39;"}
+  let Sanitized = ""
+
+  for (let i = 0; i < Unsanitized.length; i++) {
+    const Character = Unsanitized.charAt(i)
+    const Replacement = Replacements[Character]
+    Sanitized += Replacement || Character
+  }
+
+  return Sanitized
 }
 
 function GetDaysInMonth(Time){
