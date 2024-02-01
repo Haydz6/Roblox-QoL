@@ -16,6 +16,12 @@
         border-radius: 6px;
     }
 
+    /*Home Page*/
+    #HomeContainer .home-interleave-divider {
+        background-color: transparent!important;
+        border: none!important;
+    }
+
     /*Game Page*/
     #game-detail-page .nav.nav-tabs {
         border-radius: 6px;
