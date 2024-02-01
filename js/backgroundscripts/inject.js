@@ -139,6 +139,7 @@ const ContentScripts = [{
         "js/pages/settings/createelements.js",
         "js/pages/settings/main.js",
         "js/pages/settings/themes.js",
+        "js/pages/settings/subscription.js",
         "js/pages/settings/mainv2.js",
         "js/pages/bestfriend/canview.js",
         "js/pages/bestfriend/caninventoryview.js"

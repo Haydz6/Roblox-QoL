@@ -857,7 +857,8 @@ const Settings = {
             Title: "Strictly disallow other IP",
             Description: "If a session's IP does not match your device's IP, it will be logged out.\nIf you become locked out while away from your device from this setting, use forget your password to regain access."
         },
-    }
+    },
+    Subscription: {},
 }
 
 function IsQOLSettingsOpened(){

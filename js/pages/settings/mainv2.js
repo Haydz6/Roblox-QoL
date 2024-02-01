@@ -227,7 +227,8 @@ async function CreateSettingsListReact(){
     const CustomTabPromises = [
         CreateCustomTab("Themes", CreateThemesSection),
         CreateCustomTab("Security", CreateSecuritySection),
-        CreateCustomTab("Diagnose", CreateDiagnoseSection, true)
+        CreateCustomTab("Diagnose", CreateDiagnoseSection, true),
+        CreateCustomTab("Subscription", CreateSubscriptionSection)
     ]
 
     for (const [title, _] of Object.entries(Settings)){
