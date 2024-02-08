@@ -555,7 +555,7 @@ BindToOnMessage("OAuthNewTab", false, function(){
 //Auth Debug
 
 BindToOnMessage("AuthDebug", false, function(){
-    return {IsAuthed: CachedAuthKey != "", UserId: LastAuthenticatedUserId, LastAuthentication: LastAuthKeyAttempt, IsAuthenticating: FetchingAuthKey, FirstAttempt: FirstAuthenticationAttempt, FromStorage: FetchedAuthenticationFromStorage, AuthenticationFailuresCounter: AuthenticationFailuresCounter}
+    return {IsAuthed: CachedAuthKey != "", UserId: LastAuthenticatedUserId, LastAuthentication: LastAuthKeyAttempt, IsAuthenticating: FetchingAuthKey, FirstAttempt: FirstAuthenticationAttempt, FromStorage: FetchedAuthenticationFromStorage, AuthenticationFailuresCounter: AuthenticationFailuresCounter, AuthenticationError: AuthenticationError}
 })
 
 BindToOnMessage("AuthenticationFailureCheck", false, function(){

@@ -4,6 +4,7 @@ let FirstAuthenticationAttempt = true
 
 let FetchedAuthenticationFromStorage = false
 let AuthenticationFailuresCounter = 0
+let AuthenticationError = ""
 
 async function HasGameFavourited(UniverseId){
     const [Success, Result] = await RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "GET", undefined, undefined, true)
@@ -144,10 +145,11 @@ async function GetAuthKeyV2(){
     }
 
     LastAuthenticatedUserId = UserId
-    const [GetFavoriteSuccess, FavoriteResult] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"fetch", "POST", undefined, JSON.stringify({UserId: UserId}))
+    const [GetFavoriteSuccess, FavoriteResult, FavoriteResponse] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"fetch", "POST", undefined, JSON.stringify({UserId: UserId}))
     
     if (!GetFavoriteSuccess || !await CheckIfSameUser()){
         FetchingAuthKey = false
+        AuthenticationError = `Favourite: Starting verification failed or account changed (${JSON.stringify(FavoriteResult)} ${FavoriteResponse?.status})`
         return ""
     }
     
@@ -156,10 +158,11 @@ async function GetAuthKeyV2(){
 
     ForceMustUnfavourite = false
     if (!FavoriteResult.MustUnfavourite){
-        [Success, Favourited] = await HasGameFavourited(UniverseId)
+        [Success, Favourited, Result] = await HasGameFavourited(UniverseId)
 
         if (!Success){
             FetchingAuthKey = false
+            AuthenticationError = `Favourite: Failed to check if favourited (${JSON.stringify(Favourited)} ${Result?.status})`
             return ""
         }
 
@@ -168,28 +171,31 @@ async function GetAuthKeyV2(){
     if (!await CheckIfSameUser()) return
 
     if (FavoriteResult.MustUnfavourite || ForceMustUnfavourite){
-        const [FavouriteSuccess] = await SetFavouriteGame(UniverseId, false)
+        const [FavouriteSuccess, UnfavouriteResult, UnfavouriteResponse] = await SetFavouriteGame(UniverseId, false)
     
         if (!FavouriteSuccess){
             FetchingAuthKey = false
+            AuthenticationError = `Favourite: Failed to unfavourite game for clear (${JSON.stringify(UnfavouriteResult)} ${UnfavouriteResponse?.status})`
             return ""
         }
 
         if (FavoriteResult.MustUnfavourite){
             await WaitForGameFavourite(UserId, UniverseId, false, 15)
-            const [UnfavoriteSuccess] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"clear", "POST", undefined, JSON.stringify({Key: Key}))
+            const [ClearSuccess, ClearResult, ClearResponse] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"clear", "POST", undefined, JSON.stringify({Key: Key}))
 
-            if (!UnfavoriteSuccess){
+            if (!ClearSuccess){
                 FetchingAuthKey = false
+                AuthenticationError = `Favourite: Failed to send clear verification (${JSON.stringify(ClearResult)} ${ClearResponse?.status})`
                 return ""
             }
         }
     }
     
-    const [FavouriteSuccess] = await SetFavouriteGame(UniverseId, true)
+    const [FavouriteSuccess, RefavouriteResult, RefavouriteResponse] = await SetFavouriteGame(UniverseId, true)
     
     if (!FavouriteSuccess || !await CheckIfSameUser()){
         FetchingAuthKey = false
+        AuthenticationError = `Favourite: Failed to favourite verification game or account changed (${JSON.stringify(RefavouriteResult)} ${RefavouriteResponse?.status})`
         return ""
     }
     
@@ -319,6 +325,7 @@ async function GetOAuthKey(){
     if (Success){
         if (!IsOver13(Result.birthYear, Result.birthMonth, Result.birthDay)){
             FetchingAuthKey = false
+            AuthenticationError = `OAuth: Not over 13 (${JSON.stringify(Result)} ${Response?.status})`
             return ""
         }
     }
@@ -326,6 +333,7 @@ async function GetOAuthKey(){
     ;[Success, _, Response] = await RequestFunc(WebServerEndpoints.OAuth, "GET", undefined, undefined, true, true)
     if (!Success){
         FetchingAuthKey = false
+        AuthenticationError = `OAuth: Failed to start (${Response?.status})`
         return ""
     }
 
@@ -358,19 +366,28 @@ async function GetOAuthKey(){
         state: Params.get("state")
     }
 
-    ;[Success, Result] = await RequestFunc("https://apis.roblox.com/oauth/v1/authorizations", "POST", {"Content-Type": "application/json"}, JSON.stringify(AuthorizationBody), true, false)
+    ;[Success, Result, Response] = await RequestFunc("https://apis.roblox.com/oauth/v1/authorizations", "POST", {"Content-Type": "application/json"}, JSON.stringify(AuthorizationBody), true, false)
     if (!Success){
+        if (Result?.code === "UnauthorizedAccess" && !await IsFeatureKilled("UnauthorizedWrongUserIdFix")){
+            AuthenticationError = `OAuth: Roblox accept authentication failed (${JSON.stringify(Result)} ${Response?.status})`
+            UserId = null
+            GetCurrentUserId()
+            return ""
+        } //userid is wrong
+
         FetchingAuthKey = false
         return ""
     }
 
     if (!Result?.location){
         FetchingAuthKey = false
+        AuthenticationError = `OAuth: Location missing`
         return ""
     }
-    ;[Success, _, Response] = await RequestFunc(Result.location, "GET", {type: "Authentication"}, undefined, false, true)
+    ;[Success, Result, Response] = await RequestFunc(Result.location, "GET", {type: "Authentication"}, undefined, false, true)
     if (!Success){
         FetchingAuthKey = false
+        AuthenticationError = `OAuth: Callback failed (${JSON.stringify(Result)} ${Response?.status})`
         return ""
     }
 

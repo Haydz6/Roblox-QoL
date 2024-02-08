@@ -961,6 +961,7 @@ function CreateDiagnoseSection(OptionsList){
         const AuthenticationStatus = document.createElement("p")
         const Auth = await chrome.runtime.sendMessage({type: "AuthDebug"})
         AuthenticationStatus.innerHTML = `<br><br>Authentication Status: ${Auth.IsAuthed}<br>Account: ${Auth.UserId}<br>Last Authentication: ${Auth.LastAuthentication ? SecondsToLength(Date.now() / 1000 - Auth.LastAuthentication) + " ago" : "None"}<br>Is Authenticating: ${Auth.IsAuthenticating}<br>First Attempt: ${Auth.FirstAttempt}<br>From Storage: ${Auth.FromStorage}<br>Failures in row: ${Auth.AuthenticationFailuresCounter}<br><br>`
+        AuthenticationStatus.innerText += `Error: ${Auth.AuthenticationError}`
 
         const Version = document.createElement("p")
         Version.innerText = `Version ${await chrome.runtime.sendMessage({type: "Version"})}`
