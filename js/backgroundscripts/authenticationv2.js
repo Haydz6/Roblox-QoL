@@ -39,8 +39,19 @@ async function ReauthenticateV2(){
 }
 
 async function GetAuthKey(){
+    if ((Date.now()/1000) - LastAuthKeyAttempt < 3){
+        await sleep(3000)
+    }
+
+    while (FetchingAuthKey){
+        await sleep(100)
+    }
+
+    FetchingAuthKey = true
+
     let FetchedKey = ""
 
+    console.log(await IsFeatureKilled("OAuthVerification"))
     if (!await IsFeatureKilled("OAuthVerification")) FetchedKey = await GetOAuthKey()
     if (FetchedKey == "") FetchedKey = await GetAuthKeyV2()
     if (FetchedKey == "") AuthenticationFailuresCounter++
@@ -76,17 +87,6 @@ async function WaitForGameFavourite(UserId, UniverseId, Favourited = true, Timeo
 }
 
 async function GetAuthKeyV2(){
-    if ((Date.now()/1000) - LastAuthKeyAttempt < 3){
-        await sleep(3000)
-    }
-
-    while (FetchingAuthKey){
-        await sleep(100)
-    }
-
-    FetchingAuthKey = true
-    CurrentAuthenticationMethod = "Favourite"
-    
     const UserId = await GetCurrentUserId()
     if (!UserId){
         AuthenticationError = "Favourite: Not logged in"
@@ -147,6 +147,7 @@ async function GetAuthKeyV2(){
         return ""
     }
 
+    CurrentAuthenticationMethod = "Favourite"
     LastAuthenticatedUserId = UserId
     const [GetFavoriteSuccess, FavoriteResult, FavoriteResponse] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"fetch", "POST", undefined, JSON.stringify({UserId: UserId}))
     
@@ -253,17 +254,6 @@ function IsOver13(y, m, d){
 }
 
 async function GetOAuthKey(){
-    if ((Date.now()/1000) - LastAuthKeyAttempt < 3){
-        await sleep(3000)
-    }
-
-    while (FetchingAuthKey){
-        await sleep(100)
-    }
-
-    FetchingAuthKey = true
-    CurrentAuthenticationMethod = "OAuth"
-    
     const UserId = await GetCurrentUserId()
     if (!UserId){
         AuthenticationError = "OAuth: Not logged in"
@@ -317,6 +307,7 @@ async function GetOAuthKey(){
         }
     }
 
+    CurrentAuthenticationMethod = "OAuth"
     FetchedAuthenticationFromStorage = false
     
     if (!await CheckIfSameUser()){
