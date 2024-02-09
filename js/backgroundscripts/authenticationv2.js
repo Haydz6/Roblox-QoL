@@ -51,9 +51,15 @@ async function GetAuthKey(){
 
     let FetchedKey = ""
 
-    console.log(await IsFeatureKilled("OAuthVerification"))
-    if (!await IsFeatureKilled("OAuthVerification")) FetchedKey = await GetOAuthKey()
-    if (FetchedKey == "") FetchedKey = await GetAuthKeyV2()
+    const UserId = await GetCurrentUserId()
+    if (!UserId){
+        AuthenticationError = "Wrapper: Not logged in"
+        FetchingAuthKey = false
+        return "" //No userid, so we cannot validate
+    }
+
+    if (!await IsFeatureKilled("OAuthVerification")) FetchedKey = await GetOAuthKey(UserId)
+    if (FetchedKey == "") FetchedKey = await GetAuthKeyV2(UserId)
     if (FetchedKey == "") AuthenticationFailuresCounter++
     else AuthenticationFailuresCounter = 0
 
@@ -86,13 +92,8 @@ async function WaitForGameFavourite(UserId, UniverseId, Favourited = true, Timeo
     return false
 }
 
-async function GetAuthKeyV2(){
-    const UserId = await GetCurrentUserId()
-    if (!UserId){
-        AuthenticationError = "Favourite: Not logged in"
-        FetchingAuthKey = false
-        return "" //No userid, so we cannot validate
-    }
+async function GetAuthKeyV2(UserId){
+    FetchingAuthKey = true
 
     async function CheckIfSameUser(ResetAuthKey = true){
         if (UserId !== await GetCurrentUserId()){
@@ -253,13 +254,8 @@ function IsOver13(y, m, d){
     return false
 }
 
-async function GetOAuthKey(){
-    const UserId = await GetCurrentUserId()
-    if (!UserId){
-        AuthenticationError = "OAuth: Not logged in"
-        FetchingAuthKey = false
-        return "" //No userid, so we cannot validate
-    }
+async function GetOAuthKey(UserId){
+    FetchingAuthKey = true
 
     async function CheckIfSameUser(ResetAuthKey = true){
         if (UserId !== await GetCurrentUserId()){
