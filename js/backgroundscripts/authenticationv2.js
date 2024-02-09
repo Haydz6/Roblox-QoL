@@ -377,7 +377,6 @@ async function GetOAuthKey(){
             AuthenticationError = `OAuth: Roblox accept authentication failed (${JSON.stringify(Result)} ${Response?.status})`
             UserId = null
             GetCurrentUserId()
-            return ""
         } //userid is wrong
 
         FetchingAuthKey = false
