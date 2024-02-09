@@ -106,17 +106,19 @@ async function CreateHomeRow(GamesList, Name, Type, ShowIfEmpty){
     FetchGames("time=all")
 }
 
-IsFeatureEnabled("Playtime").then(async function(Enabled){
+IsFeatureEnabled("Playtime").then(function(Enabled){
     if (!Enabled) return
 
-    let GamesList = await WaitForClass("game-home-page-container")
-    if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
+    setTimeout(async function(){
+        let GamesList = await WaitForClass("game-home-page-container")
+        if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
 
-    const [PlaytimeHide, EdittimeHide] = await Promise.all([IsFeatureEnabled("HidePlayTime"), IsFeatureEnabled("HideEditTime")])
-   
-    if (!EdittimeHide) CreateHomeRow(GamesList, "Studio Sessions", "Edit", false)
-    else RequestPlaytimeBatchFetch("Edit", false)
+        const [PlaytimeHide, EdittimeHide] = await Promise.all([IsFeatureEnabled("HidePlayTime"), IsFeatureEnabled("HideEditTime")])
+    
+        if (!EdittimeHide) CreateHomeRow(GamesList, "Studio Sessions", "Edit", false)
+        else RequestPlaytimeBatchFetch("Edit", false)
 
-    if (!PlaytimeHide) CreateHomeRow(GamesList, "Playtime", "Play", false)
-    else RequestPlaytimeBatchFetch("Play", false)
+        if (!PlaytimeHide) CreateHomeRow(GamesList, "Playtime", "Play", false)
+        else RequestPlaytimeBatchFetch("Play", false)
+    }, 0)
 })
