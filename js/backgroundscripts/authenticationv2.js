@@ -87,6 +87,7 @@ async function GetAuthKeyV2(){
     
     const UserId = await GetCurrentUserId()
     if (!UserId){
+        AuthenticationError = "Favourite: Not logged in"
         FetchingAuthKey = false
         return "" //No userid, so we cannot validate
     }
@@ -262,6 +263,7 @@ async function GetOAuthKey(){
     
     const UserId = await GetCurrentUserId()
     if (!UserId){
+        AuthenticationError = "OAuth: Not logged in"
         FetchingAuthKey = false
         return "" //No userid, so we cannot validate
     }
