@@ -1,6 +1,7 @@
 let LastAuthKeyAttempt = 0
 let LastAuthenticatedUserId
 let FirstAuthenticationAttempt = true
+let CurrentAuthenticationMethod = ""
 
 let FetchedAuthenticationFromStorage = false
 let AuthenticationFailuresCounter = 0
@@ -84,6 +85,7 @@ async function GetAuthKeyV2(){
     }
 
     FetchingAuthKey = true
+    CurrentAuthenticationMethod = "Favourite"
     
     const UserId = await GetCurrentUserId()
     if (!UserId){
@@ -260,6 +262,7 @@ async function GetOAuthKey(){
     }
 
     FetchingAuthKey = true
+    CurrentAuthenticationMethod = "OAuth"
     
     const UserId = await GetCurrentUserId()
     if (!UserId){
