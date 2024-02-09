@@ -121,6 +121,7 @@ const ContentScripts = [{
         "js/pages/pinned/game.js",
 
         "js/pages/generalfixes/minimizeprivateservers.js",
+        "js/pages/generalfixes/fullvotecount.js",
         
         "js/pages/economy/gamestoreUSD.js"
     ],

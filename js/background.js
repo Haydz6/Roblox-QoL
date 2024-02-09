@@ -12,6 +12,7 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
+    ShowFullVoteCount: false,
     AddUSDToGameStore: true, ShowUSDPurchaseRate: false, ServerRegionsForPrivateServers: true,
     AddUSDToTransactions: true, BestFriendInventoryV2: true, HidePlayTime: false, HideEditTime: false,
     StreamerMode: false, StreamerModeKeybind: null, OpenNewTabIfRequiredHAB: true, OpenNewTabIfRequiredJobsHAB: false,

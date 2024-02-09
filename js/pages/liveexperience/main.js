@@ -120,6 +120,8 @@ async function RunLiveLikes(){
     const DislikesLabel = VoteNumbers.getElementsByClassName("count-right")[0].getElementsByClassName("vote-text")[0]
     const LikesLabel = VoteNumbers.getElementsByClassName("count-left")[0].getElementsByClassName("vote-text")[0]
 
+    const FullVotes = await IsFeatureEnabled("ShowFullVoteCount")
+
     let LastLikes = 0
     let LastDislikes = 0
     let LastRatio = 0
@@ -132,8 +134,8 @@ async function RunLiveLikes(){
         if (Success){
             if (!IsFirst){
                 Promise.all([
-                    TweenLabel(DislikesLabel, LastDislikes, Info.Dislikes, 5, Info.Dislikes < 10000 && numberWithCommas || AbbreviateNumber),
-                    TweenLabel(LikesLabel, LastLikes, Info.Likes, 5, Info.Likes < 10000 && numberWithCommas || AbbreviateNumber),
+                    TweenLabel(DislikesLabel, LastDislikes, Info.Dislikes, 5, FullVotes || Info.Dislikes < 10000 ? numberWithCommas : AbbreviateNumber),
+                    TweenLabel(LikesLabel, LastLikes, Info.Likes, 5, FullVotes || Info.Likes < 10000 ? numberWithCommas : AbbreviateNumber),
                     TweenNumber(LastRatio, Info.Ratio, 5, function(i){
                         VoteBar.style = `width: ${i}%;`
                     })
@@ -141,8 +143,8 @@ async function RunLiveLikes(){
             } else {
                 IsFirst = false
 
-                DislikesLabel.innerText = (Info.Dislikes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Dislikes)
-                LikesLabel.innerText = (Info.Likes < 10000 && numberWithCommas || AbbreviateNumber)(Info.Likes)
+                DislikesLabel.innerText = (FullVotes || Info.Dislikes < 10000 ? numberWithCommas : AbbreviateNumber)(Info.Dislikes)
+                LikesLabel.innerText = (FullVotes || Info.Likes < 10000 ? numberWithCommas : AbbreviateNumber)(Info.Likes)
                 VoteBar.style = `width: ${Info.Ratio}%;`
 
                // await sleep(5*1000)

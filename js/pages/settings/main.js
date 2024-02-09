@@ -389,6 +389,10 @@ const Settings = {
             Title: "Show Supported Devices",
             Description: "Shows what devices a game supports. (Replaces allowed gears)"
         },
+        ShowFullVoteCount: {
+            Title: "Show full vote count",
+            Description: "Shows the full like/dislike count for a game."
+        }
     },
     Trades: {
         TradeNotifier: {
