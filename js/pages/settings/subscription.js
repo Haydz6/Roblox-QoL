@@ -4,7 +4,7 @@ async function CreateSubscriptionSection(List){
 
     CustomList.innerHTML = `
     <div style="margin-top: 50px; margin-bottom: 50px; display: flex; flex-direction: column; align-items: center;"><input class="form-control input-field new-input-field" placeholder="Subscription key" maxlength="999" autocomplete="false" autocapitalize="false" spellcheck="false" style="width: 400px; float: right; height: 33px;"><p style="margin-top: 20px; display: none;" class="status"></p><button style="margin-top: 20px;" class="btn-primary-md">Reedem</button></div>
-    <div><h3>Next payment</h3><p class="renewal">Renews on ...</p><h3>Tier</h3><p class="tier">...</p><h3>Price</h3><p style="margin-bottom: 25px;" class="price">$...</p> <a href="https://roqol.io/pages/account">Manage Account</a></div>
+    <div><h3>Next payment</h3><p class="renewal">Renews on ...</p><h3>Tier</h3><p class="tier">...</p><h3>Price</h3><p style="margin-bottom: 25px;" class="price">$...</p> <a href="https://roqol.io/pages/account">Manage Account</a><br><br><a href="https://roqol.io/pages/pricing">Purchase subscription</a><br><br><a href="https://roqol.io/pages/faq#redeem">How to redeem</a></div>
     `
 
     const InputBox = CustomList.getElementsByTagName("input")[0]
