@@ -186,6 +186,8 @@ async function HandleMapRegion(){
     async function FetchGlobeData(){
         if (Fetched || IsFetching) return
 
+        CreateGlobe()
+
         IsFetching = true
         const [Success, Result] = await RequestFunc(WebServerEndpoints.Servers+"regions", "POST", undefined, JSON.stringify({PlaceId: await GetPlaceIdFromGamePage()}))
         IsFetching = false
@@ -197,7 +199,6 @@ async function HandleMapRegion(){
         Fetched = true
 
         //const GlobeData = []
-        CreateGlobe()
 
         for (let i = 0; i < Result.length; i++){
             const Region = Result[i]
