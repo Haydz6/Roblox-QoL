@@ -17,6 +17,10 @@ async function CreateSubscriptionSection(List){
             CustomList.getElementsByClassName("renewal")[0].innerText = typeof(Result.Renewal) == "number" ? `Renews on ${new Date(Result.Renewal).toLocaleDateString(undefined, {month: "long", day: "2-digit"})}` : Result.Renewal
             CustomList.getElementsByClassName("tier")[0].innerText = `${Result.Tier}`
             CustomList.getElementsByClassName("price")[0].innerText = `${Result.Price}`
+        } else if (Result?.Result === "Invalid Subscription Key"){
+            CustomList.getElementsByClassName("renewal")[0].innerText = "Not subscribed"
+            CustomList.getElementsByClassName("tier")[0].innerText = "Free"
+            CustomList.getElementsByClassName("price")[0].innerText = ""
         }
     }
 
