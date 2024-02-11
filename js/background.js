@@ -422,6 +422,13 @@ BindToOnMessage("GetSubscription", true, function(){
     return GetSubscription()
 })
 
+BindToOnMessage("RefreshSubscription", true, async function(){
+    while (CurrentSubscription === true) await sleep(100)
+    CurrentSubscription = undefined
+
+    return GetSubscription()
+})
+
 BindToOnMessage("PaymentRequired", false, function(request){
     return PaymentRequiredFailure(request.result)
 })

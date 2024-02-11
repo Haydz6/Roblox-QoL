@@ -5,7 +5,7 @@ IsFeatureEnabled("FriendsActivity").then(function(Enabled){
         let GamesList = await WaitForClass("game-home-page-container")
         if (await IsFeatureEnabled("TemporaryHomePageContainerFix")) GamesList = (await WaitForClassPath(GamesList, "game-carousel")).parentNode
         
-        const [Success, Games] = await RequestFunc(WebServerEndpoints.Friends+"sort?type=Some", "GET")
+        const [Success, Games] = await RequestFunc(WebServerEndpoints.Friends+"sort?type=Some", "GET") //to fix
         if (!Success){
             GameCarousel.innerText = "Failed to fetch"
             Spinner.remove()

@@ -127,6 +127,11 @@ async function WearExtraOutfit(Id){
   AllPromises.push(RequestFunc("https://avatar.roblox.com/v1/avatar/set-scales", "POST", {"Content-Type": "application/json"}, JSON.stringify(OutfitInfo.scales), true))
   AllPromises.push(RequestFunc("https://avatar.roblox.com/v2/avatar/set-wearing-assets", "POST", {"Content-Type": "application/json"}, JSON.stringify({assets: Assets}), true))
 
+  // RequestFunc("https://avatar.roblox.com/v1/avatar/set-body-colors", "POST", {"Content-Type": "application/json"}, JSON.stringify(OutfitInfo.bodyColors), true)
+  // RequestFunc("https://avatar.roblox.com/v1/avatar/set-player-avatar-type", "POST", {"Content-Type": "application/json"}, JSON.stringify({playerAvatarType: OutfitInfo.rigType}), true)
+  // RequestFunc("https://avatar.roblox.com/v1/avatar/set-scales", "POST", {"Content-Type": "application/json"}, JSON.stringify(OutfitInfo.scales), true)
+  // RequestFunc("https://avatar.roblox.com/v2/avatar/set-wearing-assets", "POST", {"Content-Type": "application/json"}, JSON.stringify({assets: Assets}), true)
+
   // for (let i = 1; i <= 8; i++){
   //   EmoteId = OutfitInfo.emotes[i]
 

@@ -34,6 +34,10 @@ async function CreateSubscriptionSection(List){
         if (!Success){
             StatusLabel.innerText = `Failed to redeem key (${Result.Result})`
         } else {
+            StatusLabel.innerText = "Updating subscription status"
+
+            CurrentSubscription = await chrome.runtime.sendMessage({type: "RefreshSubscription"})
+
             StatusLabel.innerText = "Redeemed"
             InputBox.value = ""
 
