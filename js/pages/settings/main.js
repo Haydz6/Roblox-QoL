@@ -979,6 +979,58 @@ function CreateDiagnoseSection(OptionsList){
     new MutationObserver(Run).observe(OptionsList, {attributes: true, attributeFilter: ["style"]})
 }
 
+function AddImportExportButtons(List){
+    function CreateButton(Text){
+        const Button = document.createElement("button")
+        Button.className = "btn-control-sm"
+        Button.style.marginRight = "6px"
+        Button.innerHTML = `<span>${SanitizeString(Text)}</span>`
+        List.appendChild(Button)
+
+        return Button
+    }
+
+    const ImportButton = CreateButton("Import Settings")
+    const Input = document.createElement("input")
+    Input.accept = ".json"
+    Input.type = "file"
+    Input.style.display = "none"
+    ImportButton.appendChild(Input)
+
+    Input.addEventListener("change", function(e){
+        const TargetFile = e.target.files[0]
+        if (!TargetFile) return
+
+        let reader = new FileReader()
+        reader.onload = async function(File){
+            const NewSettings = JSON.parse(File.target.result)
+
+            for ([k, v] of Object.entries(NewSettings)) await SetFeatureEnabled(k, v, true)
+            location.reload()
+        }
+
+        reader.readAsText(TargetFile)
+    })
+
+    ImportButton.addEventListener("click", function(){
+        Input.click()
+    })
+
+    CreateButton("Export Settings").addEventListener("click", async function(){
+        const blobUrl = URL.createObjectURL(new Blob([JSON.stringify(await chrome.runtime.sendMessage({type: "getsettings"}))], {type: "application/octet-stream"}))
+
+        const link = document.createElement("a")
+        link.setAttribute("download", "RoQoL Exported Settings.json")
+        link.setAttribute("href", blobUrl)
+        document.body.append(link)
+
+        link.click()
+        link.remove()
+
+        URL.revokeObjectURL(blobUrl)
+    })
+}
+
 async function CreateSettingsSection(OptionsList){
     for (const [title, settings] of Object.entries(Settings)){
         if (title == "Security") continue

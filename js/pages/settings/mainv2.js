@@ -294,6 +294,8 @@ async function CreateSettingsListReact(){
             OpenContainer(Object.keys(Settings)[0])
         }
     }
+
+    AddImportExportButtons(TitleToContainer["General"])
 }
 
 async function CreateSettingsListController(){
@@ -500,6 +502,7 @@ async function CreateSettingsListController(){
         }
     }
 
+    AddImportExportButtons(TitleToContainer["General"])
 }
 
 async function CreateSettingsList(){
