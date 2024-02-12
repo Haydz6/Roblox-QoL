@@ -358,8 +358,8 @@ const Settings = {
             Description: "Hides play time on home page."
         },
         HideEditTime: {
-            Title: "Hide edit time on home page",
-            Description: "Hides edit time on home page."
+            Title: "Hide studio session time on home page",
+            Description: "Hides studio session time on home page."
         },
         PinnedGames: {
             Title: "Pinned Games",
