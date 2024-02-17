@@ -18,6 +18,33 @@ function CreateSliderOption(Title, Range, Current, Callback, TextCallback){
     return Container
 }
 
+function CreateDropdownOption(Title, Options, Current, Callback, TextCallback){
+    const Container = document.createElement("div")
+    Container.style = "width: 100%; min-width: 300px; max-width: calc(50% - 10px); margin: 5px; border-radius: 6px; background-color: #1b1d1e; padding: 20px;"
+
+    Container.innerHTML = `<h3></h3><div style="display: flex; justify-content: center;"><select class="input-field select-option rbx-select"><span class="icon-arrow icon-down-16x16"></span></div>`
+    Container.getElementsByTagName("h3")[0].innerText = Title
+
+    const Input = Container.getElementsByClassName("input-field")[0]
+    for (let i = 0; i < Options.length; i++){
+        const Option = document.createElement("option")
+        Option.value = Options[i]
+        Option.innerText = TextCallback(Options[i])
+
+        Input.appendChild(Option)
+    }
+
+    Input.value = Current
+
+    Input.addEventListener("change", async function(){
+        //CurrentInputLabel.innerText = TextCallback(await Callback(Input.value))
+        await Callback(Input.value)
+    })
+    //CurrentInputLabel.innerText = TextCallback(Current)
+
+    return Container
+}
+
 function CreateSettingsSection(){
     const Container = document.createElement("div")
     Container.style = "margin: 50px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center;"
@@ -64,6 +91,14 @@ function CreateSettingsSection(){
             return Value
         }, function(Value){
             return `${Value}%`
+        }))
+
+        Container.append(CreateDropdownOption("Background Repeat", ["no-repeat", "repeat", "repeat-x", "repeat-y", "round", "space"], Theme.Settings.BackgroundRepeat || "repeat", function(Value){
+            Theme.Settings.BackgroundRepeat = Value
+            chrome.runtime.sendMessage({type: "ThemeSettings", key: "BackgroundRepeat", value: Value})
+            return Value
+        }, function(Value){
+            return Value
         }))
     })
 

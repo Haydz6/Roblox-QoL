@@ -19,12 +19,30 @@ function hexToRgb(hex) {
     } : null
 }
 
+async function PostCSSEdits(Settings, IFrame){
+    function Ready(){
+        IFrame.contentWindow.postMessage({css: {"background-repeat": Settings.BackgroundRepeat}}, "*")
+    }
+
+    if (CurrentIFrame.getAttribute("loaded")) return Ready()
+
+    window.addEventListener("message", function(e){
+        if (e.source !== IFrame.contentWindow) return
+
+        if (e.data.type === "theme-iframe-ready"){
+            CurrentIFrame.setAttribute("loaded", true)
+            Ready()
+        }
+    })
+}
+
 function UpdateThemeSettings(Theme){
     const Settings = Theme?.Settings
     if (!Settings) return
     if (!CurrentIFrame) return
 
     CurrentIFrame.style = `${DefaultIFrameStyle} filter: blur(${Settings.Blur || 0}px) brightness(${Settings.Brightness !== undefined ? Settings.Brightness : 1}) saturate(${Settings.Saturation !== undefined ? Settings.Saturation : 1});`
+    PostCSSEdits(Settings, CurrentIFrame)
 
     if (Settings.Opacity && Settings.Opacity < 1){
         if (!document.body.className.includes("opacity-theme")) document.body.className += " opacity-theme"
