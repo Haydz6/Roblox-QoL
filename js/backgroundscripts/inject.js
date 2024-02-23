@@ -523,16 +523,16 @@ function ModifyPatternsForLocale(){
         for (let o = 0; o < Matches.length; o++){
             const Match = Matches[o]
 
-            if (Match.includes(".roblox.com/") && !Match.endsWith("roblox.com/*")){
+            if (Match.includes(".roblox.com/") && !Match.endsWith("roblox.com/*") && (Match.includes("*.roblox") || Match.includes("www.roblox"))){
                 const Split = Match.split(".roblox.com/")
 
                 ContentScript.matches.push(Split[0] + ".roblox.com/" + "*" + "/" + Split[1])
             }
         }
 
-        for (let o = 0; o < ContentScript.matches.length; o++){
-            console.log(ContentScript.matches[o])
-        }
+        // for (let o = 0; o < ContentScript.matches.length; o++){
+        //     console.log(ContentScript.matches[o])
+        // }
     }
 }
 
