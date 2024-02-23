@@ -346,7 +346,12 @@ async function FetchAllFeaturesEnabled(){
     }
 }
 
-async function GetSubscription(){ //Replace with fetch call
+async function GetSubscription(Attempts = 0){ //Replace with fetch call
+    if (Attempts > 6 && CurrentSubscription === undefined){
+        CurrentSubscription = 0
+        return CurrentSubscription
+    }
+
     while (CurrentSubscription === true){
         await sleep(20)
     }
@@ -355,7 +360,12 @@ async function GetSubscription(){ //Replace with fetch call
         CurrentSubscription = true
         const [Success, Body] = await RequestFunc(WebServerEndpoints.User+"subscription", "GET")
         if (!Success){
-            CurrentSubscription = 0
+            //CurrentSubscription = 0
+
+            await sleep(5*1000)
+            CurrentSubscription = undefined
+            await GetSubscription(Attempts++)
+
         } else {
             CurrentSubscription = Body.Subscription
         }
