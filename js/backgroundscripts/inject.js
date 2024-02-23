@@ -514,3 +514,26 @@ chrome.tabs.onUpdated.addListener(function(TabId, changeInfo, Tab){
         if (Match) ParseAndRunJS(TabId, Scripts.js || [], Scripts.css || [], Scripts.run_at)
     }
 })
+
+function ModifyPatternsForLocale(){
+    for (let i = 0; i < ContentScripts.length; i++){
+        const ContentScript = ContentScripts[i]
+
+        const Matches = ContentScript.matches.slice(0) //stop infinite loop
+        for (let o = 0; o < Matches.length; o++){
+            const Match = Matches[o]
+
+            if (Match.includes(".roblox.com/") && !Match.endsWith("roblox.com/*")){
+                const Split = Match.split(".roblox.com/")
+
+                ContentScript.matches.push(Split[0] + ".roblox.com/" + "*" + "/" + Split[1])
+            }
+        }
+
+        for (let o = 0; o < ContentScript.matches.length; o++){
+            console.log(ContentScript.matches[o])
+        }
+    }
+}
+
+ModifyPatternsForLocale()
