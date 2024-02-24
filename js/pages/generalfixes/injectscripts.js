@@ -1,7 +1,13 @@
 async function InjectScript(Path, URLMatch, FullPath, Attrs, RunFirst){
     if (URLMatch){
-        const Regexp = new RegExp(URLMatch.replace(/\*/g, "[^ ]*"))
-        if (!Regexp.test(window.location.href)) return
+        function Matches(URL){
+            const Regexp = new RegExp(URL.replace(/\*/g, "[^ ]*"))
+            return Regexp.test(window.location.href)
+        }
+
+        const [_, NewURL] = ModifyURLForLocale(URLMatch)
+
+        if (!Matches(URLMatch) && !Matches(NewURL)) return
     }
 
     const Script = document.createElement("script")

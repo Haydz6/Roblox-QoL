@@ -4,7 +4,7 @@ chrome.webRequest.onBeforeRedirect.addListener(function(Document){
         const UserId = Split[0]
         chrome.tabs.update(Document.tabId, {url: "https://www.roblox.com/banned-user/"+UserId+"/"+Split[1]})
     }
-}, {urls: ["*://*.roblox.com/users/*/profile*", "*://*.roblox.com/users/*/friends*"]})
+}, {urls: ["*://*.roblox.com/users/*/profile*", "*://*.roblox.com/users/*/friends*", "*://*.roblox.com/*/users/*/profile*", "*://*.roblox.com/*/users/*/friends*"]})
 
 //let BannedUsersSupported = true
 

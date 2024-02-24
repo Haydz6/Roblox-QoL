@@ -57,6 +57,7 @@
             ],
             "js": [
                 "js/modules/hbaClient.js",
+                "js/modules/robloxlocaleurl.js",
                 "js/modules/getNavigatorLanguage.js",
                 "js/authentication/main.js",
                 "js/pages/document.js",
