@@ -37,9 +37,18 @@ function CreateHeatmap(Label){
 
     CurrentHeatmap = Container
 
+    function Error(MessageString){
+        const Message = document.createElement("p")
+        Message.innerText = MessageString
+        InnerContainer.appendChild(Message)
+    }
+
     async function Fetch(){
         const [Success, Result] = await RequestFunc(WebServerEndpoints.Playtime+"heatmap?universeId="+await GetUniverseIdFromGamePage())
         if (!Success){
+            IsHeatmapVisible = false
+            UpdateVisibility()
+            Error(Result.Result)
             return
         }
 
