@@ -22,3 +22,100 @@
     top: 6px;
     position: absolute;
 }
+
+#heatmap-playtime-calendar-inner {
+    margin: 0;
+    width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#heatmap-playtime-calendar {
+    padding: 4px;
+    z-index: 101;
+    position: absolute;
+
+    border-radius: 16px;
+    box-shadow: 0 0 16px 0 rgba(0,0,0,.3);
+
+    width: 95%;
+    max-width: 1400px;
+    min-width: 400px;
+    width: 80%;
+
+    transform: translate(-50%, 5px);
+    left: 50%;
+    top: 200px;
+
+    transition: all .5s ease-in-out;
+}
+
+#heatmap-playtime-calendar .open {
+    opacity: 1;
+}
+
+#heatmap-playtime-calendar .close {
+    opacity: 0;
+}
+
+#heatmap-playtime-calendar .label.label-project {
+    display: none;
+}
+
+.light-theme #heatmap-playtime-calendar {
+    background-color: white;
+}
+
+.light-theme .heatmap-tooltip{
+    background-color: #393b3df6;
+    color: #dedede;
+}
+
+.light-theme .calendar-heatmap .button {
+	cursor: pointer;
+	fill: transparent;
+	stroke-width: 2;
+	stroke: #aaa
+}
+
+.light-theme .calendar-heatmap .button text {
+	stroke-width: 1;
+	text-anchor: middle;
+	fill: #aaa
+}
+
+.light-theme .calendar-heatmap .label {
+	cursor: pointer;
+	fill: #aaa;
+	font-family: Helvetica, arial, Open Sans, sans-serif
+}
+
+.dark-theme #heatmap-playtime-calendar {
+    background-color: #393b3d;
+}
+
+.dark-theme .heatmap-tooltip {
+    background-color: hsla(0, 0%, 100%, .75);
+    color: #333;
+}
+
+.dark-theme .calendar-heatmap .label {
+	cursor: pointer;
+	fill: #aaa;
+	font-family: Helvetica, arial, Open Sans, sans-serif
+}
+
+
+.dark-theme .calendar-heatmap .button {
+	cursor: pointer;
+	fill: transparent;
+	stroke-width: 2;
+	stroke: #aaa
+}
+
+.dark-theme .calendar-heatmap .button text {
+	stroke-width: 1;
+	text-anchor: middle;
+	fill: #aaa
+}

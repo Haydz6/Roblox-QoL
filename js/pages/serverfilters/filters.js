@@ -230,17 +230,19 @@ async function HandleMapRegion(){
         }
 
         let MouseDownRegion
-        d3.select("#region-globe").on("mousedown.log", function(){
+
+        d3.select("#region-globe").on("mousedown.regiontrigger", function(){
             const Mouse = d3.mouse(this)
+
             const Vector = globe.projection.invert(Mouse)
             const [Distance, Region] = GetClosestRegion(Vector[1], Vector[0])
 
             if (Distance < 325){
                 MouseDownRegion = Region
             }
-        })
+        }, true)
 
-        d3.select("#region-globe").on("click.log", function(){
+        d3.select("#region-globe").on("click.regiontrigger", function(){
             const Mouse = d3.mouse(this)
             const Vector = globe.projection.invert(Mouse)
             const [Distance, Region] = GetClosestRegion(Vector[1], Vector[0])
@@ -257,7 +259,7 @@ async function HandleMapRegion(){
             MouseDownRegion = undefined
         })
 
-        d3.select("#region-globe").on("mousemove.log", function(){
+        d3.select("#region-globe").on("mousemove.regiontrigger", function(){
             const Mouse = d3.mouse(this)
             const Vector = globe.projection.invert(Mouse)
             const [Distance, Region] = GetClosestRegion(Vector[1], Vector[0])

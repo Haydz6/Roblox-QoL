@@ -10,7 +10,7 @@ let CurrentSubscription = undefined
 let UserId
 let CSRFToken = ""
 
-const Debugging = false
+const Debugging = true
 const IgnoreDisabledFeatures = false
 const UseV2Waiters = false
 

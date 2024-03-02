@@ -164,11 +164,16 @@ function CreateGamePlaytime(Type, Name, Icon){
     NameLabel.style = "font-size: 14px; font-weight: 500;"
     NameLabel.innerText = Name || "Played"
 
-    const Value = document.createElement(Type ? "a" : "p")
+    const Value = document.createElement(Type && typeof(Type) != "function" ? "a" : "p")
     Value.className = "text-name text-overflow"
     Value.style = "font-size: 14px; font-weight: 500;" + (Type ? "" : " text-decoration: none;")
     Value.innerText = "..."
-    Value.href = Type ? `https://www.roblox.com/discover#/sortName?sort=Playtime&type=${Type}` : ""
+    Value.href = Type && typeof(Type) != "function" ? `https://www.roblox.com/discover#/sortName?sort=Playtime&type=${Type}` : ""
+
+    if (typeof(Type) == "function"){
+        Value.addEventListener("click", Type)
+        Value.style.cursor = "pointer"
+    }
 
     Container.append(Image, NameLabel, Value)
 

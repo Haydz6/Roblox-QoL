@@ -12,7 +12,7 @@ const ExtensionVersion = Manifest.version
 const ManifestVersion = Manifest["manifest_version"]
 
 const EnabledFeatures = {
-    ShowFullVoteCount: false,
+    ShowFullVoteCount: false, PlaytimeHeatmap: true,
     AddUSDToGameStore: true, ShowUSDPurchaseRate: false, ServerRegionsForPrivateServers: true,
     AddUSDToTransactions: true, BestFriendInventoryV2: true, HidePlayTime: false, HideEditTime: false,
     StreamerMode: false, StreamerModeKeybind: null, OpenNewTabIfRequiredHAB: true, OpenNewTabIfRequiredJobsHAB: false,
@@ -38,7 +38,7 @@ const EnabledFeatures = {
 
 let AreEnabledFeaturesFetched = false
 
-const PaidFeatures = {ServerRegionsForPrivateServers: 1, VoiceChatServers: 1, CurrentTheme: 1, FriendsActivity: 1, PinnedGames: 1, PinnedGroups: 1, FriendRequestNotifications: 1, BestFriends: 1, Feed: 1}
+const PaidFeatures = {PlaytimeHeatmap: 1, ServerRegionsForPrivateServers: 1, VoiceChatServers: 1, CurrentTheme: 1, FriendsActivity: 1, PinnedGames: 1, PinnedGroups: 1, FriendRequestNotifications: 1, BestFriends: 1, Feed: 1}
 let CurrentSubscription = undefined
 
 //let ROBLOSECURITY
@@ -346,7 +346,7 @@ async function FetchAllFeaturesEnabled(){
     }
 }
 
-async function GetSubscription(Attempts = 0){ //Replace with fetch call
+async function GetSubscription(Attempts = 0){
     if (Attempts > 6 && CurrentSubscription === undefined){
         CurrentSubscription = 0
         return CurrentSubscription

@@ -39,7 +39,12 @@ async function CreateTypeTime(UniverseId, Type, Name, Icon){
             const LastPlayed = Result.LastPlayed
             if (!LastPlayed) return
 
-            const [LastContainer, Value] = CreateGamePlaytime(undefined, "Last Played", chrome.runtime.getURL("/img/sandglass.png"))
+            const [LastContainer, Value] = CreateGamePlaytime(function(){
+                IsFeatureEnabled("PlaytimeHeatmap").then(function(){
+                    const Map = CreateHeatmap(LastContainer)
+                    if (Map) document.getElementsByClassName("content")[0].appendChild(Map)
+                })
+            }, "Last Played", chrome.runtime.getURL("/img/sandglass.png"))
             const CurrentDate = new Date()
             const LastDate = new Date(LastPlayed*1000) 
             const YearModifier = CurrentDate.getFullYear() !== LastDate.getFullYear() ? "numeric" : undefined

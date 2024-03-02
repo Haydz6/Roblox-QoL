@@ -84,7 +84,8 @@ const ContentScripts = [{
     ],
     "css": [
         "css/playtime.css",
-        "css/games.css"
+        "css/games.css",
+        "css/d3CalendarHeatmap.css"
     ],
     "js": [
         "js/modules/d3.min.js",
@@ -115,6 +116,9 @@ const ContentScripts = [{
 
         "js/pages/playtime/createelements.js",
         "js/pages/playtime/game.js",
+        "js/modules/moment.js",
+        "js/modules/d3CalendarHeatmap.js",
+        "js/pages/playtime/heatmap.js",
 
         "js/pages/generalfixes/supportedplatforms.js",
 
