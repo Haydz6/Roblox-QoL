@@ -126,9 +126,11 @@ function AddServerRegion(NewElement){
 
         PendingServerRegions = []
 
-        const [Success, Result] = await RequestFunc(WebServerEndpoints.Servers, "POST", {"Content-Type": "application/json"}, JSON.stringify({PlaceId: PlaceId, JobIds: JobIds}))
+        const Paid = await PaidForFeature("ServerRegions")
+        const ServerEndpoint = Paid ? WebServerEndpoints.Servers : WebServerEndpoints.Servers+"discover"
+        const [Success, Result] = await RequestFunc(ServerEndpoint, "POST", {"Content-Type": "application/json"}, JSON.stringify({PlaceId: PlaceId, JobIds: JobIds}))
 
-        if (!Success){
+        if (!Success || !Paid){
             for (const [_,resolve] of Object.entries(ResolveLookup)){
                 resolve()
             }

@@ -59,8 +59,10 @@ function HandleRegionList(Id){
     })
 }
 
-IsFeatureEnabled("ServerRegions").then(function(Enabled){
-    if (!Enabled) return
+IsFeatureEnabled("ServerRegions").then(async function(Enabled){
+    const Paid = await PaidForFeature("ServerRegions")
+    if (!Enabled && Paid) return
+    if (!Enabled && !Paid && await IsFeatureKilled("ServerRegionsDiscovery")) return
 
     InjectServerPropsRetriever()
     

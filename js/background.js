@@ -38,7 +38,7 @@ const EnabledFeatures = {
 
 let AreEnabledFeaturesFetched = false
 
-const PaidFeatures = {PlaytimeHeatmap: 1, ServerRegionsForPrivateServers: 1, VoiceChatServers: 1, CurrentTheme: 1, FriendsActivity: 1, PinnedGames: 1, PinnedGroups: 1, FriendRequestNotifications: 1, BestFriends: 1, Feed: 1}
+const PaidFeatures = {ServerRegions: 1, PreferredServerRegion: 1, PlaytimeHeatmap: 1, ServerRegionsForPrivateServers: 1, VoiceChatServers: 1, CurrentTheme: 1, FriendsActivity: 1, PinnedGames: 1, PinnedGroups: 1, FriendRequestNotifications: 1, BestFriends: 1, Feed: 1}
 let CurrentSubscription = undefined
 
 //let ROBLOSECURITY
