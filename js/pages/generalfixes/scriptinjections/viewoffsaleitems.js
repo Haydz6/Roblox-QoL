@@ -20,7 +20,8 @@ IsFeatureEnabled("ViewOffsaleItems").then(function(Enabled){
     window.fetch = async function(...args){
         const response = await _fetch(...args)
 
-        if (response.ok || response.status !== 404 && response.url.substring(0, InterceptURL.length) !== InterceptURL) return response
+        console.log(response.url)
+        if (response.ok || response.status !== 404 || response.url.substring(0, InterceptURL.length) !== InterceptURL) return response
 
         const Data = []
         const AssetIds = response.url.substring(InterceptURL.length, response.url.length).split(",")
