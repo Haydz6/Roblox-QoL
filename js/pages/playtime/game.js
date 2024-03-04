@@ -36,23 +36,29 @@ async function CreateTypeTime(UniverseId, Type, Name, Icon){
         if (FetchInt === CacheFetchInt) PlaytimeValue.innerText = Success && SecondsToLengthShort(Result.Playtime, true, true) || "???"
         if (!CreatedLastPlayed && Type === "Play" && Success && Time === "all"){
             CreatedLastPlayed = true
+
             const LastPlayed = Result.LastPlayed
-            if (!LastPlayed) return
+            if (LastPlayed){
 
-            const [LastContainer, Value] = CreateGamePlaytime(function(){
-                IsFeatureEnabled("PlaytimeHeatmap").then(function(){
-                    const Map = CreateHeatmap(LastContainer)
-                    if (Map) document.getElementsByClassName("content")[0].appendChild(Map)
-                })
-            }, "Last Played", chrome.runtime.getURL("/img/sandglass.png"))
-            const CurrentDate = new Date()
-            const LastDate = new Date(LastPlayed*1000) 
-            const YearModifier = CurrentDate.getFullYear() !== LastDate.getFullYear() ? "numeric" : undefined
+                const [LastContainer, Value] = CreateGamePlaytime(function(){
+                    IsFeatureEnabled("PlaytimeHeatmap").then(function(Enabled){
+                        if (!Enabled) return
 
-            Value.innerText = LastDate.toLocaleString(undefined, {month: "short", day: "numeric", year: YearModifier})
+                        const Map = CreateHeatmap(LastContainer)
+                        if (Map) document.getElementsByClassName("content")[0].appendChild(Map)
+                    })
+                }, "Last Played", chrome.runtime.getURL("/img/sandglass.png"))
+                const CurrentDate = new Date()
+                const LastDate = new Date(LastPlayed*1000) 
+                const YearModifier = CurrentDate.getFullYear() !== LastDate.getFullYear() ? "numeric" : undefined
+    
+                Value.innerText = LastDate.toLocaleString(undefined, {month: "short", day: "numeric", year: YearModifier})
+    
+                TitleContainer.insertBefore(LastContainer, Container)
 
-            TitleContainer.insertBefore(LastContainer, Container)
+            }
         }
+
     }
 
     function CreateButton(Title, Params){
