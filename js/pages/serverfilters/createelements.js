@@ -186,7 +186,7 @@ function CreateFilterList(){
 }
 
 function CreateFilterButton(Text){
-    const Button = document.createElement("a")
+    const Button = document.createElement("button")
     Button.className = "btn-full-width btn-control-xs rbx-game-server-join game-server-join-btn btn-primary-md btn-min-width filter-button"
     Button.innerText = Text
 

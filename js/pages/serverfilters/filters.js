@@ -18,6 +18,7 @@ function UpdateFilterListVisibility(){
 
 async function HandleMapRegion(){
     const Button = CreateFilterButton("Region Map")
+    Button.classList.add("ignore-paid-check")
 
     const GlobeDiv = document.createElement("div")
     GlobeDiv.className = "filter-globe"
@@ -401,8 +402,10 @@ function CreateMaxPlayersFilter(){
 
     UpdateVisiblity()
 
-    FilterList.appendChild(OpenButton)
+    //FilterList.appendChild(OpenButton)
     FilterList.appendChild(Container)
+
+    return OpenButton
 }
 
 function CreateGeneralButtons(){
@@ -461,12 +464,17 @@ function CreateGeneralButtons(){
         EnableRandomServers()
     })
 
-    FilterList.appendChild(AvailableButton)
-    FilterList.appendChild(SmallestButton)
-    FilterList.appendChild(BestServer)
-    FilterList.appendChild(NewestServer)
-    FilterList.appendChild(OldestServer)
-    FilterList.appendChild(RandomServer)
+    const Free = [AvailableButton, SmallestButton, RandomServer]
+    const Paid = [BestServer, NewestServer, OldestServer]
+
+    // FilterList.appendChild(AvailableButton)
+    // FilterList.appendChild(SmallestButton)
+    // FilterList.appendChild(BestServer)
+    // FilterList.appendChild(NewestServer)
+    // FilterList.appendChild(OldestServer)
+    // FilterList.appendChild(RandomServer)
+
+    return [Free, Paid]
 }
 
 async function HandleFilterClick(Container, FilterButton){
@@ -477,9 +485,64 @@ async function HandleFilterClick(Container, FilterButton){
         UpdateFilterListVisibility()
     })
 
-    FilterList.appendChild((await HandleMapRegion()))
-    CreateGeneralButtons()
-    CreateMaxPlayersFilter()
+    const [Free, Paid] = CreateGeneralButtons()
+    Free.push(CreateMaxPlayersFilter())
+    Paid.unshift(await HandleMapRegion())
+
+    // function CreateTierTitle(Title){
+    //     const Label = document.createElement("p")
+    //     Label.innerText = Title
+    //     Label.style = "font-size: small;"
+
+    //     return Label
+    // }
+
+    // function CreateSeparator(){
+    //     const Label = document.createElement("div")
+    //     Label.className = "tier-separator"
+
+    //     return Label
+    // }
+
+    // const PaidTooltip = document.createElement("p")
+    // PaidTooltip.innerText = "This feature is paid"
+    // PaidTooltip.className = "paid-tooltip"
+    // PaidTooltip.style.display = "none"
+
+    const HasPaid = await PaidForFeature("ServerRegions")
+    if (!HasPaid){
+        FilterList.append(...Free)
+        FilterList.append(...Paid)
+
+        for (let i = 0; i < Paid.length; i++){
+            const Button = Paid[i]
+            if (Button.classList.contains("ignore-paid-check")) continue
+
+            //Button.setAttribute("disabled", "disabled")
+            Button.classList.add("paid-disabled")
+            Button.style = "pointer-events: all; cursor: pointer;"
+
+            // Button.addEventListener("click", function(e){
+            //     CreatePaymentPrompt(RegionPaidFooter)
+            // })
+
+            // Button.addEventListener("mouseenter", function(){
+            //     console.log("enter")
+            //     Button.appendChild(PaidTooltip)
+            //     PaidTooltip.style.display = ""
+            // })
+
+            // Button.addEventListener("mouseleave", function(){
+            //     console.log("leave")
+            //     PaidTooltip.style.display = "none"
+            // })
+        }
+    } else {
+        FilterList.append(...Paid)
+        FilterList.append(...Free)
+    }
+
+    FilterList.children[FilterList.children.length-1].style.marginBottom = "0"
 
     Container.appendChild(FilterList)
     WaitForId("roproServerFiltersButton").then(function(Button){

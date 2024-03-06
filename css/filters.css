@@ -31,7 +31,8 @@
 
 .filter-list {
     width: 150px;
-    height: 222px;
+    /* height: 222px; */
+    height: auto;
     position: absolute;
     z-index: 5;
     top: 24px;
@@ -188,4 +189,39 @@
     padding-top: 1px !important;
     padding: 2px;
     transform: translate(-50%);
+}
+
+.tier-separator {
+    width: 80%;
+    height: 2px;
+    border-radius: 4px;
+    opacity: 0.5;
+    margin: auto;
+    margin-bottom: 4px;
+}
+
+.light-theme .tier-separator {
+    background-color: rgb(25,25,25);
+}
+
+.dark-theme .tier-separator {
+    background-color: #bfbfbf;
+}
+
+.light-theme .paid-tooltip {
+    background-color: rgb(25,25,25);
+}
+
+.dark-theme .paid-tooltip {
+    background-color: #bfbfbf;
+}
+
+.dark-theme .filter-list button.paid-disabled {
+    color: hsla(0,0%,100%,.7);
+    opacity: 0.5;
+}
+
+.light-theme .filter-list button.paid-disabled {
+    color: rgba(0,0,0,.6);
+    opacity: 0.5;
 }
