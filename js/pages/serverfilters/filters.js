@@ -16,7 +16,7 @@ function UpdateFilterListVisibility(){
     FilterList.style = `display:${FilterListOpen && "block" || "none"};`
 }
 
-async function HandleMapRegion(){
+async function HandleMapRegion(CanAccessPaid){
     const Button = CreateFilterButton("Region Map")
     Button.classList.add("ignore-paid-check")
 
@@ -249,6 +249,8 @@ async function HandleMapRegion(){
             const [Distance, Region] = GetClosestRegion(Vector[1], Vector[0])
 
             if (Distance < 325 && MouseDownRegion === Region){
+                if (!CanAccessPaid) return CreatePaymentPrompt(RegionPaidFooter)
+
                 FilterListOpen = false
                 UpdateFilterListVisibility()
 
@@ -408,7 +410,7 @@ function CreateMaxPlayersFilter(){
     return OpenButton
 }
 
-function CreateGeneralButtons(){
+function CreateGeneralButtons(CanAccessPaid){
     const AvailableButton = CreateFilterButton("Available Room")
 
     AvailableButton.addEventListener("click", function(){
@@ -430,6 +432,8 @@ function CreateGeneralButtons(){
     const BestServer = CreateFilterButton("Best Connection")
 
     BestServer.addEventListener("click", function(){
+        if (!CanAccessPaid) return CreatePaymentPrompt(RegionPaidFooter)
+
         FilterListOpen = false
         UpdateFilterListVisibility()
 
@@ -439,6 +443,8 @@ function CreateGeneralButtons(){
     const OldestServer = CreateFilterButton("Oldest Servers")
 
     OldestServer.addEventListener("click", function(){
+        if (!CanAccessPaid) return CreatePaymentPrompt(RegionPaidFooter)
+
         FilterListOpen = false
         UpdateFilterListVisibility()
 
@@ -449,6 +455,8 @@ function CreateGeneralButtons(){
     const NewestServer = CreateFilterButton("Newest Servers")
 
     NewestServer.addEventListener("click", function(){
+        if (!CanAccessPaid) return CreatePaymentPrompt(RegionPaidFooter)
+
         FilterListOpen = false
         UpdateFilterListVisibility()
 
@@ -485,9 +493,11 @@ async function HandleFilterClick(Container, FilterButton){
         UpdateFilterListVisibility()
     })
 
-    const [Free, Paid] = CreateGeneralButtons()
+    const HasPaid = await PaidForFeature("ServerRegions")
+
+    const [Free, Paid] = CreateGeneralButtons(HasPaid)
     Free.push(CreateMaxPlayersFilter())
-    Paid.unshift(await HandleMapRegion())
+    Paid.unshift(await HandleMapRegion(HasPaid))
 
     // function CreateTierTitle(Title){
     //     const Label = document.createElement("p")
@@ -509,7 +519,6 @@ async function HandleFilterClick(Container, FilterButton){
     // PaidTooltip.className = "paid-tooltip"
     // PaidTooltip.style.display = "none"
 
-    const HasPaid = await PaidForFeature("ServerRegions")
     if (!HasPaid){
         FilterList.append(...Free)
         FilterList.append(...Paid)
@@ -545,6 +554,7 @@ async function HandleFilterClick(Container, FilterButton){
     FilterList.children[FilterList.children.length-1].style.marginBottom = "0"
 
     Container.appendChild(FilterList)
+
     WaitForId("roproServerFiltersButton").then(function(Button){
         //Button.style.display = "none" //Turning off ropro filter settings keeps the button for some odd reason? Old behaviour, both should show side by side.
         function Reset(){
