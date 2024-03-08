@@ -73,7 +73,7 @@ async function OpenDiscord(Resume){
               "token": DiscordToken,
               "properties": {
                 "os": "Windows",
-                "browser": "Discord Client"
+                "browser": "RoQoL"
               },
             }
         })
@@ -278,6 +278,11 @@ BindToOnMessage("NewDiscordToken", false, function(Result){
 BindToOnMessage("GetDiscordInfo", false, function(){
     if (DiscordInfo) return DiscordInfo
     if (ExternalDiscordLoggedIn) return false
+})
+
+ListenForSettingChanged("DiscordPresence", function(Enabled){
+    if (!Enabled && !ExternalDiscordLoggedIn && DiscordLoggedIn) CloseDiscord()
+    else if (Enabled && !ExternalDiscordLoggedIn && !DiscordLoggedIn) OpenDiscord()
 })
 
 setTimeout(OpenDiscord, 1000)
