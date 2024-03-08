@@ -17,6 +17,8 @@ function UpdateFilterListVisibility(){
 }
 
 async function HandleMapRegion(CanAccessPaid){
+    let MouseMoveCallback
+
     const Button = CreateFilterButton("Region Map")
     Button.classList.add("ignore-paid-check")
 
@@ -133,6 +135,9 @@ async function HandleMapRegion(CanAccessPaid){
             };
           };
 
+        function DragCallback(){
+            if (MouseMoveCallback) MouseMoveCallback()
+        }
 
         LoadLocalFile(chrome.runtime.getURL("js/modules/world.json")).then(function(WorldData){
             GlobeConfig = {
@@ -159,7 +164,8 @@ async function HandleMapRegion(CanAccessPaid){
                 onDragEnd: function() {
                     WorldCanvas.style.cursor = "grab"
                   if (!IsHovering) this.plugins.autorotate.resume();
-                }
+                },
+                onDrag: DragCallback
               }))
               globe.loadPlugin(planetaryjs.plugins.pings());
 
@@ -262,8 +268,8 @@ async function HandleMapRegion(CanAccessPaid){
             MouseDownRegion = undefined
         })
 
-        d3.select("#region-globe").on("mousemove.regiontrigger", function(){
-            const Mouse = d3.mouse(this)
+        MouseMoveCallback = function(){
+            const Mouse = d3.mouse(WorldCanvas)
             const Vector = globe.projection.invert(Mouse)
             const [Distance, Region] = GetClosestRegion(Vector[1], Vector[0])
 
@@ -278,91 +284,10 @@ async function HandleMapRegion(CanAccessPaid){
             } else {
                 Tooltip.style.display = "none"
             }
-        })
-        
-        // for (let i = 0; i < Result.length; i++){
-        //     const Region = Result[i]
+        }
 
-        //     const Info = CreateInfoDiv()
-        //     CreateHeaderAndValueForHover(Info, Region.Region, `Server${Region.Count > 1 && "s" || ""}: `+Region.Count)
-
-        //     Region.element = Info
-        //     Info.className = "filter-globe-serverinfo hidden"
-        //     WorldElements.appendChild(Info)
-
-        //     GlobeData.push({
-        //         lat: Region.Lat,
-        //         lng: Region.Lng,
-        //         count: Region.Count,
-        //         region: Region.Region,
-        //         element: Info,
-        //         maxR: 1,
-        //         size: 10,
-        //         propagationSpeed: 0.25,
-        //         repeatPeriod: 1000
-        //     })
-        // }
-
-        // World.tilesData(GlobeData)
-        // .tileWidth(5)
-        // .tileHeight(3)
-        // .tileMaterial({opacity: 0})
-        // .onTileHover(function(Tile, PreviousTile){
-        //     if (PreviousTile){
-        //         PreviousTile.element.className = "filter-globe-serverinfo hidden"
-        //     }
-        //     if (Tile){
-        //         Tile.element.className = "filter-globe-serverinfo visible"
-        //     }
-        // })
-        // .onTileClick(function(Tile){
-        //     FilterListOpen = false
-        //     UpdateFilterListVisibility()
-
-        //     EnableRegionFilter(Tile.region)
-
-        //     Open = false
-        //     UpdateVisiblity()
-        // })
-
-        // // World.htmlElementsData(GlobeData)
-        // // .htmlElement(Region => {
-        // //     const Info = CreateInfoDiv()
-        // //     CreateHeaderAndValueForHover(Info, Region.region, "Servers: "+Region.count)
-
-        // //     Region.element = Info
-        // //     Info.className = "filter-globe-serverinfo hidden"
-
-        // //     return Info
-        // // })
-
-        // function UpdateElements(){
-        //     for (let i = 0; i < GlobeData.length; i++){
-        //         const Region = GlobeData[i]
-
-        //         const {x,y} = World.getScreenCoords(Region.lat, Region.lng)
-        //         Region.element.style = `top: ${y-75}px; left: ${x-75}px;`
-        //     }
-
-
-        //     if (!IsHovering) Controls.update()
-
-        //     window.requestAnimationFrame(UpdateElements)
-        // }
-        // window.requestAnimationFrame(UpdateElements)
-
-        // World.ringsData(GlobeData)
+        d3.select("#region-globe").on("mousemove.regiontrigger", MouseMoveCallback)
     }
-
-    // Button.addEventListener("mouseenter", function(){
-    //     FetchGlobeData()
-    //     GlobeDiv.style = "display:block;"
-    // })
-
-    // Button.addEventListener("mouseleave", function(){
-    //     FetchGlobeData()
-    //     GlobeDiv.style = "display:none;"
-    // })
 
     Button.addEventListener("click", function(){
         Open = !Open
@@ -475,13 +400,6 @@ function CreateGeneralButtons(CanAccessPaid){
     const Free = [AvailableButton, SmallestButton, RandomServer]
     const Paid = [BestServer, NewestServer, OldestServer]
 
-    // FilterList.appendChild(AvailableButton)
-    // FilterList.appendChild(SmallestButton)
-    // FilterList.appendChild(BestServer)
-    // FilterList.appendChild(NewestServer)
-    // FilterList.appendChild(OldestServer)
-    // FilterList.appendChild(RandomServer)
-
     return [Free, Paid]
 }
 
@@ -499,26 +417,6 @@ async function HandleFilterClick(Container, FilterButton){
     Free.push(CreateMaxPlayersFilter())
     Paid.unshift(await HandleMapRegion(HasPaid))
 
-    // function CreateTierTitle(Title){
-    //     const Label = document.createElement("p")
-    //     Label.innerText = Title
-    //     Label.style = "font-size: small;"
-
-    //     return Label
-    // }
-
-    // function CreateSeparator(){
-    //     const Label = document.createElement("div")
-    //     Label.className = "tier-separator"
-
-    //     return Label
-    // }
-
-    // const PaidTooltip = document.createElement("p")
-    // PaidTooltip.innerText = "This feature is paid"
-    // PaidTooltip.className = "paid-tooltip"
-    // PaidTooltip.style.display = "none"
-
     if (!HasPaid){
         FilterList.append(...Free)
         FilterList.append(...Paid)
@@ -527,24 +425,8 @@ async function HandleFilterClick(Container, FilterButton){
             const Button = Paid[i]
             if (Button.classList.contains("ignore-paid-check")) continue
 
-            //Button.setAttribute("disabled", "disabled")
             Button.classList.add("paid-disabled")
             Button.style = "pointer-events: all; cursor: pointer;"
-
-            // Button.addEventListener("click", function(e){
-            //     CreatePaymentPrompt(RegionPaidFooter)
-            // })
-
-            // Button.addEventListener("mouseenter", function(){
-            //     console.log("enter")
-            //     Button.appendChild(PaidTooltip)
-            //     PaidTooltip.style.display = ""
-            // })
-
-            // Button.addEventListener("mouseleave", function(){
-            //     console.log("leave")
-            //     PaidTooltip.style.display = "none"
-            // })
         }
     } else {
         FilterList.append(...Paid)
