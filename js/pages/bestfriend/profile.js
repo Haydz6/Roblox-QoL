@@ -56,7 +56,7 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
                 if (AreFriends && List) AddButtonToList()
             }
         }
-    }, 5)
+    }, 5*1000)
 
     const MoreHeader = await WaitForClassPath(await WaitForQuerySelector(".profile-header:not(.hidden)"), "profile-header-more")
     const DropdownContainer = await WaitForClassPath(MoreHeader, "profile-dropdown")
