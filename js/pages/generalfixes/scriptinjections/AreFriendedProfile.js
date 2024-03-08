@@ -2,7 +2,7 @@ async function AreFriendedDispatcher(){
     let ControllerElement
 
     while (true){
-        ControllerElement = document.querySelector('[ng-controller="profileHeaderController"]')
+        ControllerElement = document.querySelector('[ng-controller="profileBaseController"]')
         if (ControllerElement) break
         await new Promise(r => setTimeout(r, 0))
     }

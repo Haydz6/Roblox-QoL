@@ -44,8 +44,19 @@ IsFeatureEnabled("BestFriends").then(async function(Enabled){
         AreFriends = Event.detail
         if (AreFriends && List) AddButtonToList()
     }
-    InjectScript("AreFriendedProfile")
     document.addEventListener("RobloxQoL.areFriended", UpdateAreFriends)
+    InjectScript("AreFriendedProfile")
+
+    setTimeout(async function(){
+        if (AreFriends == undefined){
+            const Friends = await chrome.runtime.sendMessage({type: "GetCachedFriends"})
+
+            if (Friends.includes(TargetId)){
+                AreFriends = true
+                if (AreFriends && List) AddButtonToList()
+            }
+        }
+    }, 5)
 
     const MoreHeader = await WaitForClassPath(await WaitForQuerySelector(".profile-header:not(.hidden)"), "profile-header-more")
     const DropdownContainer = await WaitForClassPath(MoreHeader, "profile-dropdown")
