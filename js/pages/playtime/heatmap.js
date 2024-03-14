@@ -44,7 +44,7 @@ function CreateHeatmap(Label){
     }
 
     async function Fetch(){
-        const [Success, Result] = await RequestFunc(WebServerEndpoints.Playtime+"heatmap?universeId="+await GetUniverseIdFromGamePage())
+        const [Success, Result] = await RequestFunc(WebServerEndpoints.Playtime+"heatmap?universeId="+await GetUniverseIdFromGamePage(), "GET")
         if (!Success){
             IsHeatmapVisible = false
             UpdateVisibility()

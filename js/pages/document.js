@@ -758,9 +758,13 @@ async function FetchAllPaidFeatures(){
   }
 }
 
+let FetchingAllFeaturesEnabled = false
+
 async function FetchAllFeaturesEnabled(){
+    while (FetchingAllFeaturesEnabled) await sleep(50)
+    FetchingAllFeaturesEnabled = true
+
     if (!AreEnabledFeaturesFetched){
-        //const NewSettings = window.localStorage.getItem("robloxQOL-settings")
         const NewSettings = await chrome.runtime.sendMessage({type: "getsettings"})
         
         if (NewSettings){
@@ -771,6 +775,8 @@ async function FetchAllFeaturesEnabled(){
 
         AreEnabledFeaturesFetched = true
     }
+
+    FetchingAllFeaturesEnabled = false
 }
 
 let KilledFeatures

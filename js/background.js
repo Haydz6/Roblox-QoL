@@ -136,6 +136,8 @@ let GetCurrentUserIdDelay = false
 let IsFetchingUserId = false
 let GetCurrentUserIdPromises = []
 
+let ActiveRobloxPages = []
+
 function GetCurrentUserId(){
     return new Promise(async(resolve) => {
         GetCurrentUserIdPromises.push(resolve)
@@ -149,6 +151,7 @@ function GetCurrentUserId(){
         if (!UserId){
             IsFetchingUserId = true
             CurrentSubscription = undefined
+            SetFeatureEnabled("CurrentTheme", {}, false)
 
             const [Success, Response] = await RequestFunc("https://users.roblox.com/v1/users/authenticated", "GET", undefined, undefined, true)
             
@@ -161,6 +164,7 @@ function GetCurrentUserId(){
                 }, 3000)
             } else {
                 UserId = Response.id
+                UpdateThemeCache()
             }
 
             IsFetchingUserId = false
@@ -175,8 +179,6 @@ function GetCurrentUserId(){
 async function SetFavouriteGame(UniverseId, Favourited){
     return RequestFunc(`https://games.roblox.com/v1/games/${UniverseId}/favorites`, "POST", {"Content-Type": "application/json"}, JSON.stringify({isFavorited: Favourited}), true)
 }
-
-let ActiveRobloxPages = []
 
 async function WaitForRobloxPage(Timeout = 5){
     const End = Date.now() + (Timeout*1000)
@@ -406,6 +408,31 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+async function UpdateThemeCache(){
+    const Paid = await PaidForFeature("CurrentTheme")
+    if (!Paid) return
+
+    const Theme = await IsFeatureEnabled("CurrentTheme")
+    if (Theme.Loading) return
+    Theme.Loading = true
+
+    const [Success, Body] = await RequestFunc(WebServerEndpoints.Themes+"current", "GET")
+    if (!Success) return
+    if (Body.Settings) for ([k, v] of Object.entries(Body.Settings)){
+        if (!isNaN(v) && !isNaN(parseFloat(v))) Body[k] = parseFloat(v)
+    }
+    
+    await SetFeatureEnabled("CurrentTheme", Body, false)
+
+    for (let i = 0; i < ActiveRobloxPages.length; i++){
+        try {
+            chrome.tabs.sendMessage(ActiveRobloxPages[i], {type: "ThemeChange", Theme: Body}, undefined)
+        } catch {}
+    }
+
+    return Body
+}
+
 BindToOnMessage("FeatureSupported", false, function(Result){
     if (Result.name === "viewbanneduser"){
         return true//BannedUsersSupported
@@ -555,17 +582,7 @@ if (ManifestVersion > 2){
 CallLogin()
 GetSubscription()
 
-PaidForFeature("CurrentTheme").then(function(Paid){
-    if (!Paid) return
-    RequestFunc(WebServerEndpoints.Themes+"current", "GET").then(function([Success, Body]){
-        if (!Success) return
-        if (Body.Settings) for ([k, v] of Object.entries(Body.Settings)){
-            if (!isNaN(v) && !isNaN(parseFloat(v))) Body[k] = parseFloat(v)
-        }
-
-        SetFeatureEnabled("CurrentTheme", Body, false)
-    })
-})
+UpdateThemeCache()
 
 BindToOnMessage("OAuthNewTab", false, function(){
     chrome.tabs.create({url: `${WebServerEndpoints.OAuth}?scope=inventory`})
