@@ -148,6 +148,7 @@ function GetCurrentUserId(){
 
         if (!UserId){
             IsFetchingUserId = true
+            CurrentSubscription = undefined
 
             const [Success, Response] = await RequestFunc("https://users.roblox.com/v1/users/authenticated", "GET", undefined, undefined, true)
             
