@@ -22,6 +22,10 @@
     display: none!important;
 }
 
+#navigation.minimized .rbx-event-header-text {
+    display: none!important;
+}
+
 #navigation .left-col-list .hamburger {
     bottom: 20px;
     position: fixed;
