@@ -1,6 +1,6 @@
 setTimeout(function(){
     IsFeatureEnabled("PreferredServerRegion").then(async function(Region){
-        if (Region === "None") return
+        if (Region === "None" || !Region) return
         
         const PlayButtonContainer = await WaitForId("game-details-play-button-container")
         await WaitForClassPath(PlayButtonContainer, "btn-common-play-game-lg")
