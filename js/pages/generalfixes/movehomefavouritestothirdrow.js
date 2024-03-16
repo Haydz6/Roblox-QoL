@@ -8,8 +8,9 @@ async function SearchForRow(Container, SortId, Timeout){
             const Child = Children[i]
             if (Child.nodeType !== Node.ELEMENT_NODE) continue
 
-            if (Child.className === "container-header"){
-                const href = Child.getElementsByTagName("h2")[0].getElementsByTagName("a")[0].href
+            const ContainerHeader = Child.className === "container-header" ? Child : Child.getElementsByClassName("container-header")[0]
+            if (ContainerHeader){
+                const href = ContainerHeader.getElementsByTagName("h2")[0].getElementsByTagName("a")[0].href
                 if (href.includes("sortId="+SortId)){
                     return [Child, Children[i+1]]
                 }
