@@ -83,6 +83,9 @@ IsFeatureEnabled("TradeAge").then(function(Enabled){
 IsFeatureEnabled("NameOnHomeFriends").then(function(Enabled){
     if (Enabled) InjectScript("FriendsName", "*://*.roblox.com/home*")
 })
+IsFeatureEnabled("ExtraOutfits").then(function(Enabled){
+    if (Enabled) InjectScript("alertavatarchange", "*://*.roblox.com/my/avatar*")
+})
 
 // IsFeatureEnabled("BestFriendPresenceV3").then(function(Enabled){
 //     if (Enabled){

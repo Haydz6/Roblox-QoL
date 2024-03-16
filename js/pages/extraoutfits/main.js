@@ -96,6 +96,10 @@ async function GetExtraOutfit(Id){
   return [Success, OutfitInfo]
 }
 
+function AlertControllerOfAvatarChange(){
+  document.dispatchEvent(new CustomEvent("RoQoL.AlertControllerOfAvatarChange"))
+}
+
 async function WearExtraOutfit(Id){
   const [Success, OutfitInfo] = await GetExtraOutfit(Id)
 
@@ -207,6 +211,7 @@ async function WearExtraOutfit(Id){
       if (!Success){
         CreateAlert("Some of your costume failed to wear", false)
         RedrawCharacter()
+        AlertControllerOfAvatarChange()
         return
       }
 
@@ -221,6 +226,7 @@ async function WearExtraOutfit(Id){
     if (!SetSuccess){
       CreateAlert("Some of your costume failed to wear", false)
       RedrawCharacter()
+      AlertControllerOfAvatarChange()
       return
     }
   }
@@ -229,6 +235,7 @@ async function WearExtraOutfit(Id){
   else CreateAlert("Successfully wore costume", true)
 
   RedrawCharacter()
+  AlertControllerOfAvatarChange()
 }
 
 function CreateExtraOutfitButton(ExtraOutfit){
