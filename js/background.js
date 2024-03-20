@@ -5,7 +5,7 @@ const IgnoreDisabledFeatures = false
 const IsSafari = false
 
 const WebServerURL = !Debugging && "https://roqol.io/" || "http://localhost:8192/"
-const WebServerEndpoints = {OAuth: WebServerURL+"api/oauth/", Voice: WebServerURL+"api/voice/", Themes: WebServerURL+"api/themes/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", Game: WebServerURL+"api/game/", User: WebServerURL+"api/user/", Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {OAuth: WebServerURL+"api/oauth/", Voice: WebServerURL+"api/voice/", Themes: WebServerURL+"api/themes/", ThemesV2: WebServerURL+"api/themes/v2/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", Game: WebServerURL+"api/game/", User: WebServerURL+"api/user/", Configuration: WebServerURL+"api/config/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", AuthenticationV2: WebServerURL+"api/auth/v2/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 
 const Manifest = chrome.runtime.getManifest()
 const ExtensionVersion = Manifest.version
@@ -416,7 +416,7 @@ async function UpdateThemeCache(){
     if (Theme.Loading) return
     Theme.Loading = true
 
-    const [Success, Body] = await RequestFunc(WebServerEndpoints.Themes+"current", "GET")
+    const [Success, Body] = await RequestFunc(WebServerEndpoints.ThemesV2+"current", "GET")
     if (!Success) return
     if (Body.Settings) for ([k, v] of Object.entries(Body.Settings)){
         if (!isNaN(v) && !isNaN(parseFloat(v))) Body[k] = parseFloat(v)

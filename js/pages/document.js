@@ -15,7 +15,7 @@ const IgnoreDisabledFeatures = false
 const UseV2Waiters = false
 
 const WebServerURL = !Debugging && "https://roqol.io/" || "http://localhost:8192/"
-const WebServerEndpoints = {User: WebServerURL+"api/user/", Configuration: WebServerURL+"api/config/", Voice: WebServerURL+"api/voice/", Ads: WebServerURL+"api/ads/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", BestFriends: WebServerURL+"api/bestfriends/", Pinned: WebServerURL+"api/pinned/", Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
+const WebServerEndpoints = {User: WebServerURL+"api/user/", Configuration: WebServerURL+"api/config/", Voice: WebServerURL+"api/voice/", Ads: WebServerURL+"api/ads/", Feed: WebServerURL+"api/feed/", Friends: WebServerURL+"api/friends/", BestFriends: WebServerURL+"api/bestfriends/", Pinned: WebServerURL+"api/pinned/", Game: WebServerURL+"api/game/", UGC: WebServerURL+"api/ugc/", Currency: WebServerURL+"api/currency/", Playtime: WebServerURL+"api/presence/", Themes: WebServerURL+"api/themes/", ThemesV2: WebServerURL+"api/themes/v2/", ThemesImg: WebServerURL+"themes/", Authentication: WebServerURL+"api/auth/", Outfits: WebServerURL+"api/outfits/", History: WebServerURL+"api/history/", Servers: WebServerURL+"api/servers/", Limiteds: WebServerURL+"api/limiteds/"}
 const SubscriptionToName = ["Free", "Pro"]
 
 function WaitForClassV2(ClassName){

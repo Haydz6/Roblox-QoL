@@ -110,8 +110,9 @@ async function CreateThemesSection(List){
     CustomList.style = "display: flex; justify-content: center; margin-bottom: 16px;"
 
     const UploadContainer = document.createElement("div")
-    UploadContainer.innerHTML = `<div class="ThemeUploadContainer"><label tabindex="0" type="button"><input accept=".jpg,.png,.jpeg,.gif" type="file" size="4000000" style="display: none;" class="customThemeUpload"><span>Upload Custom Theme</span><span class="ThemeUploadRipple"></span></label><span class="spinner spinner-default" style="display: none;"></span><span class="upload-subtitle error" style="color: rgba(247,75,82,255); display: none;"><span class="icon-warning"></span></span><span class="upload-subtitle">Format: *.jpg, *.png, *.gif</span><span class="upload-subtitle">Max file size: 4 MB</span><span class="upload-subtitle">Max resolution: 2048x2048</span></div>`
+    UploadContainer.innerHTML = `<div class="ThemeUploadContainer"><label tabindex="0" type="button"><input type="file" style="display: none;" class="customThemeUpload"><span>Upload Custom Theme</span><span class="ThemeUploadRipple"></span></label><span class="spinner spinner-default" style="display: none;"></span><span class="upload-subtitle error" style="color: rgba(247,75,82,255); display: none;"><span class="icon-warning"></span></span></div>`
 
+    const ThemeUploadContainer = UploadContainer.getElementsByClassName("ThemeUploadContainer")[0]
     const ThemeUpload = UploadContainer.getElementsByClassName("customThemeUpload")[0]
     const UploadErrorLabel = UploadContainer.getElementsByClassName("upload-subtitle error")[0]
     const UploadErrorTextNode = document.createTextNode("")
@@ -125,6 +126,35 @@ async function CreateThemesSection(List){
         ThemeUpload.addEventListener("click", CreatePaymentPrompt)
     })
 
+    function CreateUploadSubtitle(Text){
+        const Label = document.createElement("span")
+        Label.className = "upload-subtitle"
+        Label.innerText = Text
+
+        ThemeUploadContainer.appendChild(Label)
+
+        return Label
+    }
+
+    RequestFunc(WebServerEndpoints.ThemesV2+"custom/metadata", "GET").then(function([Success, Result]){
+        if (!Success){
+            CreateUploadSubtitle("Failed to fetch metadata").style.color = "rgba(247,75,82,255)"
+            return
+        }
+
+        let Accept = ""
+        for (let i = 0; i < Result.Formats.length; i++){
+            const Format = Result.Formats[i]
+            if (Accept != "") Accept += ", "
+            Accept += "*."+Format
+        }
+
+        ThemeUpload.setAttribute("accept", Accept)
+
+        CreateUploadSubtitle("Format: " + Accept)
+        CreateUploadSubtitle(`Image: ${Result.MaxFileSizes.image} max, Video: ${Result.MaxFileSizes.video} max`)
+    })
+
     ThemeUpload.addEventListener("change", function(e){
         const TargetFile = e.target.files[0]
         if (!TargetFile) return
@@ -134,15 +164,32 @@ async function CreateThemesSection(List){
             UploadErrorLabel.style.display = "none"
             UploadSpinner.style.display = ""
 
-            const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.Themes+"custom/upload", "POST", {"Content-Type": TargetFile.type}, File.target.result)
-            UploadSpinner.style.display = "none"
+            //const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload", "POST", {"Content-Type": TargetFile.type}, File.target.result)
+            const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload", "POST", {"Content-Type": "application/json"}, JSON.stringify({Size: File.target.result.byteLength, Type: TargetFile.type}))
             if (!Success){
                 UploadErrorTextNode.nodeValue = Result?.Result != "???" ? Result.Result : Response?.statusText || "Internal Error"
                 UploadErrorLabel.style.display = ""
+                UploadSpinner.style.display = "none"
                 return
             }
 
-            SetFeatureEnabled("CurrentTheme", Result)
+            const formData = new FormData()
+            for (const [k, v] of Object.entries(Result.Fields)){
+                formData.set(k, v)
+            }
+            formData.set("file", new Blob([File.target.result]))
+
+            const [FileSuccess] = await RequestFunc(Result.UploadUrl, "POST", undefined, formData)
+            if (!FileSuccess){
+                UploadErrorTextNode.nodeValue = Result?.Result != "???" ? Result.Result : Response?.statusText || "Internal Error"
+                UploadErrorLabel.style.display = ""
+                UploadSpinner.style.display = "none"
+                return
+            }
+
+            UploadSpinner.style.display = "none"
+
+            SetFeatureEnabled("CurrentTheme", Result.Theme)
         }
         reader.readAsArrayBuffer(TargetFile)
     })
@@ -225,7 +272,7 @@ async function CreateThemesSection(List){
         ThemeFrame.insertBefore(DeleteButton, ThemeFrame.children[0])
 
         DeleteButton.addEventListener("click", async function(){
-            RequestFunc(WebServerEndpoints.Themes+"custom", "DELETE")
+            RequestFunc(WebServerEndpoints.ThemesV2+"custom", "DELETE")
             ThemeFrame.remove()
             CustomThemeFrame = undefined
 
