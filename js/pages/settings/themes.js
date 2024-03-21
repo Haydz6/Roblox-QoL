@@ -1,8 +1,8 @@
 function CreateSliderOption(Title, Range, Current, Callback, TextCallback){
     const Container = document.createElement("div")
-    Container.style = "width: 100%; min-width: 300px; max-width: calc(50% - 10px); margin: 5px; border-radius: 6px; background-color: #1b1d1e; padding: 20px;"
+    Container.className = "theme-option"
 
-    Container.innerHTML = `<h3></h3><div style="display: flex; justify-content: center;"><input type="range" class="slider" max=""><div class="current-input-label" style="background-color: #232527; width: 80px; text-align: center; height: 30px; margin-left: 23px; border-radius: 8px; line-height: 30px;"></div></div>`
+    Container.innerHTML = `<h3></h3><div style="display: flex; justify-content: center;"><input type="range" class="slider" max=""><div class="current-input-label"></div></div>`
     Container.getElementsByTagName("input")[0].setAttribute("max", Range)
     Container.getElementsByTagName("h3")[0].innerText = Title
 
@@ -20,7 +20,7 @@ function CreateSliderOption(Title, Range, Current, Callback, TextCallback){
 
 function CreateDropdownOption(Title, Options, Current, Callback, TextCallback){
     const Container = document.createElement("div")
-    Container.style = "width: 100%; min-width: 300px; max-width: calc(50% - 10px); margin: 5px; border-radius: 6px; background-color: #1b1d1e; padding: 20px;"
+    Container.className = "theme-option"
 
     Container.innerHTML = `<h3></h3><div style="display: flex; justify-content: center;"><select class="input-field select-option rbx-select"><span class="icon-arrow icon-down-16x16"></span></div>`
     Container.getElementsByTagName("h3")[0].innerText = Title
@@ -64,7 +64,6 @@ function CreateSettingsSection(){
 
         const BlurWarning = document.createElement("span")
         BlurWarning.className = "error"
-        BlurWarning.style = "color: white;"
         BlurWarning.innerHTML = `<span class="icon-warning"></span>This will lag weak devices`
         BlurContainer.appendChild(BlurWarning)
         Container.append(BlurContainer)
@@ -103,6 +102,62 @@ function CreateSettingsSection(){
     })
 
     return Container
+}
+
+async function UploadTheme(Buffer, Type, Size){
+    const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload", "POST", {"Content-Type": "application/json"}, JSON.stringify({Size: Size, Type: Type}))
+    if (!Success) return [Success, Result, Response]
+
+    if (Result.Urls){
+        //Multi upload
+
+        const Promises = []
+        const FileBlob = new Blob([Buffer])
+
+        const ChunkSize = Result.ChunkSize
+
+        const Etags = []
+
+        for (let i = 0; i < Result.Urls.length; i++){
+            const Id = i
+            const Url = Result.Urls[Id]
+            const StartChunk = Id * ChunkSize
+
+            const Promise = RequestFunc(Url, "PUT", {"Content-Type": Type}, FileBlob.slice(StartChunk, StartChunk + ChunkSize))
+            Promise.then(function([Success, _, Response]){
+                if (Success){
+                    const partNumber = parseInt(new URLSearchParams(Url.split("?")[1]).get("partNumber"))
+                    Etags[Id] = {tag: Response.headers.get("Etag"), partNumber: partNumber}
+                }
+            })
+
+            Promises.push(Promise)
+        }
+
+        const Results = await Promise.all(Promises)
+        for (let i = 0; i < Results.length; i++){
+            const [Success, Result, Response] = Results[i]
+            if (!Success) return [Success, Result, Response]
+        }
+
+        const MultipartCompleteBody = {FileKey: Result.FileKey, UploadId: Result.UploadId, Etags: Etags}
+        const [MultiSuccess, MultiResult, MultiResponse] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload/multipart", "POST", {"Content-Type": "application/json"}, JSON.stringify(MultipartCompleteBody))
+        if (!MultiSuccess) return [MultiSuccess, MultiResult, MultiResponse]
+
+        return [Success, Result, Response]
+    }
+
+    //Single upload
+    const formData = new FormData()
+    for (const [k, v] of Object.entries(Result.Fields)){
+        formData.set(k, v)
+    }
+    formData.set("file", new Blob([Buffer]))
+
+    const [SuccessUpload, ResultUpload, ResponseUpload] = await RequestFunc(Result.UploadUrl, "POST", undefined, formData)
+    if (!SuccessUpload) return [SuccessUpload, ResultUpload, ResponseUpload]
+
+    return [Success, Result, Response]
 }
 
 async function CreateThemesSection(List){
@@ -165,25 +220,15 @@ async function CreateThemesSection(List){
             UploadSpinner.style.display = ""
 
             //const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload", "POST", {"Content-Type": TargetFile.type}, File.target.result)
-            const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload", "POST", {"Content-Type": "application/json"}, JSON.stringify({Size: File.target.result.byteLength, Type: TargetFile.type}))
+            
+            const [Success, Result, Response] = await UploadTheme(File.target.result, TargetFile.type, File.target.result.byteLength)
             if (!Success){
                 UploadErrorTextNode.nodeValue = Result?.Result != "???" ? Result.Result : Response?.statusText || "Internal Error"
                 UploadErrorLabel.style.display = ""
                 UploadSpinner.style.display = "none"
-                return
-            }
 
-            const formData = new FormData()
-            for (const [k, v] of Object.entries(Result.Fields)){
-                formData.set(k, v)
-            }
-            formData.set("file", new Blob([File.target.result]))
+                if (Result.FileKey) RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload/fail", "POST", {"Content-Type": "application/json"}, JSON.stringify({FileKey: Result.FileKey, UploadId: Result.UploadId}))
 
-            const [FileSuccess] = await RequestFunc(Result.UploadUrl, "POST", undefined, formData)
-            if (!FileSuccess){
-                UploadErrorTextNode.nodeValue = Result?.Result != "???" ? Result.Result : Response?.statusText || "Internal Error"
-                UploadErrorLabel.style.display = ""
-                UploadSpinner.style.display = "none"
                 return
             }
 

@@ -120,3 +120,45 @@
     font-size: 14px;
     letter-spacing: 0.1px;
 }
+
+.dark-theme .theme-option {
+    background-color: #1b1d1e;
+}
+
+.light-theme .theme-option {
+    background-color: white;
+}
+
+.theme-option {
+    width: 100%;
+    min-width: 300px;
+    max-width: calc(50% - 10px);
+    margin: 5px;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.dark-theme .theme-option .current-input-label {
+    background-color: #232527;
+}
+
+.light-theme .theme-option .current-input-label {
+    background-color: rgb(177, 177, 177);
+}
+
+.theme-option .current-input-label {
+    width: 80px;
+    text-align: center;
+    height: 30px;
+    margin-left: 23px;
+    border-radius: 8px;
+    line-height: 30px;
+}
+
+.dark-theme .theme-option .error {
+    color: white;
+}
+
+.light-theme .theme-option .error {
+    color: #232527;
+}
