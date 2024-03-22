@@ -21,7 +21,7 @@ function hexToRgb(hex) {
 
 async function PostCSSEdits(Settings, IFrame){
     function Ready(){
-        IFrame.contentWindow.postMessage({css: {"background-repeat": Settings.BackgroundRepeat}}, "*")
+        IFrame.contentWindow.postMessage({css: {"background-repeat": Settings.BackgroundRepeat, "object-fit": Settings.VideoFit}}, "*")
     }
 
     if (CurrentIFrame.getAttribute("loaded")) return Ready()
@@ -48,6 +48,7 @@ function UpdateThemeSettings(Theme){
         if (!document.body.className.includes("opacity-theme")) document.body.className += " opacity-theme"
 
         WaitForClass("content").then(function(Content){
+            //Content.style["background-color"] = ""
             const Style = window.getComputedStyle(Content)
 
             if (Style.backgroundColor.startsWith("rgb")){
@@ -169,3 +170,27 @@ ListenToEventFromBackground("ThemeChange", function(Message){
 ListenToEventFromBackground("ThemeSettingsChange", function(Message){
     UpdateThemeSettings(Message.Theme)
 })
+
+// WaitForTag("body").then(function(Body){
+//     let LastTheme = ""
+
+//     async function Update(){
+//         let NewTheme
+//         let ShouldUpdate = LastTheme != ""
+
+//         if (Body.classList.contains("dark-theme")){
+//             NewTheme = "dark"
+//         } else {
+//             NewTheme = "light"
+//         }
+
+//         if (NewTheme == LastTheme) return
+//         LastTheme = NewTheme
+//         if (!ShouldUpdate) return
+
+//         UpdateThemeSettings(await IsFeatureEnabled("CurrentTheme"))
+//     }
+
+//     new MutationObserver(Update).observe(Body, {attributes: true, attributeFilter: ["class"]})
+//     Update()
+// })

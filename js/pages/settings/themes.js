@@ -99,6 +99,14 @@ function CreateSettingsSection(){
         }, function(Value){
             return Value
         }))
+
+        Container.append(CreateDropdownOption("Video Fit", ["cover", "contain", "fill", "none", "scale-down"], Theme.Settings.VideoFit || "cover", function(Value){
+            Theme.Settings.VideoFit = Value
+            chrome.runtime.sendMessage({type: "ThemeSettings", key: "VideoFit", value: Value})
+            return Value
+        }, function(Value){
+            return Value
+        }))
     })
 
     return Container
