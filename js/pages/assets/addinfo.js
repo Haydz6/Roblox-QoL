@@ -14,7 +14,7 @@ function RemoveBTRCreation(ItemDetails, Title){
 }
 
 function GetType(){
-    return window.location.href.includes("/game-pass/") && "Gamepass" || window.location.href.includes("/library/") && "Library" || "Catalog"
+    return window.location.href.includes("/game-pass/") && "Gamepass" || window.location.href.includes("/library/") && "Library" || window.location.href.includes("/bundles/") && "Bundle" || "Catalog"
 }
 
 function GetGamepassIdFromURL(){
@@ -24,9 +24,37 @@ function GetGamepassIdFromURL(){
 function GetAssetInfo(Id, Type){
     if (Type == "Catalog" || Type == "Library") {
         return RequestFunc(`https://economy.roblox.com/v2/assets/${Id}/details`, "GET", undefined, undefined, true)
+    } else if (Type == "Bundle") {
+        return RequestFunc(`https://catalog.roblox.com/v1/bundles/${Id}/details`, "GET", undefined, undefined, true)
     } else {
         return RequestFunc(`https://apis.roblox.com/game-passes/v1/game-passes/${Id}/details`, "GET", undefined, undefined, true)
     }
+}
+
+async function GetItemDates(Result, Type){
+    if (Type == "Bundle"){
+        let HighestId = 0
+
+        for (let i = 0; i < Result.items.length; i++){
+            const Item = Result.items[i]
+            if (Item.type == "Asset" && Item.id > HighestId) HighestId = Item.id
+        }
+
+        console.log(HighestId)
+        if (HighestId == 0) return []
+
+        const [Success, Data] = await RequestFunc(`https://economy.roblox.com/v2/assets/${HighestId}/details`, "GET", undefined, undefined, true)
+
+        if (!Success) return []
+
+        const CreatedDate = new Date(Data.Created)
+        const UpdatedDate = new Date(Data.Updated)
+        return [CreatedDate, UpdatedDate]
+    }
+
+    const CreatedDate = new Date(Type == "Gamepass" && Result.createdTimestamp || Result.Created)
+    const UpdatedDate = new Date(Type == "Gamepass" && Result.updatedTimestamp || Result.Updated)
+    return [CreatedDate, UpdatedDate]
 }
 
 async function CanUserSeeSales(Id, Type, Result){
@@ -84,7 +112,7 @@ async function AddAssetInfo(){
     let Id
     const Type = GetType()
 
-    if (Type == "Catalog" || Type == "Library"){
+    if (Type == "Catalog" || Type == "Library" || Type == "Bundle"){
         Id = GetAssetIdFromURL()
     } else {
         Id = GetGamepassIdFromURL()
@@ -102,19 +130,25 @@ async function AddAssetInfo(){
 
     if (CreationEnabled){
         const CurrentLanguage = getNavigatorLanguages()[0]
-        const CreatedDate = new Date(Type == "Gamepass" && Result.createdTimestamp || Result.Created)
+        const [CreatedDate, UpdatedDate] = await GetItemDates(Result, Type)
 
-        const CreatedField = CreateAssetItemFieldContainer("Created", CreatedDate.toLocaleDateString(CurrentLanguage, {month: "short", day: "2-digit", year: "numeric"}))
-        if (Type == "Gamepass" || Type == "Library") CreatedField.className = "clearfix item-field-container"
-        ItemDetails.insertBefore(CreatedField, ItemDetails.children[(Type == "Gamepass" || Type == "Library") && 3 || 2])
+        if (CreatedDate){
 
-        const UpdatedDate = new Date(Type == "Gamepass" && Result.updatedTimestamp || Result.Updated)
+            const CreatedField = CreateAssetItemFieldContainer("Created", CreatedDate.toLocaleDateString(CurrentLanguage, {month: "short", day: "2-digit", year: "numeric"}))
+            if (Type == "Gamepass" || Type == "Library") CreatedField.className = "clearfix item-field-container"
+            ItemDetails.insertBefore(CreatedField, ItemDetails.children[(Type == "Gamepass" || Type == "Library") && 3 || 2])
 
-        const UpdatedField = CreateAssetItemFieldContainer("Updated", UpdatedDate.toLocaleDateString(CurrentLanguage, {month: "short", day: "2-digit", year: "numeric"}))
-        if (Type == "Gamepass" || Type == "Library") UpdatedField.className = "clearfix item-field-container"
-        ItemDetails.insertBefore(UpdatedField, ItemDetails.children[(Type == "Gamepass" || Type == "Library") && 3 || 2])
+        }
+
+        if (UpdatedDate){
+
+            const UpdatedField = CreateAssetItemFieldContainer("Updated", UpdatedDate.toLocaleDateString(CurrentLanguage, {month: "short", day: "2-digit", year: "numeric"}))
+            if (Type == "Gamepass" || Type == "Library") UpdatedField.className = "clearfix item-field-container"
+            ItemDetails.insertBefore(UpdatedField, ItemDetails.children[(Type == "Gamepass" || Type == "Library") && 3 || 2])
+
+        }
         
-        if (Type == "Catalog" && Result.Creator.CreatorType == "Group"){
+        if ((Type == "Catalog" || Type == "Bundle") && (Result.Creator?.CreatorType == "Group" || Result.creator?.type == "Group")){
             GetCreatorOfGroupItem(Result).then(function([Creator, Id, Type]){
                 if (!Creator) return
 
