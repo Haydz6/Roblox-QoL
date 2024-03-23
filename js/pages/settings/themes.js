@@ -265,7 +265,6 @@ async function CreateThemesSection(List){
 
     let PreviewingTheme
     let PreviewingIFrameThemeURL
-    let PreviewingThemeURL
 
     const PreviewIFrameCache = {}
     async function GetPreviewIFrame(Type){
@@ -278,11 +277,17 @@ async function CreateThemesSection(List){
         return PreviewIFrameCache[Type]
     }
 
+    const toDataURL = blob => new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onloadend = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+    })
+
+
     async function PreviewTheme(){
         UploadButtons.style.display = "none"
-        if (PreviewingThemeURL) URL.revokeObjectURL(PreviewingThemeURL)
         if (PreviewingIFrameThemeURL) URL.revokeObjectURL(PreviewingIFrameThemeURL)
-        PreviewingThemeURL = undefined
         PreviewingIFrameThemeURL = undefined
 
         if (!PreviewingTheme){
@@ -302,8 +307,8 @@ async function CreateThemesSection(List){
             return
         }
 
-        PreviewingThemeURL = URL.createObjectURL(new Blob([PreviewingTheme.target.result], {type: PreviewingTheme.fileType}))
-        PreviewingIFrameThemeURL = URL.createObjectURL(new Blob([IFrameHTML.replace("'URL'", PreviewingThemeURL)], {type: "text/html"}))
+        const PreviewingThemeBlob = new Blob([PreviewingTheme.target.result], {type: PreviewingTheme.fileType})
+        PreviewingIFrameThemeURL = URL.createObjectURL(new Blob([IFrameHTML.replace("'URL'", await toDataURL(PreviewingThemeBlob))], {type: "text/html"}))
 
         UpdateTheme({Access: PreviewingIFrameThemeURL, Settings: (await IsFeatureEnabled("CurrentTheme")).Settings || {}, Theme: "custom"})
     }
