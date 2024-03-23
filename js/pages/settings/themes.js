@@ -201,8 +201,17 @@ async function CreateThemesSection(List){
     CustomList.style = "display: flex; justify-content: center; margin-bottom: 16px;"
 
     const UploadContainer = document.createElement("div")
-    UploadContainer.innerHTML = `<div class="ThemeUploadContainer"><label tabindex="0" type="button"><input type="file" style="display: none;" class="customThemeUpload"><span>Upload Custom Theme</span><span class="ThemeUploadRipple"></span></label><span class="spinner spinner-default" style="display: none;"></span><span class="upload-subtitle status" style="display: none;"></span><span class="upload-subtitle error" style="color: rgba(247,75,82,255); display: none;"><span class="icon-warning"></span></span></div>`
-
+    UploadContainer.innerHTML = `<div class="ThemeUploadContainer"><label tabindex="0" type="button"><input type="file" style="display: none;" class="customThemeUpload"><span>Upload Custom Theme</span><span class="ThemeUploadRipple"></span></label><span class="spinner spinner-default" style="display: none;"></span><span class="upload-subtitle status" style="display: none;"></span><span class="upload-subtitle error" style="color: rgba(247,75,82,255); display: none;"><span class="icon-warning"></span></span></div>
+    
+    <div class="modal-btns" style="display:none;justify-content:center;">
+        <a class="btn-control-md cancel-upload-btn" style="margin: 6px;">Cancel</a>
+        <a class="btn-primary-md confirm-upload-btn" style="margin: 6px;">Upload</a>
+    </div>
+    `
+    
+    const UploadButtons = UploadContainer.getElementsByClassName("modal-btns")[0]
+    const ConfirmUploadButton = UploadContainer.getElementsByClassName("confirm-upload-btn")[0]
+    const CancelUploadButton = UploadContainer.getElementsByClassName("cancel-upload-btn")[0]
     const ThemeUploadContainer = UploadContainer.getElementsByClassName("ThemeUploadContainer")[0]
     const ThemeUpload = UploadContainer.getElementsByClassName("customThemeUpload")[0]
     const UploadErrorLabel = UploadContainer.getElementsByClassName("upload-subtitle error")[0]
@@ -254,36 +263,97 @@ async function CreateThemesSection(List){
         CreateUploadSubtitle(`Image: ${Result.MaxFileSizes.image} max, Video: ${Result.MaxFileSizes.video} max`)
     })
 
+    let PreviewingTheme
+    let PreviewingIFrameThemeURL
+    let PreviewingThemeURL
+
+    const PreviewIFrameCache = {}
+    async function GetPreviewIFrame(Type){
+        if (PreviewIFrameCache[Type]) return PreviewIFrameCache[Type]
+
+        const [Success, _, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"preview?type="+encodeURIComponent(Type), "GET", undefined, undefined, undefined, true)
+        if (!Success) return
+
+        PreviewIFrameCache[Type] = await Response.text()
+        return PreviewIFrameCache[Type]
+    }
+
+    async function PreviewTheme(){
+        UploadButtons.style.display = "none"
+        if (PreviewingThemeURL) URL.revokeObjectURL(PreviewingThemeURL)
+        if (PreviewingIFrameThemeURL) URL.revokeObjectURL(PreviewingIFrameThemeURL)
+        PreviewingThemeURL = undefined
+        PreviewingIFrameThemeURL = undefined
+
+        if (!PreviewingTheme){
+            UpdateTheme(await IsFeatureEnabled("CurrentTheme"))
+            return
+        }
+
+        UploadButtons.style.display = "flex"
+
+        const IFrameHTML = await GetPreviewIFrame(PreviewingTheme.fileType)
+        if (!IFrameHTML){
+            UploadErrorLabel.innerText = "Failed to preview"
+            UploadErrorLabel.style.display = ""
+
+            PreviewingTheme = undefined
+            PreviewTheme()
+            return
+        }
+
+        PreviewingThemeURL = URL.createObjectURL(new Blob([PreviewingTheme.target.result], {type: PreviewingTheme.fileType}))
+        PreviewingIFrameThemeURL = URL.createObjectURL(new Blob([IFrameHTML.replace("'URL'", PreviewingThemeURL)], {type: "text/html"}))
+
+        UpdateTheme({Access: PreviewingIFrameThemeURL, Settings: (await IsFeatureEnabled("CurrentTheme")).Settings || {}, Theme: "custom"})
+    }
+
+    CancelUploadButton.addEventListener("click", function(){
+        PreviewingTheme = undefined
+        PreviewTheme()
+    })
+
+    ConfirmUploadButton.addEventListener("click", async function(){
+        const File = PreviewingTheme
+        PreviewingTheme = undefined
+        PreviewTheme()
+
+        UploadErrorLabel.style.display = "none"
+        UploadSpinner.style.display = ""
+
+        //const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload", "POST", {"Content-Type": PreviewingTheme.type}, PreviewingTheme.target.result)
+            
+        UploadStatusLabel.style.display = ""
+        const [Success, Result, Response] = await UploadTheme(File.target.result, File.fileType, File.target.result.byteLength, function(Status){
+            UploadStatusLabel.innerText = Status
+        })
+        UploadStatusLabel.style.display = "none"
+
+        if (!Success){
+            UploadErrorTextNode.nodeValue = Result?.Result != "???" ? Result.Result : Response?.statusText || "Internal Error"
+            UploadErrorLabel.style.display = ""
+            UploadSpinner.style.display = "none"
+
+            if (Result.FileKey) RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload/fail", "POST", {"Content-Type": "application/json"}, JSON.stringify({FileKey: Result.FileKey, UploadId: Result.UploadId}))
+
+            return
+        }
+
+        UploadSpinner.style.display = "none"
+
+        SetFeatureEnabled("CurrentTheme", Result.Theme)
+    })
+
     ThemeUpload.addEventListener("change", function(e){
         const TargetFile = e.target.files[0]
         if (!TargetFile) return
 
         let reader = new FileReader()
         reader.onload = async function(File){
-            UploadErrorLabel.style.display = "none"
-            UploadSpinner.style.display = ""
+            File.fileType = TargetFile.type
+            PreviewingTheme = File
 
-            //const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload", "POST", {"Content-Type": TargetFile.type}, File.target.result)
-            
-            UploadStatusLabel.style.display = ""
-            const [Success, Result, Response] = await UploadTheme(File.target.result, TargetFile.type, File.target.result.byteLength, function(Status){
-                UploadStatusLabel.innerText = Status
-            })
-            UploadStatusLabel.style.display = "none"
-
-            if (!Success){
-                UploadErrorTextNode.nodeValue = Result?.Result != "???" ? Result.Result : Response?.statusText || "Internal Error"
-                UploadErrorLabel.style.display = ""
-                UploadSpinner.style.display = "none"
-
-                if (Result.FileKey) RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload/fail", "POST", {"Content-Type": "application/json"}, JSON.stringify({FileKey: Result.FileKey, UploadId: Result.UploadId}))
-
-                return
-            }
-
-            UploadSpinner.style.display = "none"
-
-            SetFeatureEnabled("CurrentTheme", Result.Theme)
+            PreviewTheme()
         }
         reader.readAsArrayBuffer(TargetFile)
     })
@@ -398,6 +468,9 @@ async function CreateThemesSection(List){
 
     ListenToEventFromBackground("ThemeChange", function(Message){
         const Theme = Message.Theme
+
+        PreviewingTheme = undefined
+        PreviewTheme()
 
         if (Theme?.Access == LastThemeAccess) return
         LastThemeAccess = Theme.Access
