@@ -237,13 +237,20 @@ async function CreateThemesSection(List){
         let Accept = ""
         for (let i = 0; i < Result.Formats.length; i++){
             const Format = Result.Formats[i]
-            if (Accept != "") Accept += ", "
-            Accept += "*."+Format
+            if (Accept != "") Accept += ","
+            Accept += "."+Format
+        }
+
+        let AcceptStr = ""
+        for (let i = 0; i < Result.Formats.length; i++){
+            const Format = Result.Formats[i]
+            if (AcceptStr != "") AcceptStr += ", "
+            AcceptStr += "*."+Format
         }
 
         ThemeUpload.setAttribute("accept", Accept)
 
-        CreateUploadSubtitle("Format: " + Accept)
+        CreateUploadSubtitle("Format: " + AcceptStr)
         CreateUploadSubtitle(`Image: ${Result.MaxFileSizes.image} max, Video: ${Result.MaxFileSizes.video} max`)
     })
 
@@ -347,7 +354,8 @@ async function CreateThemesSection(List){
     let CustomThemeFrame
     function CreateCustomTheme(Theme){
         const [ThemeFrame, Button] = CreateTheme(Theme.Access, true)
-        CustomThemeFrame = Theme
+        ThemesList.insertBefore(ThemeFrame, ThemesList.children[1])
+        CustomThemeFrame = ThemeFrame
 
         const DeleteButton = document.createElement("a")
         const DeleteImage = document.createElement("img")
@@ -388,11 +396,13 @@ async function CreateThemesSection(List){
         CreateCustomTheme(Theme)
     })
 
-    ListenForFeatureChanged("CurrentTheme", function(Theme){
-        if (Theme) return
-        if (Theme.Access == LastThemeAccess) return
+    ListenToEventFromBackground("ThemeChange", function(Message){
+        const Theme = Message.Theme
+
+        if (Theme?.Access == LastThemeAccess) return
         LastThemeAccess = Theme.Access
         if (CustomThemeFrame) CustomThemeFrame.remove()
+        if (!Theme) return
 
         CreateCustomTheme(Theme)
     })

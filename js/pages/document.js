@@ -360,7 +360,8 @@ const hbaClient = new HBAClient({
 
 const BackgroundEventListeners = {}
 function ListenToEventFromBackground(Type, Callback){
-  BackgroundEventListeners[Type] = Callback
+  if (!BackgroundEventListeners[Type]) BackgroundEventListeners[Type] = []
+  BackgroundEventListeners[Type].push(Callback)
 }
 
 chrome.runtime.onMessage.addListener(function(Message, _, sendResponse){
@@ -375,7 +376,9 @@ chrome.runtime.onMessage.addListener(function(Message, _, sendResponse){
   }
 
   const Listener = BackgroundEventListeners[Message.type]
-  if (Listener) Listener(Message)
+  if (Listener) for (let i = 0; i < Listener.length; i++){
+    Listener[i](Message)
+  }
 })
 
 async function RequestFunc(URL, Method, Headers, Body, CredientalsInclude, BypassResJSON){
