@@ -149,7 +149,7 @@ async function UpdateTheme(Theme){
         const IFrame = document.createElement("iframe")
         IFrame.style = DefaultIFrameStyle
         if (Theme.Theme != "custom") IFrame.src = `${WebServerEndpoints.Themes}theme?theme=${Theme.Theme}`
-        else IFrame.src = Theme.Access
+        else IFrame.src = Theme.Access || ""
         CurrentIFrame = IFrame
 
         UpdateThemeSettings(Theme)
