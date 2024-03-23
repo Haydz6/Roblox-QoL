@@ -112,7 +112,19 @@ function CreateSettingsSection(){
     return Container
 }
 
-async function UploadTheme(Buffer, Type, Size){
+async function WaitForThemeUploadFinish(Result){
+    if (!Result.PollingUrl) return
+
+    while (true){
+        const [Success, Data] = await RequestFunc(Result.PollingUrl, "GET")
+        if (!Success || Data.Completed) break
+
+        await sleep(1000)
+    }
+}
+
+async function UploadTheme(Buffer, Type, Size, Callback){
+    Callback("Requesting upload url")
     const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload", "POST", {"Content-Type": "application/json"}, JSON.stringify({Size: Size, Type: Type}))
     if (!Success) return [Success, Result, Response]
 
@@ -125,6 +137,7 @@ async function UploadTheme(Buffer, Type, Size){
         const ChunkSize = Result.ChunkSize
 
         const Etags = []
+        let UploadedCount = 0
 
         for (let i = 0; i < Result.Urls.length; i++){
             const Id = i
@@ -136,11 +149,16 @@ async function UploadTheme(Buffer, Type, Size){
                 if (Success){
                     const partNumber = parseInt(new URLSearchParams(Url.split("?")[1]).get("partNumber"))
                     Etags[Id] = {tag: Response.headers.get("Etag"), partNumber: partNumber}
+
+                    UploadedCount ++
+                    Callback(`Uploading ${UploadedCount}/${Result.ChunkCount}`)
                 }
             })
 
             Promises.push(Promise)
         }
+
+        Callback(`Uploading 0/${Result.ChunkCount}`)
 
         const Results = await Promise.all(Promises)
         for (let i = 0; i < Results.length; i++){
@@ -148,9 +166,14 @@ async function UploadTheme(Buffer, Type, Size){
             if (!Success) return [Success, Result, Response]
         }
 
+        Callback("Completing Upload")
+
         const MultipartCompleteBody = {FileKey: Result.FileKey, UploadId: Result.UploadId, Etags: Etags}
         const [MultiSuccess, MultiResult, MultiResponse] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload/multipart", "POST", {"Content-Type": "application/json"}, JSON.stringify(MultipartCompleteBody))
         if (!MultiSuccess) return [MultiSuccess, MultiResult, MultiResponse]
+
+        Callback("Waiting for file to be processed")
+        await WaitForThemeUploadFinish(Result)
 
         return [Success, Result, Response]
     }
@@ -162,8 +185,13 @@ async function UploadTheme(Buffer, Type, Size){
     }
     formData.set("file", new Blob([Buffer]))
 
+    Callback("Uploading")
+
     const [SuccessUpload, ResultUpload, ResponseUpload] = await RequestFunc(Result.UploadUrl, "POST", undefined, formData)
     if (!SuccessUpload) return [SuccessUpload, ResultUpload, ResponseUpload]
+
+    Callback("Waiting for file to be processed")
+    await WaitForThemeUploadFinish(Result)
 
     return [Success, Result, Response]
 }
@@ -173,11 +201,12 @@ async function CreateThemesSection(List){
     CustomList.style = "display: flex; justify-content: center; margin-bottom: 16px;"
 
     const UploadContainer = document.createElement("div")
-    UploadContainer.innerHTML = `<div class="ThemeUploadContainer"><label tabindex="0" type="button"><input type="file" style="display: none;" class="customThemeUpload"><span>Upload Custom Theme</span><span class="ThemeUploadRipple"></span></label><span class="spinner spinner-default" style="display: none;"></span><span class="upload-subtitle error" style="color: rgba(247,75,82,255); display: none;"><span class="icon-warning"></span></span></div>`
+    UploadContainer.innerHTML = `<div class="ThemeUploadContainer"><label tabindex="0" type="button"><input type="file" style="display: none;" class="customThemeUpload"><span>Upload Custom Theme</span><span class="ThemeUploadRipple"></span></label><span class="spinner spinner-default" style="display: none;"></span><span class="upload-subtitle status" style="display: none;"></span><span class="upload-subtitle error" style="color: rgba(247,75,82,255); display: none;"><span class="icon-warning"></span></span></div>`
 
     const ThemeUploadContainer = UploadContainer.getElementsByClassName("ThemeUploadContainer")[0]
     const ThemeUpload = UploadContainer.getElementsByClassName("customThemeUpload")[0]
     const UploadErrorLabel = UploadContainer.getElementsByClassName("upload-subtitle error")[0]
+    const UploadStatusLabel = UploadContainer.getElementsByClassName("upload-subtitle status")[0]
     const UploadErrorTextNode = document.createTextNode("")
     const UploadSpinner = UploadContainer.getElementsByClassName("spinner")[0]
     UploadErrorLabel.appendChild(UploadErrorTextNode)
@@ -229,7 +258,12 @@ async function CreateThemesSection(List){
 
             //const [Success, Result, Response] = await RequestFunc(WebServerEndpoints.ThemesV2+"custom/upload", "POST", {"Content-Type": TargetFile.type}, File.target.result)
             
-            const [Success, Result, Response] = await UploadTheme(File.target.result, TargetFile.type, File.target.result.byteLength)
+            UploadStatusLabel.style.display = ""
+            const [Success, Result, Response] = await UploadTheme(File.target.result, TargetFile.type, File.target.result.byteLength, function(Status){
+                UploadStatusLabel.innerText = Status
+            })
+            UploadStatusLabel.style.display = "none"
+
             if (!Success){
                 UploadErrorTextNode.nodeValue = Result?.Result != "???" ? Result.Result : Response?.statusText || "Internal Error"
                 UploadErrorLabel.style.display = ""
