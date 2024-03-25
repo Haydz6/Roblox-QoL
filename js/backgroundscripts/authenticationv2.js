@@ -58,10 +58,12 @@ async function GetAuthKey(){
         return "" //No userid, so we cannot validate
     }
 
-    if (!await IsFeatureKilled("OAuthVerification")) FetchedKey = await GetOAuthKey(UserId)
+    FetchedKey = await GetOAuthKey(UserId)
     if (FetchedKey == "") FetchedKey = await GetAuthKeyV2(UserId)
     if (FetchedKey == "") AuthenticationFailuresCounter++
     else AuthenticationFailuresCounter = 0
+
+    FetchingAuthKey = false
 
     if (AuthenticationFailuresCounter > 5){
         for (let i = 0; i < ActiveRobloxPages.length; i++){
@@ -93,29 +95,29 @@ async function WaitForGameFavourite(UserId, UniverseId, Favourited = true, Timeo
 }
 
 async function GetAuthKeyV2(UserId){
-    FetchingAuthKey = true
+    //FetchingAuthKey = true
 
-    async function CheckIfSameUser(ResetAuthKey = true){
+    async function CheckIfSameUser(){
         if (UserId !== await GetCurrentUserId()){
-            if (ResetAuthKey) FetchingAuthKey = false
+            //if (ResetAuthKey) FetchingAuthKey = false
             return false
         }
         return true
     }
 
     if (CachedAuthKey != "" && UserId == LastAuthenticatedUserId){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         return CachedAuthKey
     }
     if (UserId != LastAuthenticatedUserId && !FirstAuthenticationAttempt){
         CachedAuthKey = ""
-        FetchingAuthKey = true
+        //FetchingAuthKey = true
         AlertTabsOfNewAuthKey()
         await LocalStorage.remove("AuthKey")
     }
 
     FirstAuthenticationAttempt = false
-    FetchingAuthKey = true
+    //FetchingAuthKey = true
     LastAuthKeyAttempt = Date.now()/1000
 
     StoredKey = await LocalStorage.get("AuthKey")
@@ -136,7 +138,7 @@ async function GetAuthKeyV2(UserId){
 
             CachedAuthKey = StoredKey.Key
             LastAuthenticatedUserId = UserId
-            FetchingAuthKey = false
+            //FetchingAuthKey = false
             return CachedAuthKey
         }
     }
@@ -144,7 +146,7 @@ async function GetAuthKeyV2(UserId){
     FetchedAuthenticationFromStorage = false
     
     if (!await CheckIfSameUser()){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         return ""
     }
 
@@ -153,7 +155,7 @@ async function GetAuthKeyV2(UserId){
     const [GetFavoriteSuccess, FavoriteResult, FavoriteResponse] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"fetch", "POST", undefined, JSON.stringify({UserId: UserId}))
     
     if (!GetFavoriteSuccess || !await CheckIfSameUser()){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         AuthenticationError = `Favourite: Starting verification failed or account changed (${JSON.stringify(FavoriteResult)} ${FavoriteResponse?.status})`
         return ""
     }
@@ -166,7 +168,7 @@ async function GetAuthKeyV2(UserId){
         [Success, Favourited, Result] = await HasGameFavourited(UniverseId)
 
         if (!Success){
-            FetchingAuthKey = false
+            //FetchingAuthKey = false
             AuthenticationError = `Favourite: Failed to check if favourited (${JSON.stringify(Favourited)} ${Result?.status})`
             return ""
         }
@@ -179,7 +181,7 @@ async function GetAuthKeyV2(UserId){
         const [FavouriteSuccess, UnfavouriteResult, UnfavouriteResponse] = await SetFavouriteGame(UniverseId, false)
     
         if (!FavouriteSuccess){
-            FetchingAuthKey = false
+            //FetchingAuthKey = false
             AuthenticationError = `Favourite: Failed to unfavourite game for clear (${JSON.stringify(UnfavouriteResult)} ${UnfavouriteResponse?.status})`
             return ""
         }
@@ -189,7 +191,7 @@ async function GetAuthKeyV2(UserId){
             const [ClearSuccess, ClearResult, ClearResponse] = await RequestFunc(WebServerEndpoints.AuthenticationV2+"clear", "POST", undefined, JSON.stringify({Key: Key}))
 
             if (!ClearSuccess){
-                FetchingAuthKey = false
+                //FetchingAuthKey = false
                 AuthenticationError = `Favourite: Failed to send clear verification (${JSON.stringify(ClearResult)} ${ClearResponse?.status})`
                 return ""
             }
@@ -199,7 +201,7 @@ async function GetAuthKeyV2(UserId){
     const [FavouriteSuccess, RefavouriteResult, RefavouriteResponse] = await SetFavouriteGame(UniverseId, true)
     
     if (!FavouriteSuccess || !await CheckIfSameUser()){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         AuthenticationError = `Favourite: Failed to favourite verification game or account changed (${JSON.stringify(RefavouriteResult)} ${RefavouriteResponse?.status})`
         return ""
     }
@@ -220,7 +222,7 @@ async function GetAuthKeyV2(UserId){
         let UnfavouriteAttempts = 0
 
         while (true){
-            if (!await CheckIfSameUser(false)) return
+            if (!await CheckIfSameUser()) return
 
             const [FavSuccess] = await SetFavouriteGame(UniverseId, false)
     
@@ -232,7 +234,7 @@ async function GetAuthKeyV2(UserId){
         }
     })
     
-    FetchingAuthKey = false
+    //FetchingAuthKey = false
     AuthenticationFailuresCounter = 0
     
     return CachedAuthKey
@@ -255,29 +257,29 @@ function IsOver13(y, m, d){
 }
 
 async function GetOAuthKey(UserId){
-    FetchingAuthKey = true
+    //FetchingAuthKey = true
 
-    async function CheckIfSameUser(ResetAuthKey = true){
+    async function CheckIfSameUser(){
         if (UserId !== await GetCurrentUserId()){
-            if (ResetAuthKey) FetchingAuthKey = false
+            //if (ResetAuthKey) FetchingAuthKey = false
             return false
         }
         return true
     }
 
     if (CachedAuthKey != "" && UserId == LastAuthenticatedUserId){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         return CachedAuthKey
     }
     if (UserId != LastAuthenticatedUserId && !FirstAuthenticationAttempt){
         CachedAuthKey = ""
-        FetchingAuthKey = true
+        //FetchingAuthKey = true
         AlertTabsOfNewAuthKey()
         await LocalStorage.remove("AuthKey")
     }
 
     FirstAuthenticationAttempt = false
-    FetchingAuthKey = true
+    //FetchingAuthKey = true
     LastAuthKeyAttempt = Date.now()/1000
 
     StoredKey = await LocalStorage.get("AuthKey")
@@ -298,7 +300,7 @@ async function GetOAuthKey(UserId){
 
             CachedAuthKey = StoredKey.Key
             LastAuthenticatedUserId = UserId
-            FetchingAuthKey = false
+            //FetchingAuthKey = false
             return CachedAuthKey
         }
     }
@@ -307,7 +309,7 @@ async function GetOAuthKey(UserId){
     FetchedAuthenticationFromStorage = false
     
     if (!await CheckIfSameUser()){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         return ""
     }
 
@@ -316,7 +318,7 @@ async function GetOAuthKey(UserId){
     let [Success, Result, Response] = await RequestFunc("https://accountinformation.roblox.com/v1/birthdate", "GET", undefined, undefined, true)
     if (Success){
         if (!IsOver13(Result.birthYear, Result.birthMonth, Result.birthDay)){
-            FetchingAuthKey = false
+            //FetchingAuthKey = false
             AuthenticationError = `OAuth: Not over 13 (${JSON.stringify(Result)} ${Response?.status})`
             return ""
         }
@@ -324,13 +326,13 @@ async function GetOAuthKey(UserId){
 
     ;[Success, _, Response] = await RequestFunc(WebServerEndpoints.OAuth, "GET", undefined, undefined, true, true)
     if (!Success){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         AuthenticationError = `OAuth: Failed to start (${Response?.status})`
         return ""
     }
 
     if (!await CheckIfSameUser()){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         return ""
     }
 
@@ -366,18 +368,18 @@ async function GetOAuthKey(UserId){
             GetCurrentUserId()
         } //userid is wrong
 
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         return ""
     }
 
     if (!Result?.location){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         AuthenticationError = `OAuth: Location missing`
         return ""
     }
     ;[Success, Result, Response] = await RequestFunc(Result.location, "GET", {type: "Authentication"}, undefined, false, true)
     if (!Success){
-        FetchingAuthKey = false
+        //FetchingAuthKey = false
         AuthenticationError = `OAuth: Callback failed (${JSON.stringify(Result)} ${Response?.status})`
         return ""
     }
@@ -386,7 +388,7 @@ async function GetOAuthKey(UserId){
     LocalStorage.set("AuthKey", JSON.stringify({UserId: UserId, Key: CachedAuthKey}))
     AlertTabsOfNewAuthKey(CachedAuthKey)
 
-    FetchingAuthKey = false
+    //FetchingAuthKey = false
     AuthenticationFailuresCounter = 0
 
     return CachedAuthKey
