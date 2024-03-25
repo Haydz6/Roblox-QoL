@@ -1,5 +1,5 @@
 let CurrentIFrame
-const DefaultIFrameStyle = "position: absolute; width: 100%; height: 100%; border: 0; z-index: -2; top: 0; left: 0; user-select: none;"
+const DefaultIFrameStyle = "width: 100%; border: 0; z-index: -2; top: 0; left: 0; user-select: none;"
 const StyleFixes = []
 
 async function GetSRCAuthenticated(Url){
@@ -21,7 +21,7 @@ function hexToRgb(hex) {
 
 async function PostCSSEdits(Settings, IFrame){
     function Ready(){
-        IFrame.contentWindow.postMessage({css: {"background-repeat": Settings.BackgroundRepeat, "object-fit": Settings.VideoFit}}, "*")
+        IFrame.contentWindow.postMessage({css: {"background-repeat": Settings.BackgroundRepeat, "object-fit": Settings.VideoFit == "fixed" ? "cover" : Settings.VideoFit}}, "*")
     }
 
     if (CurrentIFrame.getAttribute("loaded")) return Ready()
@@ -41,7 +41,8 @@ function UpdateThemeSettings(Theme){
     if (!Settings) return
     if (!CurrentIFrame) return
 
-    CurrentIFrame.style = `${DefaultIFrameStyle} filter: blur(${Settings.Blur || 0}px) brightness(${Settings.Brightness !== undefined ? Settings.Brightness : 1}) saturate(${Settings.Saturation !== undefined ? Settings.Saturation : 1});`
+    const IsVideo = Theme.Type == "video"
+    CurrentIFrame.style = `${DefaultIFrameStyle} position: ${IsVideo && Settings.VideoFit == "fixed" ? "fixed" : "absolute"}; height: ${IsVideo && Settings.VideoFit == "fixed" ? "100vh" : "100%"}; filter: blur(${Settings.Blur || 0}px) brightness(${Settings.Brightness !== undefined ? Settings.Brightness : 1}) saturate(${Settings.Saturation !== undefined ? Settings.Saturation : 1});`
     PostCSSEdits(Settings, CurrentIFrame)
 
     if (Settings.Opacity && Settings.Opacity < 1){

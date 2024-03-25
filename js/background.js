@@ -518,7 +518,7 @@ async function SaveThemeToServer(){
         Update.Settings = Settings
     }
 
-    RequestFunc(WebServerEndpoints.Themes+"set", "POST", {"Content-Type": "application/json"}, JSON.stringify(Update))
+    RequestFunc(WebServerEndpoints.ThemesV2+"set", "POST", {"Content-Type": "application/json"}, JSON.stringify(Update))
 }
 
 async function BulkThemeChange(Type){

@@ -92,7 +92,7 @@ function CreateSettingsSection(){
             return `${Value}%`
         }))
 
-        Container.append(CreateDropdownOption("Background Repeat", ["no-repeat", "repeat", "repeat-x", "repeat-y", "round", "space"], Theme.Settings.BackgroundRepeat || "repeat", function(Value){
+        Container.append(CreateDropdownOption("Image Repeat", ["no-repeat", "repeat", "repeat-x", "repeat-y", "round", "space"], Theme.Settings.BackgroundRepeat || "repeat", function(Value){
             Theme.Settings.BackgroundRepeat = Value
             chrome.runtime.sendMessage({type: "ThemeSettings", key: "BackgroundRepeat", value: Value})
             return Value
@@ -100,7 +100,7 @@ function CreateSettingsSection(){
             return Value
         }))
 
-        Container.append(CreateDropdownOption("Video Fit", ["cover", "contain", "fill", "none", "scale-down"], Theme.Settings.VideoFit || "cover", function(Value){
+        Container.append(CreateDropdownOption("Video Fit", ["cover", "contain", "fixed", "fill", "none", "scale-down"], Theme.Settings.VideoFit || "cover", function(Value){
             Theme.Settings.VideoFit = Value
             chrome.runtime.sendMessage({type: "ThemeSettings", key: "VideoFit", value: Value})
             return Value
@@ -310,7 +310,7 @@ async function CreateThemesSection(List){
         const PreviewingThemeBlob = new Blob([PreviewingTheme.target.result], {type: PreviewingTheme.fileType})
         PreviewingIFrameThemeURL = URL.createObjectURL(new Blob([IFrameHTML.replace("'URL'", await toDataURL(PreviewingThemeBlob))], {type: "text/html"}))
 
-        UpdateTheme({Access: PreviewingIFrameThemeURL, Settings: (await IsFeatureEnabled("CurrentTheme")).Settings || {}, Theme: "custom"})
+        UpdateTheme({Access: PreviewingIFrameThemeURL, Type: PreviewingTheme.fileType.includes("video") ? "video" : "image", Settings: (await IsFeatureEnabled("CurrentTheme")).Settings || {}, Theme: "custom"})
     }
 
     CancelUploadButton.addEventListener("click", function(){
@@ -368,7 +368,7 @@ async function CreateThemesSection(List){
     const ThemesList = document.createElement("div")
     ThemesList.className = "themes-list"
 
-    function CreateTheme(Name, CustomHandler){
+    function CreateTheme(Name, Type, CustomHandler){
         const Theme = document.createElement("a")
         Theme.className = "theme"
 
@@ -394,6 +394,7 @@ async function CreateThemesSection(List){
             if (ThemeInfo?.Theme === Name) return
 
             ThemeInfo.Theme = Name
+            ThemeInfo.Type = Type
             SetFeatureEnabled("CurrentTheme", ThemeInfo)
         })
 
@@ -415,20 +416,20 @@ async function CreateThemesSection(List){
 
     ThemesList.appendChild(Clear)
     
-    RequestFunc(WebServerEndpoints.Themes, "GET").then(function([Success, Body]){
+    RequestFunc(WebServerEndpoints.ThemesV2, "GET").then(function([Success, Body]){
         if (!Success){
             ThemesList.innerText = "An error occurred"
             return
         }
 
         for (let i = 0; i < Body.length; i++){
-            CreateTheme(Body[i])
+            CreateTheme(Body[i].Name, Body[i].Type)
         }
     })
 
     let CustomThemeFrame
     function CreateCustomTheme(Theme){
-        const [ThemeFrame, Button] = CreateTheme(Theme.Access, true)
+        const [ThemeFrame, Button] = CreateTheme(Theme.Access, Theme.FileType, true)
         ThemesList.insertBefore(ThemeFrame, ThemesList.children[1])
         CustomThemeFrame = ThemeFrame
 
@@ -460,6 +461,7 @@ async function CreateThemesSection(List){
             if (ThemeInfo?.Theme === "custom") return
 
             ThemeInfo.Theme = "custom"
+            ThemeInfo.Type = ThemeInfo.FileType
             SetFeatureEnabled("CurrentTheme", ThemeInfo)
         })
     }
@@ -482,6 +484,7 @@ async function CreateThemesSection(List){
         if (CustomThemeFrame) CustomThemeFrame.remove()
         if (!Theme) return
 
+        console.log(Theme)
         CreateCustomTheme(Theme)
     })
 
